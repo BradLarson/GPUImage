@@ -1,0 +1,96 @@
+#import "SimpleImageViewController.h"
+
+@implementation SimpleImageViewController
+
+- (void)didReceiveMemoryWarning
+{
+    [super didReceiveMemoryWarning];
+    // Release any cached data, images, etc that aren't in use.
+}
+
+#pragma mark - View lifecycle
+
+- (void)loadView
+{    
+    CGRect mainScreenFrame = [[UIScreen mainScreen] applicationFrame];	
+	GPUImageView *primaryView = [[GPUImageView alloc] initWithFrame:mainScreenFrame];
+	self.view = primaryView;
+    
+    [self setupDisplayFiltering];
+    [self setupImageFilteringToDisk];
+}
+
+- (void)viewDidUnload
+{
+    [super viewDidUnload];
+    // Release any retained subviews of the main view.
+    // e.g. self.myOutlet = nil;
+}
+
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+{
+    if (interfaceOrientation == UIInterfaceOrientationPortrait)
+    {
+        return YES;
+    }
+    return NO;
+}
+
+#pragma mark -
+#pragma mark Image filtering
+
+- (void)setupDisplayFiltering;
+{
+    UIImage *inputImage = [UIImage imageNamed:@"WID-small.jpg"]; // The WID.jpg example is greater than 2048 pixels tall, so it fails on older devices
+    
+    sourcePicture = [[GPUImagePicture alloc] initWithImage:inputImage];
+    sepiaFilter = [[GPUImageSepiaFilter alloc] init];
+    sepiaFilter2 = [[GPUImageSepiaFilter alloc] init];
+    
+    GPUImageView *imageView = (GPUImageView *)self.view;
+    
+    [sourcePicture addTarget:sepiaFilter];
+    [sepiaFilter addTarget:sepiaFilter2];
+    [sepiaFilter2 addTarget:imageView];
+    
+    [sourcePicture processImage];
+}
+
+- (void)setupImageFilteringToDisk;
+{
+    // Set up a manual image filtering chain
+    UIImage *inputImage = [UIImage imageNamed:@"Lambeau.jpg"];
+    
+    GPUImagePicture *stillImageSource = [[GPUImagePicture alloc] initWithImage:inputImage];
+    GPUImageSepiaFilter *stillImageFilter = [[GPUImageSepiaFilter alloc] init];
+    
+    [stillImageSource addTarget:stillImageFilter];
+    [stillImageSource processImage];
+    
+    UIImage *currentFilteredVideoFrame = [stillImageFilter imageFromCurrentlyProcessedOutput];
+    
+    // Do a simpler image filtering
+    GPUImageSepiaFilter *stillImageFilter2 = [[GPUImageSepiaFilter alloc] init];
+    UIImage *quickFilteredImage = [stillImageFilter2 imageByFilteringImage:inputImage];
+
+    
+    // Write images to disk, as proof
+    NSData *dataForPNGFile = UIImagePNGRepresentation(currentFilteredVideoFrame);
+    NSData *dataForPNGFile2 = UIImagePNGRepresentation(quickFilteredImage);
+    
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0];
+    
+    NSError *error = nil;
+    if (![dataForPNGFile writeToFile:[documentsDirectory stringByAppendingPathComponent:@"Lambeau-filtered1.png"] options:NSAtomicWrite error:&error])
+    {
+        return;
+    }
+    if (![dataForPNGFile2 writeToFile:[documentsDirectory stringByAppendingPathComponent:@"Lambeau-filtered2.png"] options:NSAtomicWrite error:&error])
+    {
+        return;
+    }
+    
+}
+
+@end

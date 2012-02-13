@@ -1,0 +1,529 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		BC245DC114DDBCF5009FE7EB /* GPUImage.h in Headers */ = {isa = PBXBuildFile; fileRef = BC245DBF14DDBCF5009FE7EB /* GPUImage.h */; };
+		BC245DCA14DDBED7009FE7EB /* GPUImageFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = BC245DC814DDBED7009FE7EB /* GPUImageFilter.h */; };
+		BC245DCB14DDBED7009FE7EB /* GPUImageFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = BC245DC914DDBED7009FE7EB /* GPUImageFilter.m */; };
+		BCB5DE0D14E87F32000AF3C2 /* GPUImagePixellateFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = BCB5DE0B14E87F32000AF3C2 /* GPUImagePixellateFilter.h */; };
+		BCB5DE0E14E87F32000AF3C2 /* GPUImagePixellateFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = BCB5DE0C14E87F32000AF3C2 /* GPUImagePixellateFilter.m */; };
+		BCB5E75C14E2086300701302 /* GPUImageView.h in Headers */ = {isa = PBXBuildFile; fileRef = BCB5E75A14E2086300701302 /* GPUImageView.h */; };
+		BCB5E75D14E2086300701302 /* GPUImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = BCB5E75B14E2086300701302 /* GPUImageView.m */; };
+		BCB5E76514E208D700701302 /* GPUImageVideoCamera.h in Headers */ = {isa = PBXBuildFile; fileRef = BCB5E76314E208D600701302 /* GPUImageVideoCamera.h */; };
+		BCB5E76614E208D700701302 /* GPUImageVideoCamera.m in Sources */ = {isa = PBXBuildFile; fileRef = BCB5E76414E208D600701302 /* GPUImageVideoCamera.m */; };
+		BCB5E76C14E20AD700701302 /* GPUImageOpenGLESContext.h in Headers */ = {isa = PBXBuildFile; fileRef = BCB5E76A14E20AD700701302 /* GPUImageOpenGLESContext.h */; };
+		BCB5E76D14E20AD700701302 /* GPUImageOpenGLESContext.m in Sources */ = {isa = PBXBuildFile; fileRef = BCB5E76B14E20AD700701302 /* GPUImageOpenGLESContext.m */; };
+		BCB5E76F14E20B8000701302 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCB5E76E14E20B7F00701302 /* UIKit.framework */; };
+		BCB5E77114E20B8A00701302 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCB5E77014E20B8A00701302 /* AVFoundation.framework */; };
+		BCB5E77314E20B9100701302 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCB5E77214E20B9100701302 /* QuartzCore.framework */; };
+		BCB5E77514E20B9700701302 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCB5E77414E20B9700701302 /* OpenGLES.framework */; };
+		BCB5E77714E20BA800701302 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCB5E77614E20BA800701302 /* CoreVideo.framework */; };
+		BCB5E77914E20BAF00701302 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCB5E77814E20BAF00701302 /* CoreMedia.framework */; };
+		BCB5E77F14E22E4300701302 /* GPUImageOutput.h in Headers */ = {isa = PBXBuildFile; fileRef = BCB5E77D14E22E4200701302 /* GPUImageOutput.h */; };
+		BCB5E78014E22E4300701302 /* GPUImageOutput.m in Sources */ = {isa = PBXBuildFile; fileRef = BCB5E77E14E22E4200701302 /* GPUImageOutput.m */; };
+		BCB5E79414E3275200701302 /* GLProgram.h in Headers */ = {isa = PBXBuildFile; fileRef = BCB5E79214E3275100701302 /* GLProgram.h */; };
+		BCB5E79514E3275200701302 /* GLProgram.m in Sources */ = {isa = PBXBuildFile; fileRef = BCB5E79314E3275200701302 /* GLProgram.m */; };
+		BCB5E7C214E4B6D400701302 /* GPUImageSepiaFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = BCB5E7C014E4B6D400701302 /* GPUImageSepiaFilter.h */; };
+		BCB5E7C314E4B6D400701302 /* GPUImageSepiaFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = BCB5E7C114E4B6D400701302 /* GPUImageSepiaFilter.m */; };
+		BCB5E7DA14E6003400701302 /* GPUImagePicture.h in Headers */ = {isa = PBXBuildFile; fileRef = BCB5E7D814E6003400701302 /* GPUImagePicture.h */; };
+		BCB5E7DB14E6003400701302 /* GPUImagePicture.m in Sources */ = {isa = PBXBuildFile; fileRef = BCB5E7D914E6003400701302 /* GPUImagePicture.m */; };
+		BCB5E85514E63BBB00701302 /* GPUImageRotationFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = BCB5E85314E63BBB00701302 /* GPUImageRotationFilter.h */; };
+		BCB5E85614E63BBB00701302 /* GPUImageRotationFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = BCB5E85414E63BBB00701302 /* GPUImageRotationFilter.m */; };
+		BCF1A33814DDB1EC00852800 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCF1A33714DDB1EC00852800 /* Foundation.framework */; };
+		BCF1A34614DDB1EC00852800 /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCF1A34514DDB1EC00852800 /* SenTestingKit.framework */; };
+		BCF1A34914DDB1EC00852800 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCF1A33714DDB1EC00852800 /* Foundation.framework */; };
+		BCF1A34C14DDB1EC00852800 /* libGPUImage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BCF1A33414DDB1EC00852800 /* libGPUImage.a */; };
+		BCF1A35214DDB1EC00852800 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = BCF1A35014DDB1EC00852800 /* InfoPlist.strings */; };
+		BCF1A35514DDB1EC00852800 /* GPUImageTests.m in Sources */ = {isa = PBXBuildFile; fileRef = BCF1A35414DDB1EC00852800 /* GPUImageTests.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		BCF1A34A14DDB1EC00852800 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BCF1A32B14DDB1EC00852800 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = BCF1A33314DDB1EC00852800;
+			remoteInfo = GPUImage;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		BC245DBF14DDBCF5009FE7EB /* GPUImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GPUImage.h; path = Source/GPUImage.h; sourceTree = SOURCE_ROOT; };
+		BC245DC814DDBED7009FE7EB /* GPUImageFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GPUImageFilter.h; path = Source/GPUImageFilter.h; sourceTree = SOURCE_ROOT; };
+		BC245DC914DDBED7009FE7EB /* GPUImageFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GPUImageFilter.m; path = Source/GPUImageFilter.m; sourceTree = SOURCE_ROOT; };
+		BCB5DE0B14E87F32000AF3C2 /* GPUImagePixellateFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GPUImagePixellateFilter.h; path = Source/GPUImagePixellateFilter.h; sourceTree = SOURCE_ROOT; };
+		BCB5DE0C14E87F32000AF3C2 /* GPUImagePixellateFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GPUImagePixellateFilter.m; path = Source/GPUImagePixellateFilter.m; sourceTree = SOURCE_ROOT; };
+		BCB5E75A14E2086300701302 /* GPUImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GPUImageView.h; path = Source/GPUImageView.h; sourceTree = SOURCE_ROOT; };
+		BCB5E75B14E2086300701302 /* GPUImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GPUImageView.m; path = Source/GPUImageView.m; sourceTree = SOURCE_ROOT; };
+		BCB5E76314E208D600701302 /* GPUImageVideoCamera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GPUImageVideoCamera.h; path = Source/GPUImageVideoCamera.h; sourceTree = SOURCE_ROOT; };
+		BCB5E76414E208D600701302 /* GPUImageVideoCamera.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GPUImageVideoCamera.m; path = Source/GPUImageVideoCamera.m; sourceTree = SOURCE_ROOT; };
+		BCB5E76A14E20AD700701302 /* GPUImageOpenGLESContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GPUImageOpenGLESContext.h; path = Source/GPUImageOpenGLESContext.h; sourceTree = SOURCE_ROOT; };
+		BCB5E76B14E20AD700701302 /* GPUImageOpenGLESContext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GPUImageOpenGLESContext.m; path = Source/GPUImageOpenGLESContext.m; sourceTree = SOURCE_ROOT; };
+		BCB5E76E14E20B7F00701302 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		BCB5E77014E20B8A00701302 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		BCB5E77214E20B9100701302 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		BCB5E77414E20B9700701302 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
+		BCB5E77614E20BA800701302 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
+		BCB5E77814E20BAF00701302 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
+		BCB5E77D14E22E4200701302 /* GPUImageOutput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GPUImageOutput.h; path = Source/GPUImageOutput.h; sourceTree = SOURCE_ROOT; };
+		BCB5E77E14E22E4200701302 /* GPUImageOutput.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GPUImageOutput.m; path = Source/GPUImageOutput.m; sourceTree = SOURCE_ROOT; };
+		BCB5E79214E3275100701302 /* GLProgram.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GLProgram.h; path = Source/GLProgram.h; sourceTree = SOURCE_ROOT; };
+		BCB5E79314E3275200701302 /* GLProgram.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GLProgram.m; path = Source/GLProgram.m; sourceTree = SOURCE_ROOT; };
+		BCB5E7C014E4B6D400701302 /* GPUImageSepiaFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GPUImageSepiaFilter.h; path = Source/GPUImageSepiaFilter.h; sourceTree = SOURCE_ROOT; };
+		BCB5E7C114E4B6D400701302 /* GPUImageSepiaFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GPUImageSepiaFilter.m; path = Source/GPUImageSepiaFilter.m; sourceTree = SOURCE_ROOT; };
+		BCB5E7D814E6003400701302 /* GPUImagePicture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GPUImagePicture.h; path = Source/GPUImagePicture.h; sourceTree = SOURCE_ROOT; };
+		BCB5E7D914E6003400701302 /* GPUImagePicture.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GPUImagePicture.m; path = Source/GPUImagePicture.m; sourceTree = SOURCE_ROOT; };
+		BCB5E85314E63BBB00701302 /* GPUImageRotationFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GPUImageRotationFilter.h; path = Source/GPUImageRotationFilter.h; sourceTree = SOURCE_ROOT; };
+		BCB5E85414E63BBB00701302 /* GPUImageRotationFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GPUImageRotationFilter.m; path = Source/GPUImageRotationFilter.m; sourceTree = SOURCE_ROOT; };
+		BCF1A33414DDB1EC00852800 /* libGPUImage.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libGPUImage.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		BCF1A33714DDB1EC00852800 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		BCF1A33B14DDB1EC00852800 /* GPUImage-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "GPUImage-Prefix.pch"; path = "Source/GPUImage-Prefix.pch"; sourceTree = "<group>"; };
+		BCF1A34414DDB1EC00852800 /* GPUImageTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GPUImageTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
+		BCF1A34514DDB1EC00852800 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
+		BCF1A34F14DDB1EC00852800 /* GPUImageTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GPUImageTests-Info.plist"; sourceTree = "<group>"; };
+		BCF1A35114DDB1EC00852800 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		BCF1A35314DDB1EC00852800 /* GPUImageTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GPUImageTests.h; sourceTree = "<group>"; };
+		BCF1A35414DDB1EC00852800 /* GPUImageTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GPUImageTests.m; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		BCF1A33114DDB1EC00852800 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BCB5E77914E20BAF00701302 /* CoreMedia.framework in Frameworks */,
+				BCB5E77714E20BA800701302 /* CoreVideo.framework in Frameworks */,
+				BCB5E77514E20B9700701302 /* OpenGLES.framework in Frameworks */,
+				BCB5E77314E20B9100701302 /* QuartzCore.framework in Frameworks */,
+				BCB5E77114E20B8A00701302 /* AVFoundation.framework in Frameworks */,
+				BCB5E76F14E20B8000701302 /* UIKit.framework in Frameworks */,
+				BCF1A33814DDB1EC00852800 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BCF1A34014DDB1EC00852800 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BCF1A34614DDB1EC00852800 /* SenTestingKit.framework in Frameworks */,
+				BCF1A34914DDB1EC00852800 /* Foundation.framework in Frameworks */,
+				BCF1A34C14DDB1EC00852800 /* libGPUImage.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		BC245DC314DDBE6B009FE7EB /* Filters */ = {
+			isa = PBXGroup;
+			children = (
+				BC245DC814DDBED7009FE7EB /* GPUImageFilter.h */,
+				BC245DC914DDBED7009FE7EB /* GPUImageFilter.m */,
+				BCB5E7C014E4B6D400701302 /* GPUImageSepiaFilter.h */,
+				BCB5E7C114E4B6D400701302 /* GPUImageSepiaFilter.m */,
+				BCB5E85314E63BBB00701302 /* GPUImageRotationFilter.h */,
+				BCB5E85414E63BBB00701302 /* GPUImageRotationFilter.m */,
+				BCB5DE0B14E87F32000AF3C2 /* GPUImagePixellateFilter.h */,
+				BCB5DE0C14E87F32000AF3C2 /* GPUImagePixellateFilter.m */,
+			);
+			name = Filters;
+			sourceTree = "<group>";
+		};
+		BCB5E78114E232BC00701302 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				BCB5E76314E208D600701302 /* GPUImageVideoCamera.h */,
+				BCB5E76414E208D600701302 /* GPUImageVideoCamera.m */,
+				BCB5E7D814E6003400701302 /* GPUImagePicture.h */,
+				BCB5E7D914E6003400701302 /* GPUImagePicture.m */,
+			);
+			name = Sources;
+			sourceTree = "<group>";
+		};
+		BCB5E78214E232D600701302 /* Display */ = {
+			isa = PBXGroup;
+			children = (
+				BCB5E75A14E2086300701302 /* GPUImageView.h */,
+				BCB5E75B14E2086300701302 /* GPUImageView.m */,
+			);
+			name = Display;
+			sourceTree = "<group>";
+		};
+		BCF1A32914DDB1EC00852800 = {
+			isa = PBXGroup;
+			children = (
+				BCF1A33914DDB1EC00852800 /* GPUImage */,
+				BCF1A34D14DDB1EC00852800 /* GPUImageTests */,
+				BCF1A33614DDB1EC00852800 /* Frameworks */,
+				BCF1A33514DDB1EC00852800 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		BCF1A33514DDB1EC00852800 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				BCF1A33414DDB1EC00852800 /* libGPUImage.a */,
+				BCF1A34414DDB1EC00852800 /* GPUImageTests.octest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		BCF1A33614DDB1EC00852800 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				BCB5E77814E20BAF00701302 /* CoreMedia.framework */,
+				BCB5E77614E20BA800701302 /* CoreVideo.framework */,
+				BCB5E77414E20B9700701302 /* OpenGLES.framework */,
+				BCB5E77214E20B9100701302 /* QuartzCore.framework */,
+				BCB5E77014E20B8A00701302 /* AVFoundation.framework */,
+				BCB5E76E14E20B7F00701302 /* UIKit.framework */,
+				BCF1A33714DDB1EC00852800 /* Foundation.framework */,
+				BCF1A34514DDB1EC00852800 /* SenTestingKit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		BCF1A33914DDB1EC00852800 /* GPUImage */ = {
+			isa = PBXGroup;
+			children = (
+				BC245DBF14DDBCF5009FE7EB /* GPUImage.h */,
+				BCB5E79214E3275100701302 /* GLProgram.h */,
+				BCB5E79314E3275200701302 /* GLProgram.m */,
+				BCB5E77D14E22E4200701302 /* GPUImageOutput.h */,
+				BCB5E77E14E22E4200701302 /* GPUImageOutput.m */,
+				BCB5E76A14E20AD700701302 /* GPUImageOpenGLESContext.h */,
+				BCB5E76B14E20AD700701302 /* GPUImageOpenGLESContext.m */,
+				BCB5E78114E232BC00701302 /* Sources */,
+				BC245DC314DDBE6B009FE7EB /* Filters */,
+				BCB5E78214E232D600701302 /* Display */,
+				BCF1A33A14DDB1EC00852800 /* Supporting Files */,
+			);
+			path = GPUImage;
+			sourceTree = "<group>";
+		};
+		BCF1A33A14DDB1EC00852800 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				BCF1A33B14DDB1EC00852800 /* GPUImage-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		BCF1A34D14DDB1EC00852800 /* GPUImageTests */ = {
+			isa = PBXGroup;
+			children = (
+				BCF1A35314DDB1EC00852800 /* GPUImageTests.h */,
+				BCF1A35414DDB1EC00852800 /* GPUImageTests.m */,
+				BCF1A34E14DDB1EC00852800 /* Supporting Files */,
+			);
+			path = GPUImageTests;
+			sourceTree = "<group>";
+		};
+		BCF1A34E14DDB1EC00852800 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				BCF1A34F14DDB1EC00852800 /* GPUImageTests-Info.plist */,
+				BCF1A35014DDB1EC00852800 /* InfoPlist.strings */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		BCF1A33214DDB1EC00852800 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BC245DC114DDBCF5009FE7EB /* GPUImage.h in Headers */,
+				BC245DCA14DDBED7009FE7EB /* GPUImageFilter.h in Headers */,
+				BCB5E75C14E2086300701302 /* GPUImageView.h in Headers */,
+				BCB5E76514E208D700701302 /* GPUImageVideoCamera.h in Headers */,
+				BCB5E76C14E20AD700701302 /* GPUImageOpenGLESContext.h in Headers */,
+				BCB5E77F14E22E4300701302 /* GPUImageOutput.h in Headers */,
+				BCB5E79414E3275200701302 /* GLProgram.h in Headers */,
+				BCB5E7C214E4B6D400701302 /* GPUImageSepiaFilter.h in Headers */,
+				BCB5E7DA14E6003400701302 /* GPUImagePicture.h in Headers */,
+				BCB5E85514E63BBB00701302 /* GPUImageRotationFilter.h in Headers */,
+				BCB5DE0D14E87F32000AF3C2 /* GPUImagePixellateFilter.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		BCF1A33314DDB1EC00852800 /* GPUImage */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BCF1A35814DDB1EC00852800 /* Build configuration list for PBXNativeTarget "GPUImage" */;
+			buildPhases = (
+				BCF1A33014DDB1EC00852800 /* Sources */,
+				BCF1A33114DDB1EC00852800 /* Frameworks */,
+				BCF1A33214DDB1EC00852800 /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = GPUImage;
+			productName = GPUImage;
+			productReference = BCF1A33414DDB1EC00852800 /* libGPUImage.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+		BCF1A34314DDB1EC00852800 /* GPUImageTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BCF1A35B14DDB1EC00852800 /* Build configuration list for PBXNativeTarget "GPUImageTests" */;
+			buildPhases = (
+				BCF1A33F14DDB1EC00852800 /* Sources */,
+				BCF1A34014DDB1EC00852800 /* Frameworks */,
+				BCF1A34114DDB1EC00852800 /* Resources */,
+				BCF1A34214DDB1EC00852800 /* ShellScript */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				BCF1A34B14DDB1EC00852800 /* PBXTargetDependency */,
+			);
+			name = GPUImageTests;
+			productName = GPUImageTests;
+			productReference = BCF1A34414DDB1EC00852800 /* GPUImageTests.octest */;
+			productType = "com.apple.product-type.bundle";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		BCF1A32B14DDB1EC00852800 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0420;
+				ORGANIZATIONNAME = "Brad Larson";
+			};
+			buildConfigurationList = BCF1A32E14DDB1EC00852800 /* Build configuration list for PBXProject "GPUImage" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = BCF1A32914DDB1EC00852800;
+			productRefGroup = BCF1A33514DDB1EC00852800 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				BCF1A33314DDB1EC00852800 /* GPUImage */,
+				BCF1A34314DDB1EC00852800 /* GPUImageTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		BCF1A34114DDB1EC00852800 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BCF1A35214DDB1EC00852800 /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		BCF1A34214DDB1EC00852800 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Run the unit tests in this test bundle.\n\"${SYSTEM_DEVELOPER_DIR}/Tools/RunUnitTests\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		BCF1A33014DDB1EC00852800 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BC245DCB14DDBED7009FE7EB /* GPUImageFilter.m in Sources */,
+				BCB5E75D14E2086300701302 /* GPUImageView.m in Sources */,
+				BCB5E76614E208D700701302 /* GPUImageVideoCamera.m in Sources */,
+				BCB5E76D14E20AD700701302 /* GPUImageOpenGLESContext.m in Sources */,
+				BCB5E78014E22E4300701302 /* GPUImageOutput.m in Sources */,
+				BCB5E79514E3275200701302 /* GLProgram.m in Sources */,
+				BCB5E7C314E4B6D400701302 /* GPUImageSepiaFilter.m in Sources */,
+				BCB5E7DB14E6003400701302 /* GPUImagePicture.m in Sources */,
+				BCB5E85614E63BBB00701302 /* GPUImageRotationFilter.m in Sources */,
+				BCB5DE0E14E87F32000AF3C2 /* GPUImagePixellateFilter.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BCF1A33F14DDB1EC00852800 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BCF1A35514DDB1EC00852800 /* GPUImageTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		BCF1A34B14DDB1EC00852800 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = BCF1A33314DDB1EC00852800 /* GPUImage */;
+			targetProxy = BCF1A34A14DDB1EC00852800 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		BCF1A35014DDB1EC00852800 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				BCF1A35114DDB1EC00852800 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		BCF1A35614DDB1EC00852800 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				SDKROOT = iphoneos;
+				SYMROOT = "$(PROJECT_DIR)/../build";
+			};
+			name = Debug;
+		};
+		BCF1A35714DDB1EC00852800 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				COPY_PHASE_STRIP = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				SDKROOT = iphoneos;
+				SYMROOT = "$(PROJECT_DIR)/../build";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		BCF1A35914DDB1EC00852800 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DSTROOT = /tmp/GPUImage.dst;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Source/GPUImage-Prefix.pch";
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		BCF1A35A14DDB1EC00852800 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DSTROOT = /tmp/GPUImage.dst;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Source/GPUImage-Prefix.pch";
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+		BCF1A35C14DDB1EC00852800 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(DEVELOPER_LIBRARY_DIR)/Frameworks",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Source/GPUImage-Prefix.pch";
+				INFOPLIST_FILE = "GPUImageTests/GPUImageTests-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = octest;
+			};
+			name = Debug;
+		};
+		BCF1A35D14DDB1EC00852800 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(DEVELOPER_LIBRARY_DIR)/Frameworks",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Source/GPUImage-Prefix.pch";
+				INFOPLIST_FILE = "GPUImageTests/GPUImageTests-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = octest;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		BCF1A32E14DDB1EC00852800 /* Build configuration list for PBXProject "GPUImage" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BCF1A35614DDB1EC00852800 /* Debug */,
+				BCF1A35714DDB1EC00852800 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		BCF1A35814DDB1EC00852800 /* Build configuration list for PBXNativeTarget "GPUImage" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BCF1A35914DDB1EC00852800 /* Debug */,
+				BCF1A35A14DDB1EC00852800 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		BCF1A35B14DDB1EC00852800 /* Build configuration list for PBXNativeTarget "GPUImageTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BCF1A35C14DDB1EC00852800 /* Debug */,
+				BCF1A35D14DDB1EC00852800 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = BCF1A32B14DDB1EC00852800 /* Project object */;
+}
