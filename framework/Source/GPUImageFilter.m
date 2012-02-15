@@ -151,7 +151,6 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size)
 
 - (CGSize)sizeOfFBO;
 {
-//    return (CGSizeMake(640.0, 480.0));
     CGSize outputSize = [self maximumOutputSize];
     if ( (CGSizeEqualToSize(outputSize, CGSizeZero)) || (inputTextureSize.width < outputSize.width) )
     {

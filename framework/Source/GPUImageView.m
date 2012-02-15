@@ -89,6 +89,12 @@ void main()\
 
 - (void)commonInit;
 {
+    // Set scaling to account for Retina display	
+    if ([self respondsToSelector:@selector(setContentScaleFactor:)])
+    {
+        self.contentScaleFactor = [[UIScreen mainScreen] scale];
+    }
+
     CAEAGLLayer *eaglLayer = (CAEAGLLayer *)self.layer;    
     eaglLayer.opaque = YES;
     eaglLayer.drawableProperties = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:NO], kEAGLDrawablePropertyRetainedBacking, kEAGLColorFormatRGBA8, kEAGLDrawablePropertyColorFormat, nil];		
@@ -243,7 +249,15 @@ void main()\
 
 - (CGSize)maximumOutputSize;
 {
-    return self.bounds.size;
+    if ([self respondsToSelector:@selector(setContentScaleFactor:)])
+    {
+        CGSize pointSize = self.bounds.size;
+        return CGSizeMake(self.contentScaleFactor * pointSize.width, self.contentScaleFactor * pointSize.height);
+    }
+    else
+    {
+        return self.bounds.size;
+    }
 }
 
 @end
