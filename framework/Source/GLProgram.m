@@ -194,7 +194,7 @@ typedef void (*GLLogFunction) (GLuint program,
                                               length:logLength 
                                             encoding:NSUTF8StringEncoding];
     free(logBytes);
-    return log;
+    return [log autorelease];
 }
 // END:privatelog
 // START:log
@@ -238,6 +238,8 @@ typedef void (*GLLogFunction) (GLuint program,
 // START:dealloc
 - (void)dealloc
 {
+    [attributes release];
+    [uniforms release];
   
     if (vertShader)
         glDeleteShader(vertShader);
@@ -248,6 +250,7 @@ typedef void (*GLLogFunction) (GLuint program,
     if (program)
         glDeleteProgram(program);
        
+    [super dealloc];
 }
 // END:dealloc
 @end

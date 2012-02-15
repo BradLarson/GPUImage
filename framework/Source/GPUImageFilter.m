@@ -142,6 +142,7 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size)
     UIImage *processedImage = [self imageFromCurrentlyProcessedOutput];
     
     [stillImageSource removeTarget:self];
+    [stillImageSource release];
     return processedImage;
 }
 

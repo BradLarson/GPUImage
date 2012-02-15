@@ -31,27 +31,6 @@ Technical requirements
 - Devices must have a camera to use camera-related functionality (obviously)
 - Compatible with applications using either automatic or manual reference counting
 
-Adding the framework to your iOS project
-========================================
-
-Once you have the latest source code for the framework, it's fairly straightforward to add it to your application. Start by dragging the GPUImage.xcodeproj file into your application's Xcode project to embed the framework in your project. Next, go to your application's target and add GPUImage as a Target Dependency. Finally, you'll want to drag the libGPUImage.a library from the GPUImage framework's Products folder to the Link Binary With Libraries build phase in your application's target.
-
-GPUImage needs a few other frameworks to be linked into your application, so you'll need to add the following as linked libraries in your application target:
-
-- CoreMedia
-- CoreVideo
-- OpenGLES
-- AVFoundation
-- QuartzCore
-
-You'll also need to find the framework headers, so within your project's build settings set the Header Search Paths to the relative path from your application to the framework/ subdirectory within the GPUImage source directory. Make this header search path recursive.
-
-To use the GPUImage classes within your application, simply include the core framework header using the following:
-
-#import "GPUImage.h"
-
-As a note: if you run into the error "Unknown class GPUImageView in Interface Builder" or the like when trying to build an interface with Interface Builder, you may need to add -ObjC to your Other Linker Flags in your project's build settings.
-
 General architecture
 ====================
 
@@ -72,6 +51,27 @@ A small number of filters are built in:
 - GPUImagePixellateFilter: Applies a pixellation effect on an image or video, with the fractionalWidthOfAPixel property controlling how large the pixels are, as a fraction of the width and height of the image
 
 but you can easily write your own custom filters using the C-like OpenGL Shading Language, as described below.
+
+Adding the framework to your iOS project
+========================================
+
+Once you have the latest source code for the framework, it's fairly straightforward to add it to your application. Start by dragging the GPUImage.xcodeproj file into your application's Xcode project to embed the framework in your project. Next, go to your application's target and add GPUImage as a Target Dependency. Finally, you'll want to drag the libGPUImage.a library from the GPUImage framework's Products folder to the Link Binary With Libraries build phase in your application's target.
+
+GPUImage needs a few other frameworks to be linked into your application, so you'll need to add the following as linked libraries in your application target:
+
+- CoreMedia
+- CoreVideo
+- OpenGLES
+- AVFoundation
+- QuartzCore
+
+You'll also need to find the framework headers, so within your project's build settings set the Header Search Paths to the relative path from your application to the framework/ subdirectory within the GPUImage source directory. Make this header search path recursive.
+
+To use the GPUImage classes within your application, simply include the core framework header using the following:
+
+#import "GPUImage.h"
+
+As a note: if you run into the error "Unknown class GPUImageView in Interface Builder" or the like when trying to build an interface with Interface Builder, you may need to add -ObjC to your Other Linker Flags in your project's build settings.
 
 Performing common tasks
 =======================
@@ -149,7 +149,7 @@ void main()
 	gl_FragColor = outputColor;
 }
 
-For an image filter to be usable within the GPUImage framework, the first two lines that take in the textureCoordinate varying (for the current coordinate within the texture, normalized to 1.0) and the inputImageTexture varying (for the actual input image frame texture) are required.
+For an image filter to be usable within the GPUImage framework, the first two lines that take in the textureCoordinate varying (for the current coordinate within the texture, normalized to 1.0) and the inputImageTexture uniform (for the actual input image frame texture) are required.
 
 The remainder of the shader grabs the color of the pixel at this location in the passed-in texture, manipulates it in such a way as to produce a sepia tone, and writes that pixel color out to be used in the next stage of the processing pipeline.
 
