@@ -116,6 +116,9 @@
 
 - (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection
 {
+//    CFAbsoluteTime elapsedTime, startTime = CFAbsoluteTimeGetCurrent();
+
+    
     // TODO: Update this with faster iOS 5.0 texture upload path
 	CVImageBufferRef cameraFrame = CMSampleBufferGetImageBuffer(sampleBuffer);
     
@@ -135,6 +138,9 @@
     }
 
 	CVPixelBufferUnlockBaseAddress(cameraFrame, 0);
+    
+//    elapsedTime = CFAbsoluteTimeGetCurrent() - startTime;
+//    NSLog(@"Frame time : %f ms", 1000.0 * elapsedTime);
 }
 
 #pragma mark -
