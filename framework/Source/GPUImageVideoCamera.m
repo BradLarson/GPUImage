@@ -49,7 +49,7 @@
 	
 	// Add the video input	
 	NSError *error = nil;
-	videoInput = [[[AVCaptureDeviceInput alloc] initWithDevice:backFacingCamera error:&error] autorelease];
+	videoInput = [[AVCaptureDeviceInput alloc] initWithDevice:backFacingCamera error:&error];
 	if ([captureSession canAddInput:videoInput]) 
 	{
 		[captureSession addInput:videoInput];
