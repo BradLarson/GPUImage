@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		BC982A9614EDF8750001FF6F /* GLKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC982A9514EDF8740001FF6F /* GLKit.framework */; };
 		BCC3D1CE14ECB1DB00E111AF /* ImageFilteringBenchmarkController.m in Sources */ = {isa = PBXBuildFile; fileRef = BCC3D1CD14ECB1DB00E111AF /* ImageFilteringBenchmarkController.m */; };
 		BCF9D15B14EAD24200986461 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCF9D15A14EAD24200986461 /* UIKit.framework */; };
 		BCF9D15D14EAD24200986461 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCF9D15C14EAD24200986461 /* Foundation.framework */; };
@@ -60,6 +61,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		BC982A9514EDF8740001FF6F /* GLKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLKit.framework; path = System/Library/Frameworks/GLKit.framework; sourceTree = SDKROOT; };
 		BCC3D1CC14ECB1DB00E111AF /* ImageFilteringBenchmarkController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageFilteringBenchmarkController.h; sourceTree = "<group>"; };
 		BCC3D1CD14ECB1DB00E111AF /* ImageFilteringBenchmarkController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageFilteringBenchmarkController.m; sourceTree = "<group>"; };
 		BCF9D15614EAD24200986461 /* BenchmarkSuite.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BenchmarkSuite.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -101,6 +103,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BC982A9614EDF8750001FF6F /* GLKit.framework in Frameworks */,
 				BCF9D20C14EC7EB100986461 /* CoreImage.framework in Frameworks */,
 				BCF9D1E314EC4F7C00986461 /* AVFoundation.framework in Frameworks */,
 				BCF9D1E114EC4F7300986461 /* OpenGLES.framework in Frameworks */,
@@ -120,7 +123,6 @@
 		BCF9D14B14EAD24200986461 = {
 			isa = PBXGroup;
 			children = (
-				BCF9D20B14EC7EB100986461 /* CoreImage.framework */,
 				BCF9D16014EAD24200986461 /* BenchmarkSuite */,
 				BCF9D15914EAD24200986461 /* Frameworks */,
 				BCF9D15714EAD24200986461 /* Products */,
@@ -139,6 +141,8 @@
 			isa = PBXGroup;
 			children = (
 				BCF9D1CA14EC4F3F00986461 /* GPUImage.xcodeproj */,
+				BC982A9514EDF8740001FF6F /* GLKit.framework */,
+				BCF9D20B14EC7EB100986461 /* CoreImage.framework */,
 				BCF9D1E214EC4F7C00986461 /* AVFoundation.framework */,
 				BCF9D1E014EC4F7300986461 /* OpenGLES.framework */,
 				BCF9D1DA14EC4F6C00986461 /* CoreMedia.framework */,

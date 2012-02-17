@@ -47,7 +47,6 @@
     
     int width = imageToProcess.size.width;
     int height = imageToProcess.size.height;
-    NSLog(@"Width: %d, height: %d", width, height);
     NSInteger myDataLength = width * height * 4;
     
     

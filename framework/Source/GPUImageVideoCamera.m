@@ -33,6 +33,8 @@
 		return nil;
     }
     
+    runBenchmark = NO;
+    
 	// Grab the back-facing camera
 	AVCaptureDevice *backFacingCamera = nil;
 	NSArray *devices = [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];
@@ -58,7 +60,7 @@
 	// Add the video frame output	
 	videoOutput = [[AVCaptureVideoDataOutput alloc] init];
 	[videoOutput setAlwaysDiscardsLateVideoFrames:YES];
-	// Use RGB frames instead of YUV to ease color processing
+
 	[videoOutput setVideoSettings:[NSDictionary dictionaryWithObject:[NSNumber numberWithInt:kCVPixelFormatType_32BGRA] forKey:(id)kCVPixelBufferPixelFormatTypeKey]];
     //	dispatch_queue_t videoQueue = dispatch_queue_create("com.sunsetlakesoftware.colortracking.videoqueue", NULL);
     //	[videoOutput setSampleBufferDelegate:self queue:videoQueue];
@@ -112,12 +114,20 @@
 }
 
 #pragma mark -
+#pragma mark Benchmarking
+
+- (CGFloat)averageFrameDurationDuringCapture;
+{
+    NSLog(@"Number of frames: %d", numberOfFramesCaptured);
+    return (totalFrameTimeDuringCapture / (CGFloat)numberOfFramesCaptured) * 1000.0;
+}
+
+#pragma mark -
 #pragma mark AVCaptureVideoDataOutputSampleBufferDelegate
 
 - (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection
 {
-//    CFAbsoluteTime elapsedTime, startTime = CFAbsoluteTimeGetCurrent();
-
+    CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
     
     // TODO: Update this with faster iOS 5.0 texture upload path
 	CVImageBufferRef cameraFrame = CMSampleBufferGetImageBuffer(sampleBuffer);
@@ -139,13 +149,20 @@
 
 	CVPixelBufferUnlockBaseAddress(cameraFrame, 0);
     
-//    elapsedTime = CFAbsoluteTimeGetCurrent() - startTime;
-//    NSLog(@"Frame time : %f ms", 1000.0 * elapsedTime);
+    if (runBenchmark)
+    {
+        CFAbsoluteTime currentFrameTime = (CFAbsoluteTimeGetCurrent() - startTime);
+        totalFrameTimeDuringCapture += currentFrameTime;
+        numberOfFramesCaptured++;
+//        NSLog(@"Average frame time : %f ms", 1000.0 * (totalFrameTimeDuringCapture / numberOfFramesCaptured));
+//        NSLog(@"Current frame time : %f ms", 1000.0 * currentFrameTime);
+    }
 }
 
 #pragma mark -
 #pragma mark Accessors
 
 @synthesize captureSession;
+@synthesize runBenchmark;
 
 @end

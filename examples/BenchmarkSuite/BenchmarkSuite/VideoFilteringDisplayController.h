@@ -1,17 +1,38 @@
 #import <UIKit/UIKit.h>
+#import <GLKit/GLKit.h>
+#import "GPUImage.h"
 
 @protocol VideoFilteringCallback;
 
-@interface VideoFilteringDisplayController : UIViewController
+@interface VideoFilteringDisplayController : UIViewController <AVCaptureVideoDataOutputSampleBufferDelegate>
 {
-    CGFloat averageFrameTimeForCPU, averageFrameTimeForCoreImage, averageFrameTimeForGPUImage;
+    CGFloat totalFrameTimeForCPU, totalFrameTimeForCoreImage, totalFrameTimeForGPUImage;
+    NSUInteger numberOfCPUFramesCaptured, numberOfCoreImageFramesCaptured, numberOfGPUImageFramesCaptured;
+    
+    GLKView *videoDisplayView;
+    AVCaptureSession *captureSession;
+	AVCaptureDeviceInput *videoInput;
+	AVCaptureVideoDataOutput *videoOutput;
+    
+    CIContext *coreImageContext;
+    CIFilter *sepiaCoreImageFilter;
+    
+    GLuint _renderBuffer;
+
+    BOOL processUsingCPU;
+
+    GPUImageVideoCamera *videoCamera;
+    GPUImageSepiaFilter *sepiaFilter;
+    GPUImageView *filterView;
     
     __unsafe_unretained id<VideoFilteringCallback> delegate;
 }
 
 @property(unsafe_unretained, nonatomic) id<VideoFilteringCallback> delegate;
+@property (strong, nonatomic) EAGLContext *openGLESContext;
 
 // Video filtering
+- (void)startAVFoundationVideoProcessing;
 - (void)displayVideoForCPU;
 - (void)displayVideoForCoreImage;
 - (void)displayVideoForGPUImage;

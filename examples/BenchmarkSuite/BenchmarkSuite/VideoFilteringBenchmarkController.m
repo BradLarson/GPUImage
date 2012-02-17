@@ -21,6 +21,8 @@
     processingTimeForCPURoutine = cpuTime;
     processingTimeForCoreImageRoutine = coreImageTime;
     processingTimeForGPUImageRoutine = gpuImageTime;
+    
+    [self.tableView reloadData];
 }
 
 @end
