@@ -94,8 +94,6 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size);
 {
     [self destroyFilterFBO];
     
-    [filterProgram release];
-    [super dealloc];
 }
 
 #pragma mark -
@@ -142,7 +140,6 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size)
     UIImage *processedImage = [self imageFromCurrentlyProcessedOutput];
     
     [stillImageSource removeTarget:self];
-    [stillImageSource release];
     return processedImage;
 }
 

@@ -12,7 +12,7 @@
 		return nil;
     }
 
-    imageSource = [newImageSource retain];
+    imageSource = newImageSource;
 
     [GPUImageOpenGLESContext useImageProcessingContext];
 
@@ -38,12 +38,6 @@
     return self;
 }
 
-- (void)dealloc;
-{
-    [imageSource release];
-    
-    [super dealloc];
-}
 
 
 #pragma mark -

@@ -130,9 +130,7 @@ void main()\
 
 - (void)dealloc
 {
-    [displayProgram release];
     [self destroyDisplayFramebuffer];
-    [super dealloc];
 }
 
 #pragma mark -
