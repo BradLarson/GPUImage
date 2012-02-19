@@ -1,10 +1,5 @@
-#import "GPUImageFilter.h"
+#import "GPUImageColorMatrixFilter.h"
 
-@interface GPUImageSepiaFilter : GPUImageFilter
-{
-    GLint intensityUniform;
-}
-
-@property(readwrite, nonatomic) CGFloat intensity;
+@interface GPUImageSepiaFilter : GPUImageColorMatrixFilter
 
 @end
