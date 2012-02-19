@@ -1,7 +1,7 @@
 #import <UIKit/UIKit.h>
 #import "GPUImage.h"
 
-typedef enum { GPUIMAGE_SEPIA, GPUIMAGE_PIXELLATE, GPUIMAGE_SATURATION} GPUImageShowcaseFilterType;
+typedef enum { GPUIMAGE_SEPIA, GPUIMAGE_PIXELLATE, GPUIMAGE_SATURATION, GPUIMAGE_COLORINVERT, GPUIMAGE_NUMFILTERS} GPUImageShowcaseFilterType;
  
 
 @interface ShowcaseFilterViewController : UIViewController

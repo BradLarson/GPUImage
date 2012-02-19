@@ -369,6 +369,7 @@
 				BC982B1C14F046AC0001FF6F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

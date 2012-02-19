@@ -58,6 +58,7 @@
         case GPUIMAGE_SEPIA:
         {
             self.title = @"Sepia Tone";
+            self.filterSettingsSlider.hidden = NO;
 
             [self.filterSettingsSlider setValue:1.0];
             [self.filterSettingsSlider setMinimumValue:0.0];
@@ -68,12 +69,31 @@
         case GPUIMAGE_PIXELLATE:
         {
             self.title = @"Pixellate";
+            self.filterSettingsSlider.hidden = NO;
 
             [self.filterSettingsSlider setValue:0.05];
             [self.filterSettingsSlider setMinimumValue:0.0];
             [self.filterSettingsSlider setMaximumValue:0.3];
             
             filter = [[GPUImagePixellateFilter alloc] init]; break;
+        }; break;
+        case GPUIMAGE_SATURATION:
+        {
+            self.title = @"Saturation";
+            self.filterSettingsSlider.hidden = NO;
+            
+            [self.filterSettingsSlider setValue:1.0];
+            [self.filterSettingsSlider setMinimumValue:0.0];
+            [self.filterSettingsSlider setMaximumValue:2.0];
+            
+            filter = [[GPUImageSaturationFilter alloc] init]; break;
+        }; break;
+        case GPUIMAGE_COLORINVERT:
+        {
+            self.title = @"Color Invert";
+            self.filterSettingsSlider.hidden = YES;
+                        
+            filter = [[GPUImageColorInvertFilter alloc] init]; break;
         }; break;
 
         default: filter = [[GPUImageSepiaFilter alloc] init]; break;
@@ -96,6 +116,7 @@
     {
         case GPUIMAGE_SEPIA: [(GPUImageSepiaFilter *)filter setIntensity:[(UISlider *)sender value]]; break;
         case GPUIMAGE_PIXELLATE: [(GPUImagePixellateFilter *)filter setFractionalWidthOfAPixel:[(UISlider *)sender value]]; break;
+        case GPUIMAGE_SATURATION: [(GPUImageSaturationFilter *)filter setSaturation:[(UISlider *)sender value]]; break;
         default: break;
     }
 }

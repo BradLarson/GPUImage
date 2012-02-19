@@ -44,7 +44,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return 3;
+    return GPUIMAGE_NUMFILTERS;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -64,6 +64,7 @@
 		case GPUIMAGE_PIXELLATE: cell.textLabel.text = @"Pixellate"; break;
 		case GPUIMAGE_SEPIA: cell.textLabel.text = @"Sepia tone"; break;
 		case GPUIMAGE_SATURATION: cell.textLabel.text = @"Saturation"; break;
+        case GPUIMAGE_COLORINVERT: cell.textLabel.text = @"Color invert"; break;
 	}
     
     return cell;
