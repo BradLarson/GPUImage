@@ -17,3 +17,4 @@
 #import "GPUImageContrastFilter.h"
 #import "GPUImageBrightnessFilter.h"
 #import "GPUImageGammaFilter.h"
+#import "GPUImageSobelEdgeDetectionFilter.h"

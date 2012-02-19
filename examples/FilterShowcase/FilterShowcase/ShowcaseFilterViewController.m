@@ -128,6 +128,17 @@
             
             filter = [[GPUImageGammaFilter alloc] init]; break;
         }; break;
+        case GPUIMAGE_SOBELEDGEDETECTION:
+        {
+            self.title = @"Edge Detection";
+            self.filterSettingsSlider.hidden = NO;
+            
+            [self.filterSettingsSlider setMinimumValue:0.0];
+            [self.filterSettingsSlider setMaximumValue:1.0];
+            [self.filterSettingsSlider setValue:1.0];
+            
+            filter = [[GPUImageSobelEdgeDetectionFilter alloc] init]; break;
+        }; break;
 
         default: filter = [[GPUImageSepiaFilter alloc] init]; break;
     }
@@ -153,6 +164,7 @@
         case GPUIMAGE_CONTRAST: [(GPUImageContrastFilter *)filter setContrast:[(UISlider *)sender value]]; break;
         case GPUIMAGE_BRIGHTNESS: [(GPUImageBrightnessFilter *)filter setBrightness:[(UISlider *)sender value]]; break;
         case GPUIMAGE_GAMMA: [(GPUImageGammaFilter *)filter setGamma:[(UISlider *)sender value]]; break;
+        case GPUIMAGE_SOBELEDGEDETECTION: [(GPUImageSobelEdgeDetectionFilter *)filter setIntensity:[(UISlider *)sender value]]; break;
         default: break;
     }
 }
