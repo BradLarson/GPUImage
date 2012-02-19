@@ -124,10 +124,10 @@
 			children = (
 				BC245DC814DDBED7009FE7EB /* GPUImageFilter.h */,
 				BC245DC914DDBED7009FE7EB /* GPUImageFilter.m */,
-				BCB5E7C014E4B6D400701302 /* GPUImageSepiaFilter.h */,
-				BCB5E7C114E4B6D400701302 /* GPUImageSepiaFilter.m */,
 				BCB5E85314E63BBB00701302 /* GPUImageRotationFilter.h */,
 				BCB5E85414E63BBB00701302 /* GPUImageRotationFilter.m */,
+				BCB5E7C014E4B6D400701302 /* GPUImageSepiaFilter.h */,
+				BCB5E7C114E4B6D400701302 /* GPUImageSepiaFilter.m */,
 				BCB5DE0B14E87F32000AF3C2 /* GPUImagePixellateFilter.h */,
 				BCB5DE0C14E87F32000AF3C2 /* GPUImagePixellateFilter.m */,
 			);

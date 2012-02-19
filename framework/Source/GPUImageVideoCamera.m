@@ -49,6 +49,8 @@
 	// Create the capture session
 	captureSession = [[AVCaptureSession alloc] init];
 	
+    [captureSession beginConfiguration];
+
 	// Add the video input	
 	NSError *error = nil;
 	videoInput = [[AVCaptureDeviceInput alloc] initWithDevice:backFacingCamera error:&error];
@@ -77,7 +79,8 @@
 	}
     
     [captureSession setSessionPreset:sessionPreset];
-        
+    [captureSession commitConfiguration];
+
 //    inputTextureSize
     	
 	return self;
@@ -86,7 +89,11 @@
 - (void)dealloc 
 {
     [self stopCameraCapture];
+//    [videoOutput setSampleBufferDelegate:nil queue:dispatch_get_main_queue()];    
     
+    [captureSession removeInput:videoInput];
+    [captureSession removeOutput:videoOutput];
+
 	[captureSession release];
 	[videoOutput release];
 	[videoInput release];

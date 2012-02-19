@@ -42,20 +42,21 @@ void main()\
     }
     
     fractionalWidthOfAPixelUniform = [filterProgram uniformIndex:@"fractionalWidthOfPixel"];
+
     self.fractionalWidthOfAPixel = 0.05;
     
     return self;
 }
 
-@synthesize fractionalWidthOfAPixel;
+@synthesize fractionalWidthOfAPixel = _fractionalWidthOfAPixel;
 
 - (void)setFractionalWidthOfAPixel:(CGFloat)newValue;
 {
-    fractionalWidthOfAPixel = newValue;
+    _fractionalWidthOfAPixel = newValue;
     
     [GPUImageOpenGLESContext useImageProcessingContext];
     [filterProgram use];
-    glUniform1f(fractionalWidthOfAPixel, fractionalWidthOfAPixel);
+    glUniform1f(fractionalWidthOfAPixelUniform, _fractionalWidthOfAPixel);
 }
 
 @end
