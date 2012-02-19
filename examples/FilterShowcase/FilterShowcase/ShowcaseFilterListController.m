@@ -63,8 +63,11 @@
 	{
 		case GPUIMAGE_PIXELLATE: cell.textLabel.text = @"Pixellate"; break;
 		case GPUIMAGE_SEPIA: cell.textLabel.text = @"Sepia tone"; break;
-		case GPUIMAGE_SATURATION: cell.textLabel.text = @"Saturation"; break;
         case GPUIMAGE_COLORINVERT: cell.textLabel.text = @"Color invert"; break;
+		case GPUIMAGE_SATURATION: cell.textLabel.text = @"Saturation"; break;
+		case GPUIMAGE_CONTRAST: cell.textLabel.text = @"Contrast"; break;
+		case GPUIMAGE_BRIGHTNESS: cell.textLabel.text = @"Brightness"; break;
+		case GPUIMAGE_GAMMA: cell.textLabel.text = @"Gamma"; break;
 	}
     
     return cell;
