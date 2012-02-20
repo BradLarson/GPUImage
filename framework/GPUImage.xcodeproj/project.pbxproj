@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4669C7F914F282CA003ADA13 /* GPUImageFile.h in Sources */ = {isa = PBXBuildFile; fileRef = 4669C7F714F282CA003ADA13 /* GPUImageFile.h */; };
+		4669C7FA14F282CA003ADA13 /* GPUImageFile.m in Sources */ = {isa = PBXBuildFile; fileRef = 4669C7F814F282CA003ADA13 /* GPUImageFile.m */; };
+		46DE673514F2941400F19EB3 /* GPUImageOverlayBlendFilter.h in Sources */ = {isa = PBXBuildFile; fileRef = 46DE673314F2941400F19EB3 /* GPUImageOverlayBlendFilter.h */; };
+		46DE673614F2941400F19EB3 /* GPUImageOverlayBlendFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 46DE673414F2941400F19EB3 /* GPUImageOverlayBlendFilter.m */; };
 		B81521A214F1BA6A00F105F8 /* GPUImageColorMatrixFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = B81521A014F1BA6A00F105F8 /* GPUImageColorMatrixFilter.h */; };
 		B81521A314F1BA6A00F105F8 /* GPUImageColorMatrixFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = B81521A114F1BA6A00F105F8 /* GPUImageColorMatrixFilter.m */; };
 		BC245DC114DDBCF5009FE7EB /* GPUImage.h in Headers */ = {isa = PBXBuildFile; fileRef = BC245DBF14DDBCF5009FE7EB /* GPUImage.h */; };
@@ -71,6 +75,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		4669C7F714F282CA003ADA13 /* GPUImageFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.objj.h; name = GPUImageFile.h; path = Source/GPUImageFile.h; sourceTree = SOURCE_ROOT; };
+		4669C7F814F282CA003ADA13 /* GPUImageFile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GPUImageFile.m; path = Source/GPUImageFile.m; sourceTree = SOURCE_ROOT; };
+		46DE673314F2941400F19EB3 /* GPUImageOverlayBlendFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.objj.h; name = GPUImageOverlayBlendFilter.h; path = Source/GPUImageOverlayBlendFilter.h; sourceTree = SOURCE_ROOT; };
+		46DE673414F2941400F19EB3 /* GPUImageOverlayBlendFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GPUImageOverlayBlendFilter.m; path = Source/GPUImageOverlayBlendFilter.m; sourceTree = SOURCE_ROOT; };
 		B81521A014F1BA6A00F105F8 /* GPUImageColorMatrixFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GPUImageColorMatrixFilter.h; path = Source/GPUImageColorMatrixFilter.h; sourceTree = SOURCE_ROOT; };
 		B81521A114F1BA6A00F105F8 /* GPUImageColorMatrixFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GPUImageColorMatrixFilter.m; path = Source/GPUImageColorMatrixFilter.m; sourceTree = SOURCE_ROOT; };
 		BC245DBF14DDBCF5009FE7EB /* GPUImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GPUImage.h; path = Source/GPUImage.h; sourceTree = SOURCE_ROOT; };
@@ -184,6 +192,8 @@
 				BC982BEA14F1CE600001FF6F /* GPUImageMultiplyBlendFilter.m */,
 				BC982B9714F0B34E0001FF6F /* GPUImageSobelEdgeDetectionFilter.h */,
 				BC982B9814F0B34E0001FF6F /* GPUImageSobelEdgeDetectionFilter.m */,
+				46DE673314F2941400F19EB3 /* GPUImageOverlayBlendFilter.h */,
+				46DE673414F2941400F19EB3 /* GPUImageOverlayBlendFilter.m */,
 			);
 			name = Filters;
 			sourceTree = "<group>";
@@ -195,6 +205,8 @@
 				BCB5E76414E208D600701302 /* GPUImageVideoCamera.m */,
 				BCB5E7D814E6003400701302 /* GPUImagePicture.h */,
 				BCB5E7D914E6003400701302 /* GPUImagePicture.m */,
+				4669C7F714F282CA003ADA13 /* GPUImageFile.h */,
+				4669C7F814F282CA003ADA13 /* GPUImageFile.m */,
 			);
 			name = Sources;
 			sourceTree = "<group>";
@@ -434,6 +446,10 @@
 				B81521A314F1BA6A00F105F8 /* GPUImageColorMatrixFilter.m in Sources */,
 				BC982BEC14F1CE600001FF6F /* GPUImageDissolveBlendFilter.m in Sources */,
 				BC982BEE14F1CE600001FF6F /* GPUImageMultiplyBlendFilter.m in Sources */,
+				4669C7F914F282CA003ADA13 /* GPUImageFile.h in Sources */,
+				4669C7FA14F282CA003ADA13 /* GPUImageFile.m in Sources */,
+				46DE673514F2941400F19EB3 /* GPUImageOverlayBlendFilter.h in Sources */,
+				46DE673614F2941400F19EB3 /* GPUImageOverlayBlendFilter.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
