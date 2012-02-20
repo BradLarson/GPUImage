@@ -71,6 +71,7 @@
 		case GPUIMAGE_SOBELEDGEDETECTION: cell.textLabel.text = @"Sobel edge detection"; break;
 		case GPUIMAGE_DISSOLVE: cell.textLabel.text = @"Dissolve blend"; break;
 		case GPUIMAGE_MULTIPLY: cell.textLabel.text = @"Multiply blend"; break;
+    case GPUIMAGE_OVERLAY: cell.textLabel.text = @"Overlay blend"; break;
 	}
     
     return cell;
