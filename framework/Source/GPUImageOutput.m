@@ -22,10 +22,8 @@
 - (void)dealloc 
 {
     [self removeAllTargets];
-    [targets release];
     [self deleteOutputTexture];
     
-	[super dealloc];
 }
 
 #pragma mark -
