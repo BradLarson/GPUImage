@@ -94,11 +94,7 @@
     [captureSession removeInput:videoInput];
     [captureSession removeOutput:videoOutput];
 
-	[captureSession release];
-	[videoOutput release];
-	[videoInput release];
 
-	[super dealloc];
 }
 
 #pragma mark -
