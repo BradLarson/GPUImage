@@ -157,6 +157,24 @@
             
             filter = [[GPUImageDissolveBlendFilter alloc] init]; break;
         }; break;
+        case GPUIMAGE_CUSTOM:
+        {
+            self.title = @"Custom";
+            self.filterSettingsSlider.hidden = YES;
+
+            filter = [[GPUImageFilter alloc] initWithFragmentShaderFromFile:@"CustomFilter"]; break;
+        }; break;
+        case GPUIMAGE_KUWAHARA:
+        {
+            self.title = @"Kuwahara";
+            self.filterSettingsSlider.hidden = NO;
+            
+            [self.filterSettingsSlider setMinimumValue:3.0];
+            [self.filterSettingsSlider setMaximumValue:8.0];
+            [self.filterSettingsSlider setValue:4.0];
+            
+            filter = [[GPUImageKuwaharaFilter alloc] init]; break;
+        }; break;
 
         default: filter = [[GPUImageSepiaFilter alloc] init]; break;
     }
@@ -190,6 +208,7 @@
         case GPUIMAGE_GAMMA: [(GPUImageGammaFilter *)filter setGamma:[(UISlider *)sender value]]; break;
         case GPUIMAGE_SOBELEDGEDETECTION: [(GPUImageSobelEdgeDetectionFilter *)filter setIntensity:[(UISlider *)sender value]]; break;
         case GPUIMAGE_DISSOLVE: [(GPUImageDissolveBlendFilter *)filter setMix:[(UISlider *)sender value]]; break;
+        case GPUIMAGE_KUWAHARA: [(GPUImageKuwaharaFilter *)filter setRadius:round([(UISlider *)sender value])]; break;
         default: break;
     }
 }

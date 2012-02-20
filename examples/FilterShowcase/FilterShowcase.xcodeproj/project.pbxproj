@@ -23,6 +23,7 @@
 		BC982B3F14F05DC20001FF6F /* ShowcaseFilterListController.m in Sources */ = {isa = PBXBuildFile; fileRef = BC982B3E14F05DC10001FF6F /* ShowcaseFilterListController.m */; };
 		BC982B4214F06BF70001FF6F /* libGPUImage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BC982B3014F049950001FF6F /* libGPUImage.a */; };
 		BC982BD114F1C0F00001FF6F /* WID-small.jpg in Resources */ = {isa = PBXBuildFile; fileRef = BC982BD014F1C0F00001FF6F /* WID-small.jpg */; };
+		BC982C4114F1F6C80001FF6F /* CustomFilter.fsh in Resources */ = {isa = PBXBuildFile; fileRef = BC982C4014F1F6C80001FF6F /* CustomFilter.fsh */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -72,6 +73,7 @@
 		BC982B3D14F05DC10001FF6F /* ShowcaseFilterListController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShowcaseFilterListController.h; sourceTree = "<group>"; };
 		BC982B3E14F05DC10001FF6F /* ShowcaseFilterListController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ShowcaseFilterListController.m; sourceTree = "<group>"; };
 		BC982BD014F1C0F00001FF6F /* WID-small.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = "WID-small.jpg"; path = "../../SimpleImageFilter/SimpleImageFilter/WID-small.jpg"; sourceTree = "<group>"; };
+		BC982C4014F1F6C80001FF6F /* CustomFilter.fsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = CustomFilter.fsh; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -137,6 +139,7 @@
 				BC982B3514F04B3A0001FF6F /* ShowcaseFilterViewController.xib */,
 				BC982B3314F04B3A0001FF6F /* ShowcaseFilterViewController.h */,
 				BC982B3414F04B3A0001FF6F /* ShowcaseFilterViewController.m */,
+				BC982C4014F1F6C80001FF6F /* CustomFilter.fsh */,
 				BC982B0D14F046AC0001FF6F /* Supporting Files */,
 			);
 			path = FilterShowcase;
@@ -239,6 +242,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BC982C4114F1F6C80001FF6F /* CustomFilter.fsh in Resources */,
 				BC982B1114F046AC0001FF6F /* InfoPlist.strings in Resources */,
 				BC982B3714F04B3A0001FF6F /* ShowcaseFilterViewController.xib in Resources */,
 				BC982BD114F1C0F00001FF6F /* WID-small.jpg in Resources */,

@@ -94,7 +94,6 @@
 		BC01CA7614E7620600967264 = {
 			isa = PBXGroup;
 			children = (
-				BCB5DD6514E76CD2000AF3C2 /* AVFoundation.framework */,
 				BC01CA8B14E7620600967264 /* MultiViewFilterExample */,
 				BC01CA8414E7620600967264 /* Frameworks */,
 				BC01CA8214E7620600967264 /* Products */,
@@ -120,6 +119,7 @@
 				BC01CA8514E7620600967264 /* UIKit.framework */,
 				BC01CA8714E7620600967264 /* Foundation.framework */,
 				BC01CA8914E7620600967264 /* CoreGraphics.framework */,
+				BCB5DD6514E76CD2000AF3C2 /* AVFoundation.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -296,6 +296,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = "../../framework/Source/**";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
+				OTHER_LDFLAGS = "-fobjc-arc";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -317,6 +318,7 @@
 				HEADER_SEARCH_PATHS = "../../framework/Source/**";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				OTHER_LDFLAGS = "-fobjc-arc";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
@@ -329,6 +331,10 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "MultiViewFilterExample/MultiViewFilterExample-Prefix.pch";
 				INFOPLIST_FILE = "MultiViewFilterExample/MultiViewFilterExample-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SYSTEM_APPS_DIR)/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/lib/arc\"",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -340,6 +346,10 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "MultiViewFilterExample/MultiViewFilterExample-Prefix.pch";
 				INFOPLIST_FILE = "MultiViewFilterExample/MultiViewFilterExample-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SYSTEM_APPS_DIR)/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/lib/arc\"",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};

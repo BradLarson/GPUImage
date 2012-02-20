@@ -20,3 +20,4 @@
 #import "GPUImageSobelEdgeDetectionFilter.h"
 #import "GPUImageMultiplyBlendFilter.h"
 #import "GPUImageDissolveBlendFilter.h"
+#import "GPUImageKuwaharaFilter.h"

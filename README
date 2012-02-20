@@ -29,7 +29,7 @@ Technical requirements
 - iOS 4.0 as a deployment target
 - iOS 5.0 SDK to build
 - Devices must have a camera to use camera-related functionality (obviously)
-- Compatible with applications using either automatic or manual reference counting
+- The framework uses automatic reference counting (ARC), but should support projects using both ARC and manual reference counting if added as a subproject as explained below. For manual reference counting applications targeting iOS 4.x, you'll need add -fobjc-arc to the Other Linker Flags for your application project.
 
 General architecture
 ====================
@@ -89,6 +89,10 @@ GPUImageSobelEdgeDetectionFilter: Sobel edge detection, with edges highlighted i
 - imageWidthFactor: 
 - imageHeightFactor: These parameters affect the visibility of the detected edges
 
+GPUImageKuwaharaFilter: Kuwahara image abstraction, drawn from the work of Kyprianidis, et. al. in their publication "Anisotropic Kuwahara Filtering on the GPU" within the GPU Pro collection. This produces an oil-painting-like image, but it is extremely computationally expensive, so it can take seconds to render a frame on an iPad 2. This might be best used for still images.
+- radius: In integer specifying the number of pixels out from the center pixel to test when applying the filter, with a default of 4. A higher value creates a more abstracted image, but at the cost of much greater processing time.
+
+
 You can also easily write your own custom filters using the C-like OpenGL Shading Language, as described below.
 
 Adding the framework to your iOS project
@@ -111,6 +115,8 @@ To use the GPUImage classes within your application, simply include the core fra
 #import "GPUImage.h"
 
 As a note: if you run into the error "Unknown class GPUImageView in Interface Builder" or the like when trying to build an interface with Interface Builder, you may need to add -ObjC to your Other Linker Flags in your project's build settings.
+
+Additionally, this is an ARC-enabled framework, so if you want to use this within a manual reference counted application targeting iOS 4.x, you'll need to add -fobjc-arc to your Other Linker Flags as well.
 
 Performing common tasks
 =======================
