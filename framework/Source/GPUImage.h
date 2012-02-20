@@ -5,6 +5,7 @@
 #import "GPUImageOutput.h"
 #import "GPUImageView.h"
 #import "GPUImageVideoCamera.h"
+#import "GPUImageFile.h"
 #import "GPUImagePicture.h"
 
 // Filters
@@ -20,3 +21,4 @@
 #import "GPUImageSobelEdgeDetectionFilter.h"
 #import "GPUImageMultiplyBlendFilter.h"
 #import "GPUImageDissolveBlendFilter.h"
+#import "GPUImageOverlayBlendFilter.h"
