@@ -34,6 +34,9 @@ void main()\
 
 @implementation GPUImagePixellateFilter
 
+#pragma mark -
+#pragma mark Initialization and teardown
+
 - (id)init;
 {
     if (!(self = [super initWithFragmentShaderFromString:kGPUImagePixellationFragmentShaderString]))
@@ -47,6 +50,9 @@ void main()\
     
     return self;
 }
+
+#pragma mark -
+#pragma mark Accessors
 
 @synthesize fractionalWidthOfAPixel = _fractionalWidthOfAPixel;
 

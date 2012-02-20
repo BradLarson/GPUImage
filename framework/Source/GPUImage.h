@@ -18,3 +18,5 @@
 #import "GPUImageBrightnessFilter.h"
 #import "GPUImageGammaFilter.h"
 #import "GPUImageSobelEdgeDetectionFilter.h"
+#import "GPUImageMultiplyBlendFilter.h"
+#import "GPUImageDissolveBlendFilter.h"

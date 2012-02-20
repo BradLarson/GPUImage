@@ -5,7 +5,7 @@ extern NSString *const kGPUImageVertexShaderString;
 
 @interface GPUImageFilter : GPUImageOutput <GPUImageInput>
 {
-    GLuint filterSourceTexture, filterOutputTexture;
+    GLuint filterSourceTexture, filterSourceTexture2, filterOutputTexture;
     
     GLProgram *filterProgram;
 

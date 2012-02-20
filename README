@@ -44,13 +44,52 @@ For example, an application that takes in live video from the camera, converts t
 
 GPUImageVideoCamera -> GPUImageSepiaFilter -> GPUImageView
 
-A small number of filters are built in:
+Built-in filters
+================		
 
-- GPUImageSepiaFilter: Simple sepia tone filter
-- GPUImageRotationFilter: This lets you rotate an image left or right by 90 degrees, or flip it horizontally or vertically
-- GPUImagePixellateFilter: Applies a pixellation effect on an image or video, with the fractionalWidthOfAPixel property controlling how large the pixels are, as a fraction of the width and height of the image
+Color adjustments
+-----------------
 
-but you can easily write your own custom filters using the C-like OpenGL Shading Language, as described below.
+GPUImageBrightnessFilter: Adjusts the brightness of the image
+- brightness: The adjusted brightness (-1.0 - 1.0, with 0.0 as the default)
+
+GPUImageContrastFilter: Adjusts the contrast of the image
+- contrast: The adjusted contrast (0.0 - 4.0, with 1.0 as the default)
+
+GPUImageSaturationFilter: Adjusts the saturation of an image
+- saturation: The degree of saturation or desaturation to apply to the image (0.0 - 2.0, with 1.0 as the default)
+
+GPUImageGammaFilter: Adjusts the gamma of an image
+- gamma: The gamma adjustment to apply (0.0 - 3.0, with 1.0 as the default)
+
+GPUImageColorInvertFilter: Inverts the colors of an image
+
+GPUImageSepiaFilter: Simple sepia tone filter
+- intensity: The degree to which the sepia tone replaces the normal image color (0.0 - 1.0, with 1.0 as the default)
+
+
+Blending modes
+--------------
+
+GPUImageDissolveBlendFilter: Applies a dissolve blend of two images
+- mix: The degree with which the second image overrides the first (0.0 - 1.0, with 0.5 as the default)
+
+GPUImageMultiplyBlendFilter: Applies a multiply blend of two images
+
+Visual effects
+--------------
+
+GPUImageRotationFilter: This lets you rotate an image left or right by 90 degrees, or flip it horizontally or vertically
+
+GPUImagePixellateFilter: Applies a pixellation effect on an image or video
+- fractionalWidthOfAPixel: How large the pixels are, as a fraction of the width and height of the image (0.0 - 1.0, default 0.05)
+
+GPUImageSobelEdgeDetectionFilter: Sobel edge detection, with edges highlighted in white
+- intensity: The degree to which the original image colors are replaced by the detected edges (0.0 - 1.0, with 1.0 as the default)
+- imageWidthFactor: 
+- imageHeightFactor: These parameters affect the visibility of the detected edges
+
+You can also easily write your own custom filters using the C-like OpenGL Shading Language, as described below.
 
 Adding the framework to your iOS project
 ========================================
@@ -95,6 +134,8 @@ GPUImageView *filteredVideoView = [[GPUImageView alloc] initWithFrame:CGRectMake
 
 
 This sets up a video source coming from the iOS device's back-facing camera, using a preset that tries to capture at 640x480. A custom filter, using code from the file CustomShader.fsh, is then set as the target for the video frames from the camera. These filtered video frames are finally displayed onscreen with the help of a UIView subclass that can present the filtered OpenGL ES texture that results from this pipeline.
+
+For blending filters and others that take in more than one image, you can create multiple outputs and add a single filter as a target for both of these outputs. The order with which the outputs are added as targets will affect the order in which the input images are blended or otherwise processed.
 
 Processing a still image
 ------------------------
@@ -167,12 +208,6 @@ Sample applications
 
 Several sample applications are bundled with the framework source. Most are compatible with both iPhone and iPad-class devices. They attempt to show off various aspects of the framework and should be used as the best examples of the API while the framework is under development. These include:
 
-ColorObjectTracking
--------------------
-
-A version of my ColorTracking example from http://www.sunsetlakesoftware.com/2010/10/22/gpu-accelerated-video-processing-mac-and-ios ported across to use GPUImage, this application uses color in a scene to track objects from a live camera feed. The four views you can switch between include the raw camera feed, the camera feed with pixels matching the color threshold in white, the processed video where positions are encoded as colors within the pixels passing the threshold test, and finally the live video feed with a dot that tracks the selected color. Tapping the screen changes the color to track to match the color of the pixels under your finger. Tapping and dragging on the screen makes the color threshold more or less forgiving. This is most obvious on the second, color thresholding view.
-
-- This isn't fully functional yet, with only the filters being applied at this point
 
 SimpleImageFilter
 -----------------
@@ -189,6 +224,22 @@ MultiViewFilterExample
 
 From a single camera feed, four views are populated with realtime filters applied to camera. One is just the straight camera video, one is a preprogrammed sepia tone, and two are custom filters based on shader programs.
 
+FilterShowcase
+--------------
+
+This demonstrates every filter supplied with GPUImage.
+
+BenchmarkSuite
+--------------
+
+This is used to test the performance of the overall framework by testing it against CPU-bound routines and Core Image. Benchmarks involving still images and video are run against all three, with results displayed in-application.
+
+ColorObjectTracking
+-------------------
+
+A version of my ColorTracking example from http://www.sunsetlakesoftware.com/2010/10/22/gpu-accelerated-video-processing-mac-and-ios ported across to use GPUImage, this application uses color in a scene to track objects from a live camera feed. The four views you can switch between include the raw camera feed, the camera feed with pixels matching the color threshold in white, the processed video where positions are encoded as colors within the pixels passing the threshold test, and finally the live video feed with a dot that tracks the selected color. Tapping the screen changes the color to track to match the color of the pixels under your finger. Tapping and dragging on the screen makes the color threshold more or less forgiving. This is most obvious on the second, color thresholding view.
+
+- This isn't fully functional yet, with only the filters being applied at this point
 
 Things that need work
 =====================

@@ -20,6 +20,20 @@
     [EAGLContext setCurrentContext:[[GPUImageOpenGLESContext sharedImageProcessingOpenGLESContext] context]];
 }
 
++ (GLint)maximumTextureSizeForThisDevice;
+{
+    GLint maxTextureSize; 
+    glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTextureSize);
+    return maxTextureSize;
+}
+
++ (GLint)maximumTextureUnitsForThisDevice;
+{
+    GLint maxTextureUnits; 
+    glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &maxTextureUnits);
+    return maxTextureUnits;
+}
+
 - (void)presentBufferForDisplay;
 {
     [context presentRenderbuffer:GL_RENDERBUFFER];

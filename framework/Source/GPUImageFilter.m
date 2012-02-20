@@ -22,7 +22,7 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size);
 @interface GPUImageFilter ()
 {
     GLint filterPositionAttribute, filterTextureCoordinateAttribute;
-    GLint filterInputTextureUniform;
+    GLint filterInputTextureUniform, filterInputTextureUniform2;
 
 	GLuint filterRenderbuffer, filterFramebuffer;
 }
@@ -68,6 +68,7 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size);
     filterPositionAttribute = [filterProgram attributeIndex:@"position"];
     filterTextureCoordinateAttribute = [filterProgram attributeIndex:@"inputTextureCoordinate"];
     filterInputTextureUniform = [filterProgram uniformIndex:@"inputImageTexture"]; // This does assume a name of "inputImageTexture" for the fragment shader
+    filterInputTextureUniform2 = [filterProgram uniformIndex:@"inputImageTexture2"]; // This does assume a name of "inputImageTexture2" for second input texture in the fragment shader
 
     [filterProgram use];    
 	glEnableVertexAttribArray(filterPositionAttribute);
@@ -164,7 +165,7 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size)
 
 - (void)createFilterFBO;
 {
-    glActiveTexture(GL_TEXTURE0);
+    glActiveTexture(GL_TEXTURE1);
     glGenFramebuffers(1, &filterFramebuffer);
     glBindFramebuffer(GL_FRAMEBUFFER, filterFramebuffer);
     
@@ -227,9 +228,16 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size)
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	glActiveTexture(GL_TEXTURE3);
+	glActiveTexture(GL_TEXTURE2);
 	glBindTexture(GL_TEXTURE_2D, filterSourceTexture);
-	glUniform1i(filterInputTextureUniform, 3);	
+	glUniform1i(filterInputTextureUniform, 2);	
+
+    if (filterSourceTexture2 != 0)
+    {
+        glActiveTexture(GL_TEXTURE3);
+        glBindTexture(GL_TEXTURE_2D, filterSourceTexture2);
+        glUniform1i(filterInputTextureUniform2, 3);	
+    }
     
     glVertexAttribPointer(filterPositionAttribute, 2, GL_FLOAT, 0, 0, vertices);
 	glVertexAttribPointer(filterTextureCoordinateAttribute, 2, GL_FLOAT, 0, 0, textureCoordinates);
@@ -328,7 +336,14 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size)
 
 - (void)setInputTexture:(GLuint)newInputTexture;
 {
-    filterSourceTexture = newInputTexture;
+    if (filterSourceTexture == 0)
+    {
+        filterSourceTexture = newInputTexture;
+    }
+    else
+    {
+        filterSourceTexture2 = newInputTexture;
+    }
 }
 
 - (void)setInputSize:(CGSize)newSize;

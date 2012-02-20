@@ -68,7 +68,9 @@
         case GPUIMAGE_COLORINVERT: cell.textLabel.text = @"Color invert"; break;
 		case GPUIMAGE_SEPIA: cell.textLabel.text = @"Sepia tone"; break;
 		case GPUIMAGE_PIXELLATE: cell.textLabel.text = @"Pixellate"; break;
-		case GPUIMAGE_SOBELEDGEDETECTION: cell.textLabel.text = @"Sobel Edge Detection"; break;
+		case GPUIMAGE_SOBELEDGEDETECTION: cell.textLabel.text = @"Sobel edge detection"; break;
+		case GPUIMAGE_DISSOLVE: cell.textLabel.text = @"Dissolve blend"; break;
+		case GPUIMAGE_MULTIPLY: cell.textLabel.text = @"Multiply blend"; break;
 	}
     
     return cell;

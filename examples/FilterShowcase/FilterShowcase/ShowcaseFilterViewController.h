@@ -1,13 +1,14 @@
 #import <UIKit/UIKit.h>
 #import "GPUImage.h"
 
-typedef enum { GPUIMAGE_SATURATION, GPUIMAGE_CONTRAST, GPUIMAGE_BRIGHTNESS, GPUIMAGE_GAMMA, GPUIMAGE_SEPIA, GPUIMAGE_COLORINVERT, GPUIMAGE_PIXELLATE, GPUIMAGE_SOBELEDGEDETECTION, GPUIMAGE_NUMFILTERS} GPUImageShowcaseFilterType;
+typedef enum { GPUIMAGE_SATURATION, GPUIMAGE_CONTRAST, GPUIMAGE_BRIGHTNESS, GPUIMAGE_GAMMA, GPUIMAGE_SEPIA, GPUIMAGE_COLORINVERT, GPUIMAGE_PIXELLATE, GPUIMAGE_SOBELEDGEDETECTION, GPUIMAGE_DISSOLVE, GPUIMAGE_MULTIPLY, GPUIMAGE_NUMFILTERS} GPUImageShowcaseFilterType;
  
 
 @interface ShowcaseFilterViewController : UIViewController
 {
     GPUImageVideoCamera *videoCamera;
     GPUImageFilter *filter;
+    GPUImagePicture *sourcePicture;
     GPUImageShowcaseFilterType filterType;
     
     __unsafe_unretained UISlider *_filterSettingsSlider;

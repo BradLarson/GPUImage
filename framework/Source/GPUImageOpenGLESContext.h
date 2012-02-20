@@ -13,6 +13,8 @@
 
 + (GPUImageOpenGLESContext *)sharedImageProcessingOpenGLESContext;
 + (void)useImageProcessingContext;
++ (GLint)maximumTextureSizeForThisDevice;
++ (GLint)maximumTextureUnitsForThisDevice;
 
 - (void)presentBufferForDisplay;
 

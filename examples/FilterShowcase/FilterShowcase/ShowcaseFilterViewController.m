@@ -139,12 +139,36 @@
             
             filter = [[GPUImageSobelEdgeDetectionFilter alloc] init]; break;
         }; break;
+        case GPUIMAGE_MULTIPLY:
+        {
+            self.title = @"Multiply Blend";
+            self.filterSettingsSlider.hidden = YES;
+            
+            filter = [[GPUImageMultiplyBlendFilter alloc] init]; break;
+        }; break;
+        case GPUIMAGE_DISSOLVE:
+        {
+            self.title = @"Dissolve Blend";
+            self.filterSettingsSlider.hidden = NO;
+            
+            [self.filterSettingsSlider setMinimumValue:0.0];
+            [self.filterSettingsSlider setMaximumValue:1.0];
+            [self.filterSettingsSlider setValue:0.5];
+            
+            filter = [[GPUImageDissolveBlendFilter alloc] init]; break;
+        }; break;
 
         default: filter = [[GPUImageSepiaFilter alloc] init]; break;
     }
     
     [videoCamera addTarget:rotationFilter];
     [rotationFilter addTarget:filter];
+    
+    // The picture is only used for two-image blend filters
+    UIImage *inputImage = [UIImage imageNamed:@"WID-small.jpg"];
+    sourcePicture = [[GPUImagePicture alloc] initWithImage:inputImage];
+    [sourcePicture addTarget:filter];
+
     GPUImageView *filterView = (GPUImageView *)self.view;
     [filter addTarget:filterView];
     
@@ -165,6 +189,7 @@
         case GPUIMAGE_BRIGHTNESS: [(GPUImageBrightnessFilter *)filter setBrightness:[(UISlider *)sender value]]; break;
         case GPUIMAGE_GAMMA: [(GPUImageGammaFilter *)filter setGamma:[(UISlider *)sender value]]; break;
         case GPUIMAGE_SOBELEDGEDETECTION: [(GPUImageSobelEdgeDetectionFilter *)filter setIntensity:[(UISlider *)sender value]]; break;
+        case GPUIMAGE_DISSOLVE: [(GPUImageDissolveBlendFilter *)filter setMix:[(UISlider *)sender value]]; break;
         default: break;
     }
 }
