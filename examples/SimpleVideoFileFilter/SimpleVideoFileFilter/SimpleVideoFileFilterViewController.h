@@ -3,7 +3,7 @@
 
 @interface SimpleVideoFileFilterViewController : UIViewController
 {
-    GPUImageFile *imageFile;
+    GPUImageMovie *imageFile;
     GPUImagePixellateFilter *pixellateFilter;
 }
 
