@@ -1,8 +1,12 @@
 # GPUImage framework #
 
 Brad Larson
+
 http://www.sunsetlakesoftware.com
-@bradlarson
+
+[@bradlarson](http://twitter.com/bradlarson)
+
+contact@sunsetlakesoftware.com
 
 ## Overview ##
 
@@ -32,7 +36,7 @@ BSD-style, with the full license available with the framework in License.txt.
 
 GPUImage uses OpenGL ES 2.0 shaders to perform image and video manipulation much faster than could be done in CPU-bound routines. However, it hides the complexity of interacting with the OpenGL ES API in a simplified Objective-C interface. This interface lets you define input sources for images and video, attach filters in a chain, and send the resulting processed image or video to the screen, to a UIImage, or to a movie on disk.
 
-Images or frames of video are uploaded from source objects, which are subclasses of GPUImageOutput. These include GPUImageVideoCamera (for live video from an iOS camera) and GPUImagePicture (for still images). Source objects upload still image frames to OpenGL ES as textures, then hand those textures off to the next objects in the processing chain.
+Images or frames of video are uploaded from source objects, which are subclasses of GPUImageOutput. These include GPUImageVideoCamera (for live video from an iOS camera), GPUImagePicture (for still images), and GPUImageMovie (for movies). Source objects upload still image frames to OpenGL ES as textures, then hand those textures off to the next objects in the processing chain.
 
 Filters and other subsequent elements in the chain conform to the GPUImageInput protocol, which lets them take in the supplied or processed texture from the previous link in the chain and do something with it. Objects one step further down the chain are considered targets, and processing can be branched by adding multiple targets to a single output or filter.
 
@@ -56,6 +60,10 @@ For example, an application that takes in live video from the camera, converts t
 - **GPUImageGammaFilter**: Adjusts the gamma of an image
   - *gamma*: The gamma adjustment to apply (0.0 - 3.0, with 1.0 as the default)
 
+- **GPUImageColorMatrixFilter**: Transforms the colors of an image by applying a matrix to them
+  - *colorMatrix*: A 4x4 matrix used to transform each color in an image
+  - *intensity*: The degree to which the new transformed color replaces the original color for each pixel
+
 - **GPUImageColorInvertFilter**: Inverts the colors of an image
 
 - **GPUImageSepiaFilter**: Simple sepia tone filter
@@ -69,6 +77,12 @@ For example, an application that takes in live video from the camera, converts t
 
 - **GPUImageMultiplyBlendFilter**: Applies a multiply blend of two images
 
+- **GPUImageOverlayBlendFilter**: Applies an overlay blend of two images
+
+- **GPUImageDarkenBlendFilter**: Blends two images by taking the minimum value of each color component between the images
+
+- **GPUImageLightenBlendFilter**: Blends two images by taking the maximum value of each color component between the images
+
 ### Visual effects ###
 
 - **GPUImageRotationFilter**: This lets you rotate an image left or right by 90 degrees, or flip it horizontally or vertically
@@ -78,6 +92,10 @@ For example, an application that takes in live video from the camera, converts t
 
 - **GPUImageSobelEdgeDetectionFilter**: Sobel edge detection, with edges highlighted in white
   - *intensity*: The degree to which the original image colors are replaced by the detected edges (0.0 - 1.0, with 1.0 as the default)
+  - *imageWidthFactor*: 
+  - *imageHeightFactor*: These parameters affect the visibility of the detected edges
+
+- **GPUImageToonFilter**: This uses Sobel edge detection to place a black border around objects, and then it quantizes the colors present in the image to give a cartoon-like quality to the image.
   - *imageWidthFactor*: 
   - *imageHeightFactor*: These parameters affect the visibility of the detected edges
 
