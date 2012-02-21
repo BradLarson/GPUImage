@@ -139,6 +139,13 @@
             
             filter = [[GPUImageSobelEdgeDetectionFilter alloc] init]; break;
         }; break;
+        case GPUIMAGE_TOON:
+        {
+            self.title = @"Toon";
+            self.filterSettingsSlider.hidden = YES;
+            
+            filter = [[GPUImageToonFilter alloc] init]; break;
+        };
         case GPUIMAGE_MULTIPLY:
         {
             self.title = @"Multiply Blend";
