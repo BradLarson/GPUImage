@@ -1,11 +1,10 @@
-GPUImage framework
-==================
+# GPUImage framework #
+
 Brad Larson
 http://www.sunsetlakesoftware.com
 @bradlarson
 
-Overview
-========
+## Overview ##
 
 The GPUImage framework is a BSD-licensed iOS library that lets you apply GPU-accelerated filters and other effects to images, live camera video, and movies. In comparison to Core Image (part of iOS 5.0), GPUImage allows you to write your own custom filters, supports deployment to iOS 4.0, and has a simpler interface. However, it currently lacks some of the more advanced features of Core Image, such as facial detection.
 
@@ -17,13 +16,11 @@ http://www.sunsetlakesoftware.com/2010/10/22/gpu-accelerated-video-processing-ma
 
 and found that there was a lot of boilerplate code I had to write in its creation. Therefore, I put together this framework that encapsulates a lot of the common tasks you'll encounter when processing images and video and made it so that you don't need to care about the OpenGL ES 2.0 underpinnings.
 
-License
-=======
+## License ##
 
 BSD-style, with the full license available with the framework in License.txt.
 
-Technical requirements
-======================
+## Technical requirements ##
 
 - OpenGL ES 2.0: Applications using this will not run on the original iPhone, iPhone 3G, and 1st and 2nd generation iPod touches
 - iOS 4.0 as a deployment target
@@ -31,8 +28,7 @@ Technical requirements
 - Devices must have a camera to use camera-related functionality (obviously)
 - The framework uses automatic reference counting (ARC), but should support projects using both ARC and manual reference counting if added as a subproject as explained below. For manual reference counting applications targeting iOS 4.x, you'll need add -fobjc-arc to the Other Linker Flags for your application project.
 
-General architecture
-====================
+## General architecture ##
 
 GPUImage uses OpenGL ES 2.0 shaders to perform image and video manipulation much faster than could be done in CPU-bound routines. However, it hides the complexity of interacting with the OpenGL ES API in a simplified Objective-C interface. This interface lets you define input sources for images and video, attach filters in a chain, and send the resulting processed image or video to the screen, to a UIImage, or to a movie on disk.
 
@@ -42,61 +38,56 @@ Filters and other subsequent elements in the chain conform to the GPUImageInput 
 
 For example, an application that takes in live video from the camera, converts that video to a sepia tone, then displays the video onscreen would set up a chain looking something like the following:
 
-GPUImageVideoCamera -> GPUImageSepiaFilter -> GPUImageView
+    GPUImageVideoCamera -> GPUImageSepiaFilter -> GPUImageView
 
-Built-in filters
-================		
+## Built-in filters ##
 
-Color adjustments
------------------
+### Color adjustments ###
 
-GPUImageBrightnessFilter: Adjusts the brightness of the image
-- brightness: The adjusted brightness (-1.0 - 1.0, with 0.0 as the default)
+- **GPUImageBrightnessFilter**: Adjusts the brightness of the image
+  - *brightness*: The adjusted brightness (-1.0 - 1.0, with 0.0 as the default)
 
-GPUImageContrastFilter: Adjusts the contrast of the image
-- contrast: The adjusted contrast (0.0 - 4.0, with 1.0 as the default)
+- **GPUImageContrastFilter**: Adjusts the contrast of the image
+  - *contrast*: The adjusted contrast (0.0 - 4.0, with 1.0 as the default)
 
-GPUImageSaturationFilter: Adjusts the saturation of an image
-- saturation: The degree of saturation or desaturation to apply to the image (0.0 - 2.0, with 1.0 as the default)
+- **GPUImageSaturationFilter**: Adjusts the saturation of an image
+  - *saturation*: The degree of saturation or desaturation to apply to the image (0.0 - 2.0, with 1.0 as the default)
 
-GPUImageGammaFilter: Adjusts the gamma of an image
-- gamma: The gamma adjustment to apply (0.0 - 3.0, with 1.0 as the default)
+- **GPUImageGammaFilter**: Adjusts the gamma of an image
+  - *gamma*: The gamma adjustment to apply (0.0 - 3.0, with 1.0 as the default)
 
-GPUImageColorInvertFilter: Inverts the colors of an image
+- **GPUImageColorInvertFilter**: Inverts the colors of an image
 
-GPUImageSepiaFilter: Simple sepia tone filter
-- intensity: The degree to which the sepia tone replaces the normal image color (0.0 - 1.0, with 1.0 as the default)
+- **GPUImageSepiaFilter**: Simple sepia tone filter
+  - *intensity*: The degree to which the sepia tone replaces the normal image color (0.0 - 1.0, with 1.0 as the default)
 
 
-Blending modes
---------------
+### Blending modes ###
 
-GPUImageDissolveBlendFilter: Applies a dissolve blend of two images
-- mix: The degree with which the second image overrides the first (0.0 - 1.0, with 0.5 as the default)
+- **GPUImageDissolveBlendFilter**: Applies a dissolve blend of two images
+  - *mix*: The degree with which the second image overrides the first (0.0 - 1.0, with 0.5 as the default)
 
-GPUImageMultiplyBlendFilter: Applies a multiply blend of two images
+- **GPUImageMultiplyBlendFilter**: Applies a multiply blend of two images
 
-Visual effects
---------------
+### Visual effects ###
 
-GPUImageRotationFilter: This lets you rotate an image left or right by 90 degrees, or flip it horizontally or vertically
+- **GPUImageRotationFilter**: This lets you rotate an image left or right by 90 degrees, or flip it horizontally or vertically
 
-GPUImagePixellateFilter: Applies a pixellation effect on an image or video
-- fractionalWidthOfAPixel: How large the pixels are, as a fraction of the width and height of the image (0.0 - 1.0, default 0.05)
+- **GPUImagePixellateFilter**: Applies a pixellation effect on an image or video
+  - *fractionalWidthOfAPixel*: How large the pixels are, as a fraction of the width and height of the image (0.0 - 1.0, default 0.05)
 
-GPUImageSobelEdgeDetectionFilter: Sobel edge detection, with edges highlighted in white
-- intensity: The degree to which the original image colors are replaced by the detected edges (0.0 - 1.0, with 1.0 as the default)
-- imageWidthFactor: 
-- imageHeightFactor: These parameters affect the visibility of the detected edges
+- **GPUImageSobelEdgeDetectionFilter**: Sobel edge detection, with edges highlighted in white
+  - *intensity*: The degree to which the original image colors are replaced by the detected edges (0.0 - 1.0, with 1.0 as the default)
+  - *imageWidthFactor*: 
+  - *imageHeightFactor*: These parameters affect the visibility of the detected edges
 
-GPUImageKuwaharaFilter: Kuwahara image abstraction, drawn from the work of Kyprianidis, et. al. in their publication "Anisotropic Kuwahara Filtering on the GPU" within the GPU Pro collection. This produces an oil-painting-like image, but it is extremely computationally expensive, so it can take seconds to render a frame on an iPad 2. This might be best used for still images.
-- radius: In integer specifying the number of pixels out from the center pixel to test when applying the filter, with a default of 4. A higher value creates a more abstracted image, but at the cost of much greater processing time.
+- **GPUImageKuwaharaFilter**: Kuwahara image abstraction, drawn from the work of Kyprianidis, et. al. in their publication "Anisotropic Kuwahara Filtering on the GPU" within the GPU Pro collection. This produces an oil-painting-like image, but it is extremely computationally expensive, so it can take seconds to render a frame on an iPad 2. This might be best used for still images.
+  - *radius*: In integer specifying the number of pixels out from the center pixel to test when applying the filter, with a default of 4. A higher value creates a more abstracted image, but at the cost of much greater processing time.
 
 
 You can also easily write your own custom filters using the C-like OpenGL Shading Language, as described below.
 
-Adding the framework to your iOS project
-========================================
+## Adding the framework to your iOS project ##
 
 Once you have the latest source code for the framework, it's fairly straightforward to add it to your application. Start by dragging the GPUImage.xcodeproj file into your application's Xcode project to embed the framework in your project. Next, go to your application's target and add GPUImage as a Target Dependency. Finally, you'll want to drag the libGPUImage.a library from the GPUImage framework's Products folder to the Link Binary With Libraries build phase in your application's target.
 
@@ -112,89 +103,78 @@ You'll also need to find the framework headers, so within your project's build s
 
 To use the GPUImage classes within your application, simply include the core framework header using the following:
 
-#import "GPUImage.h"
+    #import "GPUImage.h"
 
 As a note: if you run into the error "Unknown class GPUImageView in Interface Builder" or the like when trying to build an interface with Interface Builder, you may need to add -ObjC to your Other Linker Flags in your project's build settings.
 
 Additionally, this is an ARC-enabled framework, so if you want to use this within a manual reference counted application targeting iOS 4.x, you'll need to add -fobjc-arc to your Other Linker Flags as well.
 
-Performing common tasks
-=======================
+## Performing common tasks ##
 
-Filtering live video
---------------------
+### Filtering live video ###
 
 To filter live video from an iOS device's camera, you can use code like the following:
 
+	GPUImageVideoCamera *videoCamera = [[GPUImageVideoCamera alloc] initWithSessionPreset:AVCaptureSessionPreset640x480 cameraPosition:AVCaptureDevicePositionBack];
+	GPUImageFilter *customFilter = [[GPUImageFilter alloc] initWithFragmentShaderFromFile:@"CustomShader"];
+	GPUImageView *filteredVideoView = [[GPUImageView alloc] initWithFrame:CGRectMake(0.0, 0.0, viewWidth, viewHeight)];
 
-GPUImageVideoCamera *videoCamera = [[GPUImageVideoCamera alloc] initWithSessionPreset:AVCaptureSessionPreset640x480 cameraPosition:AVCaptureDevicePositionBack];
-GPUImageFilter *customFilter = [[GPUImageFilter alloc] initWithFragmentShaderFromFile:@"CustomShader"];
-GPUImageView *filteredVideoView = [[GPUImageView alloc] initWithFrame:CGRectMake(0.0, 0.0, viewWidth, viewHeight)];
+	// Add the view somewhere so it's visible
 
-// Add the view somewhere so it's visible
+	[videoCamera addTarget:thresholdFilter];
+	[customFilter addTarget:filteredVideoView];
 
-[videoCamera addTarget:thresholdFilter];
-[customFilter addTarget:filteredVideoView];
-
-[videoCamera startCameraCapture];
-
+	[videoCamera startCameraCapture];
 
 This sets up a video source coming from the iOS device's back-facing camera, using a preset that tries to capture at 640x480. A custom filter, using code from the file CustomShader.fsh, is then set as the target for the video frames from the camera. These filtered video frames are finally displayed onscreen with the help of a UIView subclass that can present the filtered OpenGL ES texture that results from this pipeline.
 
 For blending filters and others that take in more than one image, you can create multiple outputs and add a single filter as a target for both of these outputs. The order with which the outputs are added as targets will affect the order in which the input images are blended or otherwise processed.
 
-Processing a still image
-------------------------
+### Processing a still image ###
 
 There are a couple of ways to process a still image and create a result. The first way you can do this is by creating a still image source object and manually creating a filter chain:
 
+	UIImage *inputImage = [UIImage imageNamed:@"Lambeau.jpg"];
 
-UIImage *inputImage = [UIImage imageNamed:@"Lambeau.jpg"];
+	GPUImagePicture *stillImageSource = [[GPUImagePicture alloc] initWithImage:inputImage];
+	GPUImageSepiaFilter *stillImageFilter = [[GPUImageSepiaFilter alloc] init];
 
-GPUImagePicture *stillImageSource = [[GPUImagePicture alloc] initWithImage:inputImage];
-GPUImageSepiaFilter *stillImageFilter = [[GPUImageSepiaFilter alloc] init];
+	[stillImageSource addTarget:stillImageFilter];
+	[stillImageSource processImage];
 
-[stillImageSource addTarget:stillImageFilter];
-[stillImageSource processImage];
-
-UIImage *currentFilteredVideoFrame = [stillImageFilter imageFromCurrentlyProcessedOutput];
-
+	UIImage *currentFilteredVideoFrame = [stillImageFilter imageFromCurrentlyProcessedOutput];
 
 For single filters that you wish to apply to an image, you can simply do the following:
 
+	GPUImageSepiaFilter *stillImageFilter2 = [[GPUImageSepiaFilter alloc] init];
+	UIImage *quickFilteredImage = [stillImageFilter2 imageByFilteringImage:inputImage];
 
-GPUImageSepiaFilter *stillImageFilter2 = [[GPUImageSepiaFilter alloc] init];
-UIImage *quickFilteredImage = [stillImageFilter2 imageByFilteringImage:inputImage];
-
-
-Writing a custom filter
------------------------
+### Writing a custom filter ###
 
 One significant advantage of this framework over Core Image on iOS (as of iOS 5.0) is the ability to write your own custom image and video processing filters. These filters are supplied as OpenGL ES 2.0 fragment shaders, written in the C-like OpenGL Shading Language. 
 
 A custom filter is initialized with code like
 
-GPUImageFilter *customFilter = [[GPUImageFilter alloc] initWithFragmentShaderFromFile:@"CustomShader"];
+	GPUImageFilter *customFilter = [[GPUImageFilter alloc] initWithFragmentShaderFromFile:@"CustomShader"];
 
 where the extension used for the fragment shader is .fsh. Additionally, you can use the -initWithFragmentShaderFromString: initializer to provide the fragment shader as a string, if you would not like to ship your fragment shaders in your application bundle.
 
 Fragment shaders perform their calculations for each pixel to be rendered at that filter stage. They do this using the OpenGL Shading Language (GLSL), a C-like language with additions specific to 2-D and 3-D graphics. An example of a fragment shader is the following sepia-tone filter:
 
+	varying highp vec2 textureCoordinate;
 
-varying highp vec2 textureCoordinate;
+	uniform sampler2D inputImageTexture;
 
-uniform sampler2D inputImageTexture;
-
-void main()
-{
-    lowp vec4 textureColor = texture2D(inputImageTexture, textureCoordinate);
-    lowp vec4 outputColor;
-    outputColor.r = (textureColor.r * 0.393) + (textureColor.g * 0.769) + (textureColor.b * 0.189);
-    outputColor.g = (textureColor.r * 0.349) + (textureColor.g * 0.686) + (textureColor.b * 0.168);    
-    outputColor.b = (textureColor.r * 0.272) + (textureColor.g * 0.534) + (textureColor.b * 0.131);
+	void main()
+	{
+	    lowp vec4 textureColor = texture2D(inputImageTexture, textureCoordinate);
+	    lowp vec4 outputColor;
+	    outputColor.r = (textureColor.r * 0.393) + (textureColor.g * 0.769) + (textureColor.b * 0.189);
+	    outputColor.g = (textureColor.r * 0.349) + (textureColor.g * 0.686) + (textureColor.b * 0.168);    
+	    outputColor.b = (textureColor.r * 0.272) + (textureColor.g * 0.534) + (textureColor.b * 0.131);
     
-	gl_FragColor = outputColor;
-}
+		gl_FragColor = outputColor;
+	}
 
 For an image filter to be usable within the GPUImage framework, the first two lines that take in the textureCoordinate varying (for the current coordinate within the texture, normalized to 1.0) and the inputImageTexture uniform (for the actual input image frame texture) are required.
 
@@ -203,52 +183,42 @@ The remainder of the shader grabs the color of the pixel at this location in the
 One thing to note when adding fragment shaders to your Xcode project is that Xcode thinks they are source code files. To work around this, you'll need to manually move your shader from the Compile Sources build phase to the Copy Bundle Resources one in order to get the shader to be included in your application bundle.
 
 
-Filtering and re-encoding a movie
----------------------------------
+### Filtering and re-encoding a movie ###
 
 - This is not yet implemented
 
 
-Sample applications
-===================
+## Sample applications ##
 
 Several sample applications are bundled with the framework source. Most are compatible with both iPhone and iPad-class devices. They attempt to show off various aspects of the framework and should be used as the best examples of the API while the framework is under development. These include:
 
-
-SimpleImageFilter
------------------
+### SimpleImageFilter ###
 
 A bundled JPEG image is loaded into the application at launch, a filter is applied to it, and the result rendered to the screen. Additionally, this sample shows two ways of taking in an image, filtering it, and saving it to disk.
 
-SimpleVideoFilter
------------------
+### SimpleVideoFilter ###
 
 A pixellate filter is applied to a live video stream, with a UISlider control that lets you adjust the pixel size on the live video.
 
-MultiViewFilterExample
-----------------------
+### MultiViewFilterExample ###
 
 From a single camera feed, four views are populated with realtime filters applied to camera. One is just the straight camera video, one is a preprogrammed sepia tone, and two are custom filters based on shader programs.
 
-FilterShowcase
---------------
+### FilterShowcase ###
 
 This demonstrates every filter supplied with GPUImage.
 
-BenchmarkSuite
---------------
+### BenchmarkSuite ###
 
 This is used to test the performance of the overall framework by testing it against CPU-bound routines and Core Image. Benchmarks involving still images and video are run against all three, with results displayed in-application.
 
-ColorObjectTracking
--------------------
+### ColorObjectTracking ###
 
 A version of my ColorTracking example from http://www.sunsetlakesoftware.com/2010/10/22/gpu-accelerated-video-processing-mac-and-ios ported across to use GPUImage, this application uses color in a scene to track objects from a live camera feed. The four views you can switch between include the raw camera feed, the camera feed with pixels matching the color threshold in white, the processed video where positions are encoded as colors within the pixels passing the threshold test, and finally the live video feed with a dot that tracks the selected color. Tapping the screen changes the color to track to match the color of the pixels under your finger. Tapping and dragging on the screen makes the color threshold more or less forgiving. This is most obvious on the second, color thresholding view.
 
 - This isn't fully functional yet, with only the filters being applied at this point
 
-Things that need work
-=====================
+## Things that need work ##
 
 - Images that exceed 2048 pixels wide or high currently can't be processed on devices older than the iPad 2 or iPhone 4S.
 - Movies as input sources and export destinations currently aren't supported.
