@@ -146,6 +146,13 @@
             
             filter = [[GPUImageMultiplyBlendFilter alloc] init]; break;
         }; break;
+        case GPUIMAGE_OVERLAY:
+        {
+            self.title = @"Overlay Blend";
+            self.filterSettingsSlider.hidden = YES;
+            
+            filter = [[GPUImageOverlayBlendFilter alloc] init]; break;
+        };
         case GPUIMAGE_DISSOLVE:
         {
             self.title = @"Dissolve Blend";
