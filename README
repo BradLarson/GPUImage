@@ -254,7 +254,6 @@ Things that need work
 - Movies as input sources and export destinations currently aren't supported.
 - Currently, it's difficult to create a custom filter with additional attribute inputs and a modified vertex shader.
 - Many common filters aren't built into the framework yet.
-- Filters which take multiple images or video frames for blending aren't yet supported.
 - Video capture and processing should be done on a background GCD serial queue.
 - I'm sure that there are many optimizations that can be made on the rendering pipeline.
 - The aspect ratio of the input video is not maintained, but stretched to fill the final image.
