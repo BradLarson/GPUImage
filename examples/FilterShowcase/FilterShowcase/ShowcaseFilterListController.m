@@ -72,6 +72,8 @@
 		case GPUIMAGE_DISSOLVE: cell.textLabel.text = @"Dissolve blend"; break;
 		case GPUIMAGE_MULTIPLY: cell.textLabel.text = @"Multiply blend"; break;
 	    case GPUIMAGE_OVERLAY: cell.textLabel.text = @"Overlay blend"; break;
+	    case GPUIMAGE_LIGHTEN: cell.textLabel.text = @"Lighten blend"; break;
+	    case GPUIMAGE_DARKEN: cell.textLabel.text = @"Darken blend"; break;
         case GPUIMAGE_KUWAHARA: cell.textLabel.text = @"Kuwahara"; break;
 		case GPUIMAGE_CUSTOM: cell.textLabel.text = @"Custom"; break;
 	}

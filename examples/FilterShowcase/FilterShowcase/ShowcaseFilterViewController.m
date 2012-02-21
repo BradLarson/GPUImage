@@ -153,6 +153,20 @@
             
             filter = [[GPUImageOverlayBlendFilter alloc] init]; break;
         };
+        case GPUIMAGE_LIGHTEN:
+        {
+            self.title = @"Lighten Blend";
+            self.filterSettingsSlider.hidden = YES;
+            
+            filter = [[GPUImageLightenBlendFilter alloc] init]; break;
+        };
+        case GPUIMAGE_DARKEN:
+        {
+            self.title = @"Darken Blend";
+            self.filterSettingsSlider.hidden = YES;
+            
+            filter = [[GPUImageDarkenBlendFilter alloc] init]; break;
+        };
         case GPUIMAGE_DISSOLVE:
         {
             self.title = @"Dissolve Blend";

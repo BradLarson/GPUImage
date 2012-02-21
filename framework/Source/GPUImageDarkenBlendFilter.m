@@ -1,6 +1,6 @@
-#import "GPUImageMultiplyBlendFilter.h"
+#import "GPUImageDarkenBlendFilter.h"
 
-/* Multiply blending fragment shader:
+/* Darken blending fragment shader:
 
 varying highp vec2 textureCoordinate;
 
@@ -12,11 +12,11 @@ void main()
     lowp vec4 textureColor = texture2D(inputImageTexture, textureCoordinate);
     lowp vec4 textureColor2 = texture2D(inputImageTexture2, textureCoordinate);
      
-    gl_FragColor = textureColor * textureColor2;
+    gl_FragColor = min(textureColor, textureColor2);
 }
 */
 
-NSString *const kGPUImageMultiplyBlendFragmentShaderString = 
+NSString *const kGPUImageDarkenBlendFragmentShaderString = 
 @"varying highp vec2 textureCoordinate;\
 \
 uniform sampler2D inputImageTexture;\
@@ -27,14 +27,14 @@ void main()\
     lowp vec4 textureColor = texture2D(inputImageTexture, textureCoordinate);\
     lowp vec4 textureColor2 = texture2D(inputImageTexture2, textureCoordinate);\
     \
-    gl_FragColor = textureColor * textureColor2;\
+    gl_FragColor = min(textureColor, textureColor2);\
 }";
 
-@implementation GPUImageMultiplyBlendFilter
+@implementation GPUImageDarkenBlendFilter
 
 - (id)init;
 {
-    if (!(self = [super initWithFragmentShaderFromString:kGPUImageMultiplyBlendFragmentShaderString]))
+    if (!(self = [super initWithFragmentShaderFromString:kGPUImageDarkenBlendFragmentShaderString]))
     {
 		return nil;
     }
