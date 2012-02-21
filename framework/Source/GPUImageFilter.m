@@ -24,7 +24,7 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size);
     GLint filterPositionAttribute, filterTextureCoordinateAttribute;
     GLint filterInputTextureUniform, filterInputTextureUniform2;
 
-	GLuint filterRenderbuffer, filterFramebuffer;
+	GLuint filterFramebuffer;
 }
 
 // Managing the display FBOs
@@ -113,7 +113,6 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size)
     CGSize currentFBOSize = [self sizeOfFBO];
 
     NSUInteger totalBytesForImage = (int)currentFBOSize.width * (int)currentFBOSize.height * 4;
-//    GLubyte *rawImagePixels = (GLubyte *) calloc(totalBytesForImage, sizeof(GLubyte));
     GLubyte *rawImagePixels = (GLubyte *)malloc(totalBytesForImage);
     glReadPixels(0, 0, (int)currentFBOSize.width, (int)currentFBOSize.height, GL_RGBA, GL_UNSIGNED_BYTE, rawImagePixels);
 
@@ -166,18 +165,13 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size)
     glGenFramebuffers(1, &filterFramebuffer);
     glBindFramebuffer(GL_FRAMEBUFFER, filterFramebuffer);
     
-	glGenRenderbuffers(1, &filterRenderbuffer);
-    glBindRenderbuffer(GL_RENDERBUFFER, filterRenderbuffer);
-	
     CGSize currentFBOSize = [self sizeOfFBO];
 //    NSLog(@"Filter size: %f, %f", currentFBOSize.width, currentFBOSize.height);
     
     glRenderbufferStorage(GL_RENDERBUFFER, GL_RGBA8_OES, (int)currentFBOSize.width, (int)currentFBOSize.height);
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, filterRenderbuffer);	
     glBindTexture(GL_TEXTURE_2D, outputTexture);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (int)currentFBOSize.width, (int)currentFBOSize.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, outputTexture, 0);
-    //	NSLog(@"GL error15: %d", glGetError());
 	
 	GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
     
@@ -190,13 +184,7 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size)
 	{
 		glDeleteFramebuffers(1, &filterFramebuffer);
 		filterFramebuffer = 0;
-	}
-	
-	if (filterRenderbuffer)
-	{
-		glDeleteRenderbuffers(1, &filterRenderbuffer);
-		filterRenderbuffer = 0;
-	}
+	}	
 }
 
 - (void)setFilterFBO;

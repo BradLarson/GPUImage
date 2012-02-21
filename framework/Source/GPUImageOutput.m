@@ -23,7 +23,6 @@
 {
     [self removeAllTargets];
     [self deleteOutputTexture];
-    
 }
 
 #pragma mark -
