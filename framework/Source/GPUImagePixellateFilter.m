@@ -1,36 +1,21 @@
 #import "GPUImagePixellateFilter.h"
 
-/* Pixellation fragment shader:
- 
+NSString *const kGPUImagePixellationFragmentShaderString = SHADER_STRING
+(
  varying highp vec2 textureCoordinate;
  
  uniform sampler2D inputImageTexture;
  
- uniform highp fractionalWidthOfPixel;
+ uniform highp float fractionalWidthOfPixel;
  
  void main()
  {
-    highp vec2 sampleDivisor = vec2(fractionalWidthOfPixel);
-
-    highp vec2 samplePos = textureCoordinate - mod(textureCoordinate, sampleDivisor);
-    gl_FragColor = texture2D(inputImageTexture, samplePos );
+     highp vec2 sampleDivisor = vec2(fractionalWidthOfPixel);
+     
+     highp vec2 samplePos = textureCoordinate - mod(textureCoordinate, sampleDivisor);
+     gl_FragColor = texture2D(inputImageTexture, samplePos );
  }
- */
-
-NSString *const kGPUImagePixellationFragmentShaderString = 
-@" varying highp vec2 textureCoordinate;\
-\
-uniform sampler2D inputImageTexture;\
-\
-uniform highp float fractionalWidthOfPixel;\
-\
-void main()\
-{\
-    highp vec2 sampleDivisor = vec2(fractionalWidthOfPixel);\
-    \
-    highp vec2 samplePos = textureCoordinate - mod(textureCoordinate, sampleDivisor);\
-    gl_FragColor = texture2D(inputImageTexture, samplePos );\
-}";
+ );
 
 @implementation GPUImagePixellateFilter
 

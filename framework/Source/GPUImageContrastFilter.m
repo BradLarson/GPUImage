@@ -1,7 +1,7 @@
 #import "GPUImageContrastFilter.h"
 
-/* Contrast fragment shader:
- 
+NSString *const kGPUImageContrastFragmentShaderString = SHADER_STRING
+( 
  varying highp vec2 textureCoordinate;
  
  uniform sampler2D inputImageTexture;
@@ -9,27 +9,11 @@
  
  void main()
  {
-    lowp vec3 textureColor = texture2D(inputImageTexture, textureCoordinate).rgb;
- 
-    gl_FragColor = vec4(((textureColor - vec3(0.5)) * contrast + vec3(0.5)), 1.0);
+     lowp vec3 textureColor = texture2D(inputImageTexture, textureCoordinate).rgb;
+     
+     gl_FragColor = vec4(((textureColor - vec3(0.5)) * contrast + vec3(0.5)), 1.0);
  }
- */
-
-
-
-NSString *const kGPUImageContrastFragmentShaderString = 
-@"varying highp vec2 textureCoordinate;\
-\
-uniform sampler2D inputImageTexture;\
-uniform lowp float contrast;\
-\
-void main()\
-{\
-lowp vec3 textureColor = texture2D(inputImageTexture, textureCoordinate).rgb;\
-\
-gl_FragColor = vec4(((textureColor - vec3(0.5)) * contrast + vec3(0.5)), 1.0);\
-}";
-
+);
 
 @implementation GPUImageContrastFilter
 

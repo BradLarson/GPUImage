@@ -1,21 +1,22 @@
 #import "GPUImageFilter.h"
 #import "GPUImagePicture.h"
 
-/* Hardcode the vertex shader for the filter, because it won't change
-
-attribute vec4 position;
-attribute vec4 inputTextureCoordinate;
-
-varying vec2 textureCoordinate;
-
-void main()
-{
+// Hardcode the vertex shader for the filter, because it won't change
+NSString *const kGPUImageVertexShaderString = SHADER_STRING
+(
+ 
+ attribute vec4 position;
+ attribute vec4 inputTextureCoordinate;
+ 
+ varying vec2 textureCoordinate;
+ 
+ void main()
+ {
 	gl_Position = position;
 	textureCoordinate = inputTextureCoordinate.xy;
-}
-*/
+ }
 
-NSString *const kGPUImageVertexShaderString =  @"attribute vec4 position;\nattribute vec4 inputTextureCoordinate;\nvarying vec2 textureCoordinate;\nvoid main()\n{\ngl_Position = position;\ntextureCoordinate = inputTextureCoordinate.xy;\n}";
+);
 
 void dataProviderReleaseCallback (void *info, const void *data, size_t size);
 

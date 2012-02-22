@@ -1,7 +1,7 @@
 #import "GPUImageGammaFilter.h"
 
-/* Contrast fragment shader:
- 
+NSString *const kGPUImageGammaFragmentShaderString = SHADER_STRING
+(
  varying highp vec2 textureCoordinate;
  
  uniform sampler2D inputImageTexture;
@@ -9,28 +9,11 @@
  
  void main()
  {
-    lowp vec3 textureColor = texture2D(inputImageTexture, textureCoordinate).rgb;
- 
-    gl_FragColor = vec4(pow(textureColor, gamma), 1.0);
+     lowp vec3 textureColor = texture2D(inputImageTexture, textureCoordinate).rgb;
+     
+     gl_FragColor = vec4(pow(textureColor, vec3(gamma)), 1.0);
  }
- */
-
-
-NSString *const kGPUImageGammaFragmentShaderString = 
-@"varying highp vec2 textureCoordinate;\
-\
-uniform sampler2D inputImageTexture;\
-uniform lowp float gamma;\
-\
-void main()\
-{\
-lowp vec3 textureColor = texture2D(inputImageTexture, textureCoordinate).rgb;\
-\
-gl_FragColor = vec4(pow(textureColor, vec3(gamma)), 1.0);\
-}";
-
-
-//gl_FragColor = vec4(pow(textureColor, vec3(gamma))), 1.0);\
+);
 
 @implementation GPUImageGammaFilter
 

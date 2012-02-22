@@ -1,14 +1,16 @@
 #import "GPUImageRotationFilter.h"
 
-NSString *const kGPUImageRotationFragmentShaderString =  
-@"varying highp vec2 textureCoordinate;\
-\
-uniform sampler2D inputImageTexture;\
-\
-void main()\
-{\
-gl_FragColor = texture2D(inputImageTexture, textureCoordinate);\
-}";
+NSString *const kGPUImageRotationFragmentShaderString =  SHADER_STRING
+(
+ varying highp vec2 textureCoordinate;
+ 
+ uniform sampler2D inputImageTexture;\
+ 
+ void main()
+ {
+     gl_FragColor = texture2D(inputImageTexture, textureCoordinate);
+ }
+);
 
 @implementation GPUImageRotationFilter
 

@@ -1,7 +1,7 @@
 #import "GPUImageBrightnessFilter.h"
 
-/* Contrast fragment shader:
- 
+NSString *const kGPUImageBrightnessFragmentShaderString = SHADER_STRING
+(
  varying highp vec2 textureCoordinate;
  
  uniform sampler2D inputImageTexture;
@@ -9,26 +9,11 @@
  
  void main()
  {
-    lowp vec3 textureColor = texture2D(inputImageTexture, textureCoordinate).rgb;
- 
-    gl_FragColor = vec4((textureColor + vec3(brightness)), 1.0);
+     lowp vec3 textureColor = texture2D(inputImageTexture, textureCoordinate).rgb;
+     
+     gl_FragColor = vec4((textureColor + vec3(brightness)), 1.0);
  }
- */
-
-
-NSString *const kGPUImageBrightnessFragmentShaderString = 
-@"varying highp vec2 textureCoordinate;\
-\
-uniform sampler2D inputImageTexture;\
-uniform lowp float brightness;\
-\
-void main()\
-{\
-lowp vec3 textureColor = texture2D(inputImageTexture, textureCoordinate).rgb;\
-\
-gl_FragColor = vec4((textureColor + vec3(brightness)), 1.0);\
-}";
-
+);
 
 @implementation GPUImageBrightnessFilter
 

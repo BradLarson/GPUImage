@@ -1,42 +1,24 @@
 #import "GPUImageSaturationFilter.h"
 
-/* Saturation fragment shader:
-
-varying highp vec2 textureCoordinate;
-
-uniform sampler2D inputImageTexture;
-uniform lowp float saturation;
-
-const mediump vec3 luminanceWeighting = vec3(0.2125, 0.7154, 0.0721); // Values from "Graphics Shaders: Theory and Practice" by Bailey and Cunningham
+NSString *const kGPUImageSaturationFragmentShaderString = SHADER_STRING
+(
+ varying highp vec2 textureCoordinate;
  
-void main()
-{
+ uniform sampler2D inputImageTexture;
+ uniform lowp float saturation;
+ 
+ // Values from "Graphics Shaders: Theory and Practice" by Bailey and Cunningham
+ const mediump vec3 luminanceWeighting = vec3(0.2125, 0.7154, 0.0721);
+ 
+ void main()
+ {
     lowp vec3 textureColor = texture2D(inputImageTexture, textureCoordinate).rgb;
     lowp float luminance = dot(textureColor, luminanceWeighting);
     lowp vec3 greyScaleColor = vec3(luminance);
-     
+    
     gl_FragColor = vec4(mix(greyScaleColor, textureColor, saturation), 1.0);
-}
-*/
-
-
-
-NSString *const kGPUImageSaturationFragmentShaderString = 
-@"varying highp vec2 textureCoordinate;\
-\
-uniform sampler2D inputImageTexture;\
-uniform lowp float saturation;\
-\
-const mediump vec3 luminanceWeighting = vec3(0.2125, 0.7154, 0.0721);\
-\
-void main()\
-{\
-    lowp vec3 textureColor = texture2D(inputImageTexture, textureCoordinate).rgb;\
-    lowp float luminance = dot(textureColor, luminanceWeighting);\
-    lowp vec3 greyScaleColor = vec3(luminance);\
-    \
-    gl_FragColor = vec4(mix(greyScaleColor, textureColor, saturation), 1.0);\
-}";
+ }
+);
 
 @implementation GPUImageSaturationFilter
 
