@@ -139,6 +139,17 @@
             
             filter = [[GPUImageSobelEdgeDetectionFilter alloc] init]; break;
         }; break;
+        case GPUIMAGE_SKETCH:
+        {
+            self.title = @"Sketch";
+            self.filterSettingsSlider.hidden = NO;
+            
+            [self.filterSettingsSlider setMinimumValue:0.0];
+            [self.filterSettingsSlider setMaximumValue:1.0];
+            [self.filterSettingsSlider setValue:1.0];
+            
+            filter = [[GPUImageSketchFilter alloc] init]; break;
+        }; break;
         case GPUIMAGE_TOON:
         {
             self.title = @"Toon";
@@ -235,6 +246,7 @@
         case GPUIMAGE_BRIGHTNESS: [(GPUImageBrightnessFilter *)filter setBrightness:[(UISlider *)sender value]]; break;
         case GPUIMAGE_GAMMA: [(GPUImageGammaFilter *)filter setGamma:[(UISlider *)sender value]]; break;
         case GPUIMAGE_SOBELEDGEDETECTION: [(GPUImageSobelEdgeDetectionFilter *)filter setIntensity:[(UISlider *)sender value]]; break;
+        case GPUIMAGE_SKETCH: [(GPUImageSketchFilter *)filter setIntensity:[(UISlider *)sender value]]; break;
         case GPUIMAGE_DISSOLVE: [(GPUImageDissolveBlendFilter *)filter setMix:[(UISlider *)sender value]]; break;
         case GPUIMAGE_KUWAHARA: [(GPUImageKuwaharaFilter *)filter setRadius:round([(UISlider *)sender value])]; break;
         default: break;

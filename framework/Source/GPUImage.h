@@ -7,6 +7,7 @@
 #import "GPUImageVideoCamera.h"
 #import "GPUImageMovie.h"
 #import "GPUImagePicture.h"
+#import "GPUImageRawData.h"
 
 // Filters
 #import "GPUImageFilter.h"
@@ -19,6 +20,7 @@
 #import "GPUImageBrightnessFilter.h"
 #import "GPUImageGammaFilter.h"
 #import "GPUImageSobelEdgeDetectionFilter.h"
+#import "GPUImageSketchFilter.h"
 #import "GPUImageToonFilter.h"
 #import "GPUImageMultiplyBlendFilter.h"
 #import "GPUImageDissolveBlendFilter.h"
