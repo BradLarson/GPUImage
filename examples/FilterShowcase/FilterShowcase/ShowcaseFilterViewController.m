@@ -157,6 +157,17 @@
             
             filter = [[GPUImageToonFilter alloc] init]; break;
         };
+        case GPUIMAGE_SWIRL:
+        {
+            self.title = @"Swirl";
+            self.filterSettingsSlider.hidden = NO;
+            
+            [self.filterSettingsSlider setMinimumValue:0.0];
+            [self.filterSettingsSlider setMaximumValue:2.0];
+            [self.filterSettingsSlider setValue:1.0];
+            
+            filter = [[GPUImageSwirlFilter alloc] init]; break;
+        }; break;
         case GPUIMAGE_MULTIPLY:
         {
             self.title = @"Multiply Blend";
@@ -249,6 +260,7 @@
         case GPUIMAGE_SKETCH: [(GPUImageSketchFilter *)filter setIntensity:[(UISlider *)sender value]]; break;
         case GPUIMAGE_DISSOLVE: [(GPUImageDissolveBlendFilter *)filter setMix:[(UISlider *)sender value]]; break;
         case GPUIMAGE_KUWAHARA: [(GPUImageKuwaharaFilter *)filter setRadius:round([(UISlider *)sender value])]; break;
+        case GPUIMAGE_SWIRL: [(GPUImageSwirlFilter *)filter setAngle:[(UISlider *)sender value]]; break;
         default: break;
     }
 }

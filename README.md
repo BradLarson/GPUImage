@@ -95,9 +95,19 @@ For example, an application that takes in live video from the camera, converts t
   - *imageWidthFactor*: 
   - *imageHeightFactor*: These parameters affect the visibility of the detected edges
 
+- **GPUImageSketchFilter**: Converts video to look like a sketch. This is just the Sobel edge detection filter with the colors inverted
+  - *intensity*: The degree to which the original image colors are replaced by the detected edges (0.0 - 1.0, with 1.0 as the default)
+  - *imageWidthFactor*: 
+  - *imageHeightFactor*: These parameters affect the visibility of the detected edges
+
 - **GPUImageToonFilter**: This uses Sobel edge detection to place a black border around objects, and then it quantizes the colors present in the image to give a cartoon-like quality to the image.
   - *imageWidthFactor*: 
   - *imageHeightFactor*: These parameters affect the visibility of the detected edges
+
+- **GPUImageSwirlFilter**: Creates a swirl distortion on the image
+  - *radius*: The radius from the center to apply the distortion, with a default of 0.5
+  - *center*: The center of the image (in normalized coordinates from 0 - 1.0) about which to twist, with a default of (0.5, 0.5)
+  - *angle*: The amount of twist to apply to the image, with a default of 1.0
 
 - **GPUImageKuwaharaFilter**: Kuwahara image abstraction, drawn from the work of Kyprianidis, et. al. in their publication "Anisotropic Kuwahara Filtering on the GPU" within the GPU Pro collection. This produces an oil-painting-like image, but it is extremely computationally expensive, so it can take seconds to render a frame on an iPad 2. This might be best used for still images.
   - *radius*: In integer specifying the number of pixels out from the center pixel to test when applying the filter, with a default of 4. A higher value creates a more abstracted image, but at the cost of much greater processing time.

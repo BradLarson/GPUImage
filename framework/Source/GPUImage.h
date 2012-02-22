@@ -28,3 +28,4 @@
 #import "GPUImageOverlayBlendFilter.h"
 #import "GPUImageDarkenBlendFilter.h"
 #import "GPUImageLightenBlendFilter.h"
+#import "GPUImageSwirlFilter.h"
