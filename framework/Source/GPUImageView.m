@@ -4,31 +4,17 @@
 #import "GPUImageOpenGLESContext.h"
 #import "GPUImageFilter.h"
 
-/* Display fragment shader string
-
-varying highp vec2 textureCoordinate;
-
-uniform sampler2D inputImageTexture;
-
-void main()
-{
-	gl_FragColor = texture2D(inputImageTexture, textureCoordinate);
-}
-
-*/
+NSString *const kGPUImageDisplayFragmentShaderString = SHADER_STRING
+(
+ varying highp vec2 textureCoordinate;
  
-//NSString *const kGPUImageDisplayFragmentShaderString =  @"varying highp vec2 textureCoordinate;\nuniform sampler2D inputImageTexture;\nvoid main()\n{\ngl_FragColor = vec4(textureCoordinate.r,textureCoordinate.g,0.0,1.0);\n}";
-//@"varying highp vec2 textureCoordinate;\nuniform sampler2D inputImageTexture;\nvoid main()\n{\ngl_FragColor = texture2D(inputImageTexture, textureCoordinate);\n}";
-NSString *const kGPUImageDisplayFragmentShaderString =  
-@"varying highp vec2 textureCoordinate;\
-\
-uniform sampler2D inputImageTexture;\
-\
-void main()\
-{\
-	gl_FragColor = texture2D(inputImageTexture, textureCoordinate);\
-}";
-
+ uniform sampler2D inputImageTexture;
+ 
+ void main()
+ {
+     gl_FragColor = texture2D(inputImageTexture, textureCoordinate);
+ }
+);
 
 #pragma mark -
 #pragma mark Private methods and instance variables
@@ -216,13 +202,6 @@ void main()\
         1.0f, 0.0f,
     };
 
-//    static const GLfloat textureCoordinates[] = {
-//        1.0f, 1.0f,
-//        1.0f, 0.0f,
-//        0.0f,  1.0f,
-//        0.0f,  0.0f,
-//    };
-    
 	glActiveTexture(GL_TEXTURE4);
 	glBindTexture(GL_TEXTURE_2D, inputTextureForDisplay);
 	glUniform1i(displayInputTextureUniform, 4);	

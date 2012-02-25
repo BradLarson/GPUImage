@@ -51,19 +51,34 @@
     videoCamera = [[GPUImageVideoCamera alloc] initWithSessionPreset:AVCaptureSessionPreset640x480 cameraPosition:AVCaptureDevicePositionBack];
     filteredVideoView = [[GPUImageView alloc] initWithFrame:CGRectMake(0.0, 0.0, mainScreenFrame.size.width, mainScreenFrame.size.height)];
     [self.view addSubview:filteredVideoView];
-    
+
     thresholdFilter = [[GPUImageFilter alloc] initWithFragmentShaderFromFile:@"Threshold"];
-    [thresholdFilter setFloat:thresholdSensitivity forUniform:@"threshold"];    
+    [thresholdFilter setFloat:thresholdSensitivity forUniform:@"threshold"];
     [thresholdFilter setFloatVec3:thresholdColor forUniform:@"inputColor"];
     positionFilter = [[GPUImageFilter alloc] initWithFragmentShaderFromFile:@"PositionColor"];
     [positionFilter setFloat:thresholdSensitivity forUniform:@"threshold"];
     [positionFilter setFloatVec3:thresholdColor forUniform:@"inputColor"];
     rotationFilter = [[GPUImageRotationFilter alloc] initWithRotation:kGPUImageRotateRight];
     
-    // videoCamera -> thresholdFilter -> filteredVideoView
+//    CGSize videoPixelSize = filteredVideoView.bounds.size;
+//    videoPixelSize.width *= [filteredVideoView contentScaleFactor];
+//    videoPixelSize.height *= [filteredVideoView contentScaleFactor];
+    
+    CGSize videoPixelSize = CGSizeMake(480.0, 640.0);
+    
+    positionRawData = [[GPUImageRawData alloc] initWithImageSize:videoPixelSize];
+    positionRawData.delegate = self;
+    
+    videoRawData = [[GPUImageRawData alloc] initWithImageSize:videoPixelSize];
+    videoRawData.delegate = self;
+
     [videoCamera addTarget:rotationFilter];
     [rotationFilter addTarget:filteredVideoView];
-    
+    [rotationFilter addTarget:videoRawData];
+//    [rotationFilter addTarget:positionFilter];
+//    [positionFilter addTarget:filteredVideoView];
+//    [positionFilter addTarget:videoRawData];
+
     [videoCamera startCameraCapture];
 }
 
@@ -104,6 +119,8 @@
     //	[glView.layer addSublayer:trackingDot];
 	trackingDot.position = CGPointMake(100.0f, 100.0f);
 	trackingDot.opacity = 0.0f;
+    
+    [self.view.layer addSublayer:trackingDot];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -121,12 +138,7 @@
     
     if (newDisplayMode != displayMode)
     {
-        switch (displayMode)
-        {
-            case SIMPLE_THRESHOLDING: [thresholdFilter removeTarget:filteredVideoView]; break;
-            case POSITION_THRESHOLDING: [positionFilter removeTarget:filteredVideoView]; break;
-            default: break;
-        }
+        displayMode = newDisplayMode;
         if (displayMode == OBJECT_TRACKING)
         {
             trackingDot.opacity = 1.0f;
@@ -136,9 +148,10 @@
             trackingDot.opacity = 0.0f;
         }
         
-        displayMode = newDisplayMode;
         [rotationFilter removeAllTargets];
-
+        [positionFilter removeAllTargets];
+        [thresholdFilter removeAllTargets];
+        [rotationFilter addTarget:videoRawData];
         
         switch(displayMode)
         {
@@ -160,9 +173,72 @@
             {
                 [rotationFilter addTarget:filteredVideoView];
                 [rotationFilter addTarget:positionFilter];
+                [positionFilter addTarget:positionRawData];
             }; break;
         }
     }    
+}
+
+#pragma mark -
+#pragma mark Image processing
+
+- (CGPoint)centroidFromTexture:(GLubyte *)pixels ofSize:(CGSize)textureSize;
+{
+	CGFloat currentXTotal = 0.0f, currentYTotal = 0.0f, currentPixelTotal = 0.0f;
+	
+	for (NSUInteger currentPixel = 0; currentPixel < (textureSize.width * textureSize.height); currentPixel++)
+	{
+		currentXTotal += (CGFloat)pixels[currentPixel * 4] / 255.0f;
+		currentYTotal += (CGFloat)pixels[(currentPixel * 4) + 1] / 255.0f;
+		currentPixelTotal += (CGFloat)pixels[(currentPixel * 4) + 3] / 255.0f;
+	}
+	
+	return CGPointMake(currentXTotal / currentPixelTotal, currentYTotal / currentPixelTotal);
+}
+
+#pragma mark -
+#pragma mark GPUImageRawDataProcessor protocol
+
+- (void)newImageFrameAvailableFromDataSource:(GPUImageRawData *)rawDataSource;
+{
+    if (rawDataSource == positionRawData)
+    {
+        GLubyte *bytesForPositionData = rawDataSource.rawBytesForImage;
+        CGPoint currentTrackingLocation = [self centroidFromTexture:bytesForPositionData ofSize:[rawDataSource maximumOutputSize]];		
+        CGSize currentViewSize = self.view.bounds.size;
+		trackingDot.position = CGPointMake(currentTrackingLocation.x * currentViewSize.width, currentTrackingLocation.y * currentViewSize.height);
+    }
+    else
+    {
+        if (shouldReplaceThresholdColor)
+        {
+            CGSize currentViewSize = self.view.bounds.size;
+            CGSize rawPixelsSize = [rawDataSource maximumOutputSize];
+            
+            
+            CGPoint scaledTouchPoint;
+            scaledTouchPoint.x = (currentTouchPoint.x / currentViewSize.width) * rawPixelsSize.width;
+            scaledTouchPoint.y = (currentTouchPoint.y / currentViewSize.height) * rawPixelsSize.height;
+            
+            GPUByteColorVector colorAtTouchPoint = [rawDataSource colorAtLocation:scaledTouchPoint];
+            
+            thresholdColor[0] = (float)colorAtTouchPoint.red / 255.0;
+            thresholdColor[1] = (float)colorAtTouchPoint.green / 255.0;
+            thresholdColor[2] = (float)colorAtTouchPoint.blue / 255.0;
+
+//            NSLog(@"Color at touch point: %d, %d, %d, %d", colorAtTouchPoint.red, colorAtTouchPoint.green, colorAtTouchPoint.blue, colorAtTouchPoint.alpha);
+
+            [[NSUserDefaults standardUserDefaults] setFloat:thresholdColor[0] forKey:@"thresholdColorR"];
+            [[NSUserDefaults standardUserDefaults] setFloat:thresholdColor[1] forKey:@"thresholdColorG"];
+            [[NSUserDefaults standardUserDefaults] setFloat:thresholdColor[2] forKey:@"thresholdColorB"];
+            
+            [thresholdFilter setFloatVec3:thresholdColor forUniform:@"inputColor"];
+            [positionFilter setFloatVec3:thresholdColor forUniform:@"inputColor"];
+
+            shouldReplaceThresholdColor = NO;
+        }
+    }
+    
 }
 
 #pragma mark -
@@ -181,6 +257,9 @@
     
 	thresholdSensitivity = distanceMoved / 160.0f;
 	[[NSUserDefaults standardUserDefaults] setFloat:thresholdSensitivity forKey:@"thresholdSensitivity"];
+
+    [thresholdFilter setFloat:thresholdSensitivity forUniform:@"threshold"];    
+    [positionFilter setFloat:thresholdSensitivity forUniform:@"threshold"];
 }
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event 

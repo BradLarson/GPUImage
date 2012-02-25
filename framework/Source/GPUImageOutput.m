@@ -50,8 +50,8 @@
     {
         [targetToRemove setInputSize:CGSizeZero];
         [targetToRemove setInputTexture:0];
-        [targets removeObject:targetToRemove];
     }
+    [targets removeAllObjects];
 }
 
 #pragma mark -

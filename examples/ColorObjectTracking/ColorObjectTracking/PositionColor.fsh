@@ -29,7 +29,7 @@ vec4 maskPixel(vec3 pixelColor, vec3 maskColor)
 vec4 coordinateMask(vec4 maskColor, vec2 coordinate)
 {
     // Return this vector weighted by the mask value
-    return maskColor * vec4(coordinate, vec2(1.0));
+    return maskColor * vec4(coordinate, vec2(0.0, 1.0));
 }
 
 void main()
@@ -40,6 +40,6 @@ void main()
 	pixelColor = texture2D(inputImageTexture, textureCoordinate);
 	maskedColor = maskPixel(pixelColor.rgb, inputColor);
 	coordinateColor = coordinateMask(maskedColor, textureCoordinate);
-    
+
 	gl_FragColor = coordinateColor;
 }

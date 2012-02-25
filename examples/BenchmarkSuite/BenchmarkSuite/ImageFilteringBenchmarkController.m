@@ -94,6 +94,16 @@
 
 - (UIImage *)imageProcessedUsingCoreImage:(UIImage *)imageToProcess;
 {
+    /*
+    NSArray *filterNames = [CIFilter filterNamesInCategory:kCICategoryBuiltIn];
+    
+    NSLog(@"Built in filters");
+    for (NSString *currentFilterName in filterNames)
+    {
+        NSLog(@"%@", currentFilterName);
+    }
+    */
+    
     CFAbsoluteTime elapsedTime, startTime = CFAbsoluteTimeGetCurrent();
     
     CIImage *inputImage = [[CIImage alloc] initWithCGImage:imageToProcess.CGImage];

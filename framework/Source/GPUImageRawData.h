@@ -5,7 +5,7 @@ struct GPUByteColorVector {
     GLubyte red;
     GLubyte green;
     GLubyte blue;
-    GLubyte alphe;
+    GLubyte alpha;
 };
 typedef struct GPUByteColorVector GPUByteColorVector;
 
@@ -15,7 +15,6 @@ typedef struct GPUByteColorVector GPUByteColorVector;
 
 @property(readwrite, unsafe_unretained, nonatomic) id<GPUImageRawDataProcessor> delegate;
 @property(readonly) GLubyte *rawBytesForImage;
-@property(readonly) GLint openGLTexture;
 
 // Initialization and teardown
 - (id)initWithImageSize:(CGSize)newImageSize;

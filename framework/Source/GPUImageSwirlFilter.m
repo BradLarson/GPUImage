@@ -20,7 +20,6 @@ NSString *const kGPUImageSwirlFragmentShaderString = SHADER_STRING
      if (dist < radius)
      {
          highp float percent = (radius - dist) / radius;
-//         highp float theta = percent * angle;
          highp float theta = percent * percent * angle * 8.0;
          highp float s = sin(theta);
          highp float c = cos(theta);

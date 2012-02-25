@@ -3,12 +3,13 @@
 
 typedef enum { PASSTHROUGH_VIDEO, SIMPLE_THRESHOLDING, POSITION_THRESHOLDING, OBJECT_TRACKING} ColorTrackingDisplayMode;
 
-@interface ColorTrackingViewController : UIViewController
+@interface ColorTrackingViewController : UIViewController <GPUImageRawDataProcessor>
 {
     CALayer *trackingDot;
 
     GPUImageVideoCamera *videoCamera;
     GPUImageFilter *rotationFilter, *thresholdFilter, *positionFilter;
+    GPUImageRawData *positionRawData, *videoRawData;
     GPUImageView *filteredVideoView;
     
     ColorTrackingDisplayMode displayMode;
@@ -22,5 +23,8 @@ typedef enum { PASSTHROUGH_VIDEO, SIMPLE_THRESHOLDING, POSITION_THRESHOLDING, OB
 - (void)configureVideoFiltering;
 - (void)configureToolbar;
 - (void)configureTrackingDot;
+
+// Image processing
+- (CGPoint)centroidFromTexture:(GLubyte *)pixels ofSize:(CGSize)textureSize;
 
 @end

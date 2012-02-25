@@ -275,7 +275,7 @@
 			name = Sources;
 			sourceTree = "<group>";
 		};
-		BCB5E78214E232D600701302 /* Display */ = {
+		BCB5E78214E232D600701302 /* Outputs */ = {
 			isa = PBXGroup;
 			children = (
 				BCB5E75A14E2086300701302 /* GPUImageView.h */,
@@ -283,7 +283,7 @@
 				BC1B715514F49DAA00ACA2AB /* GPUImageRawData.h */,
 				BC1B715614F49DAA00ACA2AB /* GPUImageRawData.m */,
 			);
-			name = Display;
+			name = Outputs;
 			sourceTree = "<group>";
 		};
 		BCF1A32914DDB1EC00852800 = {
@@ -332,7 +332,7 @@
 				BCB5E76B14E20AD700701302 /* GPUImageOpenGLESContext.m */,
 				BCB5E78114E232BC00701302 /* Sources */,
 				BC245DC314DDBE6B009FE7EB /* Filters */,
-				BCB5E78214E232D600701302 /* Display */,
+				BCB5E78214E232D600701302 /* Outputs */,
 				BCF1A33A14DDB1EC00852800 /* Supporting Files */,
 			);
 			path = GPUImage;
