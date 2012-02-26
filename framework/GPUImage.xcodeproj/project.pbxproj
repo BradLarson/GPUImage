@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0DF3FA2B14FA00C9006AF7D9 /* GPUImageVignetteFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = 0DF3FA2914FA00C9006AF7D9 /* GPUImageVignetteFilter.h */; };
+		0DF3FA2C14FA00C9006AF7D9 /* GPUImageVignetteFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DF3FA2A14FA00C9006AF7D9 /* GPUImageVignetteFilter.m */; };
 		B81521A214F1BA6A00F105F8 /* GPUImageColorMatrixFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = B81521A014F1BA6A00F105F8 /* GPUImageColorMatrixFilter.h */; };
 		B81521A314F1BA6A00F105F8 /* GPUImageColorMatrixFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = B81521A114F1BA6A00F105F8 /* GPUImageColorMatrixFilter.m */; };
 		BC1B715714F49DAA00ACA2AB /* GPUImageRawData.h in Headers */ = {isa = PBXBuildFile; fileRef = BC1B715514F49DAA00ACA2AB /* GPUImageRawData.h */; };
@@ -89,6 +91,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0DF3FA2914FA00C9006AF7D9 /* GPUImageVignetteFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GPUImageVignetteFilter.h; path = Source/GPUImageVignetteFilter.h; sourceTree = SOURCE_ROOT; };
+		0DF3FA2A14FA00C9006AF7D9 /* GPUImageVignetteFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GPUImageVignetteFilter.m; path = Source/GPUImageVignetteFilter.m; sourceTree = SOURCE_ROOT; };
 		B81521A014F1BA6A00F105F8 /* GPUImageColorMatrixFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GPUImageColorMatrixFilter.h; path = Source/GPUImageColorMatrixFilter.h; sourceTree = SOURCE_ROOT; };
 		B81521A114F1BA6A00F105F8 /* GPUImageColorMatrixFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GPUImageColorMatrixFilter.m; path = Source/GPUImageColorMatrixFilter.m; sourceTree = SOURCE_ROOT; };
 		BC1B715514F49DAA00ACA2AB /* GPUImageRawData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GPUImageRawData.h; path = Source/GPUImageRawData.h; sourceTree = SOURCE_ROOT; };
@@ -244,6 +248,8 @@
 				BC1B718D14F56C1D00ACA2AB /* GPUImageSwirlFilter.m */,
 				BC982C4514F29E580001FF6F /* GPUImageKuwaharaFilter.h */,
 				BC982C4614F29E580001FF6F /* GPUImageKuwaharaFilter.m */,
+				0DF3FA2914FA00C9006AF7D9 /* GPUImageVignetteFilter.h */,
+				0DF3FA2A14FA00C9006AF7D9 /* GPUImageVignetteFilter.m */,
 			);
 			name = Effects;
 			sourceTree = "<group>";
@@ -401,6 +407,7 @@
 				BC1B715714F49DAA00ACA2AB /* GPUImageRawData.h in Headers */,
 				BC1B717C14F566E200ACA2AB /* GPUImageSketchFilter.h in Headers */,
 				BC1B718E14F56C1D00ACA2AB /* GPUImageSwirlFilter.h in Headers */,
+				0DF3FA2B14FA00C9006AF7D9 /* GPUImageVignetteFilter.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -530,6 +537,7 @@
 				BC1B715814F49DAA00ACA2AB /* GPUImageRawData.m in Sources */,
 				BC1B717D14F566E200ACA2AB /* GPUImageSketchFilter.m in Sources */,
 				BC1B718F14F56C1D00ACA2AB /* GPUImageSwirlFilter.m in Sources */,
+				0DF3FA2C14FA00C9006AF7D9 /* GPUImageVignetteFilter.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
