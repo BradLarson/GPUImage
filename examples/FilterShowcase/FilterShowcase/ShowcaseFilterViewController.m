@@ -225,6 +225,18 @@
             
             filter = [[GPUImageKuwaharaFilter alloc] init];
         }; break;
+            
+        case GPUIMAGE_VIGNETTE:
+        {
+             self.title = @"Vignette";
+            self.filterSettingsSlider.hidden = NO;
+            
+            [self.filterSettingsSlider setMinimumValue:-1.0];
+            [self.filterSettingsSlider setMaximumValue:0.74];
+            [self.filterSettingsSlider setValue:0.5];
+            
+            filter = [[GPUImageVignetteFilter alloc] init];
+        }; break;
 
         default: filter = [[GPUImageSepiaFilter alloc] init]; break;
     }
@@ -261,6 +273,7 @@
         case GPUIMAGE_DISSOLVE: [(GPUImageDissolveBlendFilter *)filter setMix:[(UISlider *)sender value]]; break;
         case GPUIMAGE_KUWAHARA: [(GPUImageKuwaharaFilter *)filter setRadius:round([(UISlider *)sender value])]; break;
         case GPUIMAGE_SWIRL: [(GPUImageSwirlFilter *)filter setAngle:[(UISlider *)sender value]]; break;
+        case GPUIMAGE_VIGNETTE: [(GPUImageVignetteFilter *)filter setY:[(UISlider *)sender value]]; break;
         default: break;
     }
 }
