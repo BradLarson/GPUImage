@@ -13,6 +13,7 @@
     }
 
     targets = [[NSMutableArray alloc] init];
+    targetTextureIndices = [[NSMutableArray alloc] init];
     
     [self initializeOutputTexture];
 
@@ -31,15 +32,20 @@
 - (void)addTarget:(id<GPUImageInput>)newTarget;
 {
     cachedMaximumOutputSize = CGSizeZero;
-    [newTarget setInputTexture:outputTexture];
+    NSInteger nextAvailableTextureIndex = [newTarget nextAvailableTextureIndex];
+    [newTarget setInputTexture:outputTexture atIndex:nextAvailableTextureIndex];
     [targets addObject:newTarget];
+    [targetTextureIndices addObject:[NSNumber numberWithInteger:nextAvailableTextureIndex]];
 }
 
 - (void)removeTarget:(id<GPUImageInput>)targetToRemove;
 {
     cachedMaximumOutputSize = CGSizeZero;
     [targetToRemove setInputSize:CGSizeZero];
-    [targetToRemove setInputTexture:0];
+    
+    NSInteger indexOfObject = [targets indexOfObject:targetToRemove];
+    [targetToRemove setInputTexture:0 atIndex:[[targetTextureIndices objectAtIndex:indexOfObject] integerValue]];
+    [targetTextureIndices removeObjectAtIndex:indexOfObject];
     [targets removeObject:targetToRemove];
 }
 
@@ -49,9 +55,12 @@
     for (id<GPUImageInput> targetToRemove in targets)
     {
         [targetToRemove setInputSize:CGSizeZero];
-        [targetToRemove setInputTexture:0];
+
+        NSInteger indexOfObject = [targets indexOfObject:targetToRemove];
+        [targetToRemove setInputTexture:0 atIndex:[[targetTextureIndices objectAtIndex:indexOfObject] integerValue]];
     }
     [targets removeAllObjects];
+    [targetTextureIndices removeAllObjects];
 }
 
 #pragma mark -

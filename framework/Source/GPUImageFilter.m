@@ -322,9 +322,21 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size)
     [self renderToTextureWithVertices:squareVertices textureCoordinates:squareTextureCoordinates];
 }
 
-- (void)setInputTexture:(GLuint)newInputTexture;
+- (NSInteger)nextAvailableTextureIndex;
 {
     if (filterSourceTexture == 0)
+    {
+        return 0;
+    }
+    else
+    {
+        return 1;
+    }
+}
+
+- (void)setInputTexture:(GLuint)newInputTexture atIndex:(NSInteger)textureIndex;
+{
+    if (textureIndex == 0)
     {
         filterSourceTexture = newInputTexture;
     }

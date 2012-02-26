@@ -12,13 +12,15 @@ contact@sunsetlakesoftware.com
 
 The GPUImage framework is a BSD-licensed iOS library that lets you apply GPU-accelerated filters and other effects to images, live camera video, and movies. In comparison to Core Image (part of iOS 5.0), GPUImage allows you to write your own custom filters, supports deployment to iOS 4.0, and has a simpler interface. However, it currently lacks some of the more advanced features of Core Image, such as facial detection.
 
-For massively parallel operations like processing images or live video frames, GPUs have some significant performance advantages over CPUs. On an iPhone 4, a simple image filter can be up to 24X faster to perform on the GPU than an equivalent CPU-based filter.
+For massively parallel operations like processing images or live video frames, GPUs have some significant performance advantages over CPUs. On an iPhone 4, a simple image filter can be over 100 times faster to perform on the GPU than an equivalent CPU-based filter.
 
 However, running custom filters on the GPU requires a lot of code to set up and maintain an OpenGL ES 2.0 rendering target for these filters. I created a sample project to do this:
 
 http://www.sunsetlakesoftware.com/2010/10/22/gpu-accelerated-video-processing-mac-and-ios
 
 and found that there was a lot of boilerplate code I had to write in its creation. Therefore, I put together this framework that encapsulates a lot of the common tasks you'll encounter when processing images and video and made it so that you don't need to care about the OpenGL ES 2.0 underpinnings.
+
+In initial benchmarks, this framework significantly outperforms Core Image when handling video, taking only 2.5 ms on an iPhone 4 to upload a frame from the camera, apply a sepia filter, and display, versus 149 ms for the same operation using Core Image. CPU-based processing takes 460 ms, making GPUImage 60X faster than Core Image on this hardware, and 184X faster than CPU-bound processing. On an iPhone 4S, GPUImage is only 13X faster than Core Image, and 102X faster than CPU-bound processing.
 
 ## License ##
 

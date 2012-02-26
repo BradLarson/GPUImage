@@ -43,7 +43,7 @@
 {
     UIImage *inputImage = [UIImage imageNamed:@"WID-small.jpg"]; // The WID.jpg example is greater than 2048 pixels tall, so it fails on older devices
     
-    sourcePicture = [[GPUImagePicture alloc] initWithImage:inputImage];
+    sourcePicture = [[GPUImagePicture alloc] initWithImage:inputImage smoothlyScaleOutput:YES];
     sepiaFilter = [[GPUImageSepiaFilter alloc] init];
     sepiaFilter2 = [[GPUImageSepiaFilter alloc] init];
     

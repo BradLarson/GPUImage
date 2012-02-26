@@ -3,7 +3,7 @@
 
 @interface GPUImageOutput : NSObject
 {
-    NSMutableArray *targets;
+    NSMutableArray *targets, *targetTextureIndices;
     
     GLuint outputTexture;
     CGSize inputTextureSize, cachedMaximumOutputSize;

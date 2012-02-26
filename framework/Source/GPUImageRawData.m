@@ -220,7 +220,12 @@ NSString *const kGPUImageDataFragmentShaderString = SHADER_STRING
     [self.delegate newImageFrameAvailableFromDataSource:self];
 }
 
-- (void)setInputTexture:(GLuint)newInputTexture;
+- (NSInteger)nextAvailableTextureIndex;
+{
+    return 0;
+}
+
+- (void)setInputTexture:(GLuint)newInputTexture atIndex:(NSInteger)textureIndex;
 {
     inputTextureForDisplay = newInputTexture;
 }
