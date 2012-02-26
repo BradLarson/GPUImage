@@ -9,7 +9,9 @@
     CGSize inputTextureSize, cachedMaximumOutputSize;
 }
 
-// Managing outputs
+@property(readwrite, nonatomic) BOOL shouldSmoothlyScaleOutput;
+
+// Managing targets
 - (void)addTarget:(id<GPUImageInput>)newTarget;
 - (void)removeTarget:(id<GPUImageInput>)targetToRemove;
 - (void)removeAllTargets;

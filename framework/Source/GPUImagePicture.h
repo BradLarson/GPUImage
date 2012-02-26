@@ -9,6 +9,7 @@
 
 // Initialization and teardown
 - (id)initWithImage:(UIImage *)newImageSource;
+- (id)initWithImage:(UIImage *)newImageSource smoothlyScaleOutput:(BOOL)smoothlyScaleOutput;
 
 // Image rendering
 - (void)processImage;

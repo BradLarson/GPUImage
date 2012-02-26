@@ -244,16 +244,14 @@ This is used to test the performance of the overall framework by testing it agai
 
 A version of my ColorTracking example from http://www.sunsetlakesoftware.com/2010/10/22/gpu-accelerated-video-processing-mac-and-ios ported across to use GPUImage, this application uses color in a scene to track objects from a live camera feed. The four views you can switch between include the raw camera feed, the camera feed with pixels matching the color threshold in white, the processed video where positions are encoded as colors within the pixels passing the threshold test, and finally the live video feed with a dot that tracks the selected color. Tapping the screen changes the color to track to match the color of the pixels under your finger. Tapping and dragging on the screen makes the color threshold more or less forgiving. This is most obvious on the second, color thresholding view.
 
-- This isn't fully functional yet, with only the filters being applied at this point
+Currently, all processing for the color averaging in the last step is done on the CPU, so this is part is extremely slow.
 
 ## Things that need work ##
 
 - Images that exceed 2048 pixels wide or high currently can't be processed on devices older than the iPad 2 or iPhone 4S.
-- Movies as input sources and export destinations currently aren't supported.
+- Movies as export destinations currently aren't supported.
 - Currently, it's difficult to create a custom filter with additional attribute inputs and a modified vertex shader.
 - Many common filters aren't built into the framework yet.
 - Video capture and processing should be done on a background GCD serial queue.
 - I'm sure that there are many optimizations that can be made on the rendering pipeline.
 - The aspect ratio of the input video is not maintained, but stretched to fill the final image.
-- Larger images aren't smoothly scaled down.
-

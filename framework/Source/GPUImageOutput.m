@@ -26,7 +26,7 @@
 }
 
 #pragma mark -
-#pragma mark Manage outputs
+#pragma mark Managing targets
 
 - (void)addTarget:(id<GPUImageInput>)newTarget;
 {
@@ -79,5 +79,10 @@
         outputTexture = 0;
     }
 }
+
+#pragma mark -
+#pragma mark Accessors
+
+@synthesize shouldSmoothlyScaleOutput = _shouldSmoothlyScaleOutput;
 
 @end

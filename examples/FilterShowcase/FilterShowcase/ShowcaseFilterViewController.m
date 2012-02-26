@@ -75,14 +75,14 @@
             [self.filterSettingsSlider setMinimumValue:0.0];
             [self.filterSettingsSlider setMaximumValue:0.3];
             
-            filter = [[GPUImagePixellateFilter alloc] init]; break;
+            filter = [[GPUImagePixellateFilter alloc] init];
         }; break;
         case GPUIMAGE_COLORINVERT:
         {
             self.title = @"Color Invert";
             self.filterSettingsSlider.hidden = YES;
             
-            filter = [[GPUImageColorInvertFilter alloc] init]; break;
+            filter = [[GPUImageColorInvertFilter alloc] init];
         }; break;
         case GPUIMAGE_SATURATION:
         {
@@ -93,7 +93,7 @@
             [self.filterSettingsSlider setMinimumValue:0.0];
             [self.filterSettingsSlider setMaximumValue:2.0];
             
-            filter = [[GPUImageSaturationFilter alloc] init]; break;
+            filter = [[GPUImageSaturationFilter alloc] init];
         }; break;
         case GPUIMAGE_CONTRAST:
         {
@@ -104,7 +104,7 @@
             [self.filterSettingsSlider setMaximumValue:4.0];
             [self.filterSettingsSlider setValue:1.0];
             
-            filter = [[GPUImageContrastFilter alloc] init]; break;
+            filter = [[GPUImageContrastFilter alloc] init];
         }; break;
         case GPUIMAGE_BRIGHTNESS:
         {
@@ -115,7 +115,7 @@
             [self.filterSettingsSlider setMaximumValue:1.0];
             [self.filterSettingsSlider setValue:0.0];
             
-            filter = [[GPUImageBrightnessFilter alloc] init]; break;
+            filter = [[GPUImageBrightnessFilter alloc] init];
         }; break;
         case GPUIMAGE_GAMMA:
         {
@@ -126,7 +126,7 @@
             [self.filterSettingsSlider setMaximumValue:3.0];
             [self.filterSettingsSlider setValue:1.0];
             
-            filter = [[GPUImageGammaFilter alloc] init]; break;
+            filter = [[GPUImageGammaFilter alloc] init];
         }; break;
         case GPUIMAGE_SOBELEDGEDETECTION:
         {
@@ -137,7 +137,7 @@
             [self.filterSettingsSlider setMaximumValue:1.0];
             [self.filterSettingsSlider setValue:1.0];
             
-            filter = [[GPUImageSobelEdgeDetectionFilter alloc] init]; break;
+            filter = [[GPUImageSobelEdgeDetectionFilter alloc] init];
         }; break;
         case GPUIMAGE_SKETCH:
         {
@@ -148,15 +148,15 @@
             [self.filterSettingsSlider setMaximumValue:1.0];
             [self.filterSettingsSlider setValue:1.0];
             
-            filter = [[GPUImageSketchFilter alloc] init]; break;
+            filter = [[GPUImageSketchFilter alloc] init];
         }; break;
         case GPUIMAGE_TOON:
         {
             self.title = @"Toon";
             self.filterSettingsSlider.hidden = YES;
             
-            filter = [[GPUImageToonFilter alloc] init]; break;
-        };
+            filter = [[GPUImageToonFilter alloc] init];
+        }; break;
         case GPUIMAGE_SWIRL:
         {
             self.title = @"Swirl";
@@ -166,36 +166,36 @@
             [self.filterSettingsSlider setMaximumValue:2.0];
             [self.filterSettingsSlider setValue:1.0];
             
-            filter = [[GPUImageSwirlFilter alloc] init]; break;
+            filter = [[GPUImageSwirlFilter alloc] init];
         }; break;
         case GPUIMAGE_MULTIPLY:
         {
             self.title = @"Multiply Blend";
             self.filterSettingsSlider.hidden = YES;
             
-            filter = [[GPUImageMultiplyBlendFilter alloc] init]; break;
+            filter = [[GPUImageMultiplyBlendFilter alloc] init];
         }; break;
         case GPUIMAGE_OVERLAY:
         {
             self.title = @"Overlay Blend";
             self.filterSettingsSlider.hidden = YES;
             
-            filter = [[GPUImageOverlayBlendFilter alloc] init]; break;
-        };
+            filter = [[GPUImageOverlayBlendFilter alloc] init];
+        }; break;
         case GPUIMAGE_LIGHTEN:
         {
             self.title = @"Lighten Blend";
             self.filterSettingsSlider.hidden = YES;
             
-            filter = [[GPUImageLightenBlendFilter alloc] init]; break;
-        };
+            filter = [[GPUImageLightenBlendFilter alloc] init];
+        }; break;
         case GPUIMAGE_DARKEN:
         {
             self.title = @"Darken Blend";
             self.filterSettingsSlider.hidden = YES;
             
-            filter = [[GPUImageDarkenBlendFilter alloc] init]; break;
-        };
+            filter = [[GPUImageDarkenBlendFilter alloc] init];
+        }; break;
         case GPUIMAGE_DISSOLVE:
         {
             self.title = @"Dissolve Blend";
@@ -205,14 +205,14 @@
             [self.filterSettingsSlider setMaximumValue:1.0];
             [self.filterSettingsSlider setValue:0.5];
             
-            filter = [[GPUImageDissolveBlendFilter alloc] init]; break;
+            filter = [[GPUImageDissolveBlendFilter alloc] init];
         }; break;
         case GPUIMAGE_CUSTOM:
         {
             self.title = @"Custom";
             self.filterSettingsSlider.hidden = YES;
 
-            filter = [[GPUImageFilter alloc] initWithFragmentShaderFromFile:@"CustomFilter"]; break;
+            filter = [[GPUImageFilter alloc] initWithFragmentShaderFromFile:@"CustomFilter"];
         }; break;
         case GPUIMAGE_KUWAHARA:
         {
@@ -223,7 +223,7 @@
             [self.filterSettingsSlider setMaximumValue:8.0];
             [self.filterSettingsSlider setValue:4.0];
             
-            filter = [[GPUImageKuwaharaFilter alloc] init]; break;
+            filter = [[GPUImageKuwaharaFilter alloc] init];
         }; break;
 
         default: filter = [[GPUImageSepiaFilter alloc] init]; break;
@@ -234,7 +234,7 @@
     
     // The picture is only used for two-image blend filters
     UIImage *inputImage = [UIImage imageNamed:@"WID-small.jpg"];
-    sourcePicture = [[GPUImagePicture alloc] initWithImage:inputImage];
+    sourcePicture = [[GPUImagePicture alloc] initWithImage:inputImage smoothlyScaleOutput:YES];
     [sourcePicture addTarget:filter];
 
     GPUImageView *filterView = (GPUImageView *)self.view;

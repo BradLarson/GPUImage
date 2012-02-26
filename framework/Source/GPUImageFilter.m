@@ -216,12 +216,14 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size)
 
 	glActiveTexture(GL_TEXTURE2);
 	glBindTexture(GL_TEXTURE_2D, filterSourceTexture);
+
 	glUniform1i(filterInputTextureUniform, 2);	
 
     if (filterSourceTexture2 != 0)
     {
         glActiveTexture(GL_TEXTURE3);
         glBindTexture(GL_TEXTURE_2D, filterSourceTexture2);
+                
         glUniform1i(filterInputTextureUniform2, 3);	
     }
     
@@ -353,5 +355,7 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size)
     return cachedMaximumOutputSize;
 }
 
+#pragma mark -
+#pragma mark Accessors
 
 @end
