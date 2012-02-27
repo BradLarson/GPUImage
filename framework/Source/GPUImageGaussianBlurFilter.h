@@ -11,8 +11,8 @@
 @interface GPUImageGaussianBlurFilter : GPUImageFilter {
     GLint blurSizeUniform;
     
-    __strong GPUImageFilter *horizontalBlur;
-    __strong GPUImageFilter *verticalBlur;
+    GPUImageFilter *horizontalBlur;
+    GPUImageFilter *verticalBlur;
 }
 
 @property (readwrite, nonatomic) CGFloat blurSize;

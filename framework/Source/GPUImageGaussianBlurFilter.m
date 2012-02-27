@@ -104,6 +104,14 @@ NSString *const kGPUImageGaussianBlurVerticalFragmentShaderString = SHADER_STRIN
     else [verticalBlur addTarget:newTarget];
 }
 
+- (void) removeAllTargets {
+    [verticalBlur removeAllTargets];
+}
+
+- (void) removeTarget:(id<GPUImageInput>)targetToRemove {
+    [verticalBlur removeTarget:targetToRemove];
+}
+
 - (void) setBlurSize:(CGFloat)blurSize {
     _blurSize = blurSize;
 
