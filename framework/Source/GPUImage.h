@@ -26,6 +26,7 @@
 #import "GPUImageDissolveBlendFilter.h"
 #import "GPUImageKuwaharaFilter.h"
 #import "GPUImageVignetteFilter.h"
+#import "GPUImageGaussianBlurFilter.h"
 #import "GPUImageOverlayBlendFilter.h"
 #import "GPUImageDarkenBlendFilter.h"
 #import "GPUImageLightenBlendFilter.h"
