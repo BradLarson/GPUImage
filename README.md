@@ -111,6 +111,10 @@ For example, an application that takes in live video from the camera, converts t
   - *center*: The center of the image (in normalized coordinates from 0 - 1.0) about which to twist, with a default of (0.5, 0.5)
   - *angle*: The amount of twist to apply to the image, with a default of 1.0
 
+- **GPUImageVignetteFilter**: Performs a vignetting effect, fading out the image at the edges
+  - *x*:
+  - *y*: The directional intensity of the vignetting, with a default of x = 0.5, y = 0.75
+
 - **GPUImageKuwaharaFilter**: Kuwahara image abstraction, drawn from the work of Kyprianidis, et. al. in their publication "Anisotropic Kuwahara Filtering on the GPU" within the GPU Pro collection. This produces an oil-painting-like image, but it is extremely computationally expensive, so it can take seconds to render a frame on an iPad 2. This might be best used for still images.
   - *radius*: In integer specifying the number of pixels out from the center pixel to test when applying the filter, with a default of 4. A higher value creates a more abstracted image, but at the cost of much greater processing time.
 
