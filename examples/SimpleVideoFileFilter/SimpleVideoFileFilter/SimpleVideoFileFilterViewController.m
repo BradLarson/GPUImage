@@ -23,16 +23,32 @@
   
     NSURL *sampleURL = [[NSBundle mainBundle] URLForResource:@"sample_iPod" withExtension:@"m4v"];
     
-    imageFile = [[GPUImageMovie alloc] initWithURL:sampleURL];
+    movieFile = [[GPUImageMovie alloc] initWithURL:sampleURL];
     pixellateFilter = [[GPUImagePixellateFilter alloc] init];
     GPUImageRotationFilter *rotationFilter = [[GPUImageRotationFilter alloc] initWithRotation:kGPUImageRotateRight];
     
-    [imageFile addTarget:rotationFilter];
+    [movieFile addTarget:rotationFilter];
     [rotationFilter addTarget:pixellateFilter];
     GPUImageView *filterView = (GPUImageView *)self.view;
     [pixellateFilter addTarget:filterView];
     
-    [imageFile startProcessing];
+//    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+//    NSString *documentsDirectory = [paths objectAtIndex:0];
+//    
+//    NSLog(@"Movie: %@", [documentsDirectory stringByAppendingPathComponent:@"Movie.mov"]);
+    NSURL *movieURL = [NSURL fileURLWithPath:[NSHomeDirectory() stringByAppendingPathComponent:@"Movie.mov"]];
+    movieWriter = [[GPUImageMovieWriter alloc] initWithMovieURL:movieURL];
+    [pixellateFilter addTarget:movieWriter];
+    
+    [movieWriter startRecording];
+    [movieFile startProcessing];
+    
+    double delayInSeconds = 2.0;
+    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
+    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+        [pixellateFilter removeTarget:movieWriter];
+        [movieWriter finishRecording];
+    });
 }
 
 - (void)viewDidUnload

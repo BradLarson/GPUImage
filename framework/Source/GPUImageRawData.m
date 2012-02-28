@@ -29,6 +29,8 @@ NSString *const kGPUImageDataFragmentShaderString = SHADER_STRING
     GLProgram *dataProgram;
     GLint dataPositionAttribute, dataTextureCoordinateAttribute;
     GLint dataInputTextureUniform;
+    
+    GLubyte *_rawBytesForImage;
 }
 
 // Frame rendering

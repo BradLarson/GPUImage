@@ -3,7 +3,15 @@
 @interface GPUImageMovieWriter ()
 {
     GLuint inputTextureForMovieRendering;
+    
+    GLubyte *frameData;
+    
+    NSDate *startTime;
 }
+
+// Movie recording
+- (void)initializeMovie;
+
 @end
 
 @implementation GPUImageMovieWriter
@@ -19,10 +27,18 @@
     }
     
     movieURL = newMovieURL;
-    
+    [self initializeMovie];
+
     return self;
 }
 
+- (void)dealloc;
+{
+    if (frameData != NULL)
+    {
+        free(frameData);
+    }
+}
 
 #pragma mark -
 #pragma mark Movie recording
@@ -30,9 +46,14 @@
 - (void)initializeMovie;
 {
     videoSize = CGSizeMake(480.0, 640.0);
-    
+    frameData = (GLubyte *) calloc(videoSize.width * videoSize.height * 4, sizeof(GLubyte));
+
     NSError *error = nil;
     assetWriter = [[AVAssetWriter alloc] initWithURL:movieURL fileType:AVFileTypeQuickTimeMovie error:&error];
+    if (error != nil)
+    {
+        NSLog(@"Error: %@", error);
+    }
     
     NSDictionary *videoSettings = [NSDictionary dictionaryWithObjectsAndKeys:AVVideoCodecH264, AVVideoCodecKey,
                                    [NSNumber numberWithInt:videoSize.width], AVVideoWidthKey,
@@ -46,9 +67,19 @@
     assetWriterPixelBufferInput = [AVAssetWriterInputPixelBufferAdaptor assetWriterInputPixelBufferAdaptorWithAssetWriterInput:assetWriterVideoInput sourcePixelBufferAttributes:sourcePixelBufferAttributesDictionary];
     
     [assetWriter addInput:assetWriterVideoInput];
-    
+}
+
+- (void)startRecording;
+{
+    startTime = [NSDate date];
     [assetWriter startWriting];
     [assetWriter startSessionAtSourceTime:kCMTimeZero];
+}
+
+- (void)finishRecording;
+{
+    [assetWriterVideoInput markAsFinished];
+    [assetWriter finishWriting];    
 }
 
 #pragma mark -
@@ -56,24 +87,24 @@
 
 - (void)newFrameReady;
 {
-//    GLuint *buffer = (GLuint *) malloc(myDataLength);
-//    glReadPixels(0, 0, esize.width, esize.height, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
-//    CVPixelBufferRef pixel_buffer = NULL;
-//    CVPixelBufferCreateWithBytes (NULL, esize.width, esize.height, kCVPixelFormatType_32BGRA, buffer, 4 * esize.width, NULL, 0, NULL, &pixel_buffer);
-//    
-//    /* DON'T FREE THIS BEFORE USING pixel_buffer! */ 
-//    //free(buffer);
-//    
-//    if(![adaptor appendPixelBuffer:pixel_buffer withPresentationTime:currentTime]) {
-//        NSLog(@"FAIL");
-//    } else {
+    glReadPixels(0, 0, videoSize.width, videoSize.height, GL_RGBA, GL_UNSIGNED_BYTE, frameData);
+    CVPixelBufferRef pixel_buffer = NULL;
+    CVPixelBufferCreateWithBytes (NULL, videoSize.width, videoSize.height, kCVPixelFormatType_32BGRA, frameData, 4 * videoSize.width, NULL, 0, NULL, &pixel_buffer);
+    
+    CMTime currentTime = CMTimeMakeWithSeconds([[NSDate date] timeIntervalSinceDate:startTime],30);
+    
+    if(![assetWriterPixelBufferInput appendPixelBuffer:pixel_buffer withPresentationTime:currentTime]) 
+    {
+        NSLog(@"FAIL");
+    } 
+    else 
+    {
 //        NSLog(@"Success:%d", currentFrame);
 //        currentTime = CMTimeAdd(currentTime, frameLength);
-//    }
-//    
-//    free(buffer);
-//    CVPixelBufferRelease(pixel_buffer);
-//    
+    }
+    
+    CVPixelBufferRelease(pixel_buffer);
+    
 //    currentFrame++;
 }
 

@@ -3,8 +3,9 @@
 
 @interface SimpleVideoFileFilterViewController : UIViewController
 {
-    GPUImageMovie *imageFile;
+    GPUImageMovie *movieFile;
     GPUImagePixellateFilter *pixellateFilter;
+    GPUImageMovieWriter *movieWriter;
 }
 
 - (IBAction)updatePixelWidth:(id)sender;

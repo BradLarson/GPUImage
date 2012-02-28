@@ -21,6 +21,7 @@
 - (id)initWithMovieURL:(NSURL *)newMovieURL;
 
 // Movie recording
-- (void)initializeMovie;
+- (void)startRecording;
+- (void)finishRecording;
 
 @end
