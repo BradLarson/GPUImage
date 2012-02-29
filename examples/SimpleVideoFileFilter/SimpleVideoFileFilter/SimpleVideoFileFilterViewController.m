@@ -31,23 +31,24 @@
     [rotationFilter addTarget:pixellateFilter];
     GPUImageView *filterView = (GPUImageView *)self.view;
     [pixellateFilter addTarget:filterView];
-    
-//    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-//    NSString *documentsDirectory = [paths objectAtIndex:0];
-//    
-//    NSLog(@"Movie: %@", [documentsDirectory stringByAppendingPathComponent:@"Movie.mov"]);
-    NSURL *movieURL = [NSURL fileURLWithPath:[NSHomeDirectory() stringByAppendingPathComponent:@"Movie.mov"]];
-    movieWriter = [[GPUImageMovieWriter alloc] initWithMovieURL:movieURL];
+
+    // In addition to displaying to the screen, write out a processed version of the movie to disk
+    NSString *pathToMovie = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/Movie.m4v"];
+    unlink([pathToMovie UTF8String]); // If a file already exists, AVAssetWriter won't let you record new frames, so delete the old movie
+    NSURL *movieURL = [NSURL fileURLWithPath:pathToMovie];
+
+    movieWriter = [[GPUImageMovieWriter alloc] initWithMovieURL:movieURL size:CGSizeMake(480.0, 640.0)];
     [pixellateFilter addTarget:movieWriter];
     
     [movieWriter startRecording];
     [movieFile startProcessing];
     
-    double delayInSeconds = 2.0;
+    double delayInSeconds = 5.0;
     dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
     dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
         [pixellateFilter removeTarget:movieWriter];
         [movieWriter finishRecording];
+        NSLog(@"Done recording");
     });
 }
 

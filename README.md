@@ -219,8 +219,33 @@ One thing to note when adding fragment shaders to your Xcode project is that Xco
 
 ### Filtering and re-encoding a movie ###
 
-- This is not yet implemented
+Movies can be loaded into the framework via the GPUImageMovie class, filtered, and then written out using a GPUImageMovieWriter. GPUImageMovieWriter is also fast enough to record video in realtime from an iPhone 4's camera at 640x480, so a direct filtered video source can be fed into it.
 
+The following is an example of how you would load a sample movie, pass it through a pixellation and rotation filter, then record the result to disk as a 480 x 640 h.264 movie:
+
+	movieFile = [[GPUImageMovie alloc] initWithURL:sampleURL];
+	pixellateFilter = [[GPUImagePixellateFilter alloc] init];
+	GPUImageRotationFilter *rotationFilter = [[GPUImageRotationFilter alloc] initWithRotation:kGPUImageRotateRight];
+
+	[movieFile addTarget:rotationFilter];
+	[rotationFilter addTarget:pixellateFilter];
+
+	NSString *pathToMovie = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/Movie.m4v"];
+	unlink([pathToMovie UTF8String]);
+	NSURL *movieURL = [NSURL fileURLWithPath:pathToMovie];
+
+	movieWriter = [[GPUImageMovieWriter alloc] initWithMovieURL:movieURL size:CGSizeMake(480.0, 640.0)];
+	[pixellateFilter addTarget:movieWriter];
+
+	[movieWriter startRecording];
+	[movieFile startProcessing];
+
+Once recording is finished, you need to remove the movie recorder from the filter chain and close off the recording using code like the following:
+
+	[pixellateFilter removeTarget:movieWriter];
+	[movieWriter finishRecording];
+
+A movie won't be usable until it has been finished off, so if this is interrupted before this point, the recording will be lost.
 
 ## Sample applications ##
 
@@ -255,7 +280,6 @@ Currently, all processing for the color averaging in the last step is done on th
 ## Things that need work ##
 
 - Images that exceed 2048 pixels wide or high currently can't be processed on devices older than the iPad 2 or iPhone 4S.
-- Movies as export destinations currently aren't supported.
 - Currently, it's difficult to create a custom filter with additional attribute inputs and a modified vertex shader.
 - Many common filters aren't built into the framework yet.
 - Video capture and processing should be done on a background GCD serial queue.

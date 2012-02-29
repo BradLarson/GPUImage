@@ -18,7 +18,7 @@
 }
 
 // Initialization and teardown
-- (id)initWithMovieURL:(NSURL *)newMovieURL;
+- (id)initWithMovieURL:(NSURL *)newMovieURL size:(CGSize)newSize;
 
 // Movie recording
 - (void)startRecording;

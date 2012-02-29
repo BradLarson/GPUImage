@@ -54,8 +54,6 @@
         CFRelease(sampleBufferRef);
       }
     }
-    
-    NSLog(@"Finished");
   }];
 }
 

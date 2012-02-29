@@ -22,15 +22,32 @@
     [super viewDidLoad];
     
     videoCamera = [[GPUImageVideoCamera alloc] initWithSessionPreset:AVCaptureSessionPreset640x480 cameraPosition:AVCaptureDevicePositionBack];
-    pixellateFilter = [[GPUImagePixellateFilter alloc] init];
+    filter = [[GPUImagePixellateFilter alloc] init];
+//    filter = [[GPUImageSketchFilter alloc] init];
     GPUImageRotationFilter *rotationFilter = [[GPUImageRotationFilter alloc] initWithRotation:kGPUImageRotateRight];
     
     [videoCamera addTarget:rotationFilter];
-    [rotationFilter addTarget:pixellateFilter];
+    [rotationFilter addTarget:filter];
     GPUImageView *filterView = (GPUImageView *)self.view;
-    [pixellateFilter addTarget:filterView];
+    [filter addTarget:filterView];
     
+    // Record a movie for 10 s and store it in /Documents, visible via iTunes file sharing
+    
+    NSString *pathToMovie = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/Movie.m4v"];
+    unlink([pathToMovie UTF8String]); // If a file already exists, AVAssetWriter won't let you record new frames, so delete the old movie
+    NSURL *movieURL = [NSURL fileURLWithPath:pathToMovie];
+    movieWriter = [[GPUImageMovieWriter alloc] initWithMovieURL:movieURL size:CGSizeMake(480.0, 640.0)];
+    [filter addTarget:movieWriter];
+    
+    [movieWriter startRecording];
     [videoCamera startCameraCapture];
+    
+    double delayInSeconds = 10.0;
+    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
+    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+        [filter removeTarget:movieWriter];
+        [movieWriter finishRecording];
+    });
 }
 
 - (void)viewDidUnload
@@ -43,9 +60,10 @@
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
-- (IBAction)updatePixelWidth:(id)sender
+- (IBAction)updateSliderValue:(id)sender
 {
-    pixellateFilter.fractionalWidthOfAPixel = [(UISlider *)sender value];
+    [(GPUImagePixellateFilter *)filter setFractionalWidthOfAPixel:[(UISlider *)sender value]];
+//    [(GPUImageSketchFilter *)filter setIntensity:1.0];
 }
 
 @end
