@@ -1,11 +1,3 @@
-//
-//  GPUImageVignetteFilter.m
-//  GPUImage
-//
-//  Created by Keita Kobayashi on 2/26/12.
-//  Copyright (c) 2012 Brad Larson. All rights reserved.
-//
-
 #import "GPUImageVignetteFilter.h"
 
 NSString *const kGPUImageVignetteFragmentShaderString = SHADER_STRING

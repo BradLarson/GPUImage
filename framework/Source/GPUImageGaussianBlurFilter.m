@@ -1,11 +1,3 @@
-//
-//  GPUImageGaussianBlurFilter.m
-//  GPUImage
-//
-//  Created by Keita Kobayashi on 2/27/12.
-//  Copyright (c) 2012 Brad Larson. All rights reserved.
-//
-
 #import "GPUImageGaussianBlurFilter.h"
 
 NSString *const kGPUImageGaussianBlurFragmentShaderString = SHADER_STRING
