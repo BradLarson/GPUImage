@@ -240,12 +240,12 @@
 
         case GPUIMAGE_GAUSSIAN:
         {
-            self.title = @"Gaussian Selective Blur";
+            self.title = @"Gaussian Blur";
             self.filterSettingsSlider.hidden = NO;
             
             [self.filterSettingsSlider setMinimumValue:0.0];
-            [self.filterSettingsSlider setMaximumValue:60.0/320.0];
-            [self.filterSettingsSlider setValue:10.0/320.0];
+            [self.filterSettingsSlider setMaximumValue:10.0/320.0];
+            [self.filterSettingsSlider setValue:1.0/320.0];
             
             filter = [[GPUImageGaussianBlurFilter alloc] init];
         }; break;
@@ -287,7 +287,7 @@
         case GPUIMAGE_KUWAHARA: [(GPUImageKuwaharaFilter *)filter setRadius:round([(UISlider *)sender value])]; break;
         case GPUIMAGE_SWIRL: [(GPUImageSwirlFilter *)filter setAngle:[(UISlider *)sender value]]; break;
         case GPUIMAGE_VIGNETTE: [(GPUImageVignetteFilter *)filter setY:[(UISlider *)sender value]]; break;
-        case GPUIMAGE_GAUSSIAN: [(GPUImageGaussianBlurFilter *)filter setExcludeBlurSize:[(UISlider*)sender value]]; break;
+        case GPUIMAGE_GAUSSIAN: [(GPUImageGaussianBlurFilter *)filter setBlurSize:[(UISlider*)sender value]]; break;
         default: break;
     }
 }
