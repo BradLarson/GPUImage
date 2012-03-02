@@ -1,6 +1,7 @@
 #import "GPUImageGaussianBlurFilter.h"
 
-NSString *const kGPUImageGaussianBlurFragmentShaderString = SHADER_STRING
+// To pass through
+NSString *const kGPUImageGaussianBlurPassThroughFragmentShaderString = SHADER_STRING
 (
  uniform sampler2D inputImageTexture;
  varying highp vec2 textureCoordinate;
@@ -10,109 +11,78 @@ NSString *const kGPUImageGaussianBlurFragmentShaderString = SHADER_STRING
  }
 );
 
-NSString *const kGPUImageGaussianBlurHorizontalFragmentShaderString = SHADER_STRING
+NSString *const kGPUImageGaussianBlurVertexShaderString = SHADER_STRING
 (
- uniform sampler2D inputImageTexture;
- varying highp vec2 textureCoordinate;
-
+ attribute vec4 position;
+ attribute vec4 inputTextureCoordinate;
+ 
+ const lowp int GAUSSIAN_SAMPLES = 9;
+ 
  uniform highp float blurSize;
+ uniform lowp int horizontalBlur; // 0 == vertical blur, 1 == horizontal blur
  
- uniform lowp float excludeCircleRadius;
- uniform lowp vec2 excludeCirclePoint;
- uniform lowp float excludeBlurSize;
+ varying highp vec2 textureCoordinate;
+ varying highp vec2 blurCoordinates[GAUSSIAN_SAMPLES];
  
- const lowp int samples = 9;
- 
- void main()
- {
-     mediump float distance = abs(distance(textureCoordinate, excludeCirclePoint));
-     highp float ourBlurSize = blurSize;
-     if (distance <= excludeCircleRadius) {
-         // within the no-blur circle, taper off the blur size until it's 0
-         if (distance >= excludeCircleRadius - excludeBlurSize) {
-             distance -= excludeCircleRadius - excludeBlurSize;
-             ourBlurSize *= distance / excludeBlurSize;
-         } else {
-             gl_FragColor = texture2D(inputImageTexture, textureCoordinate);
-             return;
-         }
-     }
-     
-     highp vec4 sum = vec4(0.0);
-     
-     // blur in x (horizontal)
-     // take nine samples, with the distance blurSize between them
-     sum += texture2D(inputImageTexture, vec2(textureCoordinate.x - 4.0*ourBlurSize, textureCoordinate.y)) * 0.05;
-     sum += texture2D(inputImageTexture, vec2(textureCoordinate.x - 3.0*ourBlurSize, textureCoordinate.y)) * 0.09;
-     sum += texture2D(inputImageTexture, vec2(textureCoordinate.x - 2.0*ourBlurSize, textureCoordinate.y)) * 0.12;
-     sum += texture2D(inputImageTexture, vec2(textureCoordinate.x - ourBlurSize, textureCoordinate.y)) * 0.15;
-     sum += texture2D(inputImageTexture, vec2(textureCoordinate.x, textureCoordinate.y)) * 0.18;
-     sum += texture2D(inputImageTexture, vec2(textureCoordinate.x + ourBlurSize, textureCoordinate.y)) * 0.15;
-     sum += texture2D(inputImageTexture, vec2(textureCoordinate.x + 2.0*ourBlurSize, textureCoordinate.y)) * 0.12;
-     sum += texture2D(inputImageTexture, vec2(textureCoordinate.x + 3.0*ourBlurSize, textureCoordinate.y)) * 0.09;
-     sum += texture2D(inputImageTexture, vec2(textureCoordinate.x + 4.0*ourBlurSize, textureCoordinate.y)) * 0.05;
-     
-     gl_FragColor = sum;
+ void main() {
+ 	gl_Position = position;
+ 	textureCoordinate = inputTextureCoordinate.xy;
+ 	
+ 	// Calculate the positions for the blur
+ 	lowp int multiplier = 0;
+ 	mediump vec2 blurStep = vec2(0.0, 0.0);
+ 	for (lowp int i = 0; i < GAUSSIAN_SAMPLES; i++) {
+ 		multiplier = (i - ((GAUSSIAN_SAMPLES - 1) / 2));
+ 		if (horizontalBlur == 1) {
+ 			// Blur in x (horizontal)
+ 			blurStep = vec2(float(multiplier) * blurSize, 0.0);
+ 		} else {
+ 			// Blur in y (vertical)
+ 			blurStep = vec2(0.0, float(multiplier) * blurSize);
+ 		}
+ 		blurCoordinates[i] = inputTextureCoordinate.xy + blurStep;
+ 	}
  }
 );
 
-NSString *const kGPUImageGaussianBlurVerticalFragmentShaderString = SHADER_STRING
+NSString *const kGPUImageGaussianBlurFragmentShaderString = SHADER_STRING
 (
  uniform sampler2D inputImageTexture;
+ 
+ const lowp int GAUSSIAN_SAMPLES = 9;
+ 
+ uniform mediump float gaussianValues[9];
+ 
  varying highp vec2 textureCoordinate;
- 
- uniform highp float blurSize;
- 
- uniform lowp float excludeCircleRadius;
- uniform lowp vec2 excludeCirclePoint;
- uniform lowp float excludeBlurSize;
+ varying highp vec2 blurCoordinates[GAUSSIAN_SAMPLES];
  
  void main() {
-     mediump float distance = abs(distance(textureCoordinate, excludeCirclePoint));
-     highp float ourBlurSize = blurSize;
-     if (distance <= excludeCircleRadius) {
-         // within the no-blur circle, taper off the blur size until it's 0
-         if (distance >= excludeCircleRadius - excludeBlurSize) {
-             distance -= excludeCircleRadius - excludeBlurSize;
-             ourBlurSize *= distance / excludeBlurSize;
-         } else {
-             gl_FragColor = texture2D(inputImageTexture, textureCoordinate);
-             return;
-         }
-     }
-     
-     highp vec4 sum = vec4(0.0);
-     
-     // blur in y (vertical)
-     // take nine samples, with the distance blurSize between them
-     sum += texture2D(inputImageTexture, vec2(textureCoordinate.x, textureCoordinate.y - 4.0*ourBlurSize)) * 0.05;
-     sum += texture2D(inputImageTexture, vec2(textureCoordinate.x, textureCoordinate.y - 3.0*ourBlurSize)) * 0.09;
-     sum += texture2D(inputImageTexture, vec2(textureCoordinate.x, textureCoordinate.y - 2.0*ourBlurSize)) * 0.12;
-     sum += texture2D(inputImageTexture, vec2(textureCoordinate.x, textureCoordinate.y - ourBlurSize)) * 0.15;
-     sum += texture2D(inputImageTexture, vec2(textureCoordinate.x, textureCoordinate.y)) * 0.18;
-     sum += texture2D(inputImageTexture, vec2(textureCoordinate.x, textureCoordinate.y + ourBlurSize)) * 0.15;
-     sum += texture2D(inputImageTexture, vec2(textureCoordinate.x, textureCoordinate.y + 2.0*ourBlurSize)) * 0.12;
-     sum += texture2D(inputImageTexture, vec2(textureCoordinate.x, textureCoordinate.y + 3.0*ourBlurSize)) * 0.09;
-     sum += texture2D(inputImageTexture, vec2(textureCoordinate.x, textureCoordinate.y + 4.0*ourBlurSize)) * 0.05;
-     
-     gl_FragColor = sum;
+ 	highp vec4 sum = vec4(0.0);
+ 	
+ 	for (lowp int i = 0; i < GAUSSIAN_SAMPLES; i++) {
+ 		sum += texture2D(inputImageTexture, blurCoordinates[i]) * gaussianValues[i];
+ 	}
+ 	
+ 	gl_FragColor = sum;
  }
 );
 
 @implementation GPUImageGaussianBlurFilter
 
 @synthesize blurSize=_blurSize;
-@synthesize excludeCirclePoint=_excludeCirclePoint, excludeCircleRadius=_excludeCircleRadius, excludeBlurSize=_excludeBlurSize;
 
 - (id)init;
 {
-    if (!(self = [super initWithFragmentShaderFromString:kGPUImageGaussianBlurFragmentShaderString]))
+    if (!(self = [super initWithFragmentShaderFromString:kGPUImageGaussianBlurPassThroughFragmentShaderString]))
     {
 		return nil;
     }
+
+    horizontalBlur = [[GPUImageFilter alloc] initWithVertexShaderFromString:kGPUImageGaussianBlurVertexShaderString fragmentShaderFromString:kGPUImageGaussianBlurFragmentShaderString];
+    [horizontalBlur setInteger:1 forUniform:@"horizontalBlur"];
     
-    horizontalBlur = [[GPUImageFilter alloc] initWithFragmentShaderFromString:kGPUImageGaussianBlurHorizontalFragmentShaderString];
-    verticalBlur = [[GPUImageFilter alloc] initWithFragmentShaderFromString:kGPUImageGaussianBlurVerticalFragmentShaderString];
+    verticalBlur = [[GPUImageFilter alloc] initWithVertexShaderFromString:kGPUImageGaussianBlurVertexShaderString fragmentShaderFromString:kGPUImageGaussianBlurFragmentShaderString];
+    [verticalBlur setInteger:0 forUniform:@"horizontalBlur"];
     
     [self addTarget:horizontalBlur];
     [horizontalBlur addTarget:verticalBlur];
@@ -123,9 +93,7 @@ NSString *const kGPUImageGaussianBlurVerticalFragmentShaderString = SHADER_STRIN
     
     self.blurSize = 1.0/320.0;
     
-    self.excludeCircleRadius = 60.0/320.0;
-    self.excludeCirclePoint = CGPointMake(0.5, 0.5);
-    self.excludeBlurSize = 10.0/320.0;
+    [self setGaussianValues];
     
     return self;
 }
@@ -154,32 +122,19 @@ NSString *const kGPUImageGaussianBlurVerticalFragmentShaderString = SHADER_STRIN
 
 #pragma mark Getters and Setters
 
+- (void) setGaussianValues {
+    GLsizei gaussianLength = 9;
+    GLfloat gaussians[] = { 0.05, 0.09, 0.12, 0.15, 0.18, 0.15, 0.12, 0.09, 0.05 };
+    
+    [horizontalBlur setFloatArray:gaussians length:gaussianLength forUniform:@"gaussianValues"];
+    [verticalBlur setFloatArray:gaussians length:gaussianLength forUniform:@"gaussianValues"];
+}
+
 - (void) setBlurSize:(CGFloat)blurSize {
     _blurSize = blurSize;
 
     [horizontalBlur setFloat:_blurSize forUniform:@"blurSize"];
     [verticalBlur setFloat:_blurSize forUniform:@"blurSize"];
-}
-
-- (void) setExcludeCirclePoint:(CGPoint)excludeCirclePoint {
-    _excludeCirclePoint = excludeCirclePoint;
-    
-    [horizontalBlur setPoint:_excludeCirclePoint forUniform:@"excludeCirclePoint"];
-    [verticalBlur setPoint:_excludeCirclePoint forUniform:@"excludeCirclePoint"];
-}
-
-- (void) setExcludeCircleRadius:(CGFloat)excludeCircleRadius {
-    _excludeCircleRadius = excludeCircleRadius;
-    
-    [horizontalBlur setFloat:_excludeCircleRadius forUniform:@"excludeCircleRadius"];
-    [verticalBlur setFloat:_excludeCircleRadius forUniform:@"excludeCircleRadius"];
-}
-
-- (void) setExcludeBlurSize:(CGFloat)excludeBlurSize {
-    _excludeBlurSize = excludeBlurSize;
-    
-    [horizontalBlur setFloat:_excludeBlurSize forUniform:@"excludeBlurSize"];
-    [verticalBlur setFloat:_excludeBlurSize forUniform:@"excludeBlurSize"];
 }
 
 @end

@@ -321,6 +321,14 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size)
     glUniform4fv(uniformIndex, 1, newVec4);    
 }
 
+- (void)setFloatArray:(GLfloat *)array length:(GLsizei)count forUniform:(NSString*)uniformName {
+    [GPUImageOpenGLESContext useImageProcessingContext];
+    [filterProgram use];
+    GLint uniformIndex = [filterProgram uniformIndex:uniformName];
+    
+    glUniform1fv(uniformIndex, count, array);
+}
+
 #pragma mark -
 #pragma mark GPUImageInput
 
