@@ -280,7 +280,6 @@ Currently, all processing for the color averaging in the last step is done on th
 ## Things that need work ##
 
 - Images that exceed 2048 pixels wide or high currently can't be processed on devices older than the iPad 2 or iPhone 4S.
-- Currently, it's difficult to create a custom filter with additional attribute inputs and a modified vertex shader.
 - Many common filters aren't built into the framework yet.
 - Video capture and processing should be done on a background GCD serial queue.
 - I'm sure that there are many optimizations that can be made on the rendering pipeline.

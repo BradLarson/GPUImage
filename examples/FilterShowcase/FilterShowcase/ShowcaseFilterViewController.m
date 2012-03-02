@@ -255,6 +255,7 @@
     
     [videoCamera addTarget:rotationFilter];
     [rotationFilter addTarget:filter];
+//    videoCamera.runBenchmark = YES;
     
     // The picture is only used for two-image blend filters
     UIImage *inputImage = [UIImage imageNamed:@"WID-small.jpg"];

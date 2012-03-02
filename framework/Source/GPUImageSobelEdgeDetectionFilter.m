@@ -1,41 +1,90 @@
 #import "GPUImageSobelEdgeDetectionFilter.h"
 
-//   Code from "Graphics Shaders: Theory and Practice" by M. Bailey and S. Cunningham 
-NSString *const kGPUImageSobelEdgeDetectionFragmentShaderString = SHADER_STRING
+// Override vertex shader to remove dependent texture reads 
+NSString *const kGPUImageSobelEdgeDetectionVertexShaderString = SHADER_STRING
 (
- varying highp vec2 textureCoordinate;
- 
- uniform sampler2D inputImageTexture;
- 
- uniform mediump float intensity;
+ attribute vec4 position;
+ attribute vec4 inputTextureCoordinate;
+
  uniform mediump float imageWidthFactor; 
  uniform mediump float imageHeightFactor; 
- 
- const mediump vec3 W = vec3(0.2125, 0.7154, 0.0721);
+
+ varying vec2 textureCoordinate;
+ varying vec2 leftTextureCoordinate;
+ varying vec2 rightTextureCoordinate;
+
+ varying vec2 topTextureCoordinate;
+ varying vec2 topLeftTextureCoordinate;
+ varying vec2 topRightTextureCoordinate;
+
+ varying vec2 bottomTextureCoordinate;
+ varying vec2 bottomLeftTextureCoordinate;
+ varying vec2 bottomRightTextureCoordinate;
  
  void main()
  {
-    mediump vec3 textureColor = texture2D(inputImageTexture, textureCoordinate).rgb;
+     gl_Position = position;
+     
+     mediump vec2 widthStep = vec2(imageWidthFactor, 0.0);
+     mediump vec2 heightStep = vec2(0.0, imageHeightFactor);
+     mediump vec2 widthHeightStep = vec2(imageWidthFactor, imageHeightFactor);
+     mediump vec2 widthNegativeHeightStep = vec2(imageWidthFactor, -imageHeightFactor);
+
+     textureCoordinate = inputTextureCoordinate.xy;
+     leftTextureCoordinate = inputTextureCoordinate.xy - widthStep;
+     rightTextureCoordinate = inputTextureCoordinate.xy + widthStep;
+
+     topTextureCoordinate = inputTextureCoordinate.xy + heightStep;
+     topLeftTextureCoordinate = inputTextureCoordinate.xy - widthNegativeHeightStep;
+     topRightTextureCoordinate = inputTextureCoordinate.xy + widthHeightStep;
+
+     bottomTextureCoordinate = inputTextureCoordinate.xy - heightStep;
+     bottomLeftTextureCoordinate = inputTextureCoordinate.xy - widthHeightStep;
+     bottomRightTextureCoordinate = inputTextureCoordinate.xy + widthNegativeHeightStep;
+}
+);
+
+//   Code from "Graphics Shaders: Theory and Practice" by M. Bailey and S. Cunningham 
+NSString *const kGPUImageSobelEdgeDetectionFragmentShaderString = SHADER_STRING
+(
+ precision highp float;
+
+ varying vec2 textureCoordinate;
+ varying vec2 leftTextureCoordinate;
+ varying vec2 rightTextureCoordinate;
+ 
+ varying vec2 topTextureCoordinate;
+ varying vec2 topLeftTextureCoordinate;
+ varying vec2 topRightTextureCoordinate;
+ 
+ varying vec2 bottomTextureCoordinate;
+ varying vec2 bottomLeftTextureCoordinate;
+ varying vec2 bottomRightTextureCoordinate;
+
+ uniform sampler2D inputImageTexture;
+ 
+ uniform highp float intensity;
+ 
+ const highp vec3 W = vec3(0.2125, 0.7154, 0.0721);
+ 
+ void main()
+ {
+    vec3 textureColor = texture2D(inputImageTexture, textureCoordinate).rgb;
+        
+    float i00   = dot( textureColor, W);
+    float im1m1 = dot( texture2D(inputImageTexture, bottomLeftTextureCoordinate).rgb, W);
+    float ip1p1 = dot( texture2D(inputImageTexture, topRightTextureCoordinate).rgb, W);
+    float im1p1 = dot( texture2D(inputImageTexture, topLeftTextureCoordinate).rgb, W);
+    float ip1m1 = dot( texture2D(inputImageTexture, bottomRightTextureCoordinate).rgb, W);
+    float im10 = dot( texture2D(inputImageTexture, leftTextureCoordinate).rgb, W);
+    float ip10 = dot( texture2D(inputImageTexture, rightTextureCoordinate).rgb, W);
+    float i0m1 = dot( texture2D(inputImageTexture, bottomTextureCoordinate).rgb, W);
+    float i0p1 = dot( texture2D(inputImageTexture, topTextureCoordinate).rgb, W);
+    float h = -im1p1 - 2.0 * i0p1 - ip1p1 + im1m1 + 2.0 * i0m1 + ip1m1;
+    float v = -im1m1 - 2.0 * im10 - im1p1 + ip1m1 + 2.0 * ip10 + ip1p1;
     
-    mediump vec2 stp0 = vec2(1.0 / imageWidthFactor, 0.0);
-    mediump vec2 st0p = vec2(0.0, 1.0 / imageHeightFactor);
-    mediump vec2 stpp = vec2(1.0 / imageWidthFactor, 1.0 / imageHeightFactor);
-    mediump vec2 stpm = vec2(1.0 / imageWidthFactor, -1.0 / imageHeightFactor);
-    
-    mediump float i00   = dot( textureColor, W);
-    mediump float im1m1 = dot( texture2D(inputImageTexture, textureCoordinate - stpp).rgb, W);
-    mediump float ip1p1 = dot( texture2D(inputImageTexture, textureCoordinate + stpp).rgb, W);
-    mediump float im1p1 = dot( texture2D(inputImageTexture, textureCoordinate - stpm).rgb, W);
-    mediump float ip1m1 = dot( texture2D(inputImageTexture, textureCoordinate + stpm).rgb, W);
-    mediump float im10 = dot( texture2D(inputImageTexture, textureCoordinate - stp0).rgb, W);
-    mediump float ip10 = dot( texture2D(inputImageTexture, textureCoordinate + stp0).rgb, W);
-    mediump float i0m1 = dot( texture2D(inputImageTexture, textureCoordinate - st0p).rgb, W);
-    mediump float i0p1 = dot( texture2D(inputImageTexture, textureCoordinate + st0p).rgb, W);
-    mediump float h = -im1p1 - 2.0 * i0p1 - ip1p1 + im1m1 + 2.0 * i0m1 + ip1m1;
-    mediump float v = -im1m1 - 2.0 * im10 - im1p1 + ip1m1 + 2.0 * ip10 + ip1p1;
-    
-    mediump float mag = length(vec2(h, v));
-    mediump vec3 target = vec3(mag);
+    float mag = length(vec2(h, v));
+    vec3 target = vec3(mag);
     
     gl_FragColor = vec4(mix(textureColor, target, intensity), 1.0);
  }
@@ -43,21 +92,45 @@ NSString *const kGPUImageSobelEdgeDetectionFragmentShaderString = SHADER_STRING
 
 @implementation GPUImageSobelEdgeDetectionFilter
 
-- (id)init;
+- (id)initWithFragmentShaderFromString:(NSString *)fragmentShaderString;
 {
-    if (!(self = [super initWithFragmentShaderFromString:kGPUImageSobelEdgeDetectionFragmentShaderString]))
+    if (!(self = [super initWithVertexShaderFromString:kGPUImageSobelEdgeDetectionVertexShaderString fragmentShaderFromString:fragmentShaderString]))
     {
 		return nil;
     }
+    
+    hasOverriddenImageSizeFactor = NO;
     
     intensityUniform = [filterProgram uniformIndex:@"intensity"];
     imageWidthFactorUniform = [filterProgram uniformIndex:@"imageWidthFactor"];
     imageHeightFactorUniform = [filterProgram uniformIndex:@"imageHeightFactor"];
     self.intensity = 1.0;
-    self.imageWidthFactor = 480.0;
-    self.imageHeightFactor = 640.0;
     
     return self;
+}
+
+- (id)init;
+{
+    if (!(self = [self initWithFragmentShaderFromString:kGPUImageSobelEdgeDetectionFragmentShaderString]))
+    {
+		return nil;
+    }
+
+    return self;
+}
+
+- (void)setupFilterForSize:(CGSize)filterFrameSize;
+{
+    if (!hasOverriddenImageSizeFactor)
+    {
+        _imageWidthFactor = filterFrameSize.width;
+        _imageHeightFactor = filterFrameSize.height;
+
+        [GPUImageOpenGLESContext useImageProcessingContext];
+        [filterProgram use];
+        glUniform1f(imageWidthFactorUniform, 1.0 / _imageWidthFactor);
+        glUniform1f(imageHeightFactorUniform, 1.0 / _imageHeightFactor);
+    }
 }
 
 #pragma mark -
@@ -78,20 +151,22 @@ NSString *const kGPUImageSobelEdgeDetectionFragmentShaderString = SHADER_STRING
 
 - (void)setImageWidthFactor:(CGFloat)newValue;
 {
+    hasOverriddenImageSizeFactor = YES;
     _imageWidthFactor = newValue;
     
     [GPUImageOpenGLESContext useImageProcessingContext];
     [filterProgram use];
-    glUniform1f(imageWidthFactorUniform, _imageWidthFactor);
+    glUniform1f(imageWidthFactorUniform, 1.0 / _imageWidthFactor);
 }
 
 - (void)setImageHeightFactor:(CGFloat)newValue;
 {
+    hasOverriddenImageSizeFactor = YES;
     _imageHeightFactor = newValue;
     
     [GPUImageOpenGLESContext useImageProcessingContext];
     [filterProgram use];
-    glUniform1f(imageHeightFactorUniform, _imageHeightFactor);
+    glUniform1f(imageHeightFactorUniform, 1.0 / _imageHeightFactor);
 }
 
 @end
