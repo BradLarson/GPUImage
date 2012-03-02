@@ -1,7 +1,7 @@
 #import "GPUImageFilter.h"
 #import "GPUImagePicture.h"
 
-// Hardcode the vertex shader for the filter, because it won't change
+// Hardcode the vertex shader for standard filters, but this can be overridden
 NSString *const kGPUImageVertexShaderString = SHADER_STRING
 (
  
@@ -41,7 +41,7 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size);
 #pragma mark -
 #pragma mark Initialization and teardown
 
-- (id)initWithFragmentShaderFromString:(NSString *)fragmentShaderString;
+- (id)initWithVertexShaderFromString:(NSString *)vertexShaderString fragmentShaderFromString:(NSString *)fragmentShaderString;
 {
     if (!(self = [super init]))
     {
@@ -49,10 +49,9 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size);
     }
 
     [GPUImageOpenGLESContext useImageProcessingContext];
-    filterProgram = [[GLProgram alloc] initWithVertexShaderString:kGPUImageVertexShaderString fragmentShaderString:fragmentShaderString];
+    filterProgram = [[GLProgram alloc] initWithVertexShaderString:vertexShaderString fragmentShaderString:fragmentShaderString];
     
-    [filterProgram addAttribute:@"position"];
-	[filterProgram addAttribute:@"inputTextureCoordinate"];
+    [self initializeAttributes];
 
     if (![filterProgram link])
 	{
@@ -78,6 +77,16 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size);
     return self;
 }
 
+- (id)initWithFragmentShaderFromString:(NSString *)fragmentShaderString;
+{
+    if (!(self = [self initWithVertexShaderFromString:kGPUImageVertexShaderString fragmentShaderFromString:fragmentShaderString]))
+    {
+		return nil;
+    }
+    
+    return self;
+}
+
 - (id)initWithFragmentShaderFromFile:(NSString *)fragmentShaderFilename;
 {
     NSString *fragmentShaderPathname = [[NSBundle mainBundle] pathForResource:fragmentShaderFilename ofType:@"fsh"];
@@ -89,13 +98,23 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size);
     }
     
     return self;
+}
 
+- (void)initializeAttributes;
+{
+    [filterProgram addAttribute:@"position"];
+	[filterProgram addAttribute:@"inputTextureCoordinate"];
+    // Override this, calling back to this super method, in order to add new attributes to your vertex shader
+}
+
+- (void)setupFilterForSize:(CGSize)filterFrameSize;
+{
+    // This is where you can override to provide some custom setup, if your filter has a size-dependent element
 }
 
 - (void)dealloc
 {
     [self destroyFilterFBO];
-    
 }
 
 #pragma mark -
@@ -177,6 +196,8 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size)
 	GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
     
     NSAssert(status == GL_FRAMEBUFFER_COMPLETE, @"Incomplete filter FBO: %d", status);
+    
+    [self setupFilterForSize:currentFBOSize];
 }
 
 - (void)destroyFilterFBO;

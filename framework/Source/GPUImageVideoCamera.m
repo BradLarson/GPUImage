@@ -202,8 +202,8 @@
             CFAbsoluteTime currentFrameTime = (CFAbsoluteTimeGetCurrent() - startTime);
             totalFrameTimeDuringCapture += currentFrameTime;
             numberOfFramesCaptured++;
-            //        NSLog(@"Average frame time : %f ms", 1000.0 * (totalFrameTimeDuringCapture / numberOfFramesCaptured));
-            //        NSLog(@"Current frame time : %f ms", 1000.0 * currentFrameTime);
+//            NSLog(@"Average frame time : %f ms", 1000.0 * (totalFrameTimeDuringCapture / numberOfFramesCaptured));
+//            NSLog(@"Current frame time : %f ms", 1000.0 * currentFrameTime);
         }
     }
     else

@@ -17,8 +17,11 @@ extern NSString *const kGPUImageVertexShaderString;
 }
 
 // Initialization and teardown
+- (id)initWithVertexShaderFromString:(NSString *)vertexShaderString fragmentShaderFromString:(NSString *)fragmentShaderString;
 - (id)initWithFragmentShaderFromString:(NSString *)fragmentShaderString;
 - (id)initWithFragmentShaderFromFile:(NSString *)fragmentShaderFilename;
+- (void)initializeAttributes;
+- (void)setupFilterForSize:(CGSize)filterFrameSize;
 
 // Still image processing
 - (UIImage *)imageFromCurrentlyProcessedOutput;

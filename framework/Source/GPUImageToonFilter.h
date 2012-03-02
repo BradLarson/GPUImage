@@ -1,12 +1,7 @@
-#import "GPUImageFilter.h"
+#import "GPUImageSobelEdgeDetectionFilter.h"
 
-@interface GPUImageToonFilter : GPUImageFilter
+@interface GPUImageToonFilter : GPUImageSobelEdgeDetectionFilter
 {
-    GLint imageWidthFactorUniform, imageHeightFactorUniform;
 }
-
-// The image width and height factors tweak the appearance of the edges. Normally, they are close to the image size in pixels
-@property(readwrite, nonatomic) CGFloat imageWidthFactor; 
-@property(readwrite, nonatomic) CGFloat imageHeightFactor; 
 
 @end
