@@ -37,5 +37,6 @@ extern NSString *const kGPUImageVertexShaderString;
 - (void)setPoint:(CGPoint)newPoint forUniform:(NSString *)uniformName;
 - (void)setFloatVec3:(GLfloat *)newVec3 forUniform:(NSString *)uniformName;
 - (void)setFloatVec4:(GLfloat *)newVec4 forUniform:(NSString *)uniformName;
+- (void)setFloatArray:(GLfloat *)array length:(GLsizei)count forUniform:(NSString*)uniformName;
 
 @end
