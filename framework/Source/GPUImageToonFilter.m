@@ -23,7 +23,7 @@ NSString *const kGPUImageToonFragmentShaderString = SHADER_STRING
  
  const highp vec3 W = vec3(0.2125, 0.7154, 0.0721);
  
- const highp float threshold = 0.3;
+ const highp float threshold = 0.2;
  const highp float quantize = 10.0;
 
  void main()

@@ -49,13 +49,16 @@
     CGColorSpaceRelease(genericRGBColorspace);
     
     glBindTexture(GL_TEXTURE_2D, outputTexture);
+    if (self.shouldSmoothlyScaleOutput)
+    {
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    }
 	// Using BGRA extension to pull in video frame data directly
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (int)pixelSizeOfImage.width, (int)pixelSizeOfImage.height, 0, GL_BGRA, GL_UNSIGNED_BYTE, imageData);
 
     if (self.shouldSmoothlyScaleOutput)
     {
         glGenerateMipmap(GL_TEXTURE_2D);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
     }
 
     free(imageData);

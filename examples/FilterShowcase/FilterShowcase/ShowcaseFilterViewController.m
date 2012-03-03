@@ -131,22 +131,14 @@
         case GPUIMAGE_SOBELEDGEDETECTION:
         {
             self.title = @"Edge Detection";
-            self.filterSettingsSlider.hidden = NO;
-            
-            [self.filterSettingsSlider setMinimumValue:0.0];
-            [self.filterSettingsSlider setMaximumValue:1.0];
-            [self.filterSettingsSlider setValue:1.0];
+            self.filterSettingsSlider.hidden = YES;
             
             filter = [[GPUImageSobelEdgeDetectionFilter alloc] init];
         }; break;
         case GPUIMAGE_SKETCH:
         {
             self.title = @"Sketch";
-            self.filterSettingsSlider.hidden = NO;
-            
-            [self.filterSettingsSlider setMinimumValue:0.0];
-            [self.filterSettingsSlider setMaximumValue:1.0];
-            [self.filterSettingsSlider setValue:1.0];
+            self.filterSettingsSlider.hidden = YES;
             
             filter = [[GPUImageSketchFilter alloc] init];
         }; break;
@@ -221,7 +213,7 @@
             
             [self.filterSettingsSlider setMinimumValue:3.0];
             [self.filterSettingsSlider setMaximumValue:8.0];
-            [self.filterSettingsSlider setValue:4.0];
+            [self.filterSettingsSlider setValue:3.0];
             
             filter = [[GPUImageKuwaharaFilter alloc] init];
         }; break;
@@ -255,7 +247,7 @@
     
     [videoCamera addTarget:rotationFilter];
     [rotationFilter addTarget:filter];
-//    videoCamera.runBenchmark = YES;
+    videoCamera.runBenchmark = YES;
     
     // The picture is only used for two-image blend filters
     UIImage *inputImage = [UIImage imageNamed:@"WID-small.jpg"];
@@ -265,7 +257,7 @@
     GPUImageView *filterView = (GPUImageView *)self.view;
     [filter addTarget:filterView];
     
-    [videoCamera startCameraCapture];
+    [videoCamera startCameraCapture];    
 }
 
 #pragma mark -
@@ -281,8 +273,6 @@
         case GPUIMAGE_CONTRAST: [(GPUImageContrastFilter *)filter setContrast:[(UISlider *)sender value]]; break;
         case GPUIMAGE_BRIGHTNESS: [(GPUImageBrightnessFilter *)filter setBrightness:[(UISlider *)sender value]]; break;
         case GPUIMAGE_GAMMA: [(GPUImageGammaFilter *)filter setGamma:[(UISlider *)sender value]]; break;
-        case GPUIMAGE_SOBELEDGEDETECTION: [(GPUImageSobelEdgeDetectionFilter *)filter setIntensity:[(UISlider *)sender value]]; break;
-        case GPUIMAGE_SKETCH: [(GPUImageSketchFilter *)filter setIntensity:[(UISlider *)sender value]]; break;
         case GPUIMAGE_DISSOLVE: [(GPUImageDissolveBlendFilter *)filter setMix:[(UISlider *)sender value]]; break;
         case GPUIMAGE_KUWAHARA: [(GPUImageKuwaharaFilter *)filter setRadius:round([(UISlider *)sender value])]; break;
         case GPUIMAGE_SWIRL: [(GPUImageSwirlFilter *)filter setAngle:[(UISlider *)sender value]]; break;

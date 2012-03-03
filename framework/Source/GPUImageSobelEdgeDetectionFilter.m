@@ -63,8 +63,6 @@ NSString *const kGPUImageSobelEdgeDetectionFragmentShaderString = SHADER_STRING
 
  uniform sampler2D inputImageTexture;
  
- uniform highp float intensity;
- 
  const highp vec3 W = vec3(0.2125, 0.7154, 0.0721);
  
  void main()
@@ -84,9 +82,8 @@ NSString *const kGPUImageSobelEdgeDetectionFragmentShaderString = SHADER_STRING
     float v = -im1m1 - 2.0 * im10 - im1p1 + ip1m1 + 2.0 * ip10 + ip1p1;
     
     float mag = length(vec2(h, v));
-    vec3 target = vec3(mag);
     
-    gl_FragColor = vec4(mix(textureColor, target, intensity), 1.0);
+    gl_FragColor = vec4(vec3(mag), 1.0);
  }
 );
 
@@ -104,7 +101,6 @@ NSString *const kGPUImageSobelEdgeDetectionFragmentShaderString = SHADER_STRING
     intensityUniform = [filterProgram uniformIndex:@"intensity"];
     imageWidthFactorUniform = [filterProgram uniformIndex:@"imageWidthFactor"];
     imageHeightFactorUniform = [filterProgram uniformIndex:@"imageHeightFactor"];
-    self.intensity = 1.0;
     
     return self;
 }
@@ -136,18 +132,8 @@ NSString *const kGPUImageSobelEdgeDetectionFragmentShaderString = SHADER_STRING
 #pragma mark -
 #pragma mark Accessors
 
-@synthesize intensity = _intensity; 
 @synthesize imageWidthFactor = _imageWidthFactor; 
 @synthesize imageHeightFactor = _imageHeightFactor; 
-
-- (void)setIntensity:(CGFloat)newValue;
-{
-    _intensity = newValue;
-    
-    [GPUImageOpenGLESContext useImageProcessingContext];
-    [filterProgram use];
-    glUniform1f(intensityUniform, _intensity);
-}
 
 - (void)setImageWidthFactor:(CGFloat)newValue;
 {
