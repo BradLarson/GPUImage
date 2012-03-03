@@ -43,7 +43,24 @@ NSString *const kGPUImagePixellationFragmentShaderString = SHADER_STRING
 
 - (void)setFractionalWidthOfAPixel:(CGFloat)newValue;
 {
-    _fractionalWidthOfAPixel = newValue;
+    CGFloat singlePixelSpacing;
+    if (inputTextureSize.width != 0.0)
+    {
+        singlePixelSpacing = 1.0 / inputTextureSize.width;
+    }
+    else
+    {
+        singlePixelSpacing = 1.0 / 2048.0;
+    }
+    
+    if (newValue < singlePixelSpacing)
+    {
+        _fractionalWidthOfAPixel = singlePixelSpacing;
+    }
+    else
+    {
+        _fractionalWidthOfAPixel = newValue;
+    }
     
     [GPUImageOpenGLESContext useImageProcessingContext];
     [filterProgram use];
