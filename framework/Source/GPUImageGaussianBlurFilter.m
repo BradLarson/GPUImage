@@ -71,17 +71,15 @@ NSString *const kGPUImageGaussianBlurFragmentShaderString = SHADER_STRING
 
 @synthesize blurSize=_blurSize;
 
-- (id)init;
-{
-    if (!(self = [super initWithFragmentShaderFromString:kGPUImageGaussianBlurPassThroughFragmentShaderString]))
-    {
-		return nil;
+- (id) initWithGaussianVertexShaderFromString:(NSString *)vertexShaderString fragmentShaderFromString:(NSString *)fragmentShaderString {
+    if (!(self = [super initWithFragmentShaderFromString:kGPUImageGaussianBlurPassThroughFragmentShaderString])) {
+        return nil;
     }
-
-    horizontalBlur = [[GPUImageFilter alloc] initWithVertexShaderFromString:kGPUImageGaussianBlurVertexShaderString fragmentShaderFromString:kGPUImageGaussianBlurFragmentShaderString];
+    
+    horizontalBlur = [[GPUImageFilter alloc] initWithVertexShaderFromString:vertexShaderString fragmentShaderFromString:fragmentShaderString];
     [horizontalBlur setInteger:1 forUniform:@"horizontalBlur"];
     
-    verticalBlur = [[GPUImageFilter alloc] initWithVertexShaderFromString:kGPUImageGaussianBlurVertexShaderString fragmentShaderFromString:kGPUImageGaussianBlurFragmentShaderString];
+    verticalBlur = [[GPUImageFilter alloc] initWithVertexShaderFromString:vertexShaderString fragmentShaderFromString:fragmentShaderString];
     [verticalBlur setInteger:0 forUniform:@"horizontalBlur"];
     
     [self addTarget:horizontalBlur];
@@ -96,6 +94,11 @@ NSString *const kGPUImageGaussianBlurFragmentShaderString = SHADER_STRING
     [self setGaussianValues];
     
     return self;
+}
+
+- (id)init;
+{
+    return [self initWithGaussianVertexShaderFromString:kGPUImageGaussianBlurVertexShaderString fragmentShaderFromString:kGPUImageGaussianBlurFragmentShaderString];
 }
 
 - (void) addTarget:(NSObject<GPUImageInput>*)newTarget {
