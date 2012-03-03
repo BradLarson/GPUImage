@@ -258,18 +258,25 @@
         default: filter = [[GPUImageSepiaFilter alloc] init]; break;
     }
     
-    [videoCamera addTarget:rotationFilter];
-    [rotationFilter addTarget:filter];
-    videoCamera.runBenchmark = YES;
-    
-    // The picture is only used for two-image blend filters
-    UIImage *inputImage = [UIImage imageNamed:@"WID-small.jpg"];
-    sourcePicture = [[GPUImagePicture alloc] initWithImage:inputImage smoothlyScaleOutput:YES];
-    [sourcePicture addTarget:filter];
+    if (filterType == GPUIMAGE_FILECONFIG) {
+        self.title = @"File Configuration";
+        pipeline = [[GPUImageFilterPipeline alloc] initWithConfigurationFile:[[NSBundle mainBundle] URLForResource:@"SampleConfiguration" withExtension:@"plist"]
+                                                                                               input:videoCamera output:(GPUImageView*)self.view];
+        
+        [pipeline addFilter:rotationFilter atIndex:0];
+    } else {
+        [videoCamera addTarget:rotationFilter];
+        [rotationFilter addTarget:filter];
+        videoCamera.runBenchmark = YES;
+        
+        // The picture is only used for two-image blend filters
+        UIImage *inputImage = [UIImage imageNamed:@"WID-small.jpg"];
+        sourcePicture = [[GPUImagePicture alloc] initWithImage:inputImage smoothlyScaleOutput:YES];
+        [sourcePicture addTarget:filter];
 
-    GPUImageView *filterView = (GPUImageView *)self.view;
-    [filter addTarget:filterView];
-    
+        GPUImageView *filterView = (GPUImageView *)self.view;
+        [filter addTarget:filterView];
+    } 
     [videoCamera startCameraCapture];    
 }
 

@@ -82,6 +82,7 @@
         case GPUIMAGE_GAUSSIAN: cell.textLabel.text = @"Gaussian Blur"; break;
         case GPUIMAGE_GAUSSIAN_SELECTIVE: cell.textLabel.text = @"Gaussian Selective Blur"; break;
 		case GPUIMAGE_CUSTOM: cell.textLabel.text = @"Custom"; break;
+        case GPUIMAGE_FILECONFIG: cell.textLabel.text = @"File Configuration"; break;
 	}
     
     return cell;
