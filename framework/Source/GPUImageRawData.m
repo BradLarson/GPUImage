@@ -37,7 +37,6 @@ NSString *const kGPUImageDataFragmentShaderString = SHADER_STRING
 - (void)createDataFBO;
 - (void)destroyDataFBO;
 - (void)setFilterFBO;
-- (void)presentFramebuffer;
 
 - (void)renderAtInternalSize;
 
@@ -144,12 +143,6 @@ NSString *const kGPUImageDataFragmentShaderString = SHADER_STRING
     glViewport(0, 0, (int)imageSize.width, (int)imageSize.height);
 }
 
-- (void)presentFramebuffer;
-{
-    glBindRenderbuffer(GL_RENDERBUFFER, dataRenderbuffer);
-    [[GPUImageOpenGLESContext sharedImageProcessingOpenGLESContext] presentBufferForDisplay];
-}
-
 #pragma mark -
 #pragma mark Data access
 
@@ -185,8 +178,6 @@ NSString *const kGPUImageDataFragmentShaderString = SHADER_STRING
 	glVertexAttribPointer(dataTextureCoordinateAttribute, 2, GL_FLOAT, 0, 0, textureCoordinates);
     
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-    
-    [self presentFramebuffer];
 }
 
 - (GPUByteColorVector)colorAtLocation:(CGPoint)locationInImage;

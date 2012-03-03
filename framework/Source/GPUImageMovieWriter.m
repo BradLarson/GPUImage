@@ -39,7 +39,6 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 - (void)createDataFBO;
 - (void)destroyDataFBO;
 - (void)setFilterFBO;
-- (void)presentFramebuffer;
 
 - (void)renderAtInternalSize;
 
@@ -207,12 +206,6 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
     glViewport(0, 0, (int)videoSize.width, (int)videoSize.height);
 }
 
-- (void)presentFramebuffer;
-{
-    glBindRenderbuffer(GL_RENDERBUFFER, movieRenderbuffer);
-    [[GPUImageOpenGLESContext sharedImageProcessingOpenGLESContext] presentBufferForDisplay];
-}
-
 - (void)renderAtInternalSize;
 {
     [GPUImageOpenGLESContext useImageProcessingContext];
@@ -246,8 +239,6 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 	glVertexAttribPointer(colorSwizzlingTextureCoordinateAttribute, 2, GL_FLOAT, 0, 0, textureCoordinates);
     
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-    
-    [self presentFramebuffer];
 }
 
 #pragma mark -

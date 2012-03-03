@@ -173,7 +173,8 @@
         }
         
         outputTexture = CVOpenGLESTextureGetName(texture);
-        glBindTexture(CVOpenGLESTextureGetTarget(texture), outputTexture);
+//        glBindTexture(CVOpenGLESTextureGetTarget(texture), outputTexture);
+        glBindTexture(GL_TEXTURE_2D, outputTexture);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -190,7 +191,7 @@
         
         CVPixelBufferUnlockBaseAddress(cameraFrame, 0);
 
-        glBindTexture(outputTexture, 0);
+//        glBindTexture(outputTexture, 0);
         
         // Flush the CVOpenGLESTexture cache and release the texture
         CVOpenGLESTextureCacheFlush(coreVideoTextureCache, 0);
@@ -202,8 +203,8 @@
             CFAbsoluteTime currentFrameTime = (CFAbsoluteTimeGetCurrent() - startTime);
             totalFrameTimeDuringCapture += currentFrameTime;
             numberOfFramesCaptured++;
-//            NSLog(@"Average frame time : %f ms", 1000.0 * (totalFrameTimeDuringCapture / numberOfFramesCaptured));
-//            NSLog(@"Current frame time : %f ms", 1000.0 * currentFrameTime);
+            NSLog(@"Average frame time : %f ms", 1000.0 * (totalFrameTimeDuringCapture / numberOfFramesCaptured));
+            NSLog(@"Current frame time : %f ms", 1000.0 * currentFrameTime);
         }
     }
     else
