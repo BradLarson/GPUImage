@@ -81,7 +81,9 @@
         case GPUIMAGE_VIGNETTE: cell.textLabel.text = @"Vignette"; break;
         case GPUIMAGE_GAUSSIAN: cell.textLabel.text = @"Gaussian Blur"; break;
         case GPUIMAGE_FASTBLUR: cell.textLabel.text = @"Fast Blur"; break;
+        case GPUIMAGE_GAUSSIAN_SELECTIVE: cell.textLabel.text = @"Gaussian Selective Blur"; break;
 		case GPUIMAGE_CUSTOM: cell.textLabel.text = @"Custom"; break;
+        case GPUIMAGE_FILECONFIG: cell.textLabel.text = @"Filter Chain"; break;
 	}
     
     return cell;

@@ -71,25 +71,19 @@ NSString *const kGPUImageGaussianBlurFragmentShaderString = SHADER_STRING
 
 @synthesize blurSize=_blurSize;
 
-- (id)init;
-{
-    if (!(self = [super initWithFragmentShaderFromString:kGPUImageGaussianBlurPassThroughFragmentShaderString]))
-    {
-		return nil;
+- (id) initWithGaussianVertexShaderFromString:(NSString *)vertexShaderString fragmentShaderFromString:(NSString *)fragmentShaderString {
+    if (!(self = [super initWithFragmentShaderFromString:kGPUImageGaussianBlurPassThroughFragmentShaderString])) {
+        return nil;
     }
-
-    horizontalBlur = [[GPUImageFilter alloc] initWithVertexShaderFromString:kGPUImageGaussianBlurVertexShaderString fragmentShaderFromString:kGPUImageGaussianBlurFragmentShaderString];
+    
+    horizontalBlur = [[GPUImageFilter alloc] initWithVertexShaderFromString:vertexShaderString fragmentShaderFromString:fragmentShaderString];
     [horizontalBlur setInteger:1 forUniform:@"horizontalBlur"];
     
-    verticalBlur = [[GPUImageFilter alloc] initWithVertexShaderFromString:kGPUImageGaussianBlurVertexShaderString fragmentShaderFromString:kGPUImageGaussianBlurFragmentShaderString];
+    verticalBlur = [[GPUImageFilter alloc] initWithVertexShaderFromString:vertexShaderString fragmentShaderFromString:fragmentShaderString];
     [verticalBlur setInteger:0 forUniform:@"horizontalBlur"];
     
     [self addTarget:horizontalBlur];
     [horizontalBlur addTarget:verticalBlur];
-    for (NSObject<GPUImageInput>* target in targets) {
-        if ([target isEqual:horizontalBlur]) continue;
-        [verticalBlur addTarget:target];
-    }
     
     self.blurSize = 1.0/320.0;
     
@@ -98,8 +92,13 @@ NSString *const kGPUImageGaussianBlurFragmentShaderString = SHADER_STRING
     return self;
 }
 
+- (id)init;
+{
+    return [self initWithGaussianVertexShaderFromString:kGPUImageGaussianBlurVertexShaderString fragmentShaderFromString:kGPUImageGaussianBlurFragmentShaderString];
+}
+
 - (void) addTarget:(NSObject<GPUImageInput>*)newTarget {
-    if ([newTarget isEqual:horizontalBlur]) [super addTarget:newTarget];
+    if ([newTarget isEqual:horizontalBlur] || [newTarget isEqual:verticalBlur]) [super addTarget:newTarget];
     else [verticalBlur addTarget:newTarget];
 }
 

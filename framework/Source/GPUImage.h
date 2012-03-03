@@ -9,6 +9,7 @@
 #import "GPUImagePicture.h"
 #import "GPUImageRawData.h"
 #import "GPUImageMovieWriter.h"
+#import "GPUImageFilterPipeline.h"
 
 // Filters
 #import "GPUImageFilter.h"
@@ -28,6 +29,7 @@
 #import "GPUImageKuwaharaFilter.h"
 #import "GPUImageVignetteFilter.h"
 #import "GPUImageGaussianBlurFilter.h"
+#import "GPUImageGaussianSelectiveBlurFilter.h"
 #import "GPUImageOverlayBlendFilter.h"
 #import "GPUImageDarkenBlendFilter.h"
 #import "GPUImageLightenBlendFilter.h"

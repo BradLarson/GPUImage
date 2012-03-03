@@ -241,34 +241,52 @@
             
             filter = [[GPUImageGaussianBlurFilter alloc] init];
         }; break;
-
         case GPUIMAGE_FASTBLUR:
         {
             self.title = @"Fast Blur";
             self.filterSettingsSlider.hidden = NO;
-            
             [self.filterSettingsSlider setMinimumValue:1.0];
             [self.filterSettingsSlider setMaximumValue:10.0];
             [self.filterSettingsSlider setValue:1.0];
-            
-            filter = [[GPUImageFastBlurFilter alloc] init];
-        }; break;
 
+            filter = [[GPUImageFastBlurFilter alloc] init];
+		}; break;
+        case GPUIMAGE_GAUSSIAN_SELECTIVE:
+        {
+            self.title = @"Selective Blur";
+            self.filterSettingsSlider.hidden = NO;
+            
+            [self.filterSettingsSlider setMinimumValue:0.0];
+            [self.filterSettingsSlider setMaximumValue:.75f];
+            [self.filterSettingsSlider setValue:40.0/320.0];
+            
+            filter = [[GPUImageGaussianSelectiveBlurFilter alloc] init];
+            [(GPUImageGaussianSelectiveBlurFilter*)filter setExcludeCircleRadius:40.0/320.0];
+        }; break;
+         
         default: filter = [[GPUImageSepiaFilter alloc] init]; break;
     }
     
-    [videoCamera addTarget:rotationFilter];
-    [rotationFilter addTarget:filter];
-    videoCamera.runBenchmark = YES;
-    
-    // The picture is only used for two-image blend filters
-    UIImage *inputImage = [UIImage imageNamed:@"WID-small.jpg"];
-    sourcePicture = [[GPUImagePicture alloc] initWithImage:inputImage smoothlyScaleOutput:YES];
-    [sourcePicture addTarget:filter];
+    if (filterType == GPUIMAGE_FILECONFIG) {
+        self.title = @"File Configuration";
+        pipeline = [[GPUImageFilterPipeline alloc] initWithConfigurationFile:[[NSBundle mainBundle] URLForResource:@"SampleConfiguration" withExtension:@"plist"]
+                                                                                               input:videoCamera output:(GPUImageView*)self.view];
+        
+        [pipeline addFilter:rotationFilter atIndex:0];
+    } else {
+        [videoCamera addTarget:rotationFilter];
+        [rotationFilter addTarget:filter];
+        videoCamera.runBenchmark = YES;
+        
+        // The picture is only used for two-image blend filters
+        UIImage *inputImage = [UIImage imageNamed:@"WID-small.jpg"];
+        sourcePicture = [[GPUImagePicture alloc] initWithImage:inputImage smoothlyScaleOutput:YES];
+        [sourcePicture addTarget:filter];
 
-    GPUImageView *filterView = (GPUImageView *)self.view;
-    [filter addTarget:filterView];
-    
+        GPUImageView *filterView = (GPUImageView *)self.view;
+        [filter addTarget:filterView];
+    } 
+
     [videoCamera startCameraCapture];    
 }
 
@@ -291,6 +309,7 @@
         case GPUIMAGE_VIGNETTE: [(GPUImageVignetteFilter *)filter setY:[(UISlider *)sender value]]; break;
         case GPUIMAGE_GAUSSIAN: [(GPUImageGaussianBlurFilter *)filter setBlurSize:[(UISlider*)sender value]]; break;
         case GPUIMAGE_FASTBLUR: [(GPUImageFastBlurFilter *)filter setBlurPasses:round([(UISlider*)sender value])]; break;
+        case GPUIMAGE_GAUSSIAN_SELECTIVE: [(GPUImageGaussianSelectiveBlurFilter *)filter setExcludeCircleRadius:[(UISlider*)sender value]]; break;
         default: break;
     }
 }
