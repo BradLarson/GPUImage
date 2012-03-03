@@ -84,10 +84,6 @@ NSString *const kGPUImageGaussianBlurFragmentShaderString = SHADER_STRING
     
     [self addTarget:horizontalBlur];
     [horizontalBlur addTarget:verticalBlur];
-    for (NSObject<GPUImageInput>* target in targets) {
-        if ([target isEqual:horizontalBlur]) continue;
-        [verticalBlur addTarget:target];
-    }
     
     self.blurSize = 1.0/320.0;
     
@@ -102,7 +98,7 @@ NSString *const kGPUImageGaussianBlurFragmentShaderString = SHADER_STRING
 }
 
 - (void) addTarget:(NSObject<GPUImageInput>*)newTarget {
-    if ([newTarget isEqual:horizontalBlur]) [super addTarget:newTarget];
+    if ([newTarget isEqual:horizontalBlur] || [newTarget isEqual:verticalBlur]) [super addTarget:newTarget];
     else [verticalBlur addTarget:newTarget];
 }
 
