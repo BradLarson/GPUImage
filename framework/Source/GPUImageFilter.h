@@ -9,10 +9,14 @@ extern NSString *const kGPUImageVertexShaderString;
 
 @interface GPUImageFilter : GPUImageOutput <GPUImageInput>
 {
-    GLuint filterSourceTexture, filterSourceTexture2, filterOutputTexture;
-    
-    GLProgram *filterProgram;
+    GLuint filterSourceTexture, filterSourceTexture2;
 
+    GLuint filterFramebuffer;
+
+    GLProgram *filterProgram;
+    GLint filterPositionAttribute, filterTextureCoordinateAttribute;
+    GLint filterInputTextureUniform, filterInputTextureUniform2;
+    
     CGSize currentFilterSize;
 }
 
@@ -27,8 +31,15 @@ extern NSString *const kGPUImageVertexShaderString;
 - (UIImage *)imageFromCurrentlyProcessedOutput;
 - (UIImage *)imageByFilteringImage:(UIImage *)imageToFilter;
 
+// Managing the display FBOs
+- (CGSize)sizeOfFBO;
+- (void)createFilterFBOofSize:(CGSize)currentFBOSize;
+- (void)destroyFilterFBO;
+- (void)setFilterFBO;
+
 // Rendering
-- (void)renderToTextureWithVertices:(const GLfloat *)vertices textureCoordinates:(const GLfloat *)textureCoordinates;
+- (void)renderToTextureWithVertices:(const GLfloat *)vertices textureCoordinates:(const GLfloat *)textureCoordinates sourceTexture:(GLuint)sourceTexture;
+- (void)informTargetsAboutNewFrame;
 
 // Input parameters
 - (void)setInteger:(GLint)newInteger forUniform:(NSString *)uniformName;

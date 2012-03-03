@@ -20,22 +20,6 @@ NSString *const kGPUImageVertexShaderString = SHADER_STRING
 
 void dataProviderReleaseCallback (void *info, const void *data, size_t size);
 
-@interface GPUImageFilter ()
-{
-    GLint filterPositionAttribute, filterTextureCoordinateAttribute;
-    GLint filterInputTextureUniform, filterInputTextureUniform2;
-
-	GLuint filterFramebuffer;
-}
-
-// Managing the display FBOs
-- (CGSize)sizeOfFBO;
-- (void)createFilterFBO;
-- (void)destroyFilterFBO;
-- (void)setFilterFBO;
-
-@end
-
 @implementation GPUImageFilter
 
 #pragma mark -
@@ -179,16 +163,14 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size)
     }
 }
 
-- (void)createFilterFBO;
+- (void)createFilterFBOofSize:(CGSize)currentFBOSize;
 {
     glActiveTexture(GL_TEXTURE1);
     glGenFramebuffers(1, &filterFramebuffer);
     glBindFramebuffer(GL_FRAMEBUFFER, filterFramebuffer);
     
-    CGSize currentFBOSize = [self sizeOfFBO];
 //    NSLog(@"Filter size: %f, %f", currentFBOSize.width, currentFBOSize.height);
     
-//    glRenderbufferStorage(GL_RENDERBUFFER, GL_RGBA8_OES, (int)currentFBOSize.width, (int)currentFBOSize.height);
     glBindTexture(GL_TEXTURE_2D, outputTexture);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (int)currentFBOSize.width, (int)currentFBOSize.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, outputTexture, 0);
@@ -196,8 +178,7 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size)
 	GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
     
     NSAssert(status == GL_FRAMEBUFFER_COMPLETE, @"Incomplete filter FBO: %d", status);
-    
-    [self setupFilterForSize:currentFBOSize];
+    glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 - (void)destroyFilterFBO;
@@ -213,7 +194,9 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size)
 {
     if (!filterFramebuffer)
     {
-        [self createFilterFBO];
+        CGSize currentFBOSize = [self sizeOfFBO];
+        [self createFilterFBOofSize:currentFBOSize];
+        [self setupFilterForSize:currentFBOSize];
     }
     
     glBindFramebuffer(GL_FRAMEBUFFER, filterFramebuffer);
@@ -225,7 +208,7 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size)
 #pragma mark -
 #pragma mark Rendering
 
-- (void)renderToTextureWithVertices:(const GLfloat *)vertices textureCoordinates:(const GLfloat *)textureCoordinates;
+- (void)renderToTextureWithVertices:(const GLfloat *)vertices textureCoordinates:(const GLfloat *)textureCoordinates sourceTexture:(GLuint)sourceTexture;
 {
     [GPUImageOpenGLESContext useImageProcessingContext];
     [self setFilterFBO];
@@ -233,10 +216,10 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size)
     [filterProgram use];
     
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT);
 
 	glActiveTexture(GL_TEXTURE2);
-	glBindTexture(GL_TEXTURE_2D, filterSourceTexture);
+	glBindTexture(GL_TEXTURE_2D, sourceTexture);
 
 	glUniform1i(filterInputTextureUniform, 2);	
 
@@ -251,8 +234,11 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size)
     glVertexAttribPointer(filterPositionAttribute, 2, GL_FLOAT, 0, 0, vertices);
 	glVertexAttribPointer(filterTextureCoordinateAttribute, 2, GL_FLOAT, 0, 0, textureCoordinates);
     
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-    
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);    
+}
+
+- (void)informTargetsAboutNewFrame;
+{
     for (id<GPUImageInput> currentTarget in targets)
     {
         [currentTarget setInputSize:inputTextureSize];
@@ -348,7 +334,8 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size)
         1.0f,  1.0f,
     };
  
-    [self renderToTextureWithVertices:squareVertices textureCoordinates:squareTextureCoordinates];
+    [self renderToTextureWithVertices:squareVertices textureCoordinates:squareTextureCoordinates sourceTexture:filterSourceTexture];
+    [self informTargetsAboutNewFrame];
 }
 
 - (NSInteger)nextAvailableTextureIndex;

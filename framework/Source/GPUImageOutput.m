@@ -29,11 +29,16 @@
 #pragma mark -
 #pragma mark Managing targets
 
+- (void)setInputTextureForTarget:(id<GPUImageInput>)target atIndex:(NSInteger)inputTextureIndex;
+{
+    [target setInputTexture:outputTexture atIndex:inputTextureIndex];
+}
+
 - (void)addTarget:(id<GPUImageInput>)newTarget;
 {
     cachedMaximumOutputSize = CGSizeZero;
     NSInteger nextAvailableTextureIndex = [newTarget nextAvailableTextureIndex];
-    [newTarget setInputTexture:outputTexture atIndex:nextAvailableTextureIndex];
+    [self setInputTextureForTarget:newTarget atIndex:nextAvailableTextureIndex];
     [targets addObject:newTarget];
     [targetTextureIndices addObject:[NSNumber numberWithInteger:nextAvailableTextureIndex]];
 }
@@ -78,6 +83,7 @@
 	// This is necessary for non-power-of-two textures
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 - (void)deleteOutputTexture;

@@ -241,7 +241,19 @@
             
             filter = [[GPUImageGaussianBlurFilter alloc] init];
         }; break;
+
+        case GPUIMAGE_FASTBLUR:
+        {
+            self.title = @"Fast Blur";
+            self.filterSettingsSlider.hidden = NO;
             
+            [self.filterSettingsSlider setMinimumValue:1.0];
+            [self.filterSettingsSlider setMaximumValue:10.0];
+            [self.filterSettingsSlider setValue:1.0];
+            
+            filter = [[GPUImageFastBlurFilter alloc] init];
+        }; break;
+
         default: filter = [[GPUImageSepiaFilter alloc] init]; break;
     }
     
@@ -278,6 +290,7 @@
         case GPUIMAGE_SWIRL: [(GPUImageSwirlFilter *)filter setAngle:[(UISlider *)sender value]]; break;
         case GPUIMAGE_VIGNETTE: [(GPUImageVignetteFilter *)filter setY:[(UISlider *)sender value]]; break;
         case GPUIMAGE_GAUSSIAN: [(GPUImageGaussianBlurFilter *)filter setBlurSize:[(UISlider*)sender value]]; break;
+        case GPUIMAGE_FASTBLUR: [(GPUImageFastBlurFilter *)filter setBlurPasses:round([(UISlider*)sender value])]; break;
         default: break;
     }
 }
