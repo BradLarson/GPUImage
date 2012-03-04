@@ -269,8 +269,6 @@
 		BC1B715F14F4B06600ACA2AB /* Effects */ = {
 			isa = PBXGroup;
 			children = (
-				BCC93A0D1501D1BF00958B26 /* GPUImageFastBlurFilter.h */,
-				BCC93A0E1501D1BF00958B26 /* GPUImageFastBlurFilter.m */,
 				BCB5DE0B14E87F32000AF3C2 /* GPUImagePixellateFilter.h */,
 				BCB5DE0C14E87F32000AF3C2 /* GPUImagePixellateFilter.m */,
 				BC982B9714F0B34E0001FF6F /* GPUImageSobelEdgeDetectionFilter.h */,
@@ -285,10 +283,6 @@
 				BC982C4614F29E580001FF6F /* GPUImageKuwaharaFilter.m */,
 				0DF3FA2914FA00C9006AF7D9 /* GPUImageVignetteFilter.h */,
 				0DF3FA2A14FA00C9006AF7D9 /* GPUImageVignetteFilter.m */,
-				0D04CB7A14FB2A29001D6733 /* GPUImageGaussianBlurFilter.h */,
-				0D04CB7B14FB2A29001D6733 /* GPUImageGaussianBlurFilter.m */,
-				0D9D91AD15011CA200A5BC83 /* GPUImageGaussianSelectiveBlurFilter.h */,
-				0D9D91AE15011CA200A5BC83 /* GPUImageGaussianSelectiveBlurFilter.m */,
 			);
 			name = Effects;
 			sourceTree = "<group>";
@@ -303,6 +297,7 @@
 				BCB5E85314E63BBB00701302 /* GPUImageRotationFilter.h */,
 				BCB5E85414E63BBB00701302 /* GPUImageRotationFilter.m */,
 				BC1B715D14F4AFFF00ACA2AB /* Color processing */,
+				BCC93A5215031B1700958B26 /* Image processing */,
 				BC1B715E14F4B04800ACA2AB /* Blends */,
 				BC1B715F14F4B06600ACA2AB /* Effects */,
 			);
@@ -333,6 +328,19 @@
 				BC1B728014FB16AF00ACA2AB /* GPUImageMovieWriter.m */,
 			);
 			name = Outputs;
+			sourceTree = "<group>";
+		};
+		BCC93A5215031B1700958B26 /* Image processing */ = {
+			isa = PBXGroup;
+			children = (
+				BCC93A0D1501D1BF00958B26 /* GPUImageFastBlurFilter.h */,
+				BCC93A0E1501D1BF00958B26 /* GPUImageFastBlurFilter.m */,
+				0D04CB7A14FB2A29001D6733 /* GPUImageGaussianBlurFilter.h */,
+				0D04CB7B14FB2A29001D6733 /* GPUImageGaussianBlurFilter.m */,
+				0D9D91AD15011CA200A5BC83 /* GPUImageGaussianSelectiveBlurFilter.h */,
+				0D9D91AE15011CA200A5BC83 /* GPUImageGaussianSelectiveBlurFilter.m */,
+			);
+			name = "Image processing";
 			sourceTree = "<group>";
 		};
 		BCF1A32914DDB1EC00852800 = {
