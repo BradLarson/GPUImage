@@ -25,17 +25,15 @@ NSString *const kGPUImageSketchFragmentShaderString = SHADER_STRING
  
  void main()
  {
-     vec3 textureColor = texture2D(inputImageTexture, textureCoordinate).rgb;
-     
-     float i00   = dot( textureColor, W);
-     float im1m1 = dot( texture2D(inputImageTexture, bottomLeftTextureCoordinate).rgb, W);
-     float ip1p1 = dot( texture2D(inputImageTexture, topRightTextureCoordinate).rgb, W);
-     float im1p1 = dot( texture2D(inputImageTexture, topLeftTextureCoordinate).rgb, W);
-     float ip1m1 = dot( texture2D(inputImageTexture, bottomRightTextureCoordinate).rgb, W);
-     float im10 = dot( texture2D(inputImageTexture, leftTextureCoordinate).rgb, W);
-     float ip10 = dot( texture2D(inputImageTexture, rightTextureCoordinate).rgb, W);
-     float i0m1 = dot( texture2D(inputImageTexture, bottomTextureCoordinate).rgb, W);
-     float i0p1 = dot( texture2D(inputImageTexture, topTextureCoordinate).rgb, W);
+     float i00   = texture2D(inputImageTexture, textureCoordinate).r;
+     float im1m1 = texture2D(inputImageTexture, bottomLeftTextureCoordinate).r;
+     float ip1p1 = texture2D(inputImageTexture, topRightTextureCoordinate).r;
+     float im1p1 = texture2D(inputImageTexture, topLeftTextureCoordinate).r;
+     float ip1m1 = texture2D(inputImageTexture, bottomRightTextureCoordinate).r;
+     float im10 = texture2D(inputImageTexture, leftTextureCoordinate).r;
+     float ip10 = texture2D(inputImageTexture, rightTextureCoordinate).r;
+     float i0m1 = texture2D(inputImageTexture, bottomTextureCoordinate).r;
+     float i0p1 = texture2D(inputImageTexture, topTextureCoordinate).r;
      float h = -im1p1 - 2.0 * i0p1 - ip1p1 + im1m1 + 2.0 * i0m1 + ip1m1;
      float v = -im1m1 - 2.0 * im10 - im1p1 + ip1m1 + 2.0 * ip10 + ip1p1;
      
