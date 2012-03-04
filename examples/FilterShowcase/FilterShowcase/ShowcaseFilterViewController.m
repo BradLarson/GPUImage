@@ -221,6 +221,27 @@
             
             filter = [[GPUImageDissolveBlendFilter alloc] init];
         }; break;
+        case GPUIMAGE_SCREENBLEND:
+        {
+            self.title = @"Screen Blend";
+            self.filterSettingsSlider.hidden = YES;
+            
+            filter = [[GPUImageScreenBlendFilter alloc] init];
+        }; break;
+        case GPUIMAGE_COLORBURN:
+        {
+            self.title = @"Color Burn Blend";
+            self.filterSettingsSlider.hidden = YES;
+            
+            filter = [[GPUImageColorBurnBlendFilter alloc] init];
+        }; break;
+        case GPUIMAGE_COLORDODGE:
+        {
+            self.title = @"Color Dodge Blend";
+            self.filterSettingsSlider.hidden = YES;
+            
+            filter = [[GPUImageColorDodgeBlendFilter alloc] init];
+        }; break;
         case GPUIMAGE_CUSTOM:
         {
             self.title = @"Custom";

@@ -75,6 +75,9 @@
 		case GPUIMAGE_TOON: cell.textLabel.text = @"Toon"; break;
 		case GPUIMAGE_SWIRL: cell.textLabel.text = @"Swirl"; break;
 		case GPUIMAGE_DISSOLVE: cell.textLabel.text = @"Dissolve blend"; break;
+		case GPUIMAGE_SCREENBLEND: cell.textLabel.text = @"Screen blend"; break;
+		case GPUIMAGE_COLORBURN: cell.textLabel.text = @"Color burn blend"; break;
+		case GPUIMAGE_COLORDODGE: cell.textLabel.text = @"Color dodge blend"; break;
 		case GPUIMAGE_MULTIPLY: cell.textLabel.text = @"Multiply blend"; break;
 	    case GPUIMAGE_OVERLAY: cell.textLabel.text = @"Overlay blend"; break;
 	    case GPUIMAGE_LIGHTEN: cell.textLabel.text = @"Lighten blend"; break;
