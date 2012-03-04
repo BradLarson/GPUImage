@@ -19,6 +19,11 @@ NSString *const kGPUImageDissolveBlendFragmentShaderString = SHADER_STRING
 
 @implementation GPUImageDissolveBlendFilter
 
+@synthesize mix = _mix;
+
+#pragma mark -
+#pragma mark Initialization and teardown
+
 - (id)init;
 {
     if (!(self = [super initWithFragmentShaderFromString:kGPUImageDissolveBlendFragmentShaderString]))
@@ -34,8 +39,6 @@ NSString *const kGPUImageDissolveBlendFragmentShaderString = SHADER_STRING
 
 #pragma mark -
 #pragma mark Accessors
-
-@synthesize mix = _mix;
 
 - (void)setMix:(CGFloat)newValue;
 {

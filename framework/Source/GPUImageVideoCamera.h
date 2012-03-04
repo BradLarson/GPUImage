@@ -10,12 +10,10 @@
 
 @interface GPUImageVideoCamera : GPUImageOutput <AVCaptureVideoDataOutputSampleBufferDelegate>
 {
-    AVCaptureSession *captureSession;
     CVOpenGLESTextureCacheRef coreVideoTextureCache;    
 
     NSUInteger numberOfFramesCaptured;
     CGFloat totalFrameTimeDuringCapture;
-    BOOL runBenchmark;
 }
 
 @property(readonly) AVCaptureSession *captureSession;

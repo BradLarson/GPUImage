@@ -17,6 +17,11 @@ NSString *const kGPUImageGammaFragmentShaderString = SHADER_STRING
 
 @implementation GPUImageGammaFilter
 
+@synthesize gamma = _gamma;
+
+#pragma mark -
+#pragma mark Initialization and teardown
+
 - (id)init;
 {
     if (!(self = [super initWithFragmentShaderFromString:kGPUImageGammaFragmentShaderString]))
@@ -32,8 +37,6 @@ NSString *const kGPUImageGammaFragmentShaderString = SHADER_STRING
 
 #pragma mark -
 #pragma mark Accessors
-
-@synthesize gamma = _gamma;
 
 - (void)setGamma:(CGFloat)newValue;
 {

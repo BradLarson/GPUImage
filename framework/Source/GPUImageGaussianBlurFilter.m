@@ -69,7 +69,7 @@ NSString *const kGPUImageGaussianBlurFragmentShaderString = SHADER_STRING
 
 @implementation GPUImageGaussianBlurFilter
 
-@synthesize blurSize=_blurSize;
+@synthesize blurSize = _blurSize;
 
 - (id) initWithGaussianVertexShaderFromString:(NSString *)vertexShaderString fragmentShaderFromString:(NSString *)fragmentShaderString {
     if (!(self = [super initWithFragmentShaderFromString:kGPUImageGaussianBlurPassThroughFragmentShaderString])) {
