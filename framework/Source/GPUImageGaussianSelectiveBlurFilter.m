@@ -1,40 +1,6 @@
 #import "GPUImageGaussianSelectiveBlurFilter.h"
 
-NSString *const kGPUImageGaussianSelectiveBlurVertexShaderString = SHADER_STRING
-(
- attribute vec4 position;
- attribute vec4 inputTextureCoordinate;
- 
- const lowp int GAUSSIAN_SAMPLES = 9;
-
- uniform highp float blurSize;
- uniform lowp int horizontalBlur; // 0 == vertical blur, 1 == horizontal blur
- 
- varying highp vec2 textureCoordinate;
- varying highp vec2 blurCoordinates[GAUSSIAN_SAMPLES];
- 
- void main() {
- 	gl_Position = position;
- 	textureCoordinate = inputTextureCoordinate.xy;
- 	
- 	// Calculate the positions for the blur
- 	lowp int multiplier = 0;
- 	mediump vec2 blurStep = vec2(0.0, 0.0);
- 	for (lowp int i = 0; i < GAUSSIAN_SAMPLES; i++) {
- 		multiplier = (i - ((GAUSSIAN_SAMPLES - 1) / 2));
- 		if (horizontalBlur == 1) {
- 			// Blur in x (horizontal)
- 			blurStep = vec2(float(multiplier) * blurSize, 0.0);
- 		} else {
- 			// Blur in y (vertical)
- 			blurStep = vec2(0.0, float(multiplier) * blurSize);
- 		}
- 		blurCoordinates[i] = inputTextureCoordinate.xy + blurStep;
- 	}
- }
-);
-
-NSString *const kGPUImageGaussianSelectiveBlurFragmentShaderString = SHADER_STRING
+NSString *const kGPUImageGaussianSelectiveBlurVerticalFragmentShaderString = SHADER_STRING
 (
  uniform sampler2D inputImageTexture;
  uniform sampler2D inputImageTexture2; // The un-blurred image
@@ -46,7 +12,6 @@ NSString *const kGPUImageGaussianSelectiveBlurFragmentShaderString = SHADER_STRI
  uniform lowp float excludeBlurSize;
  
  uniform mediump float gaussianValues[9];
- uniform lowp int horizontalBlur; // 0 == vertical blur, 1 == horizontal blur
  
  varying highp vec2 textureCoordinate;
  varying highp vec2 blurCoordinates[GAUSSIAN_SAMPLES];
@@ -58,14 +23,12 @@ NSString *const kGPUImageGaussianSelectiveBlurFragmentShaderString = SHADER_STRI
  	for (lowp int i = 0; i < GAUSSIAN_SAMPLES; i++) {
  		sum += texture2D(inputImageTexture, blurCoordinates[i]) * gaussianValues[i];
  	}
- 	
-     if (horizontalBlur == 0) {
-         highp vec4 overlay = texture2D(inputImageTexture2, textureCoordinate);
-         lowp float d = distance(textureCoordinate, excludeCirclePoint);
-         
-         sum = mix(overlay, sum, smoothstep(excludeCircleRadius - excludeBlurSize, excludeCircleRadius, d));
-     }
+
+     highp vec4 overlay = texture2D(inputImageTexture2, textureCoordinate);
+     lowp float d = distance(textureCoordinate, excludeCirclePoint);
      
+     sum = mix(overlay, sum, smoothstep(excludeCircleRadius - excludeBlurSize, excludeCircleRadius, d));
+
  	gl_FragColor = sum;
  }
 );
@@ -76,21 +39,33 @@ NSString *const kGPUImageGaussianSelectiveBlurFragmentShaderString = SHADER_STRI
 
 - (id)init;
 {
-    if (!(self = [super initWithGaussianVertexShaderFromString:kGPUImageGaussianSelectiveBlurVertexShaderString fragmentShaderFromString:kGPUImageGaussianSelectiveBlurFragmentShaderString]))
-    {
-		return nil;
+    if (!(self = [super initWithFirstStageVertexShaderFromString:nil
+                              firstStageFragmentShaderFromString:nil
+                               secondStageVertexShaderFromString:nil
+                             secondStageFragmentShaderFromString:kGPUImageGaussianSelectiveBlurVerticalFragmentShaderString])) {
+        return nil;
     }
     
-    // Pass the original texture as the 2nd to the vertical blur for the selective
-    [self addTarget:verticalBlur];
+    verticalExcludeCircleBlurSizeUniform = [secondFilterProgram uniformIndex:@"excludeBlurSize"];
+    verticalExcludeCirclePointUniform = [secondFilterProgram uniformIndex:@"excludeCirclePoint"];
+    verticalExcludeCircleRadiusUniform = [secondFilterProgram uniformIndex:@"excludeCircleRadius"];
     
-    self.blurSize = 1.0/320.0;
+    // Set up defaults
+    
+    self.blurSize = 2.0/320.0;
 
     self.excludeCircleRadius = 60.0/320.0;
     self.excludeCirclePoint = CGPointMake(0.5f, 0.5f);
-    self.excludeBlurSize = 20.0/320.0;
+    self.excludeBlurSize = 30.0/320.0;
     
     return self;
+}
+
+- (void) setInputTexture:(GLuint)newInputTexture atIndex:(NSInteger)textureIndex {
+    if (textureIndex == 0) {
+        [super setInputTexture:newInputTexture atIndex:0];
+        [super setInputTexture:newInputTexture atIndex:1];
+    }
 }
 
 #pragma mark Getters and Setters
@@ -98,22 +73,32 @@ NSString *const kGPUImageGaussianSelectiveBlurFragmentShaderString = SHADER_STRI
 - (void) setExcludeCirclePoint:(CGPoint)excludeCirclePoint {
     _excludeCirclePoint = excludeCirclePoint;
     
-    [horizontalBlur setPoint:_excludeCirclePoint forUniform:@"excludeCirclePoint"];
-    [verticalBlur setPoint:_excludeCirclePoint forUniform:@"excludeCirclePoint"];
+    GLfloat excludeCirclePosition[2];
+    excludeCirclePosition[0] = _excludeCirclePoint.x;
+    excludeCirclePosition[1] = _excludeCirclePoint.y;
+    
+    [GPUImageOpenGLESContext useImageProcessingContext];
+    [secondFilterProgram use];
+    
+    glUniform2fv(verticalExcludeCirclePointUniform, 1, excludeCirclePosition);
 }
 
 - (void) setExcludeCircleRadius:(CGFloat)excludeCircleRadius {
     _excludeCircleRadius = excludeCircleRadius;
     
-    [horizontalBlur setFloat:_excludeCircleRadius forUniform:@"excludeCircleRadius"];
-    [verticalBlur setFloat:_excludeCircleRadius forUniform:@"excludeCircleRadius"];
+    [GPUImageOpenGLESContext useImageProcessingContext];
+    [secondFilterProgram use];
+    
+    glUniform1f(verticalExcludeCircleRadiusUniform, _excludeCircleRadius);
 }
 
 - (void) setExcludeBlurSize:(CGFloat)excludeBlurSize {
     _excludeBlurSize = excludeBlurSize;
     
-    [horizontalBlur setFloat:_excludeBlurSize forUniform:@"excludeBlurSize"];
-    [verticalBlur setFloat:_excludeBlurSize forUniform:@"excludeBlurSize"];
+    [GPUImageOpenGLESContext useImageProcessingContext];
+    [secondFilterProgram use];
+    
+    glUniform1f(verticalExcludeCircleBlurSizeUniform, _excludeBlurSize);
 }
 
 @end

@@ -1,11 +1,11 @@
-#import "GPUImageFilter.h"
+#import "GPUImageTwoPassFilter.h"
 
-@interface GPUImageGaussianBlurFilter : GPUImageFilter {
-    GPUImageFilter *horizontalBlur;
-    GPUImageFilter *verticalBlur;
+@interface GPUImageGaussianBlurFilter : GPUImageTwoPassFilter {
+    GLint horizontalGaussianArrayUniform,
+        horizontalBlurSizeUniform,
+        verticalGaussianArrayUniform,
+        verticalBlurSizeUniform;
 }
-
-- (id) initWithGaussianVertexShaderFromString:(NSString *)vertexShaderString fragmentShaderFromString:(NSString *)fragmentShaderString;
 
 @property (readwrite, nonatomic) CGFloat blurSize;
 
