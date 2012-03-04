@@ -242,6 +242,34 @@
             
             filter = [[GPUImageColorDodgeBlendFilter alloc] init];
         }; break;
+        case GPUIMAGE_EXCLUSIONBLEND:
+        {
+            self.title = @"Exlusion Blend";
+            self.filterSettingsSlider.hidden = YES;
+            
+            filter = [[GPUImageExclusionBlendFilter alloc] init];
+        }; break;
+        case GPUIMAGE_DIFFERENCEBLEND:
+        {
+            self.title = @"Difference Blend";
+            self.filterSettingsSlider.hidden = YES;
+            
+            filter = [[GPUImageDifferenceBlendFilter alloc] init];
+        }; break;
+        case GPUIMAGE_HARDLIGHTBLEND:
+        {
+            self.title = @"Hard Light Blend";
+            self.filterSettingsSlider.hidden = YES;
+            
+            filter = [[GPUImageHardLightBlendFilter alloc] init];
+        }; break;
+        case GPUIMAGE_SOFTLIGHTBLEND:
+        {
+            self.title = @"Soft Light Blend";
+            self.filterSettingsSlider.hidden = YES;
+            
+            filter = [[GPUImageSoftLightBlendFilter alloc] init];
+        }; break;
         case GPUIMAGE_CUSTOM:
         {
             self.title = @"Custom";

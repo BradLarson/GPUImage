@@ -82,6 +82,10 @@
 	    case GPUIMAGE_OVERLAY: cell.textLabel.text = @"Overlay blend"; break;
 	    case GPUIMAGE_LIGHTEN: cell.textLabel.text = @"Lighten blend"; break;
 	    case GPUIMAGE_DARKEN: cell.textLabel.text = @"Darken blend"; break;
+	    case GPUIMAGE_EXCLUSIONBLEND: cell.textLabel.text = @"Exclusion blend"; break;
+	    case GPUIMAGE_DIFFERENCEBLEND: cell.textLabel.text = @"Difference blend"; break;
+	    case GPUIMAGE_HARDLIGHTBLEND: cell.textLabel.text = @"Hard light blend"; break;
+	    case GPUIMAGE_SOFTLIGHTBLEND: cell.textLabel.text = @"Soft light blend"; break;
         case GPUIMAGE_KUWAHARA: cell.textLabel.text = @"Kuwahara"; break;
         case GPUIMAGE_VIGNETTE: cell.textLabel.text = @"Vignette"; break;
         case GPUIMAGE_GAUSSIAN: cell.textLabel.text = @"Gaussian Blur"; break;

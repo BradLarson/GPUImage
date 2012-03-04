@@ -53,6 +53,9 @@ For example, an application that takes in live video from the camera, converts t
 - **GPUImageBrightnessFilter**: Adjusts the brightness of the image
   - *brightness*: The adjusted brightness (-1.0 - 1.0, with 0.0 as the default)
 
+- **GPUImageExposureFilter**: Adjusts the exposure of the image
+  - *exposure*: The adjusted exposure (-10.0 - 10.0, with 0.0 as the default)
+
 - **GPUImageContrastFilter**: Adjusts the contrast of the image
   - *contrast*: The adjusted contrast (0.0 - 4.0, with 1.0 as the default)
 
@@ -71,6 +74,24 @@ For example, an application that takes in live video from the camera, converts t
 - **GPUImageSepiaFilter**: Simple sepia tone filter
   - *intensity*: The degree to which the sepia tone replaces the normal image color (0.0 - 1.0, with 1.0 as the default)
 
+### Image processing ###
+
+- **GPUImageRotationFilter**: This lets you rotate an image left or right by 90 degrees, or flip it horizontally or vertically
+
+- **GPUImageSharpenFilter**: Sharpens the image
+  - *sharpness*: The sharpness adjustment to apply (-4.0 - 4.0, with 0.0 as the default)
+
+- **GPUImageFastBlurFilter**: A hardware-accelerated 9-hit Gaussian blur of an image
+  - *blurPasses*: The number of times to re-apply this blur on an image. More passes lead to a blurrier image, yet they require more processing power. The default is 1.
+
+- **GPUImageGaussianBlurFilter**: A more generalized Gaussian blur filter
+  - *blurSize*: The fractional area of the image to blur each pixel over
+
+- **GPUImageGaussianSelectiveBlurFilter**: A Gaussian blur that preserves focus within a circular region
+  - *blurSize*: The fractional area of the image to blur each pixel over
+  - *excludeCircleRadius*: The radius of the circular area being excluded from the blur
+  - *excludeCirclePoint*: The center of the circular area being excluded from the blur
+  - *excludeBlurSize*: The size of the area between the blurred portion and the clear circle 
 
 ### Blending modes ###
 
@@ -85,9 +106,13 @@ For example, an application that takes in live video from the camera, converts t
 
 - **GPUImageLightenBlendFilter**: Blends two images by taking the maximum value of each color component between the images
 
-### Visual effects ###
+- **GPUImageColorBurnBlendFilter**: Applies a color burn blend of two images
 
-- **GPUImageRotationFilter**: This lets you rotate an image left or right by 90 degrees, or flip it horizontally or vertically
+- **GPUImageColorDodgeBlendFilter**: Applies a color dodge blend of two images
+
+- **GPUImageScreenBlendFilter**: Applies a screen blend of two images
+
+### Visual effects ###
 
 - **GPUImagePixellateFilter**: Applies a pixellation effect on an image or video
   - *fractionalWidthOfAPixel*: How large the pixels are, as a fraction of the width and height of the image (0.0 - 1.0, default 0.05)
