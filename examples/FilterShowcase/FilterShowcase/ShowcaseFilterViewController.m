@@ -117,6 +117,28 @@
             
             filter = [[GPUImageBrightnessFilter alloc] init];
         }; break;
+        case GPUIMAGE_EXPOSURE:
+        {
+            self.title = @"Exposure";
+            self.filterSettingsSlider.hidden = NO;
+            
+            [self.filterSettingsSlider setMinimumValue:-4.0];
+            [self.filterSettingsSlider setMaximumValue:4.0];
+            [self.filterSettingsSlider setValue:0.0];
+            
+            filter = [[GPUImageExposureFilter alloc] init];
+        }; break;
+        case GPUIMAGE_SHARPEN:
+        {
+            self.title = @"Sharpen";
+            self.filterSettingsSlider.hidden = NO;
+            
+            [self.filterSettingsSlider setMinimumValue:-1.0];
+            [self.filterSettingsSlider setMaximumValue:4.0];
+            [self.filterSettingsSlider setValue:0.0];
+            
+            filter = [[GPUImageSharpenFilter alloc] init];
+        }; break;
         case GPUIMAGE_GAMMA:
         {
             self.title = @"Gamma";
@@ -229,7 +251,6 @@
             
             filter = [[GPUImageVignetteFilter alloc] init];
         }; break;
-
         case GPUIMAGE_GAUSSIAN:
         {
             self.title = @"Gaussian Blur";
@@ -302,6 +323,8 @@
         case GPUIMAGE_SATURATION: [(GPUImageSaturationFilter *)filter setSaturation:[(UISlider *)sender value]]; break;
         case GPUIMAGE_CONTRAST: [(GPUImageContrastFilter *)filter setContrast:[(UISlider *)sender value]]; break;
         case GPUIMAGE_BRIGHTNESS: [(GPUImageBrightnessFilter *)filter setBrightness:[(UISlider *)sender value]]; break;
+        case GPUIMAGE_EXPOSURE: [(GPUImageExposureFilter *)filter setExposure:[(UISlider *)sender value]]; break;
+        case GPUIMAGE_SHARPEN: [(GPUImageSharpenFilter *)filter setSharpness:[(UISlider *)sender value]]; break;
         case GPUIMAGE_GAMMA: [(GPUImageGammaFilter *)filter setGamma:[(UISlider *)sender value]]; break;
         case GPUIMAGE_DISSOLVE: [(GPUImageDissolveBlendFilter *)filter setMix:[(UISlider *)sender value]]; break;
         case GPUIMAGE_KUWAHARA: [(GPUImageKuwaharaFilter *)filter setRadius:round([(UISlider *)sender value])]; break;

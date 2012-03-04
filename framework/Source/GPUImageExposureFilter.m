@@ -1,0 +1,51 @@
+#import "GPUImageExposureFilter.h"
+
+NSString *const kGPUImageExposureFragmentShaderString = SHADER_STRING
+(
+ varying highp vec2 textureCoordinate;
+ 
+ uniform sampler2D inputImageTexture;
+ uniform highp float exposure;
+ 
+ void main()
+ {
+     highp vec3 textureColor = texture2D(inputImageTexture, textureCoordinate).rgb;
+     
+     gl_FragColor = vec4(textureColor * pow(2.0, exposure), 1.0);
+ }
+);
+
+@implementation GPUImageExposureFilter
+
+@synthesize exposure = _exposure;
+
+#pragma mark -
+#pragma mark Initialization and teardown
+
+- (id)init;
+{
+    if (!(self = [super initWithFragmentShaderFromString:kGPUImageExposureFragmentShaderString]))
+    {
+		return nil;
+    }
+    
+    exposureUniform = [filterProgram uniformIndex:@"exposure"];
+    self.exposure = 0.0;
+    
+    return self;
+}
+
+#pragma mark -
+#pragma mark Accessors
+
+- (void)setExposure:(CGFloat)newValue;
+{
+    _exposure = newValue;
+    
+    [GPUImageOpenGLESContext useImageProcessingContext];
+    [filterProgram use];
+    glUniform1f(exposureUniform, _exposure);
+}
+
+@end
+
