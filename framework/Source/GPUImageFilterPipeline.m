@@ -9,7 +9,7 @@
 
 @implementation GPUImageFilterPipeline
 
-@synthesize filters=_filters, input=_input, output=_output;
+@synthesize filters = _filters, input = _input, output = _output;
 
 #pragma mark Config file init
 

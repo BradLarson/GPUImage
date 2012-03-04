@@ -19,6 +19,8 @@ NSString *const kGPUImagePixellationFragmentShaderString = SHADER_STRING
 
 @implementation GPUImagePixellateFilter
 
+@synthesize fractionalWidthOfAPixel = _fractionalWidthOfAPixel;
+
 #pragma mark -
 #pragma mark Initialization and teardown
 
@@ -38,8 +40,6 @@ NSString *const kGPUImagePixellationFragmentShaderString = SHADER_STRING
 
 #pragma mark -
 #pragma mark Accessors
-
-@synthesize fractionalWidthOfAPixel = _fractionalWidthOfAPixel;
 
 - (void)setFractionalWidthOfAPixel:(CGFloat)newValue;
 {

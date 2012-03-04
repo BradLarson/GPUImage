@@ -20,6 +20,12 @@ NSString *const kGPUImageColorMatrixFragmentShaderString = SHADER_STRING
 
 @implementation GPUImageColorMatrixFilter
 
+@synthesize intensity = _intensity;
+@synthesize colorMatrix = _colorMatrix;
+
+#pragma mark -
+#pragma mark Initialization and teardown
+
 - (id)init;
 {
     if (!(self = [super initWithFragmentShaderFromString:kGPUImageColorMatrixFragmentShaderString]))
@@ -41,9 +47,8 @@ NSString *const kGPUImageColorMatrixFragmentShaderString = SHADER_STRING
     return self;
 }
 
-@synthesize intensity=_intensity;
-@synthesize colorMatrix=_colorMatrix;
-
+#pragma mark -
+#pragma mark Accessors
 
 - (void)setIntensity:(CGFloat)newIntensity;
 {

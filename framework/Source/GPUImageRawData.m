@@ -44,6 +44,9 @@ NSString *const kGPUImageDataFragmentShaderString = SHADER_STRING
 
 @implementation GPUImageRawData
 
+@synthesize rawBytesForImage = _rawBytesForImage;
+@synthesize delegate = _delegate;
+
 #pragma mark -
 #pragma mark Initialization and teardown
 
@@ -234,9 +237,6 @@ NSString *const kGPUImageDataFragmentShaderString = SHADER_STRING
 
 #pragma mark -
 #pragma mark Accessors
-
-@synthesize rawBytesForImage = _rawBytesForImage;
-@synthesize delegate = _delegate;
 
 - (GLubyte *)rawBytesForImage;
 {

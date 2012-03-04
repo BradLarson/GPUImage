@@ -104,6 +104,12 @@ NSString *const kGPUImageSobelEdgeDetectionFragmentShaderString = SHADER_STRING
 
 @implementation GPUImageSobelEdgeDetectionFilter
 
+@synthesize imageWidthFactor = _imageWidthFactor; 
+@synthesize imageHeightFactor = _imageHeightFactor; 
+
+#pragma mark -
+#pragma mark Initialization and teardown
+
 - (id)init;
 {
     if (!(self = [self initWithFragmentShaderFromString:kGPUImageSobelEdgeDetectionFragmentShaderString]))
@@ -146,9 +152,6 @@ NSString *const kGPUImageSobelEdgeDetectionFragmentShaderString = SHADER_STRING
 
 #pragma mark -
 #pragma mark Accessors
-
-@synthesize imageWidthFactor = _imageWidthFactor; 
-@synthesize imageHeightFactor = _imageHeightFactor; 
 
 - (void)setImageWidthFactor:(CGFloat)newValue;
 {

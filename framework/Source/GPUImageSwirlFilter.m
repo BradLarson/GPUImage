@@ -34,6 +34,10 @@ NSString *const kGPUImageSwirlFragmentShaderString = SHADER_STRING
 
 @implementation GPUImageSwirlFilter
 
+@synthesize center = _center;
+@synthesize radius = _radius;
+@synthesize angle = _angle;
+
 #pragma mark -
 #pragma mark Initialization and teardown
 
@@ -57,10 +61,6 @@ NSString *const kGPUImageSwirlFragmentShaderString = SHADER_STRING
 
 #pragma mark -
 #pragma mark Accessors
-
-@synthesize center = _center;
-@synthesize radius = _radius;
-@synthesize angle = _angle;
 
 - (void)setRadius:(CGFloat)newValue;
 {

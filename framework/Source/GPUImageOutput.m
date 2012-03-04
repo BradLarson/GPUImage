@@ -2,6 +2,8 @@
 
 @implementation GPUImageOutput
 
+@synthesize shouldSmoothlyScaleOutput = _shouldSmoothlyScaleOutput;
+
 #pragma mark -
 #pragma mark Initialization and teardown
 
@@ -98,6 +100,5 @@
 #pragma mark -
 #pragma mark Accessors
 
-@synthesize shouldSmoothlyScaleOutput = _shouldSmoothlyScaleOutput;
 
 @end

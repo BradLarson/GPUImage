@@ -22,6 +22,11 @@ NSString *const kGPUImageSaturationFragmentShaderString = SHADER_STRING
 
 @implementation GPUImageSaturationFilter
 
+@synthesize saturation = _saturation;
+
+#pragma mark -
+#pragma mark Initialization and teardown
+
 - (id)init;
 {
     if (!(self = [super initWithFragmentShaderFromString:kGPUImageSaturationFragmentShaderString]))
@@ -37,8 +42,6 @@ NSString *const kGPUImageSaturationFragmentShaderString = SHADER_STRING
 
 #pragma mark -
 #pragma mark Accessors
-
-@synthesize saturation = _saturation;
 
 - (void)setSaturation:(CGFloat)newValue;
 {

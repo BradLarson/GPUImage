@@ -17,6 +17,11 @@ NSString *const kGPUImageContrastFragmentShaderString = SHADER_STRING
 
 @implementation GPUImageContrastFilter
 
+@synthesize contrast = _contrast;
+
+#pragma mark -
+#pragma mark Initialization
+
 - (id)init;
 {
     if (!(self = [super initWithFragmentShaderFromString:kGPUImageContrastFragmentShaderString]))
@@ -32,8 +37,6 @@ NSString *const kGPUImageContrastFragmentShaderString = SHADER_STRING
 
 #pragma mark -
 #pragma mark Accessors
-
-@synthesize contrast = _contrast;
 
 - (void)setContrast:(CGFloat)newValue;
 {

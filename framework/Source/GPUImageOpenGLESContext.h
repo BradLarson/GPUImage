@@ -6,7 +6,6 @@
 
 @interface GPUImageOpenGLESContext : NSObject
 {
-    EAGLContext *context;
 }
 
 @property(readonly) EAGLContext *context;

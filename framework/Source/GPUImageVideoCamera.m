@@ -13,6 +13,10 @@
 
 @implementation GPUImageVideoCamera
 
+@synthesize captureSession = _captureSession;
+@synthesize runBenchmark = _runBenchmark;
+
+
 #pragma mark -
 #pragma mark Initialization and teardown
 
@@ -33,7 +37,7 @@
 		return nil;
     }
     
-    runBenchmark = NO;
+    _runBenchmark = NO;
     
     if ([GPUImageVideoCamera supportsFastTextureUpload])
     {
@@ -60,16 +64,16 @@
 	}
     	
 	// Create the capture session
-	captureSession = [[AVCaptureSession alloc] init];
+	_captureSession = [[AVCaptureSession alloc] init];
 	
-    [captureSession beginConfiguration];
+    [_captureSession beginConfiguration];
 
 	// Add the video input	
 	NSError *error = nil;
 	videoInput = [[AVCaptureDeviceInput alloc] initWithDevice:backFacingCamera error:&error];
-	if ([captureSession canAddInput:videoInput]) 
+	if ([_captureSession canAddInput:videoInput]) 
 	{
-		[captureSession addInput:videoInput];
+		[_captureSession addInput:videoInput];
 	}
 	
 	// Add the video frame output	
@@ -82,17 +86,17 @@
 
 	[videoOutput setSampleBufferDelegate:self queue:dispatch_get_main_queue()];
     
-	if ([captureSession canAddOutput:videoOutput])
+	if ([_captureSession canAddOutput:videoOutput])
 	{
-		[captureSession addOutput:videoOutput];
+		[_captureSession addOutput:videoOutput];
 	}
 	else
 	{
 		NSLog(@"Couldn't add video output");
 	}
     
-    [captureSession setSessionPreset:sessionPreset];
-    [captureSession commitConfiguration];
+    [_captureSession setSessionPreset:sessionPreset];
+    [_captureSession commitConfiguration];
 
 //    inputTextureSize
     	
@@ -104,8 +108,8 @@
     [self stopCameraCapture];
 //    [videoOutput setSampleBufferDelegate:nil queue:dispatch_get_main_queue()];    
     
-    [captureSession removeInput:videoInput];
-    [captureSession removeOutput:videoOutput];
+    [_captureSession removeInput:videoInput];
+    [_captureSession removeOutput:videoOutput];
 
     if ([GPUImageVideoCamera supportsFastTextureUpload])
     {
@@ -126,17 +130,17 @@
 
 - (void)startCameraCapture;
 {
-    if (![captureSession isRunning])
+    if (![_captureSession isRunning])
 	{
-		[captureSession startRunning];
+		[_captureSession startRunning];
 	};
 }
 
 - (void)stopCameraCapture;
 {
-    if ([captureSession isRunning])
+    if ([_captureSession isRunning])
     {
-        [captureSession stopRunning];
+        [_captureSession stopRunning];
     }
 }
 
@@ -198,7 +202,7 @@
         CFRelease(texture);
         outputTexture = 0;
         
-        if (runBenchmark)
+        if (_runBenchmark)
         {
             CFAbsoluteTime currentFrameTime = (CFAbsoluteTimeGetCurrent() - startTime);
             totalFrameTimeDuringCapture += currentFrameTime;
@@ -224,7 +228,7 @@
         
         CVPixelBufferUnlockBaseAddress(cameraFrame, 0);
         
-        if (runBenchmark)
+        if (_runBenchmark)
         {
             CFAbsoluteTime currentFrameTime = (CFAbsoluteTimeGetCurrent() - startTime);
             totalFrameTimeDuringCapture += currentFrameTime;
@@ -237,8 +241,5 @@
 
 #pragma mark -
 #pragma mark Accessors
-
-@synthesize captureSession;
-@synthesize runBenchmark;
 
 @end

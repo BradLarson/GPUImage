@@ -78,6 +78,8 @@ NSString *const kGPUImageKuwaharaFragmentShaderString = SHADER_STRING
 
 @implementation GPUImageKuwaharaFilter
 
+@synthesize radius = _radius;
+
 #pragma mark -
 #pragma mark Initialization and teardown
 
@@ -97,8 +99,6 @@ NSString *const kGPUImageKuwaharaFragmentShaderString = SHADER_STRING
 
 #pragma mark -
 #pragma mark Accessors
-
-@synthesize radius = _radius;
 
 - (void)setRadius:(GLuint)newValue;
 {

@@ -17,6 +17,11 @@ NSString *const kGPUImageBrightnessFragmentShaderString = SHADER_STRING
 
 @implementation GPUImageBrightnessFilter
 
+@synthesize brightness = _brightness;
+
+#pragma mark -
+#pragma mark Initialization and teardown
+
 - (id)init;
 {
     if (!(self = [super initWithFragmentShaderFromString:kGPUImageBrightnessFragmentShaderString]))
@@ -32,8 +37,6 @@ NSString *const kGPUImageBrightnessFragmentShaderString = SHADER_STRING
 
 #pragma mark -
 #pragma mark Accessors
-
-@synthesize brightness = _brightness;
 
 - (void)setBrightness:(CGFloat)newValue;
 {

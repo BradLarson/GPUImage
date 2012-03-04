@@ -3,6 +3,8 @@
 
 @implementation GPUImageOpenGLESContext
 
+@synthesize context = _context;
+
 // Based on Colin Wheeler's example here: http://cocoasamurai.blogspot.com/2011/04/singletons-your-doing-them-wrong.html
 + (GPUImageOpenGLESContext *)sharedImageProcessingOpenGLESContext;
 {
@@ -36,28 +38,26 @@
 
 - (void)presentBufferForDisplay;
 {
-    [context presentRenderbuffer:GL_RENDERBUFFER];
+    [_context presentRenderbuffer:GL_RENDERBUFFER];
 }
 
 #pragma mark -
 #pragma mark Accessors
 
-@synthesize context;
-
 - (EAGLContext *)context;
 {
-    if (context == nil)
+    if (_context == nil)
     {
-        context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
-        NSAssert(context != nil, @"Unable to create an OpenGL ES 2.0 context. The GPUImage framework requires OpenGL ES 2.0 support to work.");
-        [EAGLContext setCurrentContext:context];
+        _context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
+        NSAssert(_context != nil, @"Unable to create an OpenGL ES 2.0 context. The GPUImage framework requires OpenGL ES 2.0 support to work.");
+        [EAGLContext setCurrentContext:_context];
         
         // Set up a few global settings for the image processing pipeline
         glEnable(GL_TEXTURE_2D);
         glDisable(GL_DEPTH_TEST);
     }
     
-    return context;
+    return _context;
 }
 
 

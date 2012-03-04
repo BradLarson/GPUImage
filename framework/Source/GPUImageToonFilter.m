@@ -62,6 +62,9 @@ NSString *const kGPUImageToonFragmentShaderString = SHADER_STRING
 
 @implementation GPUImageToonFilter
 
+@synthesize imageWidthFactor = _imageWidthFactor; 
+@synthesize imageHeightFactor = _imageHeightFactor; 
+
 #pragma mark -
 #pragma mark Initialization and teardown
 
@@ -96,9 +99,6 @@ NSString *const kGPUImageToonFragmentShaderString = SHADER_STRING
 
 #pragma mark -
 #pragma mark Accessors
-
-@synthesize imageWidthFactor = _imageWidthFactor; 
-@synthesize imageHeightFactor = _imageHeightFactor; 
 
 - (void)setImageWidthFactor:(CGFloat)newValue;
 {
