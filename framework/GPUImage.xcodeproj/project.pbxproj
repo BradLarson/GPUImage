@@ -94,6 +94,8 @@
 		BCB6B8751504234A0041703B /* GPUImageHardLightBlendFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = BCB6B86D1504234A0041703B /* GPUImageHardLightBlendFilter.m */; };
 		BCB6B8761504234A0041703B /* GPUImageSoftLightBlendFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = BCB6B86E1504234A0041703B /* GPUImageSoftLightBlendFilter.h */; };
 		BCB6B8771504234A0041703B /* GPUImageSoftLightBlendFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = BCB6B86F1504234A0041703B /* GPUImageSoftLightBlendFilter.m */; };
+		BCB6B8BB1505BF940041703B /* GPUImageTextureOutput.h in Headers */ = {isa = PBXBuildFile; fileRef = BCB6B8B91505BF940041703B /* GPUImageTextureOutput.h */; };
+		BCB6B8BC1505BF940041703B /* GPUImageTextureOutput.m in Sources */ = {isa = PBXBuildFile; fileRef = BCB6B8BA1505BF940041703B /* GPUImageTextureOutput.m */; };
 		BCC93A0F1501D1BF00958B26 /* GPUImageFastBlurFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = BCC93A0D1501D1BF00958B26 /* GPUImageFastBlurFilter.h */; };
 		BCC93A101501D1BF00958B26 /* GPUImageFastBlurFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = BCC93A0E1501D1BF00958B26 /* GPUImageFastBlurFilter.m */; };
 		BCC93A1E1501E42F00958B26 /* GPUImageTwoPassFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = BCC93A1C1501E42E00958B26 /* GPUImageTwoPassFilter.h */; };
@@ -212,6 +214,8 @@
 		BCB6B86D1504234A0041703B /* GPUImageHardLightBlendFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GPUImageHardLightBlendFilter.m; path = Source/GPUImageHardLightBlendFilter.m; sourceTree = SOURCE_ROOT; };
 		BCB6B86E1504234A0041703B /* GPUImageSoftLightBlendFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GPUImageSoftLightBlendFilter.h; path = Source/GPUImageSoftLightBlendFilter.h; sourceTree = SOURCE_ROOT; };
 		BCB6B86F1504234A0041703B /* GPUImageSoftLightBlendFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GPUImageSoftLightBlendFilter.m; path = Source/GPUImageSoftLightBlendFilter.m; sourceTree = SOURCE_ROOT; };
+		BCB6B8B91505BF940041703B /* GPUImageTextureOutput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GPUImageTextureOutput.h; path = Source/GPUImageTextureOutput.h; sourceTree = SOURCE_ROOT; };
+		BCB6B8BA1505BF940041703B /* GPUImageTextureOutput.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GPUImageTextureOutput.m; path = Source/GPUImageTextureOutput.m; sourceTree = SOURCE_ROOT; };
 		BCC93A0D1501D1BF00958B26 /* GPUImageFastBlurFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GPUImageFastBlurFilter.h; path = Source/GPUImageFastBlurFilter.h; sourceTree = SOURCE_ROOT; };
 		BCC93A0E1501D1BF00958B26 /* GPUImageFastBlurFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GPUImageFastBlurFilter.m; path = Source/GPUImageFastBlurFilter.m; sourceTree = SOURCE_ROOT; };
 		BCC93A1C1501E42E00958B26 /* GPUImageTwoPassFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GPUImageTwoPassFilter.h; path = Source/GPUImageTwoPassFilter.h; sourceTree = SOURCE_ROOT; };
@@ -376,6 +380,8 @@
 				BC1B715614F49DAA00ACA2AB /* GPUImageRawData.m */,
 				BC1B727F14FB16AF00ACA2AB /* GPUImageMovieWriter.h */,
 				BC1B728014FB16AF00ACA2AB /* GPUImageMovieWriter.m */,
+				BCB6B8B91505BF940041703B /* GPUImageTextureOutput.h */,
+				BCB6B8BA1505BF940041703B /* GPUImageTextureOutput.m */,
 			);
 			name = Outputs;
 			sourceTree = "<group>";
@@ -529,6 +535,7 @@
 				BCB6B8721504234A0041703B /* GPUImageExclusionBlendFilter.h in Headers */,
 				BCB6B8741504234A0041703B /* GPUImageHardLightBlendFilter.h in Headers */,
 				BCB6B8761504234A0041703B /* GPUImageSoftLightBlendFilter.h in Headers */,
+				BCB6B8BB1505BF940041703B /* GPUImageTextureOutput.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -674,6 +681,7 @@
 				BCB6B8731504234A0041703B /* GPUImageExclusionBlendFilter.m in Sources */,
 				BCB6B8751504234A0041703B /* GPUImageHardLightBlendFilter.m in Sources */,
 				BCB6B8771504234A0041703B /* GPUImageSoftLightBlendFilter.m in Sources */,
+				BCB6B8BC1505BF940041703B /* GPUImageTextureOutput.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -195,8 +195,6 @@
         
         CVPixelBufferUnlockBaseAddress(cameraFrame, 0);
 
-//        glBindTexture(outputTexture, 0);
-        
         // Flush the CVOpenGLESTexture cache and release the texture
         CVOpenGLESTextureCacheFlush(coreVideoTextureCache, 0);
         CFRelease(texture);

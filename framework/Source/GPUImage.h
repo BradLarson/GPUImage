@@ -10,6 +10,7 @@
 #import "GPUImageRawData.h"
 #import "GPUImageMovieWriter.h"
 #import "GPUImageFilterPipeline.h"
+#import "GPUImageTextureOutput.h"
 
 // Filters
 #import "GPUImageFilter.h"

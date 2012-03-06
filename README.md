@@ -112,6 +112,14 @@ For example, an application that takes in live video from the camera, converts t
 
 - **GPUImageScreenBlendFilter**: Applies a screen blend of two images
 
+- **GPUImageExclusionBlendFilter**: Applies an exclusion blend of two images
+
+- **GPUImageDifferenceBlendFilter**: Applies a difference blend of two images
+
+- **GPUImageHardLightBlendFilter**: Applies a hard light blend of two images
+
+- **GPUImageSoftLightBlendFilter**: Applies a soft light blend of two images
+
 ### Visual effects ###
 
 - **GPUImagePixellateFilter**: Applies a pixellation effect on an image or video
