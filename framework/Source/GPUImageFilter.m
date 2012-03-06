@@ -112,7 +112,7 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size)
 - (UIImage *)imageFromCurrentlyProcessedOutput;
 {
     [GPUImageOpenGLESContext useImageProcessingContext];
-    [self setFilterFBO];
+    [self setOutputFBO];
     
     CGSize currentFBOSize = [self sizeOfFBO];
 
@@ -203,6 +203,12 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size)
     
     CGSize currentFBOSize = [self sizeOfFBO];
     glViewport(0, 0, (int)currentFBOSize.width, (int)currentFBOSize.height);
+}
+
+- (void)setOutputFBO;
+{
+    // Override this for filters that have multiple framebuffers
+    [self setFilterFBO];
 }
 
 #pragma mark -

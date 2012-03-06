@@ -62,7 +62,8 @@
     UIImage *inputImage = [UIImage imageNamed:@"Lambeau.jpg"];
     
     GPUImagePicture *stillImageSource = [[GPUImagePicture alloc] initWithImage:inputImage];
-    GPUImageSepiaFilter *stillImageFilter = [[GPUImageSepiaFilter alloc] init];
+//    GPUImageSepiaFilter *stillImageFilter = [[GPUImageSepiaFilter alloc] init];
+    GPUImageSketchFilter *stillImageFilter = [[GPUImageSketchFilter alloc] init];
     
     [stillImageSource addTarget:stillImageFilter];
     [stillImageSource processImage];
@@ -70,7 +71,8 @@
     UIImage *currentFilteredVideoFrame = [stillImageFilter imageFromCurrentlyProcessedOutput];
     
     // Do a simpler image filtering
-    GPUImageSepiaFilter *stillImageFilter2 = [[GPUImageSepiaFilter alloc] init];
+//    GPUImageSepiaFilter *stillImageFilter2 = [[GPUImageSepiaFilter alloc] init];
+    GPUImageSketchFilter *stillImageFilter2 = [[GPUImageSketchFilter alloc] init];
     UIImage *quickFilteredImage = [stillImageFilter2 imageByFilteringImage:inputImage];
 
     

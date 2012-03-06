@@ -52,6 +52,7 @@ typedef struct GPUMatrix4x4 GPUMatrix4x4;
 - (void)createFilterFBOofSize:(CGSize)currentFBOSize;
 - (void)destroyFilterFBO;
 - (void)setFilterFBO;
+- (void)setOutputFBO;
 
 // Rendering
 - (void)renderToTextureWithVertices:(const GLfloat *)vertices textureCoordinates:(const GLfloat *)textureCoordinates sourceTexture:(GLuint)sourceTexture;

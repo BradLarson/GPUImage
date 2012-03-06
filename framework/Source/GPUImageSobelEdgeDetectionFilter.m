@@ -25,8 +25,8 @@ NSString *const kGPUImageSobelEdgeDetectionVertexShaderString = SHADER_STRING
  attribute vec4 position;
  attribute vec4 inputTextureCoordinate;
 
- uniform mediump float imageWidthFactor; 
- uniform mediump float imageHeightFactor; 
+ uniform highp float imageWidthFactor; 
+ uniform highp float imageHeightFactor; 
 
  varying vec2 textureCoordinate;
  varying vec2 leftTextureCoordinate;
@@ -44,10 +44,10 @@ NSString *const kGPUImageSobelEdgeDetectionVertexShaderString = SHADER_STRING
  {
      gl_Position = position;
      
-     mediump vec2 widthStep = vec2(imageWidthFactor, 0.0);
-     mediump vec2 heightStep = vec2(0.0, imageHeightFactor);
-     mediump vec2 widthHeightStep = vec2(imageWidthFactor, imageHeightFactor);
-     mediump vec2 widthNegativeHeightStep = vec2(imageWidthFactor, -imageHeightFactor);
+     vec2 widthStep = vec2(imageWidthFactor, 0.0);
+     vec2 heightStep = vec2(0.0, imageHeightFactor);
+     vec2 widthHeightStep = vec2(imageWidthFactor, imageHeightFactor);
+     vec2 widthNegativeHeightStep = vec2(imageWidthFactor, -imageHeightFactor);
 
      textureCoordinate = inputTextureCoordinate.xy;
      leftTextureCoordinate = inputTextureCoordinate.xy - widthStep;
@@ -138,6 +138,7 @@ NSString *const kGPUImageSobelEdgeDetectionFragmentShaderString = SHADER_STRING
 
 - (void)setupFilterForSize:(CGSize)filterFrameSize;
 {
+    NSLog(@"Setting up Sobel filter for size: %f, %f", filterFrameSize.width, filterFrameSize.height);
     if (!hasOverriddenImageSizeFactor)
     {
         _imageWidthFactor = filterFrameSize.width;

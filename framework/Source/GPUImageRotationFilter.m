@@ -82,6 +82,14 @@ NSString *const kGPUImageRotationFragmentShaderString =  SHADER_STRING
         1.0f,  1.0f,
         0.0f,  1.0f,
     };
+    
+    static const GLfloat rotateRightVerticalFlipTextureCoordinates[] = {
+        0.0f, 0.0f,
+        0.0f, 1.0f,
+        1.0f, 0.0f,
+        1.0f, 1.0f,
+    };
+
 
     switch (rotationMode)
     {
@@ -89,6 +97,7 @@ NSString *const kGPUImageRotationFragmentShaderString =  SHADER_STRING
         case kGPUImageRotateRight: [self renderToTextureWithVertices:rotationSquareVertices textureCoordinates:rotateRightTextureCoordinates sourceTexture:filterSourceTexture]; break;
         case kGPUImageFlipHorizonal: [self renderToTextureWithVertices:rotationSquareVertices textureCoordinates:verticalFlipTextureCoordinates sourceTexture:filterSourceTexture]; break;
         case kGPUImageFlipVertical: [self renderToTextureWithVertices:rotationSquareVertices textureCoordinates:horizontalFlipTextureCoordinates sourceTexture:filterSourceTexture]; break;
+   		case kGPUImageRotateRightFlipVertical: [self renderToTextureWithVertices:rotationSquareVertices textureCoordinates:rotateRightVerticalFlipTextureCoordinates sourceTexture:filterSourceTexture]; break;
     }
     [self informTargetsAboutNewFrame];
 }

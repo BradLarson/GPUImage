@@ -132,6 +132,12 @@
 //    glViewport(0, 0, (int)currentFBOSize.width, (int)currentFBOSize.height);
 }
 
+- (void)setOutputFBO;
+{
+    // Override this for filters that have multiple framebuffers
+    [self setSecondFilterFBO];
+}
+
 #pragma mark -
 #pragma mark Rendering
 
