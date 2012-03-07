@@ -38,6 +38,10 @@
 
 - (void)addTarget:(id<GPUImageInput>)newTarget;
 {
+    // Check if contain this target
+    if([targets containsObject:newTarget])
+        return;
+    
     cachedMaximumOutputSize = CGSizeZero;
     NSInteger nextAvailableTextureIndex = [newTarget nextAvailableTextureIndex];
     [self setInputTextureForTarget:newTarget atIndex:nextAvailableTextureIndex];
@@ -47,6 +51,10 @@
 
 - (void)removeTarget:(id<GPUImageInput>)targetToRemove;
 {
+    // Check if contain this target
+    if(![targets containsObject:targetToRemove])
+        return;
+    
     cachedMaximumOutputSize = CGSizeZero;
     [targetToRemove setInputSize:CGSizeZero];
     

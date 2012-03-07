@@ -8,7 +8,7 @@
 {
 }
 
-@property(readonly) EAGLContext *context;
+@property(readonly, retain) EAGLContext *context;
 
 + (GPUImageOpenGLESContext *)sharedImageProcessingOpenGLESContext;
 + (void)useImageProcessingContext;

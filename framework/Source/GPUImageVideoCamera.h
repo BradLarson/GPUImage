@@ -16,7 +16,7 @@
     CGFloat totalFrameTimeDuringCapture;
 }
 
-@property(readonly) AVCaptureSession *captureSession;
+@property(readonly, retain) AVCaptureSession *captureSession;
 @property(readwrite, nonatomic) BOOL runBenchmark;
 
 // Initialization and teardown
@@ -28,6 +28,9 @@
 // Manage the camera video stream
 - (void)startCameraCapture;
 - (void)stopCameraCapture;
+
+// Rotate the camera
+- (void)rotateCamera;
 
 // Benchmarking
 - (CGFloat)averageFrameDurationDuringCapture;

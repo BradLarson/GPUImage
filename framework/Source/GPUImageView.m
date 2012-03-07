@@ -111,11 +111,22 @@ NSString *const kGPUImageDisplayFragmentShaderString = SHADER_STRING
 	glEnableVertexAttribArray(displayPositionAttribute);
 	glEnableVertexAttribArray(displayTextureCoordinateAttribute);
 
+    [self addObserver:self forKeyPath:@"frame" options:0 context:NULL];
+}
 
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    if (object == self && [keyPath isEqualToString:@"frame"])
+    {
+        [self destroyDisplayFramebuffer];
+        [self createDisplayFramebuffer];
+    }
 }
 
 - (void)dealloc
 {
+    [self removeObserver:self forKeyPath:@"frame"];
+    
     [self destroyDisplayFramebuffer];
 }
 
