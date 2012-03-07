@@ -14,6 +14,8 @@
 
     NSUInteger numberOfFramesCaptured;
     CGFloat totalFrameTimeDuringCapture;
+    
+    AVCaptureSession *_captureSession;
 }
 
 @property(readonly) AVCaptureSession *captureSession;
