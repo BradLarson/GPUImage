@@ -45,3 +45,4 @@
 #import "GPUImageDifferenceBlendFilter.h"
 #import "GPUImageHardLightBlendFilter.h"
 #import "GPUImageSoftLightBlendFilter.h"
+#import "GPUImageCropFilter.h"

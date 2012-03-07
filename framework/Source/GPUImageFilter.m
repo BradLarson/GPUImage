@@ -113,7 +113,7 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size)
 {
     [GPUImageOpenGLESContext useImageProcessingContext];
     [self setOutputFBO];
-    
+
     CGSize currentFBOSize = [self sizeOfFBO];
 
     NSUInteger totalBytesForImage = (int)currentFBOSize.width * (int)currentFBOSize.height * 4;

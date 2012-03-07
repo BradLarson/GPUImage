@@ -78,6 +78,9 @@ For example, an application that takes in live video from the camera, converts t
 
 - **GPUImageRotationFilter**: This lets you rotate an image left or right by 90 degrees, or flip it horizontally or vertically
 
+- **GPUImageCropFilter**: This crops an image to a specific region, then passes only that region on to the next stage in the filter
+- *cropRegion*: A rectangular area to crop out of the image, normalized to coordinates from 0.0 - 1.0. The (0.0, 0.0) position is in the upper left of the image.
+
 - **GPUImageSharpenFilter**: Sharpens the image
   - *sharpness*: The sharpness adjustment to apply (-4.0 - 4.0, with 0.0 as the default)
 

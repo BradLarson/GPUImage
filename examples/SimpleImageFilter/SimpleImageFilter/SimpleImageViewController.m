@@ -62,8 +62,13 @@
     UIImage *inputImage = [UIImage imageNamed:@"Lambeau.jpg"];
     
     GPUImagePicture *stillImageSource = [[GPUImagePicture alloc] initWithImage:inputImage];
-//    GPUImageSepiaFilter *stillImageFilter = [[GPUImageSepiaFilter alloc] init];
-    GPUImageSketchFilter *stillImageFilter = [[GPUImageSketchFilter alloc] init];
+    GPUImageSepiaFilter *stillImageFilter = [[GPUImageSepiaFilter alloc] init];
+//    GPUImageSketchFilter *stillImageFilter = [[GPUImageSketchFilter alloc] init];
+    
+    // There's a problem with the Kuwahara filter where it doesn't finish rendering before the image is extracted from it.
+    // It looks like it only gets through certain tiles before glReadPixels() is called. Odd.
+//    GPUImageKuwaharaFilter *stillImageFilter = [[GPUImageKuwaharaFilter alloc] init];
+//    stillImageFilter.radius = 9;
     
     [stillImageSource addTarget:stillImageFilter];
     [stillImageSource processImage];

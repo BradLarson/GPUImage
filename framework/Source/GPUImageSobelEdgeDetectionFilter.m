@@ -138,7 +138,6 @@ NSString *const kGPUImageSobelEdgeDetectionFragmentShaderString = SHADER_STRING
 
 - (void)setupFilterForSize:(CGSize)filterFrameSize;
 {
-    NSLog(@"Setting up Sobel filter for size: %f, %f", filterFrameSize.width, filterFrameSize.height);
     if (!hasOverriddenImageSizeFactor)
     {
         _imageWidthFactor = filterFrameSize.width;
