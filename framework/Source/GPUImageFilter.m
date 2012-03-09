@@ -124,7 +124,29 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size)
     CGColorSpaceRef defaultRGBColorSpace = CGColorSpaceCreateDeviceRGB();
 
     CGImageRef cgImageFromBytes = CGImageCreate((int)currentFBOSize.width, (int)currentFBOSize.height, 8, 32, 4 * (int)currentFBOSize.width, defaultRGBColorSpace, kCGBitmapByteOrderDefault, dataProvider, NULL, NO, kCGRenderingIntentDefault);
-    UIImage *finalImage = [UIImage imageWithCGImage:cgImageFromBytes scale:1.0 orientation:UIImageOrientationLeft];
+    
+    // Capture image with current device orientation
+	UIDeviceOrientation deviceOrientation = [[UIDevice currentDevice] orientation];
+    UIImageOrientation imageOrientation = UIImageOrientationLeft;
+	switch (deviceOrientation)
+    {
+		case UIDeviceOrientationPortrait:
+			imageOrientation = UIImageOrientationUp;
+			break;
+		case UIDeviceOrientationPortraitUpsideDown:
+			imageOrientation = UIImageOrientationDown;
+			break;
+		case UIDeviceOrientationLandscapeLeft:
+			imageOrientation = UIImageOrientationLeft;
+			break;
+		case UIDeviceOrientationLandscapeRight:
+			imageOrientation = UIImageOrientationRight;
+			break;
+		default:
+			imageOrientation = UIImageOrientationUp;
+			break;
+	}
+    UIImage *finalImage = [UIImage imageWithCGImage:cgImageFromBytes scale:1.0 orientation:imageOrientation];
 
     CGImageRelease(cgImageFromBytes);
     CGDataProviderRelease(dataProvider);
@@ -366,6 +388,13 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size)
     {
         filterSourceTexture2 = newInputTexture;
     }
+}
+
+- (void)recreateFilterFBO
+{
+    cachedMaximumOutputSize = CGSizeZero;
+    [self destroyFilterFBO];
+    [self setFilterFBO];
 }
 
 - (void)setInputSize:(CGSize)newSize;

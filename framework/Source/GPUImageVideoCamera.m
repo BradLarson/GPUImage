@@ -145,6 +145,47 @@
     }
 }
 
+- (void)rotateCamera
+{
+    NSError *error;
+    AVCaptureDeviceInput *newVideoInput;
+    AVCaptureDevicePosition currentCameraPosition = [[videoInput device] position];
+    
+    if(currentCameraPosition == AVCaptureDevicePositionBack)
+        currentCameraPosition = AVCaptureDevicePositionFront;
+    else
+        currentCameraPosition = AVCaptureDevicePositionBack;
+    
+    AVCaptureDevice *backFacingCamera = nil;
+    NSArray *devices = [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];
+	for (AVCaptureDevice *device in devices) 
+	{
+		if ([device position] == currentCameraPosition)
+		{
+			backFacingCamera = device;
+		}
+	}
+    newVideoInput = [[AVCaptureDeviceInput alloc] initWithDevice:backFacingCamera error:&error];
+    
+    if (newVideoInput != nil)
+    {
+        [_captureSession beginConfiguration];
+        
+        [_captureSession removeInput:videoInput];
+        if ([_captureSession canAddInput:newVideoInput])
+        {
+            [_captureSession addInput:newVideoInput];
+            videoInput = newVideoInput;
+        }
+        else
+        {
+            [_captureSession addInput:videoInput];
+        }
+        //captureSession.sessionPreset = oriPreset;
+        [_captureSession commitConfiguration];
+    }
+}
+
 #pragma mark -
 #pragma mark Benchmarking
 
