@@ -55,7 +55,7 @@ NSString *const kGPUImageToonFragmentShaderString = SHADER_STRING
          textureColor += vec3(0.5);
          ivec3 integerColor = ivec3(textureColor);
          textureColor = vec3(integerColor) / quantize;
-         gl_FragColor = vec4(textureColor, 1.0);
+         gl_FragColor = vec4(textureColor, texture2D(inputImageTexture, topTextureCoordinate).w);
      }
  }
 );
