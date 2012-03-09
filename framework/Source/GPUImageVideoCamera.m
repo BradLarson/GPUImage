@@ -14,6 +14,7 @@
 @implementation GPUImageVideoCamera
 
 @synthesize captureSession = _captureSession;
+@synthesize inputCamera = _inputCamera;
 @synthesize runBenchmark = _runBenchmark;
 
 
@@ -52,14 +53,14 @@
         [self deleteOutputTexture];
     }
 
-	// Grab the back-facing camera
-	AVCaptureDevice *backFacingCamera = nil;
+	// Grab the back-facing or front-facing camera
+    _inputCamera = nil;
 	NSArray *devices = [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];
 	for (AVCaptureDevice *device in devices) 
 	{
 		if ([device position] == cameraPosition)
 		{
-			backFacingCamera = device;
+			_inputCamera = device;
 		}
 	}
     	
@@ -70,7 +71,7 @@
 
 	// Add the video input	
 	NSError *error = nil;
-	videoInput = [[AVCaptureDeviceInput alloc] initWithDevice:backFacingCamera error:&error];
+	videoInput = [[AVCaptureDeviceInput alloc] initWithDevice:_inputCamera error:&error];
 	if ([_captureSession canAddInput:videoInput]) 
 	{
 		[_captureSession addInput:videoInput];
