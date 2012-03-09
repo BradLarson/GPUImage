@@ -9,9 +9,9 @@ NSString *const kGPUImageExposureFragmentShaderString = SHADER_STRING
  
  void main()
  {
-     highp vec3 textureColor = texture2D(inputImageTexture, textureCoordinate).rgb;
+     highp vec4 textureColor = texture2D(inputImageTexture, textureCoordinate);
      
-     gl_FragColor = vec4(textureColor * pow(2.0, exposure), 1.0);
+     gl_FragColor = vec4(textureColor.rgb * pow(2.0, exposure), textureColor.w);
  }
 );
 

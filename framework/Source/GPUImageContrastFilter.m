@@ -9,9 +9,9 @@ NSString *const kGPUImageContrastFragmentShaderString = SHADER_STRING
  
  void main()
  {
-     lowp vec3 textureColor = texture2D(inputImageTexture, textureCoordinate).rgb;
+     lowp vec4 textureColor = texture2D(inputImageTexture, textureCoordinate);
      
-     gl_FragColor = vec4(((textureColor - vec3(0.5)) * contrast + vec3(0.5)), 1.0);
+     gl_FragColor = vec4(((textureColor.rgb - vec3(0.5)) * contrast + vec3(0.5)), textureColor.w);
  }
 );
 
