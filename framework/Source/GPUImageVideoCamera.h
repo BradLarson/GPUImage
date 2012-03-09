@@ -16,10 +16,14 @@
     CGFloat totalFrameTimeDuringCapture;
     
     AVCaptureSession *_captureSession;
+    AVCaptureDevice *_inputCamera;
 }
 
 @property(readonly) AVCaptureSession *captureSession;
 @property(readwrite, nonatomic) BOOL runBenchmark;
+
+// Use this property to manage camera settings.Focus point, exposure point, etc.
+@property(readonly) AVCaptureDevice *inputCamera;
 
 // Initialization and teardown
 - (id)initWithSessionPreset:(NSString *)sessionPreset cameraPosition:(AVCaptureDevicePosition)cameraPosition; 
