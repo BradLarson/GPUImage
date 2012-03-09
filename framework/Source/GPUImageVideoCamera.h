@@ -19,7 +19,7 @@
     AVCaptureDevice *_inputCamera;
 }
 
-@property(readonly) AVCaptureSession *captureSession;
+@property(readonly, retain) AVCaptureSession *captureSession;
 @property(readwrite, nonatomic) BOOL runBenchmark;
 
 // Use this property to manage camera settings.Focus point, exposure point, etc.
@@ -34,6 +34,9 @@
 // Manage the camera video stream
 - (void)startCameraCapture;
 - (void)stopCameraCapture;
+
+// Rotate the camera
+- (void)rotateCamera;
 
 // Benchmarking
 - (CGFloat)averageFrameDurationDuringCapture;

@@ -47,6 +47,8 @@ typedef struct GPUMatrix4x4 GPUMatrix4x4;
 - (UIImage *)imageFromCurrentlyProcessedOutput;
 - (UIImage *)imageByFilteringImage:(UIImage *)imageToFilter;
 
+- (void)recreateFilterFBO;
+
 // Managing the display FBOs
 - (CGSize)sizeOfFBO;
 - (void)createFilterFBOofSize:(CGSize)currentFBOSize;
