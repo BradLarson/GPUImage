@@ -45,6 +45,8 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 @end
 
 @implementation GPUImageMovieWriter
+@synthesize CompletionBlock;
+@synthesize FailureBlock;
 
 #pragma mark -
 #pragma mark Initialization and teardown
@@ -114,6 +116,9 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
     if (error != nil)
     {
         NSLog(@"Error: %@", error);
+        if (FailureBlock) {
+            FailureBlock(error);
+        }
     }
     
     
@@ -318,6 +323,13 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 - (CGSize)maximumOutputSize;
 {
     return CGSizeZero;
+}
+
+- (void)endProcessing 
+{
+    if (CompletionBlock) {
+        CompletionBlock();
+    }
 }
 
 @end

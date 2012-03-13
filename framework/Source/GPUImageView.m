@@ -253,4 +253,6 @@ NSString *const kGPUImageDisplayFragmentShaderString = SHADER_STRING
     }
 }
 
+-(void) endProcessing{}
+
 @end

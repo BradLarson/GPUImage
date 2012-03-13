@@ -26,4 +26,5 @@
 - (NSInteger)nextAvailableTextureIndex;
 - (void)setInputSize:(CGSize)newSize;
 - (CGSize)maximumOutputSize;
+- (void)endProcessing;
 @end

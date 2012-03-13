@@ -17,6 +17,9 @@
     CGSize videoSize;
 }
 
+@property (nonatomic, copy) void(^CompletionBlock)(void);
+@property (nonatomic, copy) void(^FailureBlock)(NSError*);
+
 // Initialization and teardown
 - (id)initWithMovieURL:(NSURL *)newMovieURL size:(CGSize)newSize;
 

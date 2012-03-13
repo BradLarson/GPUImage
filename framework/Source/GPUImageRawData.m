@@ -235,6 +235,8 @@ NSString *const kGPUImageDataFragmentShaderString = SHADER_STRING
     return imageSize;
 }
 
+-(void) endProcessing{}
+
 #pragma mark -
 #pragma mark Accessors
 

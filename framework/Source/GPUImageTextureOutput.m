@@ -32,4 +32,6 @@
     return CGSizeZero;
 }
 
+-(void) endProcessing{}
+
 @end

@@ -419,6 +419,14 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size)
     return cachedMaximumOutputSize;
 }
 
+- (void)endProcessing 
+{
+    for (id<GPUImageInput> currentTarget in targets)
+    {
+        [currentTarget endProcessing];
+    }
+}
+
 #pragma mark -
 #pragma mark Accessors
 
