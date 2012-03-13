@@ -156,7 +156,6 @@ typedef void (*GLLogFunction) (GLuint program,
     GLint status;
     
     glLinkProgram(program);
-    glValidateProgram(program);
     
     glGetProgramiv(program, GL_LINK_STATUS, &status);
     if (status == GL_FALSE)
@@ -238,7 +237,6 @@ typedef void (*GLLogFunction) (GLuint program,
 // START:dealloc
 - (void)dealloc
 {
-  
     if (vertShader)
         glDeleteShader(vertShader);
         
