@@ -22,8 +22,9 @@
     [super viewDidLoad];
     
     videoCamera = [[GPUImageVideoCamera alloc] initWithSessionPreset:AVCaptureSessionPreset640x480 cameraPosition:AVCaptureDevicePositionBack];
-    filter = [[GPUImagePixellateFilter alloc] init];
-//    filter = [[GPUImageSketchFilter alloc] init];
+//    videoCamera = [[GPUImageVideoCamera alloc] initWithSessionPreset:AVCaptureSessionPreset1280x720 cameraPosition:AVCaptureDevicePositionBack];
+//    filter = [[GPUImagePixellateFilter alloc] init];
+    filter = [[GPUImageSketchFilter alloc] init];
     GPUImageRotationFilter *rotationFilter = [[GPUImageRotationFilter alloc] initWithRotation:kGPUImageRotateRight];
     
     [videoCamera addTarget:rotationFilter];
@@ -37,12 +38,13 @@
     unlink([pathToMovie UTF8String]); // If a file already exists, AVAssetWriter won't let you record new frames, so delete the old movie
     NSURL *movieURL = [NSURL fileURLWithPath:pathToMovie];
     movieWriter = [[GPUImageMovieWriter alloc] initWithMovieURL:movieURL size:CGSizeMake(480.0, 640.0)];
+//    movieWriter = [[GPUImageMovieWriter alloc] initWithMovieURL:movieURL size:CGSizeMake(720.0, 1280.0)];
     [filter addTarget:movieWriter];
     
     [movieWriter startRecording];
     [videoCamera startCameraCapture];
     
-    double delayInSeconds = 10.0;
+    double delayInSeconds = 20.0;
     dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
     dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
         [filter removeTarget:movieWriter];

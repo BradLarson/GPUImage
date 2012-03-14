@@ -8,6 +8,6 @@
     GPUImageMovieWriter *movieWriter;
 }
 
-- (IBAction)updatePixelWidth:(id)sender;
+- (IBAction)updateSliderValue:(id)sender;
 
 @end

@@ -18,6 +18,9 @@
 
 - (void)presentBufferForDisplay;
 
+// Manage fast texture upload
++ (BOOL)supportsFastTextureUpload;
+
 @end
 
 @protocol GPUImageInput

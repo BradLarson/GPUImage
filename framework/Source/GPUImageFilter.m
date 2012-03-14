@@ -207,7 +207,7 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size)
     glGenFramebuffers(1, &filterFramebuffer);
     glBindFramebuffer(GL_FRAMEBUFFER, filterFramebuffer);
     
-//    NSLog(@"Filter size: %f, %f", currentFBOSize.width, currentFBOSize.height);
+    NSLog(@"Filter size: %f, %f", currentFBOSize.width, currentFBOSize.height);
     
     glBindTexture(GL_TEXTURE_2D, outputTexture);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (int)currentFBOSize.width, (int)currentFBOSize.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);

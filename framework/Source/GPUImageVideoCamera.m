@@ -40,7 +40,7 @@
     
     _runBenchmark = NO;
     
-    if ([GPUImageVideoCamera supportsFastTextureUpload])
+    if ([GPUImageOpenGLESContext supportsFastTextureUpload])
     {
         [GPUImageOpenGLESContext useImageProcessingContext];
         CVReturn err = CVOpenGLESTextureCacheCreate(kCFAllocatorDefault, NULL, (__bridge void *)[[GPUImageOpenGLESContext sharedImageProcessingOpenGLESContext] context], NULL, &coreVideoTextureCache);
@@ -112,18 +112,10 @@
     [_captureSession removeInput:videoInput];
     [_captureSession removeOutput:videoOutput];
 
-    if ([GPUImageVideoCamera supportsFastTextureUpload])
+    if ([GPUImageOpenGLESContext supportsFastTextureUpload])
     {
         CFRelease(coreVideoTextureCache);
     }
-}
-
-#pragma mark -
-#pragma mark Manage fast texture upload
-
-+ (BOOL)supportsFastTextureUpload;
-{
-    return (CVOpenGLESTextureCacheCreate != NULL);
 }
 
 #pragma mark -
@@ -205,7 +197,7 @@
     int bufferWidth = CVPixelBufferGetWidth(cameraFrame);
     int bufferHeight = CVPixelBufferGetHeight(cameraFrame);
 
-    if ([GPUImageVideoCamera supportsFastTextureUpload])
+    if ([GPUImageOpenGLESContext supportsFastTextureUpload])
     {
         CVPixelBufferLockBaseAddress(cameraFrame, 0);
 

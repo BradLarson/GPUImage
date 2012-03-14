@@ -1,5 +1,6 @@
 #import "GPUImageOpenGLESContext.h"
 #import <OpenGLES/EAGLDrawable.h>
+#import <AVFoundation/AVFoundation.h>
 
 @implementation GPUImageOpenGLESContext
 
@@ -39,6 +40,14 @@
 - (void)presentBufferForDisplay;
 {
     [_context presentRenderbuffer:GL_RENDERBUFFER];
+}
+
+#pragma mark -
+#pragma mark Manage fast texture upload
+
++ (BOOL)supportsFastTextureUpload;
+{
+    return (CVOpenGLESTextureCacheCreate != NULL);
 }
 
 #pragma mark -
