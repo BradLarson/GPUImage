@@ -6,6 +6,7 @@
 #define SHADER_STRING(text) @ STRINGIZE2(text)
 
 extern NSString *const kGPUImageVertexShaderString;
+extern NSString *const kGPUImagePassthroughFragmentShaderString;
 
 struct GPUVector4 {
     GLfloat one;
@@ -32,6 +33,7 @@ typedef struct GPUMatrix4x4 GPUMatrix4x4;
     GLProgram *filterProgram;
     GLint filterPositionAttribute, filterTextureCoordinateAttribute;
     GLint filterInputTextureUniform, filterInputTextureUniform2;
+    GLfloat backgroundColorRed, backgroundColorGreen, backgroundColorBlue, backgroundColorAlpha;
     
     CGSize currentFilterSize;
 }
@@ -61,6 +63,7 @@ typedef struct GPUMatrix4x4 GPUMatrix4x4;
 - (void)informTargetsAboutNewFrame;
 
 // Input parameters
+- (void)setBackgroundColorRed:(GLfloat)redComponent green:(GLfloat)greenComponent blue:(GLfloat)blueComponent alpha:(GLfloat)alphaComponent;
 - (void)setInteger:(GLint)newInteger forUniform:(NSString *)uniformName;
 - (void)setFloat:(GLfloat)newFloat forUniform:(NSString *)uniformName;
 - (void)setSize:(CGSize)newSize forUniform:(NSString *)uniformName;

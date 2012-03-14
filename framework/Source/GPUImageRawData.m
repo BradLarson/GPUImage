@@ -4,19 +4,6 @@
 #import "GLProgram.h"
 #import "GPUImageFilter.h"
 
-NSString *const kGPUImageDataFragmentShaderString = SHADER_STRING
-(
- varying highp vec2 textureCoordinate;
- 
- uniform sampler2D inputImageTexture;
- 
- void main()
- {
-     gl_FragColor = texture2D(inputImageTexture, textureCoordinate);
- }
-);
-
-
 @interface GPUImageRawData ()
 {
     CGSize imageSize;
@@ -62,7 +49,7 @@ NSString *const kGPUImageDataFragmentShaderString = SHADER_STRING
     _rawBytesForImage = NULL;
 
     [GPUImageOpenGLESContext useImageProcessingContext];
-    dataProgram = [[GLProgram alloc] initWithVertexShaderString:kGPUImageVertexShaderString fragmentShaderString:kGPUImageDataFragmentShaderString];
+    dataProgram = [[GLProgram alloc] initWithVertexShaderString:kGPUImageVertexShaderString fragmentShaderString:kGPUImagePassthroughFragmentShaderString];
     
     [dataProgram addAttribute:@"position"];
 	[dataProgram addAttribute:@"inputTextureCoordinate"];

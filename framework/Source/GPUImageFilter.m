@@ -4,7 +4,6 @@
 // Hardcode the vertex shader for standard filters, but this can be overridden
 NSString *const kGPUImageVertexShaderString = SHADER_STRING
 (
- 
  attribute vec4 position;
  attribute vec4 inputTextureCoordinate;
  
@@ -15,7 +14,18 @@ NSString *const kGPUImageVertexShaderString = SHADER_STRING
 	gl_Position = position;
 	textureCoordinate = inputTextureCoordinate.xy;
  }
+);
 
+NSString *const kGPUImagePassthroughFragmentShaderString = SHADER_STRING
+(
+ varying highp vec2 textureCoordinate;
+ 
+ uniform sampler2D inputImageTexture;
+ 
+ void main()
+ {
+     gl_FragColor = texture2D(inputImageTexture, textureCoordinate);
+ }
 );
 
 void dataProviderReleaseCallback (void *info, const void *data, size_t size);
@@ -31,6 +41,11 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size);
     {
 		return nil;
     }
+
+    backgroundColorRed = 0.0;
+    backgroundColorGreen = 0.0;
+    backgroundColorBlue = 0.0;
+    backgroundColorAlpha = 0.0;
 
     [GPUImageOpenGLESContext useImageProcessingContext];
     filterProgram = [[GLProgram alloc] initWithVertexShaderString:vertexShaderString fragmentShaderString:fragmentShaderString];
@@ -244,7 +259,7 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size)
     
     [filterProgram use];
     
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glClearColor(backgroundColorRed, backgroundColorGreen, backgroundColorBlue, backgroundColorAlpha);
     glClear(GL_COLOR_BUFFER_BIT);
 
 	glActiveTexture(GL_TEXTURE2);
@@ -277,6 +292,14 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size)
 
 #pragma mark -
 #pragma mark Input parameters
+
+- (void)setBackgroundColorRed:(GLfloat)redComponent green:(GLfloat)greenComponent blue:(GLfloat)blueComponent alpha:(GLfloat)alphaComponent;
+{
+    backgroundColorRed = redComponent;
+    backgroundColorGreen = greenComponent;
+    backgroundColorBlue = blueComponent;
+    backgroundColorAlpha = alphaComponent;
+}
 
 - (void)setInteger:(GLint)newInteger forUniform:(NSString *)uniformName;
 {

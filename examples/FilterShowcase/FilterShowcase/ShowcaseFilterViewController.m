@@ -161,6 +161,36 @@
             
             filter = [[GPUImageCropFilter alloc] initWithCropRegion:CGRectMake(0.0, 0.0, 0.5, 0.5)];
         }; break;
+        case GPUIMAGE_TRANSFORM:
+        {
+            self.title = @"Transform (2-D)";
+            self.filterSettingsSlider.hidden = NO;
+            
+            [self.filterSettingsSlider setMinimumValue:0.0];
+            [self.filterSettingsSlider setMaximumValue:6.28];
+            [self.filterSettingsSlider setValue:2.0];
+            
+            filter = [[GPUImageTransformFilter alloc] init];
+            [(GPUImageTransformFilter *)filter setAffineTransform:CGAffineTransformMakeRotation(2.0)];
+        }; break;
+        case GPUIMAGE_TRANSFORM3D:
+        {
+            self.title = @"Transform (3-D)";
+            self.filterSettingsSlider.hidden = NO;
+            
+            [self.filterSettingsSlider setMinimumValue:0.0];
+            [self.filterSettingsSlider setMaximumValue:6.28];
+            [self.filterSettingsSlider setValue:0.75];
+            
+            filter = [[GPUImageTransformFilter alloc] init];
+            CATransform3D perspectiveTransform = CATransform3DIdentity;
+            perspectiveTransform.m34 = 0.4;
+            perspectiveTransform.m33 = 0.4;
+            perspectiveTransform = CATransform3DScale(perspectiveTransform, 0.75, 0.75, 0.75);
+            perspectiveTransform = CATransform3DRotate(perspectiveTransform, 0.75, 0.0, 1.0, 0.0);
+            
+            [(GPUImageTransformFilter *)filter setTransform3D:perspectiveTransform];
+        }; break;
         case GPUIMAGE_SOBELEDGEDETECTION:
         {
             self.title = @"Edge Detection";
@@ -394,6 +424,17 @@
         case GPUIMAGE_FASTBLUR: [(GPUImageFastBlurFilter *)filter setBlurPasses:round([(UISlider*)sender value])]; break;
         case GPUIMAGE_GAUSSIAN_SELECTIVE: [(GPUImageGaussianSelectiveBlurFilter *)filter setExcludeCircleRadius:[(UISlider*)sender value]]; break;
         case GPUIMAGE_CROP: [(GPUImageCropFilter *)filter setCropRegion:CGRectMake(0.0, 0.0, [(UISlider*)sender value], [(UISlider*)sender value])]; break;
+        case GPUIMAGE_TRANSFORM: [(GPUImageTransformFilter *)filter setAffineTransform:CGAffineTransformMakeRotation([(UISlider*)sender value])]; break;
+        case GPUIMAGE_TRANSFORM3D:
+        {
+            CATransform3D perspectiveTransform = CATransform3DIdentity;
+            perspectiveTransform.m34 = 0.4;
+            perspectiveTransform.m33 = 0.4;
+            perspectiveTransform = CATransform3DScale(perspectiveTransform, 0.75, 0.75, 0.75);
+            perspectiveTransform = CATransform3DRotate(perspectiveTransform, [(UISlider*)sender value], 0.0, 1.0, 0.0);
+
+            [(GPUImageTransformFilter *)filter setTransform3D:perspectiveTransform];            
+        }; break;
         default: break;
     }
 }
