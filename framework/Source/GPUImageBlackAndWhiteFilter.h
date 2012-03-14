@@ -1,5 +1,5 @@
-#import "GPUImageColorMatrixFilter.h"
+#import "GPUImageFilter.h"
 
-@interface GPUImageBlackAndWhiteFilter : GPUImageColorMatrixFilter
+@interface GPUImageBlackAndWhiteFilter : GPUImageFilter
 
 @end
