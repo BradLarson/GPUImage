@@ -4,18 +4,6 @@
 #import "GPUImageOpenGLESContext.h"
 #import "GPUImageFilter.h"
 
-NSString *const kGPUImageDisplayFragmentShaderString = SHADER_STRING
-(
- varying highp vec2 textureCoordinate;
- 
- uniform sampler2D inputImageTexture;
- 
- void main()
- {
-     gl_FragColor = texture2D(inputImageTexture, textureCoordinate);
- }
-);
-
 #pragma mark -
 #pragma mark Private methods and instance variables
 
@@ -86,7 +74,7 @@ NSString *const kGPUImageDisplayFragmentShaderString = SHADER_STRING
     eaglLayer.drawableProperties = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:NO], kEAGLDrawablePropertyRetainedBacking, kEAGLColorFormatRGBA8, kEAGLDrawablePropertyColorFormat, nil];		
 
     [GPUImageOpenGLESContext useImageProcessingContext];
-    displayProgram = [[GLProgram alloc] initWithVertexShaderString:kGPUImageVertexShaderString fragmentShaderString:kGPUImageDisplayFragmentShaderString];
+    displayProgram = [[GLProgram alloc] initWithVertexShaderString:kGPUImageVertexShaderString fragmentShaderString:kGPUImagePassthroughFragmentShaderString];
 
     [displayProgram addAttribute:@"position"];
 	[displayProgram addAttribute:@"inputTextureCoordinate"];

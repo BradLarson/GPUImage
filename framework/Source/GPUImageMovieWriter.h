@@ -22,6 +22,9 @@
     AVAssetWriterInputPixelBufferAdaptor *assetWriterPixelBufferInput;
 	dispatch_queue_t movieWritingQueue;
     
+    CVOpenGLESTextureCacheRef coreVideoTextureCache;
+    CVPixelBufferRef renderTarget;
+
     CGSize videoSize;
 }
 
