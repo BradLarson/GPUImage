@@ -59,6 +59,9 @@
                 CFRelease(sampleBufferRef);
             }
         }
+        if (reader.status == AVAssetWriterStatusCompleted) {
+            [self endProcessing];
+        }
     }];
 }
 
@@ -84,7 +87,10 @@
 
 - (void)endProcessing 
 {
-    
+    for (id<GPUImageInput> currentTarget in targets)
+    {
+        [currentTarget endProcessing];
+    }
 }
 
 @end
