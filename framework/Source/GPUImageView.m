@@ -241,4 +241,6 @@
     }
 }
 
+-(void) endProcessing{}
+
 @end

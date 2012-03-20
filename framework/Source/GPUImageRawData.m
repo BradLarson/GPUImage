@@ -222,6 +222,8 @@
     return imageSize;
 }
 
+-(void) endProcessing{}
+
 #pragma mark -
 #pragma mark Accessors
 
