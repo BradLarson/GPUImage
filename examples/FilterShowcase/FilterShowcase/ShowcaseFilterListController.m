@@ -78,6 +78,7 @@
 		case GPUIMAGE_SKETCH: cell.textLabel.text = @"Sketch"; break;
 		case GPUIMAGE_TOON: cell.textLabel.text = @"Toon"; break;
 		case GPUIMAGE_SWIRL: cell.textLabel.text = @"Swirl"; break;
+		case GPUIMAGE_CHROMAKEY: cell.textLabel.text = @"Chroma key (green)"; break;
 		case GPUIMAGE_DISSOLVE: cell.textLabel.text = @"Dissolve blend"; break;
 		case GPUIMAGE_SCREENBLEND: cell.textLabel.text = @"Screen blend"; break;
 		case GPUIMAGE_COLORBURN: cell.textLabel.text = @"Color burn blend"; break;

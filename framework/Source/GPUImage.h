@@ -48,3 +48,4 @@
 #import "GPUImageCropFilter.h"
 #import "GPUImageGrayscaleFilter.h"
 #import "GPUImageTransformFilter.h"
+#import "GPUImageChromaKeyBlendFilter.h"

@@ -104,6 +104,10 @@ For example, an application that takes in live video from the camera, converts t
 
 ### Blending modes ###
 
+- **GPUImageChromaKeyBlendFilter**: Selectively replaces a color in the first image with the second image
+  - *thresholdSensitivity*: How close a color match needs to exist to the target color to be replaced (default of 0.4)
+  - *smoothing*: How smoothly to blend for the color match (default of 0.1)
+
 - **GPUImageDissolveBlendFilter**: Applies a dissolve blend of two images
   - *mix*: The degree with which the second image overrides the first (0.0 - 1.0, with 0.5 as the default)
 
