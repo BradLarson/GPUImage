@@ -1,23 +1,5 @@
 #import "GPUImageSobelEdgeDetectionFilter.h"
-
-// Do a luminance pass first to reduce the calculations performed at each fragment in the edge detection phase
-NSString *const kGPUImageLuminanceFragmentShaderString = SHADER_STRING
-(
- precision highp float;
- 
- varying vec2 textureCoordinate;
- 
- uniform sampler2D inputImageTexture;
- 
- const highp vec3 W = vec3(0.2125, 0.7154, 0.0721);
- 
- void main()
- {
-     float luminance = dot(texture2D(inputImageTexture, textureCoordinate).rgb, W);
-     
-     gl_FragColor = vec4(vec3(luminance), 1.0);
- }
- );
+#import "GPUImageGrayscaleFilter.h"
 
 // Override vertex shader to remove dependent texture reads 
 NSString *const kGPUImageSobelEdgeDetectionVertexShaderString = SHADER_STRING
@@ -123,6 +105,8 @@ NSString *const kGPUImageSobelEdgeDetectionFragmentShaderString = SHADER_STRING
 
 - (id)initWithFragmentShaderFromString:(NSString *)fragmentShaderString;
 {
+    // Do a luminance pass first to reduce the calculations performed at each fragment in the edge detection phase
+
     if (!(self = [super initWithFirstStageVertexShaderFromString:kGPUImageVertexShaderString firstStageFragmentShaderFromString:kGPUImageLuminanceFragmentShaderString secondStageVertexShaderFromString:kGPUImageSobelEdgeDetectionVertexShaderString secondStageFragmentShaderFromString:fragmentShaderString]))
     {
 		return nil;

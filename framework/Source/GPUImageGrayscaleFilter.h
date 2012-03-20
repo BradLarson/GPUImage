@@ -1,5 +1,7 @@
 #import "GPUImageFilter.h"
 
-@interface GPUImageBlackAndWhiteFilter : GPUImageFilter
+extern NSString *const kGPUImageLuminanceFragmentShaderString;
+
+@interface GPUImageGrayscaleFilter : GPUImageFilter
 
 @end

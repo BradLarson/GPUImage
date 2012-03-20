@@ -1,6 +1,7 @@
-#import "GPUImageBlackAndWhiteFilter.h"
+#import "GPUImageGrayscaleFilter.h"
 
-@implementation GPUImageBlackAndWhiteFilter
+@implementation GPUImageGrayscaleFilter
+
 NSString *const kGPUImageLuminanceFragmentShaderString = SHADER_STRING
 (
  precision highp float;
@@ -17,7 +18,7 @@ NSString *const kGPUImageLuminanceFragmentShaderString = SHADER_STRING
      
      gl_FragColor = vec4(vec3(luminance), 1.0);
  }
- );
+);
 
 #pragma mark -
 #pragma mark Initialization and teardown

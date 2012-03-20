@@ -84,6 +84,13 @@
             
             filter = [[GPUImageColorInvertFilter alloc] init];
         }; break;
+        case GPUIMAGE_GRAYSCALE:
+        {
+            self.title = @"Grayscale";
+            self.filterSettingsSlider.hidden = YES;
+            
+            filter = [[GPUImageGrayscaleFilter alloc] init];
+        }; break;
         case GPUIMAGE_SATURATION:
         {
             self.title = @"Saturation";

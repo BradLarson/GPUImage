@@ -71,6 +71,8 @@ For example, an application that takes in live video from the camera, converts t
 
 - **GPUImageColorInvertFilter**: Inverts the colors of an image
 
+- **GPUImageGrayscaleFilter**: Converts an image to grayscale (a slightly faster implementation of the saturation filter, without the ability to vary the color contribution)
+
 - **GPUImageSepiaFilter**: Simple sepia tone filter
   - *intensity*: The degree to which the sepia tone replaces the normal image color (0.0 - 1.0, with 1.0 as the default)
 
