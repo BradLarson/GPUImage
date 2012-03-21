@@ -49,3 +49,4 @@
 #import "GPUImageGrayscaleFilter.h"
 #import "GPUImageTransformFilter.h"
 #import "GPUImageChromaKeyBlendFilter.h"
+#import "GPUImageHazeFilter.h"

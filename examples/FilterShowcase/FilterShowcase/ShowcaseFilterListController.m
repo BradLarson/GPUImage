@@ -67,6 +67,7 @@
 		case GPUIMAGE_EXPOSURE: cell.textLabel.text = @"Exposure"; break;
 		case GPUIMAGE_SHARPEN: cell.textLabel.text = @"Sharpen"; break;
 		case GPUIMAGE_GAMMA: cell.textLabel.text = @"Gamma"; break;
+		case GPUIMAGE_HAZE: cell.textLabel.text = @"Haze"; break;
         case GPUIMAGE_CROP: cell.textLabel.text = @"Crop"; break;
         case GPUIMAGE_TRANSFORM: cell.textLabel.text = @"Transform (2-D)"; break;
         case GPUIMAGE_TRANSFORM3D: cell.textLabel.text = @"Transform (3-D)"; break;
