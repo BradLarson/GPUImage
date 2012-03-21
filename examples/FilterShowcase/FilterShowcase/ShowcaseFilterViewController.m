@@ -157,6 +157,17 @@
             
             filter = [[GPUImageGammaFilter alloc] init];
         }; break;
+		case GPUIMAGE_HAZE:
+        {
+            self.title = @"Haze / UV";
+            self.filterSettingsSlider.hidden = NO;
+            
+            [self.filterSettingsSlider setMinimumValue:-0.2];
+            [self.filterSettingsSlider setMaximumValue:.2];
+            [self.filterSettingsSlider setValue:.2];
+            
+            filter = [[GPUImageHazeFilter alloc] init];
+        }; break;
         case GPUIMAGE_CROP:
         {
             self.title = @"Crop";
@@ -435,6 +446,7 @@
         case GPUIMAGE_EXPOSURE: [(GPUImageExposureFilter *)filter setExposure:[(UISlider *)sender value]]; break;
         case GPUIMAGE_SHARPEN: [(GPUImageSharpenFilter *)filter setSharpness:[(UISlider *)sender value]]; break;
         case GPUIMAGE_GAMMA: [(GPUImageGammaFilter *)filter setGamma:[(UISlider *)sender value]]; break;
+		case GPUIMAGE_HAZE: [(GPUImageHazeFilter *)filter setDistance:[(UISlider *)sender value]]; break;
         case GPUIMAGE_DISSOLVE: [(GPUImageDissolveBlendFilter *)filter setMix:[(UISlider *)sender value]]; break;
         case GPUIMAGE_CHROMAKEY: [(GPUImageChromaKeyBlendFilter *)filter setThresholdSensitivity:[(UISlider *)sender value]]; break;
         case GPUIMAGE_KUWAHARA: [(GPUImageKuwaharaFilter *)filter setRadius:round([(UISlider *)sender value])]; break;
