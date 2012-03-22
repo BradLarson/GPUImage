@@ -1,7 +1,7 @@
 #import "GPUImageFilter.h"
 
 /*
- * The haze filter can be used to remove or haze (similar to a UV filter)
+ * The haze filter can be used to add or remove haze (similar to a UV filter)
  * 
  * @author Alaric Cole
  * @creationDate 03/10/12
