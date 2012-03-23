@@ -54,7 +54,7 @@
 
     GLubyte *imageData = (GLubyte *) calloc(1, (int)pixelSizeOfImage.width * (int)pixelSizeOfImage.height * 4);
     CGColorSpaceRef genericRGBColorspace = CGColorSpaceCreateDeviceRGB();    
-    CGContextRef imageContext = CGBitmapContextCreate(imageData, (int)pixelSizeOfImage.width, (int)pixelSizeOfImage.height, 8, (int)pixelSizeOfImage.width * 4, genericRGBColorspace,  kCGBitmapByteOrder32Little | kCGImageAlphaPremultipliedFirst);
+    CGContextRef imageContext = CGBitmapContextCreate(imageData, (int)pixelSizeOfImage.width, (int)pixelSizeOfImage.height, 8, (int)pixelSizeOfImage.width * 4, genericRGBColorspace,  kCGBitmapByteOrder32Little | kCGImageAlphaPremultipliedLast);
     CGContextDrawImage(imageContext, CGRectMake(0.0, 0.0, pixelSizeOfImage.width, pixelSizeOfImage.height), [newImageSource CGImage]);
     CGContextRelease(imageContext);
     CGColorSpaceRelease(genericRGBColorspace);
@@ -82,26 +82,30 @@
         }
         
         outputTexture = CVOpenGLESTextureGetName(texture);
-        //        glBindTexture(CVOpenGLESTextureGetTarget(texture), outputTexture);
         glBindTexture(GL_TEXTURE_2D, outputTexture);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        if (self.shouldSmoothlyScaleOutput)
+        {
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+        }
+        else
+        {
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        }
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     }
     else
     {
-        
+        glBindTexture(GL_TEXTURE_2D, outputTexture);
+        if (self.shouldSmoothlyScaleOutput)
+        {
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+        }
+        // Using BGRA extension to pull in video frame data directly
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (int)pixelSizeOfImage.width, (int)pixelSizeOfImage.height, 0, GL_BGRA, GL_UNSIGNED_BYTE, imageData);
     }
     
-    glBindTexture(GL_TEXTURE_2D, outputTexture);
-    if (self.shouldSmoothlyScaleOutput)
-    {
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    }
-	// Using BGRA extension to pull in video frame data directly
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (int)pixelSizeOfImage.width, (int)pixelSizeOfImage.height, 0, GL_BGRA, GL_UNSIGNED_BYTE, imageData);
-
     if (self.shouldSmoothlyScaleOutput)
     {
         glGenerateMipmap(GL_TEXTURE_2D);
@@ -116,6 +120,9 @@
 {
     if ([GPUImageOpenGLESContext supportsFastTextureUpload])
     {
+        CVOpenGLESTextureCacheFlush(coreVideoTextureCache, 0);
+        CFRelease(texture);
+        outputTexture = 0;        
         CFRelease(coreVideoTextureCache);
     }
 }
@@ -134,16 +141,7 @@
     {
         [currentTarget setInputSize:pixelSizeOfImage];
         [currentTarget newFrameReady];
-    }
-    
-    if ([GPUImageOpenGLESContext supportsFastTextureUpload])
-    {
-        // This needs to come after processing
-        // Flush the CVOpenGLESTexture cache and release the texture
-        CVOpenGLESTextureCacheFlush(coreVideoTextureCache, 0);
-        CFRelease(texture);
-        outputTexture = 0;        
-    }
+    }    
 }
 
 @end
