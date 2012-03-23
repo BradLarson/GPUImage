@@ -5,6 +5,9 @@
 @interface GPUImagePicture : GPUImageOutput
 {
     UIImage *imageSource;
+    
+    CVOpenGLESTextureCacheRef coreVideoTextureCache;
+    CVOpenGLESTextureRef texture;
 }
 
 // Initialization and teardown

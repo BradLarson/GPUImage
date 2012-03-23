@@ -27,6 +27,18 @@
 
     [GPUImageOpenGLESContext useImageProcessingContext];
 
+    if ([GPUImageOpenGLESContext supportsFastTextureUpload])
+    {
+        CVReturn err = CVOpenGLESTextureCacheCreate(kCFAllocatorDefault, NULL, (__bridge void *)[[GPUImageOpenGLESContext sharedImageProcessingOpenGLESContext] context], NULL, &coreVideoTextureCache);
+        if (err) 
+        {
+            NSAssert(NO, @"Error at CVOpenGLESTextureCacheCreate %d");
+        }
+        
+        // Need to remove the initially created texture
+        [self deleteOutputTexture];
+    }
+
     CGSize pointSizeOfImage = [imageSource size];
     CGFloat scaleOfImage = [imageSource scale];
     CGSize pixelSizeOfImage = CGSizeMake(scaleOfImage * pointSizeOfImage.width, scaleOfImage * pointSizeOfImage.height);
@@ -39,14 +51,48 @@
         
         pixelSizeOfImage = CGSizeMake(pow(2.0, powerClosestToWidth), pow(2.0, powerClosestToHeight));
     }
+
     GLubyte *imageData = (GLubyte *) calloc(1, (int)pixelSizeOfImage.width * (int)pixelSizeOfImage.height * 4);
     CGColorSpaceRef genericRGBColorspace = CGColorSpaceCreateDeviceRGB();    
-    
     CGContextRef imageContext = CGBitmapContextCreate(imageData, (int)pixelSizeOfImage.width, (int)pixelSizeOfImage.height, 8, (int)pixelSizeOfImage.width * 4, genericRGBColorspace,  kCGBitmapByteOrder32Little | kCGImageAlphaPremultipliedFirst);
-//    CGContextRef imageContext = CGBitmapContextCreate(imageData, (int)pixelSizeOfImage.width, (int)pixelSizeOfImage.height, 8, (int)pixelSizeOfImage.width * 4, genericRGBColorspace, kCGImageAlphaPremultipliedLast | kCGBitmapByteOrder32Big);
     CGContextDrawImage(imageContext, CGRectMake(0.0, 0.0, pixelSizeOfImage.width, pixelSizeOfImage.height), [newImageSource CGImage]);
     CGContextRelease(imageContext);
     CGColorSpaceRelease(genericRGBColorspace);
+
+    if ([GPUImageOpenGLESContext supportsFastTextureUpload])
+    {
+        CVPixelBufferRef imagePixelBuffer;
+        
+        CVPixelBufferCreateWithBytes(kCFAllocatorDefault,
+                                     (int)pixelSizeOfImage.width,
+                                     (int)pixelSizeOfImage.height,
+                                     kCVPixelFormatType_32BGRA, 
+                                     (void*)imageData, 
+                                     (int)pixelSizeOfImage.width * 4, 
+                                     NULL, 
+                                     0,
+                                     NULL, 
+                                     &imagePixelBuffer);
+        
+        texture = NULL;
+        CVReturn err = CVOpenGLESTextureCacheCreateTextureFromImage(kCFAllocatorDefault, coreVideoTextureCache, imagePixelBuffer, NULL, GL_TEXTURE_2D, GL_RGBA, (int)pixelSizeOfImage.width, (int)pixelSizeOfImage.height, GL_BGRA, GL_UNSIGNED_BYTE, 0, &texture);
+        
+        if (!texture || err) {
+            NSLog(@"CVOpenGLESTextureCacheCreateTextureFromImage failed (error: %d)", err);  
+        }
+        
+        outputTexture = CVOpenGLESTextureGetName(texture);
+        //        glBindTexture(CVOpenGLESTextureGetTarget(texture), outputTexture);
+        glBindTexture(GL_TEXTURE_2D, outputTexture);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    }
+    else
+    {
+        
+    }
     
     glBindTexture(GL_TEXTURE_2D, outputTexture);
     if (self.shouldSmoothlyScaleOutput)
@@ -66,6 +112,13 @@
     return self;
 }
 
+- (void)dealloc;
+{
+    if ([GPUImageOpenGLESContext supportsFastTextureUpload])
+    {
+        CFRelease(coreVideoTextureCache);
+    }
+}
 
 
 #pragma mark -
@@ -81,6 +134,15 @@
     {
         [currentTarget setInputSize:pixelSizeOfImage];
         [currentTarget newFrameReady];
+    }
+    
+    if ([GPUImageOpenGLESContext supportsFastTextureUpload])
+    {
+        // This needs to come after processing
+        // Flush the CVOpenGLESTexture cache and release the texture
+        CVOpenGLESTextureCacheFlush(coreVideoTextureCache, 0);
+        CFRelease(texture);
+        outputTexture = 0;        
     }
 }
 
