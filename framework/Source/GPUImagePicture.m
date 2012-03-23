@@ -27,18 +27,6 @@
 
     [GPUImageOpenGLESContext useImageProcessingContext];
 
-    if ([GPUImageOpenGLESContext supportsFastTextureUpload])
-    {
-        CVReturn err = CVOpenGLESTextureCacheCreate(kCFAllocatorDefault, NULL, (__bridge void *)[[GPUImageOpenGLESContext sharedImageProcessingOpenGLESContext] context], NULL, &coreVideoTextureCache);
-        if (err) 
-        {
-            NSAssert(NO, @"Error at CVOpenGLESTextureCacheCreate %d");
-        }
-        
-        // Need to remove the initially created texture
-        [self deleteOutputTexture];
-    }
-
     CGSize pointSizeOfImage = [imageSource size];
     CGFloat scaleOfImage = [imageSource scale];
     CGSize pixelSizeOfImage = CGSizeMake(scaleOfImage * pointSizeOfImage.width, scaleOfImage * pointSizeOfImage.height);
@@ -54,57 +42,18 @@
 
     GLubyte *imageData = (GLubyte *) calloc(1, (int)pixelSizeOfImage.width * (int)pixelSizeOfImage.height * 4);
     CGColorSpaceRef genericRGBColorspace = CGColorSpaceCreateDeviceRGB();    
-    CGContextRef imageContext = CGBitmapContextCreate(imageData, (int)pixelSizeOfImage.width, (int)pixelSizeOfImage.height, 8, (int)pixelSizeOfImage.width * 4, genericRGBColorspace,  kCGBitmapByteOrder32Little | kCGImageAlphaPremultipliedLast);
+    CGContextRef imageContext = CGBitmapContextCreate(imageData, (int)pixelSizeOfImage.width, (int)pixelSizeOfImage.height, 8, (int)pixelSizeOfImage.width * 4, genericRGBColorspace,  kCGBitmapByteOrder32Little | kCGImageAlphaPremultipliedFirst);
     CGContextDrawImage(imageContext, CGRectMake(0.0, 0.0, pixelSizeOfImage.width, pixelSizeOfImage.height), [newImageSource CGImage]);
     CGContextRelease(imageContext);
     CGColorSpaceRelease(genericRGBColorspace);
 
-    if ([GPUImageOpenGLESContext supportsFastTextureUpload])
+    glBindTexture(GL_TEXTURE_2D, outputTexture);
+    if (self.shouldSmoothlyScaleOutput)
     {
-        CVPixelBufferRef imagePixelBuffer;
-        
-        CVPixelBufferCreateWithBytes(kCFAllocatorDefault,
-                                     (int)pixelSizeOfImage.width,
-                                     (int)pixelSizeOfImage.height,
-                                     kCVPixelFormatType_32BGRA, 
-                                     (void*)imageData, 
-                                     (int)pixelSizeOfImage.width * 4, 
-                                     NULL, 
-                                     0,
-                                     NULL, 
-                                     &imagePixelBuffer);
-        
-        texture = NULL;
-        CVReturn err = CVOpenGLESTextureCacheCreateTextureFromImage(kCFAllocatorDefault, coreVideoTextureCache, imagePixelBuffer, NULL, GL_TEXTURE_2D, GL_RGBA, (int)pixelSizeOfImage.width, (int)pixelSizeOfImage.height, GL_BGRA, GL_UNSIGNED_BYTE, 0, &texture);
-        
-        if (!texture || err) {
-            NSLog(@"CVOpenGLESTextureCacheCreateTextureFromImage failed (error: %d)", err);  
-        }
-        
-        outputTexture = CVOpenGLESTextureGetName(texture);
-        glBindTexture(GL_TEXTURE_2D, outputTexture);
-        if (self.shouldSmoothlyScaleOutput)
-        {
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-        }
-        else
-        {
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        }
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
     }
-    else
-    {
-        glBindTexture(GL_TEXTURE_2D, outputTexture);
-        if (self.shouldSmoothlyScaleOutput)
-        {
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-        }
-        // Using BGRA extension to pull in video frame data directly
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (int)pixelSizeOfImage.width, (int)pixelSizeOfImage.height, 0, GL_BGRA, GL_UNSIGNED_BYTE, imageData);
-    }
+    // Using BGRA extension to pull in video frame data directly
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (int)pixelSizeOfImage.width, (int)pixelSizeOfImage.height, 0, GL_BGRA, GL_UNSIGNED_BYTE, imageData);
     
     if (self.shouldSmoothlyScaleOutput)
     {
@@ -115,18 +64,6 @@
     
     return self;
 }
-
-- (void)dealloc;
-{
-    if ([GPUImageOpenGLESContext supportsFastTextureUpload])
-    {
-        CVOpenGLESTextureCacheFlush(coreVideoTextureCache, 0);
-        CFRelease(texture);
-        outputTexture = 0;        
-        CFRelease(coreVideoTextureCache);
-    }
-}
-
 
 #pragma mark -
 #pragma mark Image rendering
