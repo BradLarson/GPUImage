@@ -51,3 +51,4 @@
 #import "GPUImageChromaKeyBlendFilter.h"
 #import "GPUImageHazeFilter.h"
 #import "GPUImageLuminanceThresholdFilter.h"
+#import "GPUImagePosterizeFilter.h"

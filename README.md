@@ -76,6 +76,9 @@ For example, an application that takes in live video from the camera, converts t
 - **GPUImageSepiaFilter**: Simple sepia tone filter
   - *intensity*: The degree to which the sepia tone replaces the normal image color (0.0 - 1.0, with 1.0 as the default)
 
+- **GPUImageLuminanceThresholdFilter**: Pixels with a luminance above the threshold will appear white, and those below will be black
+  - *threshold*: The luminance threshold, from 0.0 to 1.0, with a default of 0.5
+
 ### Image processing ###
 
 - **GPUImageRotationFilter**: This lets you rotate an image left or right by 90 degrees, or flip it horizontally or vertically
@@ -151,6 +154,9 @@ For example, an application that takes in live video from the camera, converts t
 - **GPUImageToonFilter**: This uses Sobel edge detection to place a black border around objects, and then it quantizes the colors present in the image to give a cartoon-like quality to the image.
   - *imageWidthFactor*: 
   - *imageHeightFactor*: These parameters affect the visibility of the detected edges
+
+- **GPUImagePosterizeFilter**: This reduces the color dynamic range into the number of steps specified, leading to a cartoon-like simple shading of the image.
+  - *colorLevels*: The number of color levels to reduce the image space to. This ranges from 1 to 256, with a default of 10.
 
 - **GPUImageSwirlFilter**: Creates a swirl distortion on the image
   - *radius*: The radius from the center to apply the distortion, with a default of 0.5

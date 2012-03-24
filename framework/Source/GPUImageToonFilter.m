@@ -29,7 +29,7 @@ NSString *const kGPUImageToonFragmentShaderString = SHADER_STRING
 
  void main()
  {
-     vec3 textureColor = texture2D(inputImageTexture, textureCoordinate).rgb;
+     vec4 textureColor = texture2D(inputImageTexture, textureCoordinate);
      
      float i00   = textureColor.g;
      float im1m1 = texture2D(inputImageTexture, bottomLeftTextureCoordinate).g;
@@ -45,6 +45,13 @@ NSString *const kGPUImageToonFragmentShaderString = SHADER_STRING
      
      float mag = length(vec2(h, v));
 
+     vec3 posterizedImageColor = floor((textureColor.rgb * quantize) + 0.5) / quantize;
+     
+     float thresholdTest = 1.0 - step(threshold, mag);
+     
+     gl_FragColor = vec4(posterizedImageColor * thresholdTest, textureColor.a);
+
+     /*
      if (mag > threshold)
      {
          gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
@@ -53,10 +60,10 @@ NSString *const kGPUImageToonFragmentShaderString = SHADER_STRING
      {
          textureColor *= vec3(quantize);
          textureColor += vec3(0.5);
-         ivec3 integerColor = ivec3(textureColor);
-         textureColor = vec3(integerColor) / quantize;
+         textureColor = floor(textureColor) / quantize;
          gl_FragColor = vec4(textureColor, texture2D(inputImageTexture, topTextureCoordinate).w);
      }
+      */
  }
 );
 
@@ -70,7 +77,7 @@ NSString *const kGPUImageToonFragmentShaderString = SHADER_STRING
 
 - (id)init;
 {
-    if (!(self = [self initWithVertexShaderFromString:kGPUImageSobelEdgeDetectionVertexShaderString fragmentShaderFromString:kGPUImageToonFragmentShaderString]))
+    if (!(self = [super initWithVertexShaderFromString:kGPUImageSobelEdgeDetectionVertexShaderString fragmentShaderFromString:kGPUImageToonFragmentShaderString]))
     {
 		return nil;
     }
