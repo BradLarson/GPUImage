@@ -426,17 +426,39 @@
             filter = [[GPUImageGaussianSelectiveBlurFilter alloc] init];
             [(GPUImageGaussianSelectiveBlurFilter*)filter setExcludeCircleRadius:40.0/320.0];
         }; break;
-         
+        case GPUIMAGE_FILTERGROUP:
+        {
+            self.title = @"Filter Group";
+            self.filterSettingsSlider.hidden = NO;
+            
+            [self.filterSettingsSlider setValue:0.05];
+            [self.filterSettingsSlider setMinimumValue:0.0];
+            [self.filterSettingsSlider setMaximumValue:0.3];
+            
+            filter = [[GPUImageFilterGroup alloc] init];
+            
+            GPUImageSepiaFilter *sepiaFilter = [[GPUImageSepiaFilter alloc] init];
+            [(GPUImageFilterGroup *)filter addFilter:sepiaFilter];
+
+            GPUImagePixellateFilter *pixellateFilter = [[GPUImagePixellateFilter alloc] init];
+            [(GPUImageFilterGroup *)filter addFilter:pixellateFilter];
+            
+            [(GPUImageFilterGroup *)filter setTargetFilter:pixellateFilter forFilter:sepiaFilter];
+        }; break;
+
         default: filter = [[GPUImageSepiaFilter alloc] init]; break;
     }
     
-    if (filterType == GPUIMAGE_FILECONFIG) {
+    if (filterType == GPUIMAGE_FILECONFIG) 
+    {
         self.title = @"File Configuration";
         pipeline = [[GPUImageFilterPipeline alloc] initWithConfigurationFile:[[NSBundle mainBundle] URLForResource:@"SampleConfiguration" withExtension:@"plist"]
                                                                                                input:videoCamera output:(GPUImageView*)self.view];
         
         [pipeline addFilter:rotationFilter atIndex:0];
-    } else {
+    } 
+    else 
+    {
         [videoCamera addTarget:rotationFilter];
         [rotationFilter addTarget:filter];
         videoCamera.runBenchmark = YES;
@@ -480,6 +502,7 @@
         case GPUIMAGE_FASTBLUR: [(GPUImageFastBlurFilter *)filter setBlurPasses:round([(UISlider*)sender value])]; break;
 //        case GPUIMAGE_FASTBLUR: [(GPUImageFastBlurFilter *)filter setBlurSize:[(UISlider*)sender value]]; break;
         case GPUIMAGE_GAUSSIAN_SELECTIVE: [(GPUImageGaussianSelectiveBlurFilter *)filter setExcludeCircleRadius:[(UISlider*)sender value]]; break;
+        case GPUIMAGE_FILTERGROUP: [(GPUImagePixellateFilter *)[(GPUImageFilterGroup *)filter filterAtIndex:1] setFractionalWidthOfAPixel:[(UISlider *)sender value]]; break;
         case GPUIMAGE_CROP: [(GPUImageCropFilter *)filter setCropRegion:CGRectMake(0.0, 0.0, [(UISlider*)sender value], [(UISlider*)sender value])]; break;
         case GPUIMAGE_TRANSFORM: [(GPUImageTransformFilter *)filter setAffineTransform:CGAffineTransformMakeRotation([(UISlider*)sender value])]; break;
         case GPUIMAGE_TRANSFORM3D:

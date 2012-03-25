@@ -101,6 +101,7 @@
         case GPUIMAGE_GAUSSIAN_SELECTIVE: cell.textLabel.text = @"Gaussian Selective Blur"; break;
 		case GPUIMAGE_CUSTOM: cell.textLabel.text = @"Custom"; break;
         case GPUIMAGE_FILECONFIG: cell.textLabel.text = @"Filter Chain"; break;
+        case GPUIMAGE_FILTERGROUP: cell.textLabel.text = @"Filter Group"; break;
 	}
     
     return cell;

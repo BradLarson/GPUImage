@@ -11,6 +11,7 @@
 #import "GPUImageMovieWriter.h"
 #import "GPUImageFilterPipeline.h"
 #import "GPUImageTextureOutput.h"
+#import "GPUImageFilterGroup.h"
 
 // Filters
 #import "GPUImageFilter.h"
