@@ -79,6 +79,8 @@ For example, an application that takes in live video from the camera, converts t
 - **GPUImageLuminanceThresholdFilter**: Pixels with a luminance above the threshold will appear white, and those below will be black
   - *threshold*: The luminance threshold, from 0.0 to 1.0, with a default of 0.5
 
+- **GPUImageAdaptiveThresholdFilter**: Determines the local luminance around a pixel, then turns the pixel black if it is below that local luminance and white if above. This can be useful for picking out text under varying lighting conditions.
+
 ### Image processing ###
 
 - **GPUImageRotationFilter**: This lets you rotate an image left or right by 90 degrees, or flip it horizontally or vertically
@@ -104,6 +106,8 @@ For example, an application that takes in live video from the camera, converts t
   - *excludeCircleRadius*: The radius of the circular area being excluded from the blur
   - *excludeCirclePoint*: The center of the circular area being excluded from the blur
   - *excludeBlurSize*: The size of the area between the blurred portion and the clear circle 
+
+- **GPUImageBoxBlurFilter**: A hardware-accelerated 9-hit box blur of an image
 
 ### Blending modes ###
 

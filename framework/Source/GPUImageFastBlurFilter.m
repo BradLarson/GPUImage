@@ -7,15 +7,15 @@ NSString *const kGPUImageFastBlurVertexShaderString = SHADER_STRING
  attribute vec4 position;
  attribute vec2 inputTextureCoordinate;
 
- uniform mediump float texelWidthOffset; 
- uniform mediump float texelHeightOffset; 
- uniform mediump float blurSize;
+ uniform highp float texelWidthOffset; 
+ uniform highp float texelHeightOffset; 
+ uniform highp float blurSize;
  
- varying mediump vec2 centerTextureCoordinate;
- varying mediump vec2 oneStepLeftTextureCoordinate;
- varying mediump vec2 twoStepsLeftTextureCoordinate;
- varying mediump vec2 oneStepRightTextureCoordinate;
- varying mediump vec2 twoStepsRightTextureCoordinate;
+ varying highp vec2 centerTextureCoordinate;
+ varying highp vec2 oneStepLeftTextureCoordinate;
+ varying highp vec2 twoStepsLeftTextureCoordinate;
+ varying highp vec2 oneStepRightTextureCoordinate;
+ varying highp vec2 twoStepsRightTextureCoordinate;
 
 // const float offset[3] = float[]( 0.0, 1.3846153846, 3.2307692308 );
 
@@ -41,11 +41,11 @@ NSString *const kGPUImageFastBlurFragmentShaderString = SHADER_STRING
 
  uniform sampler2D inputImageTexture;
  
- varying mediump vec2 centerTextureCoordinate;
- varying mediump vec2 oneStepLeftTextureCoordinate;
- varying mediump vec2 twoStepsLeftTextureCoordinate;
- varying mediump vec2 oneStepRightTextureCoordinate;
- varying mediump vec2 twoStepsRightTextureCoordinate;
+ varying highp vec2 centerTextureCoordinate;
+ varying highp vec2 oneStepLeftTextureCoordinate;
+ varying highp vec2 twoStepsLeftTextureCoordinate;
+ varying highp vec2 oneStepRightTextureCoordinate;
+ varying highp vec2 twoStepsRightTextureCoordinate;
  
 // const float weight[3] = float[]( 0.2270270270, 0.3162162162, 0.0702702703 );
  

@@ -179,6 +179,13 @@
             
             filter = [[GPUImageLuminanceThresholdFilter alloc] init];
         }; break;
+		case GPUIMAGE_ADAPTIVETHRESHOLD:
+        {
+            self.title = @"Adaptive Threshold";
+            self.filterSettingsSlider.hidden = YES;
+            
+            filter = [[GPUImageLuminanceThresholdFilter alloc] init];
+        }; break;
         case GPUIMAGE_CROP:
         {
             self.title = @"Crop";
@@ -413,6 +420,13 @@
             [self.filterSettingsSlider setValue:1.0];
 
             filter = [[GPUImageFastBlurFilter alloc] init];
+		}; break;
+        case GPUIMAGE_BOXBLUR:
+        {
+            self.title = @"Box Blur";
+            self.filterSettingsSlider.hidden = YES;
+            
+            filter = [[GPUImageBoxBlurFilter alloc] init];
 		}; break;
         case GPUIMAGE_GAUSSIAN_SELECTIVE:
         {

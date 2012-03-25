@@ -1,8 +1,3 @@
-//
-//  GPUImageFilterGroup.m
-//  GPUImage
-//
-
 #import "GPUImageFilterGroup.h"
 #import "GPUImageFilter.h"
 

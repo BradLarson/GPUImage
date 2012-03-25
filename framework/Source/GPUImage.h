@@ -53,3 +53,5 @@
 #import "GPUImageHazeFilter.h"
 #import "GPUImageLuminanceThresholdFilter.h"
 #import "GPUImagePosterizeFilter.h"
+#import "GPUImageBoxBlurFilter.h"
+#import "GPUImageAdaptiveThresholdFilter.h"

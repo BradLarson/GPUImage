@@ -1,8 +1,3 @@
-//
-//  GPUImageFilterGroup.h
-//  GPUImage
-//
-
 #import "GPUImageOutput.h"
 
 @class GPUImageFilter;
