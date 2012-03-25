@@ -184,7 +184,7 @@
             self.title = @"Adaptive Threshold";
             self.filterSettingsSlider.hidden = YES;
             
-            filter = [[GPUImageLuminanceThresholdFilter alloc] init];
+            filter = [[GPUImageAdaptiveThresholdFilter alloc] init];
         }; break;
         case GPUIMAGE_CROP:
         {
