@@ -7,8 +7,8 @@
     NSMutableArray *filters;
 }
 
-@property(readonly, nonatomic) GPUImageFilter *initialFilter;
-@property(readonly, nonatomic) GPUImageFilter *terminalFilter;
+@property(readonly, nonatomic, strong) GPUImageFilter *initialFilter;
+@property(readonly, nonatomic, strong) GPUImageFilter *terminalFilter;
 
 // Filter management
 - (void)addFilter:(GPUImageFilter *)newFilter;
