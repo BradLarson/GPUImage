@@ -45,14 +45,12 @@
     
     sourcePicture = [[GPUImagePicture alloc] initWithImage:inputImage smoothlyScaleOutput:YES];
     sepiaFilter = [[GPUImageSepiaFilter alloc] init];
-    sepiaFilter2 = [[GPUImageSepiaFilter alloc] init];
     
     GPUImageView *imageView = (GPUImageView *)self.view;
     
     [sourcePicture addTarget:sepiaFilter];
-    [sepiaFilter addTarget:sepiaFilter2];
-    [sepiaFilter2 addTarget:imageView];
-    
+    [sepiaFilter addTarget:imageView];
+
     [sourcePicture processImage];
 }
 
@@ -96,8 +94,7 @@
     if (![dataForPNGFile2 writeToFile:[documentsDirectory stringByAppendingPathComponent:@"Lambeau-filtered2.png"] options:NSAtomicWrite error:&error])
     {
         return;
-    }
-
+    }    
 }
 
 @end
