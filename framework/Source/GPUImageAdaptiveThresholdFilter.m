@@ -42,9 +42,12 @@ NSString *const kGPUImageAdaptiveThresholdFragmentShaderString = SHADER_STRING
     GPUImageFilter *adaptiveThresholdFilter = [[GPUImageFilter alloc] initWithFragmentShaderFromString:kGPUImageAdaptiveThresholdFragmentShaderString];
     [self addFilter:adaptiveThresholdFilter];
     
-    [self setTargetFilter:boxBlurFilter forFilter:luminanceFilter];
-    [self setTargetFilter:adaptiveThresholdFilter forFilter:luminanceFilter];
-    [self setTargetFilter:adaptiveThresholdFilter forFilter:boxBlurFilter];
+    [luminanceFilter addTarget:boxBlurFilter];
+    [luminanceFilter addTarget:adaptiveThresholdFilter];
+    [boxBlurFilter addTarget:adaptiveThresholdFilter];
+    
+    self.initialFilters = [NSArray arrayWithObject:luminanceFilter];
+    self.terminalFilter = adaptiveThresholdFilter;
     
     return self;
 }

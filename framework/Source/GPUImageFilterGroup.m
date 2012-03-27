@@ -1,23 +1,10 @@
 #import "GPUImageFilterGroup.h"
 #import "GPUImageFilter.h"
 
-@interface GPUImageFilterGroup()
-{
-    NSMutableArray *filtersWithNoInputs, *filtersWithNoOutputs;
-}
-
-@property(readwrite, nonatomic, strong) GPUImageFilter *initialFilter;
-@property(readwrite, nonatomic, strong) GPUImageFilter *terminalFilter;
-
-// Filter management
-- (void)updateEndPoints;
-
-@end
-
 @implementation GPUImageFilterGroup
 
-@synthesize initialFilter = _initialFilter;
 @synthesize terminalFilter = _terminalFilter;
+@synthesize initialFilters = _initialFilters;
 
 - (id)init;
 {
@@ -28,9 +15,6 @@
     
     filters = [[NSMutableArray alloc] init];
     
-    filtersWithNoInputs = [[NSMutableArray alloc] init];
-    filtersWithNoOutputs = [[NSMutableArray alloc] init];
-
     [self deleteOutputTexture];
     
     return self;
@@ -39,122 +23,93 @@
 #pragma mark -
 #pragma mark Filter management
 
-- (void)addFilter:(GPUImageFilter *)newFilter;
+- (void)addFilter:(GPUImageOutput<GPUImageInput> *)newFilter;
 {
     [filters addObject:newFilter];
-    
-    [filtersWithNoInputs addObject:newFilter];
-    [filtersWithNoOutputs addObject:newFilter];
-    
-    [self updateEndPoints];
 }
 
-- (void)setTargetFilter:(GPUImageFilter *)targetFilter forFilter:(GPUImageFilter *)sourceFilter;
-{
-    if  ( ([filters indexOfObject:targetFilter] == NSNotFound) || ([filters indexOfObject:sourceFilter] == NSNotFound) )
-    {
-        NSAssert(NO, @"Both filters involved in setting a target within a filter group must be members of that group");
-    }
-
-    [filtersWithNoInputs removeObject:targetFilter];
-    [filtersWithNoOutputs removeObject:sourceFilter];
-    
-    [sourceFilter addTarget:targetFilter];
-
-    [self updateEndPoints];
-}
-
-- (GPUImageFilter *)filterAtIndex:(NSUInteger)filterIndex;
+- (GPUImageOutput<GPUImageInput> *)filterAtIndex:(NSUInteger)filterIndex;
 {
     return [filters objectAtIndex:filterIndex];
-}
-
-- (void)updateEndPoints;
-{
-    if ([filtersWithNoOutputs count] == 1)
-    {
-        self.terminalFilter = [filtersWithNoOutputs objectAtIndex:0];
-    }
-    else
-    {
-        self.terminalFilter = nil;
-    }
-
-    if ([filtersWithNoInputs count] == 1)
-    {
-        self.initialFilter = [filtersWithNoInputs objectAtIndex:0];
-    }
-    else
-    {
-        self.initialFilter = nil;
-    }
 }
 
 #pragma mark -
 #pragma mark GPUImageOutput overrides
 
-- (void)addTarget:(id<GPUImageInput>)newTarget;
+- (void)addTarget:(id<GPUImageInput>)newTarget atTextureLocation:(NSInteger)textureLocation;
 {
-    if ([filtersWithNoOutputs count] != 1)
-    {
-        NSAssert(NO, @"Can't add a target to a filter group which has more than one filter without a target");
-    }
-    
-    [_terminalFilter addTarget:newTarget];
+    [_terminalFilter addTarget:newTarget atTextureLocation:textureLocation];
 }
 
 - (void)removeTarget:(id<GPUImageInput>)targetToRemove;
 {
-    if ([filtersWithNoOutputs count] != 1)
-    {
-        NSAssert(NO, @"Can't remove a target from a filter group which has more than one filter without a target");
-    }
-    
     [_terminalFilter removeTarget:targetToRemove];
 }
 
 - (void)removeAllTargets;
 {
-    if ([filtersWithNoOutputs count] != 1)
-    {
-        NSAssert(NO, @"Can't remove a target from a filter group which has more than one filter without a target");
-    }
-    
     [_terminalFilter removeAllTargets];
 }
-
 
 #pragma mark -
 #pragma mark GPUImageInput protocol
 
 - (void)newFrameReady;
 {
-    [_initialFilter newFrameReady];
+    for (GPUImageOutput<GPUImageInput> *currentFilter in _initialFilters)
+    {
+        [currentFilter newFrameReady];
+    }
 }
 
 - (void)setInputTexture:(GLuint)newInputTexture atIndex:(NSInteger)textureIndex;
 {
-    [_initialFilter setInputTexture:newInputTexture atIndex:textureIndex];
+    for (GPUImageOutput<GPUImageInput> *currentFilter in _initialFilters)
+    {
+        [currentFilter setInputTexture:newInputTexture atIndex:textureIndex];
+    }
 }
 
 - (NSInteger)nextAvailableTextureIndex;
 {
-    return [_initialFilter nextAvailableTextureIndex];
+    if ([_initialFilters count] > 0)
+    {
+        return [[_initialFilters objectAtIndex:0] nextAvailableTextureIndex];
+    }
+    
+    return 0;
 }
 
 - (void)setInputSize:(CGSize)newSize;
 {
-    [_initialFilter setInputSize:newSize];
+    for (GPUImageOutput<GPUImageInput> *currentFilter in _initialFilters)
+    {
+        [currentFilter setInputSize:newSize];
+    }
 }
 
 - (CGSize)maximumOutputSize;
 {
-    return [_initialFilter maximumOutputSize];
+    if (CGSizeEqualToSize(cachedMaximumOutputSize, CGSizeZero))
+    {
+        for (id<GPUImageInput> currentTarget in _initialFilters)
+        {
+            if ([currentTarget maximumOutputSize].width > cachedMaximumOutputSize.width)
+            {
+                cachedMaximumOutputSize = [currentTarget maximumOutputSize];
+            }
+        }
+    }
+    
+    return cachedMaximumOutputSize;
 }
 
 - (void)endProcessing;
 {
-    [_initialFilter endProcessing];
+    for (GPUImageOutput<GPUImageInput> *currentFilter in _initialFilters)
+    {
+        [currentFilter endProcessing];
+    }
 }
 
 @end

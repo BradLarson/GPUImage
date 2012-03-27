@@ -95,6 +95,10 @@ For example, an application that takes in live video from the camera, converts t
 - **GPUImageSharpenFilter**: Sharpens the image
   - *sharpness*: The sharpness adjustment to apply (-4.0 - 4.0, with 0.0 as the default)
 
+- **GPUImageUnsharpMaskFilter**: Applies an unsharp mask
+  - *blurSize*: A multiplier for the underlying blur size, ranging from 0.0 on up, with a default of 1.0
+  - *intensity*: The strength of the sharpening, from 0.0 on up, with a default of 1.0
+
 - **GPUImageFastBlurFilter**: A hardware-accelerated 9-hit Gaussian blur of an image
   - *blurPasses*: The number of times to re-apply this blur on an image. More passes lead to a blurrier image, yet they require more processing power. The default is 1.
 

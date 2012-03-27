@@ -7,12 +7,11 @@
     NSMutableArray *filters;
 }
 
-@property(readonly, nonatomic, strong) GPUImageFilter *initialFilter;
-@property(readonly, nonatomic, strong) GPUImageFilter *terminalFilter;
+@property(readwrite, nonatomic, strong) GPUImageOutput<GPUImageInput> *terminalFilter;
+@property(readwrite, nonatomic, strong) NSArray *initialFilters;
 
 // Filter management
-- (void)addFilter:(GPUImageFilter *)newFilter;
-- (void)setTargetFilter:(GPUImageFilter *)targetFilter forFilter:(GPUImageFilter *)sourceFilter;
-- (GPUImageFilter *)filterAtIndex:(NSUInteger)filterIndex;
+- (void)addFilter:(GPUImageOutput<GPUImageInput> *)newFilter;
+- (GPUImageOutput<GPUImageInput> *)filterAtIndex:(NSUInteger)filterIndex;
 
 @end

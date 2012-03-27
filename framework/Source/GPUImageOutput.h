@@ -14,6 +14,7 @@
 // Managing targets
 - (void)setInputTextureForTarget:(id<GPUImageInput>)target atIndex:(NSInteger)inputTextureIndex;
 - (void)addTarget:(id<GPUImageInput>)newTarget;
+- (void)addTarget:(id<GPUImageInput>)newTarget atTextureLocation:(NSInteger)textureLocation;
 - (void)removeTarget:(id<GPUImageInput>)targetToRemove;
 - (void)removeAllTargets;
 

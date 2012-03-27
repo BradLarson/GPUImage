@@ -55,3 +55,4 @@
 #import "GPUImagePosterizeFilter.h"
 #import "GPUImageBoxBlurFilter.h"
 #import "GPUImageAdaptiveThresholdFilter.h"
+#import "GPUImageUnsharpMaskFilter.h"

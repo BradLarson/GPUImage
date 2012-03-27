@@ -38,22 +38,29 @@
 
 - (void)addTarget:(id<GPUImageInput>)newTarget;
 {
-    // Check if contain this target
+    NSInteger nextAvailableTextureIndex = [newTarget nextAvailableTextureIndex];
+    [self addTarget:newTarget atTextureLocation:nextAvailableTextureIndex];
+}
+
+- (void)addTarget:(id<GPUImageInput>)newTarget atTextureLocation:(NSInteger)textureLocation;
+{
     if([targets containsObject:newTarget])
+    {
         return;
+    }
     
     cachedMaximumOutputSize = CGSizeZero;
-    NSInteger nextAvailableTextureIndex = [newTarget nextAvailableTextureIndex];
-    [self setInputTextureForTarget:newTarget atIndex:nextAvailableTextureIndex];
+    [self setInputTextureForTarget:newTarget atIndex:textureLocation];
     [targets addObject:newTarget];
-    [targetTextureIndices addObject:[NSNumber numberWithInteger:nextAvailableTextureIndex]];
+    [targetTextureIndices addObject:[NSNumber numberWithInteger:textureLocation]];
 }
 
 - (void)removeTarget:(id<GPUImageInput>)targetToRemove;
 {
-    // Check if contain this target
     if(![targets containsObject:targetToRemove])
+    {
         return;
+    }
     
     cachedMaximumOutputSize = CGSizeZero;
     [targetToRemove setInputSize:CGSizeZero];

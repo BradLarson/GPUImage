@@ -146,6 +146,19 @@
             
             filter = [[GPUImageSharpenFilter alloc] init];
         }; break;
+        case GPUIMAGE_UNSHARPMASK:
+        {
+            self.title = @"Unsharp Mask";
+            self.filterSettingsSlider.hidden = NO;
+            
+            [self.filterSettingsSlider setMinimumValue:0.0];
+            [self.filterSettingsSlider setMaximumValue:5.0];
+            [self.filterSettingsSlider setValue:1.0];
+            
+            filter = [[GPUImageUnsharpMaskFilter alloc] init];
+            
+//            [(GPUImageUnsharpMaskFilter *)filter setIntensity:3.0];
+        }; break;
         case GPUIMAGE_GAMMA:
         {
             self.title = @"Gamma";
@@ -457,7 +470,9 @@
             GPUImagePixellateFilter *pixellateFilter = [[GPUImagePixellateFilter alloc] init];
             [(GPUImageFilterGroup *)filter addFilter:pixellateFilter];
             
-            [(GPUImageFilterGroup *)filter setTargetFilter:pixellateFilter forFilter:sepiaFilter];
+            [sepiaFilter addTarget:pixellateFilter];
+            [(GPUImageFilterGroup *)filter setInitialFilters:[NSArray arrayWithObject:sepiaFilter]];
+            [(GPUImageFilterGroup *)filter setTerminalFilter:pixellateFilter];
         }; break;
 
         default: filter = [[GPUImageSepiaFilter alloc] init]; break;
@@ -477,10 +492,13 @@
         [rotationFilter addTarget:filter];
         videoCamera.runBenchmark = YES;
         
-        // The picture is only used for two-image blend filters
-        UIImage *inputImage = [UIImage imageNamed:@"WID-small.jpg"];
-        sourcePicture = [[GPUImagePicture alloc] initWithImage:inputImage smoothlyScaleOutput:YES];
-        [sourcePicture addTarget:filter];
+        if (filterType != GPUIMAGE_UNSHARPMASK)
+        {
+            // The picture is only used for two-image blend filters
+            UIImage *inputImage = [UIImage imageNamed:@"WID-small.jpg"];
+            sourcePicture = [[GPUImagePicture alloc] initWithImage:inputImage smoothlyScaleOutput:YES];
+            [sourcePicture addTarget:filter];
+        }
 
         GPUImageView *filterView = (GPUImageView *)self.view;
         [filter addTarget:filterView];
@@ -503,6 +521,8 @@
         case GPUIMAGE_BRIGHTNESS: [(GPUImageBrightnessFilter *)filter setBrightness:[(UISlider *)sender value]]; break;
         case GPUIMAGE_EXPOSURE: [(GPUImageExposureFilter *)filter setExposure:[(UISlider *)sender value]]; break;
         case GPUIMAGE_SHARPEN: [(GPUImageSharpenFilter *)filter setSharpness:[(UISlider *)sender value]]; break;
+        case GPUIMAGE_UNSHARPMASK: [(GPUImageUnsharpMaskFilter *)filter setIntensity:[(UISlider *)sender value]]; break;
+//        case GPUIMAGE_UNSHARPMASK: [(GPUImageUnsharpMaskFilter *)filter setBlurSize:[(UISlider *)sender value]]; break;
         case GPUIMAGE_GAMMA: [(GPUImageGammaFilter *)filter setGamma:[(UISlider *)sender value]]; break;
         case GPUIMAGE_POSTERIZE: [(GPUImagePosterizeFilter *)filter setColorLevels:round([(UISlider*)sender value])]; break;
 		case GPUIMAGE_HAZE: [(GPUImageHazeFilter *)filter setDistance:[(UISlider *)sender value]]; break;
