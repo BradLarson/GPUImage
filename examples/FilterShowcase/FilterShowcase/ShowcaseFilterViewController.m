@@ -283,6 +283,28 @@
             
             filter = [[GPUImageSwirlFilter alloc] init];
         }; break;
+        case GPUIMAGE_BULGE:
+        {
+            self.title = @"Bulge";
+            self.filterSettingsSlider.hidden = NO;
+            
+            [self.filterSettingsSlider setMinimumValue:-1.0];
+            [self.filterSettingsSlider setMaximumValue:1.0];
+            [self.filterSettingsSlider setValue:0.5];
+            
+            filter = [[GPUImageBulgeDistortionFilter alloc] init];
+        }; break;
+        case GPUIMAGE_PINCH:
+        {
+            self.title = @"Pinch";
+            self.filterSettingsSlider.hidden = NO;
+            
+            [self.filterSettingsSlider setMinimumValue:-2.0];
+            [self.filterSettingsSlider setMaximumValue:2.0];
+            [self.filterSettingsSlider setValue:0.5];
+            
+            filter = [[GPUImagePinchDistortionFilter alloc] init];
+        }; break;
         case GPUIMAGE_CHROMAKEY:
         {
             self.title = @"Chroma Key (Green)";
@@ -531,6 +553,9 @@
         case GPUIMAGE_CHROMAKEY: [(GPUImageChromaKeyBlendFilter *)filter setThresholdSensitivity:[(UISlider *)sender value]]; break;
         case GPUIMAGE_KUWAHARA: [(GPUImageKuwaharaFilter *)filter setRadius:round([(UISlider *)sender value])]; break;
         case GPUIMAGE_SWIRL: [(GPUImageSwirlFilter *)filter setAngle:[(UISlider *)sender value]]; break;
+//        case GPUIMAGE_BULGE: [(GPUImageBulgeDistortionFilter *)filter setRadius:[(UISlider *)sender value]]; break;
+        case GPUIMAGE_BULGE: [(GPUImageBulgeDistortionFilter *)filter setScale:[(UISlider *)sender value]]; break;
+        case GPUIMAGE_PINCH: [(GPUImagePinchDistortionFilter *)filter setScale:[(UISlider *)sender value]]; break;
         case GPUIMAGE_VIGNETTE: [(GPUImageVignetteFilter *)filter setY:[(UISlider *)sender value]]; break;
         case GPUIMAGE_GAUSSIAN: [(GPUImageGaussianBlurFilter *)filter setBlurSize:[(UISlider*)sender value]]; break;
         case GPUIMAGE_FASTBLUR: [(GPUImageFastBlurFilter *)filter setBlurPasses:round([(UISlider*)sender value])]; break;

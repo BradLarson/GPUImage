@@ -171,6 +171,16 @@ For example, an application that takes in live video from the camera, converts t
   - *center*: The center of the image (in normalized coordinates from 0 - 1.0) about which to twist, with a default of (0.5, 0.5)
   - *angle*: The amount of twist to apply to the image, with a default of 1.0
 
+- **GPUImageBulgeDistortionFilter**: Creates a bulge distortion on the image
+  - *radius*: The radius from the center to apply the distortion, with a default of 0.25
+  - *center*: The center of the image (in normalized coordinates from 0 - 1.0) about which to distort, with a default of (0.5, 0.5)
+  - *scale*: The amount of distortion to apply, from -1.0 to 1.0, with a default of 0.5
+
+- **GPUImagePinchDistortionFilter**: Creates a pinch distortion of the image
+  - *radius*: The radius from the center to apply the distortion, with a default of 1.0
+  - *center*: The center of the image (in normalized coordinates from 0 - 1.0) about which to distort, with a default of (0.5, 0.5)
+  - *scale*: The amount of distortion to apply, from -2.0 to 2.0, with a default of 1.0
+
 - **GPUImageVignetteFilter**: Performs a vignetting effect, fading out the image at the edges
   - *x*:
   - *y*: The directional intensity of the vignetting, with a default of x = 0.5, y = 0.75
