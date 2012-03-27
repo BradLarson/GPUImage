@@ -1,12 +1,14 @@
 #import "GPUImageGaussianBlurFilter.h"
 
-NSString *const kGPUImageGaussianBlurHorizontalVertexShaderString = SHADER_STRING
+NSString *const kGPUImageGaussianBlurVertexShaderString = SHADER_STRING
 (
  attribute vec4 position;
  attribute vec4 inputTextureCoordinate;
  
  const lowp int GAUSSIAN_SAMPLES = 9;
  
+ uniform highp float texelWidthOffset; 
+ uniform highp float texelHeightOffset;
  uniform highp float blurSize;
  
  varying highp vec2 textureCoordinate;
@@ -17,44 +19,18 @@ NSString *const kGPUImageGaussianBlurHorizontalVertexShaderString = SHADER_STRIN
  	textureCoordinate = inputTextureCoordinate.xy;
  	
  	// Calculate the positions for the blur
- 	lowp int multiplier = 0;
- 	mediump vec2 blurStep = vec2(0.0, 0.0);
+ 	int multiplier = 0;
+ 	highp vec2 blurStep;
+    highp vec2 singleStepOffset = vec2(texelHeightOffset, texelWidthOffset) * blurSize;
+     
  	for (lowp int i = 0; i < GAUSSIAN_SAMPLES; i++) {
  		multiplier = (i - ((GAUSSIAN_SAMPLES - 1) / 2));
         // Blur in x (horizontal)
-        blurStep = vec2(float(multiplier) * blurSize, 0.0);
+        blurStep = float(multiplier) * singleStepOffset;
  		blurCoordinates[i] = inputTextureCoordinate.xy + blurStep;
  	}
  }
 );
-
-NSString *const kGPUImageGaussianBlurVerticalVertexShaderString = SHADER_STRING
-(
- attribute vec4 position;
- attribute vec4 inputTextureCoordinate;
- 
- const lowp int GAUSSIAN_SAMPLES = 9;
- 
- uniform highp float blurSize;
- 
- varying highp vec2 textureCoordinate;
- varying highp vec2 blurCoordinates[GAUSSIAN_SAMPLES];
- 
- void main() {
-     gl_Position = position;
-     textureCoordinate = inputTextureCoordinate.xy;
-     
-     // Calculate the positions for the blur
-     lowp int multiplier = 0;
-     mediump vec2 blurStep = vec2(0.0, 0.0);
-     for (lowp int i = 0; i < GAUSSIAN_SAMPLES; i++) {
-         multiplier = (i - ((GAUSSIAN_SAMPLES - 1) / 2));
-         // Blur in y (vertical)
-         blurStep = vec2(0.0, float(multiplier) * blurSize);
-         blurCoordinates[i] = inputTextureCoordinate.xy + blurStep;
-     }
- }
- );
 
 NSString *const kGPUImageGaussianBlurFragmentShaderString = SHADER_STRING
 (
@@ -91,20 +67,24 @@ NSString *const kGPUImageGaussianBlurFragmentShaderString = SHADER_STRING
               secondStageVertexShaderFromString:(NSString *)secondStageVertexShaderString
             secondStageFragmentShaderFromString:(NSString *)secondStageFragmentShaderString {
     
-    if (!(self = [super initWithFirstStageVertexShaderFromString:firstStageVertexShaderString ? firstStageVertexShaderString : kGPUImageGaussianBlurHorizontalVertexShaderString
+    if (!(self = [super initWithFirstStageVertexShaderFromString:firstStageVertexShaderString ? firstStageVertexShaderString : kGPUImageGaussianBlurVertexShaderString
                               firstStageFragmentShaderFromString:firstStageFragmentShaderString ? firstStageFragmentShaderString : kGPUImageGaussianBlurFragmentShaderString
-                               secondStageVertexShaderFromString:secondStageVertexShaderString ? secondStageVertexShaderString : kGPUImageGaussianBlurVerticalVertexShaderString
+                               secondStageVertexShaderFromString:secondStageVertexShaderString ? secondStageVertexShaderString : kGPUImageGaussianBlurVertexShaderString
                              secondStageFragmentShaderFromString:secondStageFragmentShaderString ? secondStageFragmentShaderString : kGPUImageGaussianBlurFragmentShaderString])) {
         return nil;
     }
     
     horizontalBlurSizeUniform = [filterProgram uniformIndex:@"blurSize"];
     horizontalGaussianArrayUniform = [filterProgram uniformIndex:@"gaussianValues"];
-    
+    horizontalPassTexelWidthOffsetUniform = [filterProgram uniformIndex:@"texelWidthOffset"];
+    horizontalPassTexelHeightOffsetUniform = [filterProgram uniformIndex:@"texelHeightOffset"];
+
     verticalBlurSizeUniform = [secondFilterProgram uniformIndex:@"blurSize"];
     verticalGaussianArrayUniform = [secondFilterProgram uniformIndex:@"gaussianValues"];
-    
-    self.blurSize = 1.0/320.0;
+    verticalPassTexelWidthOffsetUniform = [secondFilterProgram uniformIndex:@"texelWidthOffset"];
+    verticalPassTexelHeightOffsetUniform = [secondFilterProgram uniformIndex:@"texelHeightOffset"];
+
+    self.blurSize = 1.0;
     [self setGaussianValues];
     
     return self;
@@ -117,6 +97,19 @@ NSString *const kGPUImageGaussianBlurFragmentShaderString = SHADER_STRING
                         secondStageVertexShaderFromString:nil
                       secondStageFragmentShaderFromString:nil];
 }
+
+- (void)setupFilterForSize:(CGSize)filterFrameSize;
+{
+    [GPUImageOpenGLESContext useImageProcessingContext];
+    [filterProgram use];
+    glUniform1f(horizontalPassTexelWidthOffsetUniform, 1.0 / filterFrameSize.width);
+    glUniform1f(horizontalPassTexelHeightOffsetUniform, 0.0);
+
+    [secondFilterProgram use];
+    glUniform1f(verticalPassTexelWidthOffsetUniform, 0.0);
+    glUniform1f(verticalPassTexelHeightOffsetUniform, 1.0 / filterFrameSize.height);
+}
+
 
 #pragma mark Getters and Setters
 

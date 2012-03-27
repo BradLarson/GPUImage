@@ -406,8 +406,8 @@
             self.filterSettingsSlider.hidden = NO;
             
             [self.filterSettingsSlider setMinimumValue:0.0];
-            [self.filterSettingsSlider setMaximumValue:10.0/320.0];
-            [self.filterSettingsSlider setValue:1.0/320.0];
+            [self.filterSettingsSlider setMaximumValue:10.0];
+            [self.filterSettingsSlider setValue:1.0];
             
             filter = [[GPUImageGaussianBlurFilter alloc] init];
         }; break;

@@ -98,11 +98,11 @@ For example, an application that takes in live video from the camera, converts t
 - **GPUImageFastBlurFilter**: A hardware-accelerated 9-hit Gaussian blur of an image
   - *blurPasses*: The number of times to re-apply this blur on an image. More passes lead to a blurrier image, yet they require more processing power. The default is 1.
 
-- **GPUImageGaussianBlurFilter**: A more generalized Gaussian blur filter
-  - *blurSize*: The fractional area of the image to blur each pixel over
+- **GPUImageGaussianBlurFilter**: A more generalized 9x9 Gaussian blur filter
+  - *blurSize*: A multiplier for the size of the blur, ranging from 0.0 on up, with a default of 1.0
 
 - **GPUImageGaussianSelectiveBlurFilter**: A Gaussian blur that preserves focus within a circular region
-  - *blurSize*: The fractional area of the image to blur each pixel over
+  - *blurSize*: A multiplier for the size of the blur, ranging from 0.0 on up, with a default of 1.0
   - *excludeCircleRadius*: The radius of the circular area being excluded from the blur
   - *excludeCirclePoint*: The center of the circular area being excluded from the blur
   - *excludeBlurSize*: The size of the area between the blurred portion and the clear circle 

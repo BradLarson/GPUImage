@@ -58,7 +58,7 @@ NSString *const kGPUImageGaussianSelectiveBlurVerticalFragmentShaderString = SHA
     
     // Set up defaults
     
-    self.blurSize = 2.0/320.0;
+    self.blurSize = 2.0;
 
     self.excludeCircleRadius = 60.0/320.0;
     self.excludeCirclePoint = CGPointMake(0.5f, 0.5f);
