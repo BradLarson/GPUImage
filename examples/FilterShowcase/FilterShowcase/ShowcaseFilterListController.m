@@ -78,9 +78,11 @@
         case GPUIMAGE_GRAYSCALE: cell.textLabel.text = @"Grayscale"; break;
 		case GPUIMAGE_SEPIA: cell.textLabel.text = @"Sepia tone"; break;
 		case GPUIMAGE_PIXELLATE: cell.textLabel.text = @"Pixellate"; break;
+		case GPUIMAGE_CROSSHATCH: cell.textLabel.text = @"Crosshatch"; break;
 		case GPUIMAGE_SOBELEDGEDETECTION: cell.textLabel.text = @"Sobel edge detection"; break;
 		case GPUIMAGE_SKETCH: cell.textLabel.text = @"Sketch"; break;
 		case GPUIMAGE_TOON: cell.textLabel.text = @"Toon"; break;
+		case GPUIMAGE_CGA: cell.textLabel.text = @"CGA colorspace"; break;
 		case GPUIMAGE_POSTERIZE: cell.textLabel.text = @"Posterize"; break;
 		case GPUIMAGE_SWIRL: cell.textLabel.text = @"Swirl"; break;
 		case GPUIMAGE_BULGE: cell.textLabel.text = @"Bulge"; break;

@@ -1,10 +1,10 @@
 //
-//  GPUImageCGAGloryFilter.m
+//  GPUImageCGAColorspaceFilter.m
 //
 
-#import "GPUImageCGAGloryFilter.h"
+#import "GPUImageCGAColorspaceFilter.h"
 
-NSString *const kGPUImageCGAGloryFragmentShaderString = SHADER_STRING
+NSString *const kGPUImageCGAColorspaceFragmentShaderString = SHADER_STRING
 (
  varying highp vec2 textureCoordinate;
  
@@ -50,11 +50,11 @@ NSString *const kGPUImageCGAGloryFragmentShaderString = SHADER_STRING
  }
  );
 
-@implementation GPUImageCGAGloryFilter
+@implementation GPUImageCGAColorspaceFilter
 
 - (id)init;
 {
-    if (!(self = [super initWithFragmentShaderFromString:kGPUImageCGAGloryFragmentShaderString]))
+    if (!(self = [super initWithFragmentShaderFromString:kGPUImageCGAColorspaceFragmentShaderString]))
     {
 		return nil;
     }

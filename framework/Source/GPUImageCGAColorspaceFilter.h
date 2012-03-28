@@ -1,9 +1,5 @@
-//
-//  GPUImageCGAGloryFilter.h
-//  @fattjake
-
 #import "GPUImageFilter.h"
 
-@interface GPUImageCGAGloryFilter : GPUImageFilter
+@interface GPUImageCGAColorspaceFilter : GPUImageFilter
 
 @end

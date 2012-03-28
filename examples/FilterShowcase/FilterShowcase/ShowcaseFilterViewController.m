@@ -77,6 +77,13 @@
             
             filter = [[GPUImagePixellateFilter alloc] init];
         }; break;
+        case GPUIMAGE_CROSSHATCH:
+        {
+            self.title = @"Crosshatch";
+            self.filterSettingsSlider.hidden = YES;
+            
+            filter = [[GPUImageCrosshatchFilter alloc] init];
+        }; break;
         case GPUIMAGE_COLORINVERT:
         {
             self.title = @"Color Invert";
@@ -260,7 +267,15 @@
             self.filterSettingsSlider.hidden = YES;
             
             filter = [[GPUImageToonFilter alloc] init];
+        }; break;            
+        case GPUIMAGE_CGA:
+        {
+            self.title = @"CGA Colorspace";
+            self.filterSettingsSlider.hidden = YES;
+            
+            filter = [[GPUImageCGAColorspaceFilter alloc] init];
         }; break;
+
         case GPUIMAGE_POSTERIZE:
         {
             self.title = @"Posterize";

@@ -58,3 +58,5 @@
 #import "GPUImageUnsharpMaskFilter.h"
 #import "GPUImageBulgeDistortionFilter.h"
 #import "GPUImagePinchDistortionFilter.h"
+#import "GPUImageCrosshatchFilter.h"
+#import "GPUImageCGAColorspaceFilter.h"

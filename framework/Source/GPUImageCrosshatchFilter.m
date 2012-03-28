@@ -1,5 +1,6 @@
-
 #import "GPUImageCrosshatchFilter.h"
+
+// Shader code based on http://machinesdontcare.wordpress.com/
 
 NSString *const kGPUImageCrosshatchFragmentShaderString = SHADER_STRING
 (
