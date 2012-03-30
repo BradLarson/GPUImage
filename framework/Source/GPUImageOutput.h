@@ -1,3 +1,5 @@
+#import <UIKit/UIKit.h>
+
 #import "GPUImageOpenGLESContext.h"
 #import "GLProgram.h"
 
@@ -21,5 +23,9 @@
 // Manage the output texture
 - (void)initializeOutputTexture;
 - (void)deleteOutputTexture;
+
+// Still image processing
+- (UIImage *)imageFromCurrentlyProcessedOutput;
+- (UIImage *)imageByFilteringImage:(UIImage *)imageToFilter;
 
 @end

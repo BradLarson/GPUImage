@@ -27,6 +27,7 @@
 
 // Initialization and teardown
 - (id)initWithSessionPreset:(NSString *)sessionPreset cameraPosition:(AVCaptureDevicePosition)cameraPosition; 
+- (void)removeInputsAndOutputs;
 
 // Manage the camera video stream
 - (void)startCameraCapture;

@@ -48,6 +48,7 @@
 + (BOOL)supportsFastTextureUpload;
 {
     return (CVOpenGLESTextureCacheCreate != NULL);
+//    return NO;
 }
 
 #pragma mark -

@@ -1,5 +1,4 @@
 #import "GPUImageOutput.h"
-#import <UIKit/UIKit.h>
 
 #define STRINGIZE(x) #x
 #define STRINGIZE2(x) STRINGIZE(x)
@@ -44,10 +43,6 @@ typedef struct GPUMatrix4x4 GPUMatrix4x4;
 - (id)initWithFragmentShaderFromFile:(NSString *)fragmentShaderFilename;
 - (void)initializeAttributes;
 - (void)setupFilterForSize:(CGSize)filterFrameSize;
-
-// Still image processing
-- (UIImage *)imageFromCurrentlyProcessedOutput;
-- (UIImage *)imageByFilteringImage:(UIImage *)imageToFilter;
 
 - (void)recreateFilterFBO;
 

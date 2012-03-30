@@ -108,14 +108,19 @@
 {
     [self stopCameraCapture];
 //    [videoOutput setSampleBufferDelegate:nil queue:dispatch_get_main_queue()];    
+ 
+    [self removeInputsAndOutputs];
     
-    [_captureSession removeInput:videoInput];
-    [_captureSession removeOutput:videoOutput];
-
     if ([GPUImageOpenGLESContext supportsFastTextureUpload])
     {
         CFRelease(coreVideoTextureCache);
     }
+}
+
+- (void)removeInputsAndOutputs;
+{
+    [_captureSession removeInput:videoInput];
+    [_captureSession removeOutput:videoOutput];
 }
 
 #pragma mark -
@@ -220,10 +225,11 @@
 
         for (id<GPUImageInput> currentTarget in targets)
         {
+            [currentTarget setInputSize:CGSizeMake(bufferWidth, bufferHeight)];
+
             NSInteger indexOfObject = [targets indexOfObject:currentTarget];
             [currentTarget setInputTexture:outputTexture atIndex:[[targetTextureIndices objectAtIndex:indexOfObject] integerValue]];
 
-            [currentTarget setInputSize:CGSizeMake(bufferWidth, bufferHeight)];
             [currentTarget newFrameReady];
         }
         

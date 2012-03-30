@@ -207,7 +207,7 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size)
     glGenFramebuffers(1, &filterFramebuffer);
     glBindFramebuffer(GL_FRAMEBUFFER, filterFramebuffer);
     
-//    NSLog(@"Filter size: %f, %f", currentFBOSize.width, currentFBOSize.height);
+    NSLog(@"Filter size: %f, %f", currentFBOSize.width, currentFBOSize.height);
     
     glBindTexture(GL_TEXTURE_2D, outputTexture);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (int)currentFBOSize.width, (int)currentFBOSize.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
@@ -423,11 +423,24 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size)
 
 - (void)setInputSize:(CGSize)newSize;
 {
-    inputTextureSize = newSize;
+    if ( (CGSizeEqualToSize(inputTextureSize, CGSizeZero)) || (CGSizeEqualToSize(newSize, CGSizeZero)) )
+    {
+        inputTextureSize = newSize;
+    }
+    else if (!CGSizeEqualToSize(inputTextureSize, newSize))
+    {
+        inputTextureSize = newSize;
+        [self recreateFilterFBO];
+        NSLog(@"Recreating filter FBO");
+    }
 }
 
 - (CGSize)maximumOutputSize;
 {
+    // I'm temporarily disabling adjustments for smaller output sizes until I figure out how to make this work better
+    return CGSizeZero;
+
+    /*
     if (CGSizeEqualToSize(cachedMaximumOutputSize, CGSizeZero))
     {
         for (id<GPUImageInput> currentTarget in targets)
@@ -440,6 +453,7 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size)
     }
     
     return cachedMaximumOutputSize;
+     */
 }
 
 - (void)endProcessing 

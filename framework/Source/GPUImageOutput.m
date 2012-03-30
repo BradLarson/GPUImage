@@ -113,6 +113,19 @@
 }
 
 #pragma mark -
+#pragma mark Still image processing
+
+- (UIImage *)imageFromCurrentlyProcessedOutput;
+{
+    return nil;
+}
+
+- (UIImage *)imageByFilteringImage:(UIImage *)imageToFilter;
+{
+    return nil;
+}
+
+#pragma mark -
 #pragma mark Accessors
 
 

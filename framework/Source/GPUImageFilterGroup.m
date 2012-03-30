@@ -1,5 +1,6 @@
 #import "GPUImageFilterGroup.h"
 #import "GPUImageFilter.h"
+#import "GPUImagePicture.h"
 
 @implementation GPUImageFilterGroup
 
@@ -31,6 +32,27 @@
 - (GPUImageOutput<GPUImageInput> *)filterAtIndex:(NSUInteger)filterIndex;
 {
     return [filters objectAtIndex:filterIndex];
+}
+
+#pragma mark -
+#pragma mark Still image processing
+
+- (UIImage *)imageFromCurrentlyProcessedOutput;
+{
+    return [self.terminalFilter imageFromCurrentlyProcessedOutput];
+}
+
+- (UIImage *)imageByFilteringImage:(UIImage *)imageToFilter;
+{
+    GPUImagePicture *stillImageSource = [[GPUImagePicture alloc] initWithImage:imageToFilter];
+    
+    [stillImageSource addTarget:self];
+    [stillImageSource processImage];
+    
+    UIImage *processedImage = [self.terminalFilter imageFromCurrentlyProcessedOutput];
+    
+    [stillImageSource removeTarget:self];
+    return processedImage;
 }
 
 #pragma mark -
@@ -90,6 +112,10 @@
 
 - (CGSize)maximumOutputSize;
 {
+    // I'm temporarily disabling adjustments for smaller output sizes until I figure out how to make this work better
+    return CGSizeZero;
+
+    /*
     if (CGSizeEqualToSize(cachedMaximumOutputSize, CGSizeZero))
     {
         for (id<GPUImageInput> currentTarget in _initialFilters)
@@ -102,6 +128,7 @@
     }
     
     return cachedMaximumOutputSize;
+     */
 }
 
 - (void)endProcessing;
