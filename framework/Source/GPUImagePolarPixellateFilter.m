@@ -1,8 +1,6 @@
-//
-//  GPUImagePolarPixellateFilter.m
-// @fattjake based on vid by toneburst
-
 #import "GPUImagePolarPixellateFilter.h"
+
+// @fattjake based on vid by toneburst
 
 NSString *const kGPUImagePolarPixellateFragmentShaderString = SHADER_STRING
 (
@@ -60,7 +58,7 @@ NSString *const kGPUImagePolarPixellateFragmentShaderString = SHADER_STRING
     centerUniform = [filterProgram uniformIndex:@"center"];
     
     
-    self.pixelSize = CGPointMake(0.05, 0.05);
+    self.pixelSize = CGSizeMake(0.05, 0.05);
     self.center = CGPointMake(0.5, 0.5);
     
     return self;
@@ -70,15 +68,15 @@ NSString *const kGPUImagePolarPixellateFragmentShaderString = SHADER_STRING
 #pragma mark Accessors
 
 
-- (void)setPixelSize:(CGPoint)pixelSize 
+- (void)setPixelSize:(CGSize)pixelSize 
 {
     _pixelSize = pixelSize;
     
     [GPUImageOpenGLESContext useImageProcessingContext];
     [filterProgram use];
     GLfloat pixelS[2];
-    pixelS[0] = _pixelSize.x;
-    pixelS[1] = _pixelSize.y;
+    pixelS[0] = _pixelSize.width;
+    pixelS[1] = _pixelSize.height;
     glUniform2fv(pixelSizeUniform, 1, pixelS);
 }
 

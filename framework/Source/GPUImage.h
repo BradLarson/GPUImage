@@ -61,3 +61,5 @@
 #import "GPUImagePinchDistortionFilter.h"
 #import "GPUImageCrosshatchFilter.h"
 #import "GPUImageCGAColorspaceFilter.h"
+#import "GPUImagePolarPixellateFilter.h"
+#import "GPUImageStretchDistortionFilter.h"

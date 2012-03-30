@@ -1,6 +1,3 @@
-//
-//  GPUImageStrechFilter.m
-
 #import "GPUImageStretchDistortionFilter.h"
 
 NSString *const kGPUImageStretchDistortionFragmentShaderString = SHADER_STRING

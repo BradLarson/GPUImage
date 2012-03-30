@@ -1,8 +1,3 @@
-//
-//  GPUImageStrechFilter.h
-//  Face Esplode
-
-
 #import "GPUImageFilter.h"
 
 @interface GPUImageStretchDistortionFilter : GPUImageFilter {
