@@ -149,6 +149,10 @@ For example, an application that takes in live video from the camera, converts t
 - **GPUImagePixellateFilter**: Applies a pixellation effect on an image or video
   - *fractionalWidthOfAPixel*: How large the pixels are, as a fraction of the width and height of the image (0.0 - 1.0, default 0.05)
 
+- **GPUImagePolarPixellateFilter**: Applies a pixellation effect on an image or video, based on polar coordinates instead of Cartesian ones
+  - *center*: The center about which to apply the pixellation, defaulting to (0.5, 0.5)
+  - *pixelSize*: The fractional pixel size, split into width and height components. The default is (0.05, 0.05)
+
 - **GPUImageSobelEdgeDetectionFilter**: Sobel edge detection, with edges highlighted in white
   - *intensity*: The degree to which the original image colors are replaced by the detected edges (0.0 - 1.0, with 1.0 as the default)
   - *imageWidthFactor*: 
@@ -180,6 +184,9 @@ For example, an application that takes in live video from the camera, converts t
   - *radius*: The radius from the center to apply the distortion, with a default of 1.0
   - *center*: The center of the image (in normalized coordinates from 0 - 1.0) about which to distort, with a default of (0.5, 0.5)
   - *scale*: The amount of distortion to apply, from -2.0 to 2.0, with a default of 1.0
+
+- **GPUImageStretchDistortionFilter**: Creates a stretch distortion of the image
+  - *center*: The center of the image (in normalized coordinates from 0 - 1.0) about which to distort, with a default of (0.5, 0.5)
 
 - **GPUImageVignetteFilter**: Performs a vignetting effect, fading out the image at the edges
   - *x*:
@@ -234,6 +241,41 @@ This sets up a video source coming from the iOS device's back-facing camera, usi
 
 For blending filters and others that take in more than one image, you can create multiple outputs and add a single filter as a target for both of these outputs. The order with which the outputs are added as targets will affect the order in which the input images are blended or otherwise processed.
 
+
+### Capturing and filtering a still photo ###
+
+To capture and filter still photos, you can use a process similar to the one for filtering video. Instead of a GPUImageVideoCamera, you use a GPUImageStillCamera:
+
+	stillCamera = [[GPUImageStillCamera alloc] init];
+	filter = [[GPUImageGammaFilter alloc] init];
+	GPUImageRotationFilter *rotationFilter = [[GPUImageRotationFilter alloc] initWithRotation:kGPUImageRotateRight];
+
+	[stillCamera addTarget:rotationFilter];
+	[rotationFilter addTarget:filter];
+	GPUImageView *filterView = (GPUImageView *)self.view;
+	[filter addTarget:filterView];
+
+	[stillCamera startCameraCapture];
+
+This will give you a live, filtered feed of the still camera's preview video. Once you want to capture a photo, you use a callback block like the following:
+
+	[stillCamera capturePhotoProcessedUpToFilter:filter withCompletionHandler:^(UIImage *processedImage, NSError *error){
+	    NSData *dataForPNGFile = UIImageJPEGRepresentation(processedImage, 0.8);
+    
+	    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+	    NSString *documentsDirectory = [paths objectAtIndex:0];
+    
+	    NSError *error2 = nil;
+	    if (![dataForPNGFile writeToFile:[documentsDirectory stringByAppendingPathComponent:@"FilteredPhoto.jpg"] options:NSAtomicWrite error:&error2])
+	    {
+	        return;
+	    }
+	}];
+	
+The above code captures a full-size photo processed by the same filter chain used in the preview view and saves that photo to disk as a JPEG in the application's documents directory.
+
+Note that the framework currently can't handle images larger than 2048 pixels wide or high on older devices (those before the iPhone 4S, iPad 3, or Retina iPad) due to texture size limitations. This means that the iPhone 4, whose camera outputs still photos larger than this, won't be able to capture photos like this. A tiling mechanism is being implemented to work around this. All other devices should be able to capture and filter photos using this method.
+
 ### Processing a still image ###
 
 There are a couple of ways to process a still image and create a result. The first way you can do this is by creating a still image source object and manually creating a filter chain:
@@ -252,6 +294,7 @@ For single filters that you wish to apply to an image, you can simply do the fol
 
 	GPUImageSepiaFilter *stillImageFilter2 = [[GPUImageSepiaFilter alloc] init];
 	UIImage *quickFilteredImage = [stillImageFilter2 imageByFilteringImage:inputImage];
+
 
 ### Writing a custom filter ###
 

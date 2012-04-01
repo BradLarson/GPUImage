@@ -35,15 +35,15 @@ NSString *const kGPUImageRotationFragmentShaderString =  SHADER_STRING
 
 - (void)setInputSize:(CGSize)newSize;
 {
+    CGSize processedSize = newSize;
+    
     if ( (rotationMode == kGPUImageRotateLeft) || (rotationMode == kGPUImageRotateRight) )
     {
-        inputTextureSize.width = newSize.height;
-        inputTextureSize.height = newSize.width;
+        processedSize.width = newSize.height;
+        processedSize.height = newSize.width;
     }
-    else
-    {
-        inputTextureSize = newSize;
-    }
+    
+    [super setInputSize:processedSize];
 }
 
 - (void)newFrameReady;

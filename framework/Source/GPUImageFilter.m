@@ -207,7 +207,7 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size)
     glGenFramebuffers(1, &filterFramebuffer);
     glBindFramebuffer(GL_FRAMEBUFFER, filterFramebuffer);
     
-    NSLog(@"Filter size: %f, %f", currentFBOSize.width, currentFBOSize.height);
+    NSLog(@"Filter size: %f, %f for filter: %@", currentFBOSize.width, currentFBOSize.height, self);
     
     glBindTexture(GL_TEXTURE_2D, outputTexture);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (int)currentFBOSize.width, (int)currentFBOSize.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
@@ -418,6 +418,9 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size)
 {
     cachedMaximumOutputSize = CGSizeZero;
     [self destroyFilterFBO];
+    [self deleteOutputTexture];
+    
+    [self initializeOutputTexture];
     [self setFilterFBO];
 }
 
@@ -431,7 +434,6 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size)
     {
         inputTextureSize = newSize;
         [self recreateFilterFBO];
-        NSLog(@"Recreating filter FBO");
     }
 }
 

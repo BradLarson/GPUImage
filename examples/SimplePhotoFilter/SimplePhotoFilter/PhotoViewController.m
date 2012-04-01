@@ -27,8 +27,8 @@
     [filterSettingsSlider addTarget:self action:@selector(updateSliderValue:) forControlEvents:UIControlEventValueChanged];
 	filterSettingsSlider.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin;
     filterSettingsSlider.minimumValue = 0.0;
-    filterSettingsSlider.maximumValue = 0.3;
-    filterSettingsSlider.value = 0.05;
+    filterSettingsSlider.maximumValue = 3.0;
+    filterSettingsSlider.value = 1.0;
     
     [primaryView addSubview:filterSettingsSlider];
     
@@ -49,8 +49,7 @@
 	// Do any additional setup after loading the view.
     
     stillCamera = [[GPUImageStillCamera alloc] init];
-    filter = [[GPUImagePixellateFilter alloc] init];
-//    filter = [[GPUImageSketchFilter alloc] init];
+    filter = [[GPUImageGammaFilter alloc] init];
     GPUImageRotationFilter *rotationFilter = [[GPUImageRotationFilter alloc] initWithRotation:kGPUImageRotateRight];
     
     [stillCamera addTarget:rotationFilter];
@@ -74,30 +73,23 @@
 
 - (IBAction)updateSliderValue:(id)sender
 {
-    [(GPUImagePixellateFilter *)filter setFractionalWidthOfAPixel:[(UISlider *)sender value]];
-    //    [(GPUImageSketchFilter *)filter setIntensity:1.0];
+//    [(GPUImagePixellateFilter *)filter setFractionalWidthOfAPixel:[(UISlider *)sender value]];
+    [(GPUImageGammaFilter *)filter setGamma:[(UISlider *)sender value]];
 }
 
 - (IBAction)takePhoto:(id)sender;
 {
-    NSLog(@"Took photo");
-    
-    [filter removeTarget:(GPUImageView *)self.view];
-    
     [stillCamera capturePhotoProcessedUpToFilter:filter withCompletionHandler:^(UIImage *processedImage, NSError *error){
-        NSData *dataForPNGFile = UIImagePNGRepresentation(processedImage);
+        NSData *dataForPNGFile = UIImageJPEGRepresentation(processedImage, 0.8);
         
         NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
         NSString *documentsDirectory = [paths objectAtIndex:0];
         
         NSError *error2 = nil;
-        if (![dataForPNGFile writeToFile:[documentsDirectory stringByAppendingPathComponent:@"FilteredPhoto.png"] options:NSAtomicWrite error:&error2])
+        if (![dataForPNGFile writeToFile:[documentsDirectory stringByAppendingPathComponent:@"FilteredPhoto.jpg"] options:NSAtomicWrite error:&error2])
         {
             return;
         }
-        
-        
-        [filter addTarget:(GPUImageView *)self.view];
     }];
 }
 

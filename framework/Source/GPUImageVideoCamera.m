@@ -255,8 +255,13 @@
         CVPixelBufferLockBaseAddress(cameraFrame, 0);
         
         glBindTexture(GL_TEXTURE_2D, outputTexture);
+                        
+//        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, bufferWidth, bufferHeight, 0, GL_BGRA, GL_UNSIGNED_BYTE, CVPixelBufferGetBaseAddress(cameraFrame));
+        
         // Using BGRA extension to pull in video frame data directly
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, bufferWidth, bufferHeight, 0, GL_BGRA, GL_UNSIGNED_BYTE, CVPixelBufferGetBaseAddress(cameraFrame));
+        // The use of bytesPerRow / 4 accounts for a display glitch present in preview video frames when using the photo preset on the camera
+        size_t bytesPerRow = CVPixelBufferGetBytesPerRow(cameraFrame);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, bytesPerRow / 4, bufferHeight, 0, GL_BGRA, GL_UNSIGNED_BYTE, CVPixelBufferGetBaseAddress(cameraFrame));
         
         for (id<GPUImageInput> currentTarget in targets)
         {

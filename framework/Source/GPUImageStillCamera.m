@@ -42,12 +42,14 @@
 - (void)capturePhotoProcessedUpToFilter:(GPUImageOutput<GPUImageInput> *)finalFilterInChain withCompletionHandler:(void (^)(UIImage *processedImage, NSError *error))block;
 {
     [photoOutput captureStillImageAsynchronouslyFromConnection:[[photoOutput connections] objectAtIndex:0] completionHandler:^(CMSampleBufferRef imageSampleBuffer, NSError *error) {
+
         [self captureOutput:photoOutput didOutputSampleBuffer:imageSampleBuffer fromConnection:[[photoOutput connections] objectAtIndex:0]];
         // Will need an alternate pathway for the iOS 4.0 support here
-        
+
         UIImage *filteredPhoto = [finalFilterInChain imageFromCurrentlyProcessedOutput];
         
         block(filteredPhoto, error);
+        
     }];
     return;
 }
