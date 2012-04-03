@@ -24,9 +24,9 @@
     videoCamera = [[GPUImageVideoCamera alloc] initWithSessionPreset:AVCaptureSessionPreset640x480 cameraPosition:AVCaptureDevicePositionBack];
 //    videoCamera = [[GPUImageVideoCamera alloc] initWithSessionPreset:AVCaptureSessionPreset1280x720 cameraPosition:AVCaptureDevicePositionBack];
 //    videoCamera = [[GPUImageVideoCamera alloc] initWithSessionPreset:AVCaptureSessionPreset1920x1080 cameraPosition:AVCaptureDevicePositionBack];
-    filter = [[GPUImagePixellateFilter alloc] init];
+//    filter = [[GPUImagePixellateFilter alloc] init];
 //    filter = [[GPUImageSketchFilter alloc] init];
-//    filter = [[GPUImageAdaptiveThresholdFilter alloc] init];
+    filter = [[GPUImageUnsharpMaskFilter alloc] init];
     GPUImageRotationFilter *rotationFilter = [[GPUImageRotationFilter alloc] initWithRotation:kGPUImageRotateRight];
     
     [videoCamera addTarget:rotationFilter];

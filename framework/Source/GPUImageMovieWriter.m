@@ -29,7 +29,7 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
     
     GLubyte *frameData;
     
-    CMTime startTime;
+    CMTime startTime, previousFrameTime;
 }
 
 // Movie recording
@@ -64,6 +64,7 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
     videoSize = newSize;
     movieURL = newMovieURL;
     startTime = kCMTimeInvalid;
+    previousFrameTime = kCMTimeNegativeInfinity;
     
     [GPUImageOpenGLESContext useImageProcessingContext];
     
@@ -329,9 +330,10 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
         return;
     }
     
-    if (CMTIME_IS_INVALID(frameTime))
+    // Drop frames forced by images and other things with no time constants
+    // Also, if two consecutive times with the same value are added to the movie, it aborts recording, so I bail on that case
+    if ( (CMTIME_IS_INVALID(frameTime)) || (CMTIME_COMPARE_INLINE(frameTime, ==, previousFrameTime)) ) 
     {
-        // Drop frames forced by images and other things with no time constants
         return;
     }
 
@@ -362,10 +364,6 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
         }
     }
     
-    // May need to add a check here, because if two consecutive times with the same value are added to the movie, it aborts recording
-    
-//    CMTime currentTime = CMTimeMakeWithSeconds([[NSDate date] timeIntervalSinceDate:startTime],120);
-    
     if (CMTIME_IS_INVALID(startTime))
     {
         startTime = frameTime;
@@ -382,6 +380,8 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 //        NSLog(@"Recorded pixel buffer at time: %lld, %lld", frameTime.value, testTime.value);
     }
     CVPixelBufferUnlockBaseAddress(pixel_buffer, 0);
+    
+    previousFrameTime = frameTime;
     
     if (![GPUImageOpenGLESContext supportsFastTextureUpload])
     {

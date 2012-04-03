@@ -26,7 +26,7 @@
     movieFile = [[GPUImageMovie alloc] initWithURL:sampleURL];
     movieFile.runBenchmark = YES;
 //    filter = [[GPUImagePixellateFilter alloc] init];
-    filter = [[GPUImageAdaptiveThresholdFilter alloc] init];
+    filter = [[GPUImageUnsharpMaskFilter alloc] init];
     GPUImageRotationFilter *rotationFilter = [[GPUImageRotationFilter alloc] initWithRotation:kGPUImageRotateRight];
     
     [movieFile addTarget:rotationFilter];
@@ -73,6 +73,7 @@
 
 - (IBAction)updatePixelWidth:(id)sender
 {
+    [(GPUImageUnsharpMaskFilter *)filter setIntensity:[(UISlider *)sender value]];
 //    pixellateFilter.fractionalWidthOfAPixel = [(UISlider *)sender value];
 }
 
