@@ -196,7 +196,7 @@
 #pragma mark -
 #pragma mark GPUImageInput protocol
 
-- (void)newFrameReady;
+- (void)newFrameReadyAtTime:(CMTime)frameTime;
 {
     hasReadFromTheCurrentFrame = NO;
 
@@ -222,7 +222,14 @@
     return imageSize;
 }
 
--(void) endProcessing{}
+- (void)endProcessing;
+{
+}
+
+- (BOOL)shouldIgnoreUpdatesToThisTarget;
+{
+    return NO;
+}
 
 #pragma mark -
 #pragma mark Accessors

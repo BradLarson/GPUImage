@@ -1,8 +1,21 @@
 #import "GPUImageOutput.h"
 
+void runOnMainQueueWithoutDeadlocking(void (^block)(void))
+{
+	if ([NSThread isMainThread])
+	{
+		block();
+	}
+	else
+	{
+		dispatch_sync(dispatch_get_main_queue(), block);
+	}
+}
+
 @implementation GPUImageOutput
 
 @synthesize shouldSmoothlyScaleOutput = _shouldSmoothlyScaleOutput;
+@synthesize shouldIgnoreUpdatesToThisTarget = _shouldIgnoreUpdatesToThisTarget;
 
 #pragma mark -
 #pragma mark Initialization and teardown
@@ -40,6 +53,10 @@
 {
     NSInteger nextAvailableTextureIndex = [newTarget nextAvailableTextureIndex];
     [self addTarget:newTarget atTextureLocation:nextAvailableTextureIndex];
+    if ([newTarget shouldIgnoreUpdatesToThisTarget])
+    {
+        targetToIgnoreForUpdates = newTarget;
+    }
 }
 
 - (void)addTarget:(id<GPUImageInput>)newTarget atTextureLocation:(NSInteger)textureLocation;
@@ -60,6 +77,11 @@
     if(![targets containsObject:targetToRemove])
     {
         return;
+    }
+    
+    if (targetToIgnoreForUpdates == targetToRemove)
+    {
+        targetToIgnoreForUpdates = nil;
     }
     
     cachedMaximumOutputSize = CGSizeZero;

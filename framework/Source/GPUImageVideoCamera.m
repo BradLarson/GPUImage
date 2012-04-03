@@ -7,6 +7,7 @@
 {
 	AVCaptureDeviceInput *videoInput;
 	AVCaptureVideoDataOutput *videoOutput;
+    NSDate *startingCaptureTime;
 }
 
 @end
@@ -130,6 +131,7 @@
 {
     if (![_captureSession isRunning])
 	{
+        startingCaptureTime = [NSDate date];
 		[_captureSession startRunning];
 	};
 }
@@ -202,6 +204,8 @@
     int bufferWidth = CVPixelBufferGetWidth(cameraFrame);
     int bufferHeight = CVPixelBufferGetHeight(cameraFrame);
 
+    CMTime currentTime = CMTimeMakeWithSeconds([[NSDate date] timeIntervalSinceDate:startingCaptureTime], 120);
+    
     if ([GPUImageOpenGLESContext supportsFastTextureUpload])
     {
         CVPixelBufferLockBaseAddress(cameraFrame, 0);
@@ -230,7 +234,7 @@
             NSInteger indexOfObject = [targets indexOfObject:currentTarget];
             [currentTarget setInputTexture:outputTexture atIndex:[[targetTextureIndices objectAtIndex:indexOfObject] integerValue]];
 
-            [currentTarget newFrameReady];
+            [currentTarget newFrameReadyAtTime:currentTime];
         }
         
         CVPixelBufferUnlockBaseAddress(cameraFrame, 0);
@@ -266,7 +270,7 @@
         for (id<GPUImageInput> currentTarget in targets)
         {
             [currentTarget setInputSize:CGSizeMake(bufferWidth, bufferHeight)];
-            [currentTarget newFrameReady];
+            [currentTarget newFrameReadyAtTime:currentTime];
         }
         
         CVPixelBufferUnlockBaseAddress(cameraFrame, 0);

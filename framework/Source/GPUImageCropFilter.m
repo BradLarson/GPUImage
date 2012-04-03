@@ -53,7 +53,7 @@ NSString *const kGPUImageCropFragmentShaderString =  SHADER_STRING
 //    inputTextureSize = croppedSize;
 //}
 //
-- (void)newFrameReady;
+- (void)newFrameReadyAtTime:(CMTime)frameTime;
 {
     static const GLfloat cropSquareVertices[] = {
         -1.0f, -1.0f,
@@ -71,7 +71,7 @@ NSString *const kGPUImageCropFragmentShaderString =  SHADER_STRING
 
     [self renderToTextureWithVertices:cropSquareVertices textureCoordinates:cropTextureCoordinates sourceTexture:filterSourceTexture];
 
-    [self informTargetsAboutNewFrame];
+    [self informTargetsAboutNewFrameAtTime:frameTime];
 }
 
 @end

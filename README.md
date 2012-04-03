@@ -154,7 +154,6 @@ For example, an application that takes in live video from the camera, converts t
   - *pixelSize*: The fractional pixel size, split into width and height components. The default is (0.05, 0.05)
 
 - **GPUImageSobelEdgeDetectionFilter**: Sobel edge detection, with edges highlighted in white
-  - *intensity*: The degree to which the original image colors are replaced by the detected edges (0.0 - 1.0, with 1.0 as the default)
   - *imageWidthFactor*: 
   - *imageHeightFactor*: These parameters affect the visibility of the detected edges
 

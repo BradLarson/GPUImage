@@ -8,7 +8,7 @@
 #pragma mark -
 #pragma mark GPUImageInput protocol
 
-- (void)newFrameReady;
+- (void)newFrameReadyAtTime:(CMTime)frameTime;
 {
     [_delegate newFrameReadyFromTextureOutput:self];
 }
@@ -32,6 +32,13 @@
     return CGSizeZero;
 }
 
--(void) endProcessing{}
+- (void)endProcessing
+{
+}
+
+- (BOOL)shouldIgnoreUpdatesToThisTarget;
+{
+    return NO;
+}
 
 @end

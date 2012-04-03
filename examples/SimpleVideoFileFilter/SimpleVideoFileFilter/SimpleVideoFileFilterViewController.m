@@ -24,13 +24,14 @@
     NSURL *sampleURL = [[NSBundle mainBundle] URLForResource:@"sample_iPod" withExtension:@"m4v"];
     
     movieFile = [[GPUImageMovie alloc] initWithURL:sampleURL];
-    pixellateFilter = [[GPUImagePixellateFilter alloc] init];
+//    filter = [[GPUImagePixellateFilter alloc] init];
+    filter = [[GPUImageAdaptiveThresholdFilter alloc] init];
     GPUImageRotationFilter *rotationFilter = [[GPUImageRotationFilter alloc] initWithRotation:kGPUImageRotateRight];
     
     [movieFile addTarget:rotationFilter];
-    [rotationFilter addTarget:pixellateFilter];
+    [rotationFilter addTarget:filter];
     GPUImageView *filterView = (GPUImageView *)self.view;
-    [pixellateFilter addTarget:filterView];
+    [filter addTarget:filterView];
 
     // In addition to displaying to the screen, write out a processed version of the movie to disk
     NSString *pathToMovie = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/Movie.m4v"];
@@ -38,18 +39,25 @@
     NSURL *movieURL = [NSURL fileURLWithPath:pathToMovie];
 
     movieWriter = [[GPUImageMovieWriter alloc] initWithMovieURL:movieURL size:CGSizeMake(480.0, 640.0)];
-    [pixellateFilter addTarget:movieWriter];
+    [filter addTarget:movieWriter];
     
     [movieWriter startRecording];
     [movieFile startProcessing];
     
+    [movieWriter setCompletionBlock:^{
+        [filter removeTarget:movieWriter];
+        [movieWriter finishRecording];
+    }];
+
+    /*
     double delayInSeconds = 5.0;
     dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
     dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-        [pixellateFilter removeTarget:movieWriter];
+        [filter removeTarget:movieWriter];
         [movieWriter finishRecording];
         NSLog(@"Done recording");
     });
+     */
 }
 
 - (void)viewDidUnload
@@ -64,7 +72,7 @@
 
 - (IBAction)updatePixelWidth:(id)sender
 {
-    pixellateFilter.fractionalWidthOfAPixel = [(UISlider *)sender value];
+//    pixellateFilter.fractionalWidthOfAPixel = [(UISlider *)sender value];
 }
 
 @end

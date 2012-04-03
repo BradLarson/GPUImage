@@ -24,8 +24,9 @@
     videoCamera = [[GPUImageVideoCamera alloc] initWithSessionPreset:AVCaptureSessionPreset640x480 cameraPosition:AVCaptureDevicePositionBack];
 //    videoCamera = [[GPUImageVideoCamera alloc] initWithSessionPreset:AVCaptureSessionPreset1280x720 cameraPosition:AVCaptureDevicePositionBack];
 //    videoCamera = [[GPUImageVideoCamera alloc] initWithSessionPreset:AVCaptureSessionPreset1920x1080 cameraPosition:AVCaptureDevicePositionBack];
-//    filter = [[GPUImagePixellateFilter alloc] init];
-    filter = [[GPUImageSketchFilter alloc] init];
+    filter = [[GPUImagePixellateFilter alloc] init];
+//    filter = [[GPUImageSketchFilter alloc] init];
+//    filter = [[GPUImageAdaptiveThresholdFilter alloc] init];
     GPUImageRotationFilter *rotationFilter = [[GPUImageRotationFilter alloc] initWithRotation:kGPUImageRotateRight];
     
     [videoCamera addTarget:rotationFilter];
@@ -46,11 +47,12 @@
     [movieWriter startRecording];
     [videoCamera startCameraCapture];
     
-    double delayInSeconds = 20.0;
+    double delayInSeconds = 10.0;
     dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
     dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
         [filter removeTarget:movieWriter];
         [movieWriter finishRecording];
+        NSLog(@"Movie completed");
     });
 }
 

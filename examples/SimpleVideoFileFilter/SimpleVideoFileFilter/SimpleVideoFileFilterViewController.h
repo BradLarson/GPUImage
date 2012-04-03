@@ -4,7 +4,7 @@
 @interface SimpleVideoFileFilterViewController : UIViewController
 {
     GPUImageMovie *movieFile;
-    GPUImagePixellateFilter *pixellateFilter;
+    GPUImageOutput<GPUImageInput> *filter;
     GPUImageMovieWriter *movieWriter;
 }
 

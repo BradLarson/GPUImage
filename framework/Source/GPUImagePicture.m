@@ -77,7 +77,7 @@
     for (id<GPUImageInput> currentTarget in targets)
     {
         [currentTarget setInputSize:pixelSizeOfImage];
-        [currentTarget newFrameReady];
+        [currentTarget newFrameReadyAtTime:kCMTimeInvalid];
     }    
 }
 

@@ -4,7 +4,10 @@
 
 @synthesize url = _url;
 
-- (id)initWithURL:(NSURL *)url 
+#pragma mark -
+#pragma mark Initialization and teardown
+
+- (id)initWithURL:(NSURL *)url;
 {
     if (!(self = [super init])) 
     {
@@ -16,7 +19,10 @@
     return self;
 }
 
-- (void)startProcessing 
+#pragma mark -
+#pragma mark Movie processing
+
+- (void)startProcessing;
 {
     // AVURLAsset to read input movie (i.e. mov recorded to local storage)
     NSDictionary *inputOptions = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES] forKey:AVURLAssetPreferPreciseDurationAndTimingKey];
@@ -51,9 +57,9 @@
             CMSampleBufferRef sampleBufferRef = [readerVideoTrackOutput copyNextSampleBuffer];
             if (sampleBufferRef) 
             {
-                CVImageBufferRef pixelBuffer = CMSampleBufferGetImageBuffer(sampleBufferRef);
-                _currentBuffer = pixelBuffer;
-                [self performSelectorOnMainThread:@selector(processFrame) withObject:nil waitUntilDone:YES];
+                runOnMainQueueWithoutDeadlocking(^{
+                    [self processMovieFrame:sampleBufferRef]; 
+                });
                 
                 CMSampleBufferInvalidate(sampleBufferRef);
                 CFRelease(sampleBufferRef);
@@ -65,27 +71,30 @@
     }];
 }
 
-- (void)processFrame 
+- (void)processMovieFrame:(CMSampleBufferRef)movieSampleBuffer; 
 {
+    CMTime currentSampleTime = CMSampleBufferGetOutputPresentationTimeStamp(movieSampleBuffer);
+    CVImageBufferRef movieFrame = CMSampleBufferGetImageBuffer(movieSampleBuffer);
+
     // Upload to texture
-    CVPixelBufferLockBaseAddress(_currentBuffer, 0);
-    int bufferHeight = CVPixelBufferGetHeight(_currentBuffer);
-    int bufferWidth = CVPixelBufferGetWidth(_currentBuffer);
+    CVPixelBufferLockBaseAddress(movieFrame, 0);
+    int bufferHeight = CVPixelBufferGetHeight(movieFrame);
+    int bufferWidth = CVPixelBufferGetWidth(movieFrame);
     
     glBindTexture(GL_TEXTURE_2D, outputTexture);
     // Using BGRA extension to pull in video frame data directly
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, bufferWidth, bufferHeight, 0, GL_BGRA, GL_UNSIGNED_BYTE, CVPixelBufferGetBaseAddress(_currentBuffer));
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, bufferWidth, bufferHeight, 0, GL_BGRA, GL_UNSIGNED_BYTE, CVPixelBufferGetBaseAddress(movieFrame));
     
     CGSize currentSize = CGSizeMake(bufferWidth, bufferHeight);
     for (id<GPUImageInput> currentTarget in targets)
     {
         [currentTarget setInputSize:currentSize];
-        [currentTarget newFrameReady];
+        [currentTarget newFrameReadyAtTime:currentSampleTime];
     }
-    CVPixelBufferUnlockBaseAddress(_currentBuffer, 0);
+    CVPixelBufferUnlockBaseAddress(movieFrame, 0);
 }
 
-- (void)endProcessing 
+- (void)endProcessing;
 {
     for (id<GPUImageInput> currentTarget in targets)
     {

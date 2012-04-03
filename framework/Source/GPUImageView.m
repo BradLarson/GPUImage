@@ -177,7 +177,7 @@
 #pragma mark -
 #pragma mark GPUInput protocol
 
-- (void)newFrameReady;
+- (void)newFrameReadyAtTime:(CMTime)frameTime;
 {
     [GPUImageOpenGLESContext useImageProcessingContext];
     [self setDisplayFramebuffer];
@@ -242,5 +242,10 @@
 }
 
 -(void) endProcessing{}
+
+- (BOOL)shouldIgnoreUpdatesToThisTarget;
+{
+    return NO;
+}
 
 @end

@@ -76,11 +76,11 @@
 #pragma mark -
 #pragma mark GPUImageInput protocol
 
-- (void)newFrameReady;
+- (void)newFrameReadyAtTime:(CMTime)frameTime;
 {
     for (GPUImageOutput<GPUImageInput> *currentFilter in _initialFilters)
     {
-        [currentFilter newFrameReady];
+        [currentFilter newFrameReadyAtTime:frameTime];
     }
 }
 

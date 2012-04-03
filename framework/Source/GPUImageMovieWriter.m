@@ -29,7 +29,7 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
     
     GLubyte *frameData;
     
-    NSDate *startTime;
+    CMTime startTime;
 }
 
 // Movie recording
@@ -61,6 +61,7 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 
     videoSize = newSize;
     movieURL = newMovieURL;
+    startTime = kCMTimeInvalid;
     
     [GPUImageOpenGLESContext useImageProcessingContext];
     
@@ -183,7 +184,7 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 
 - (void)startRecording;
 {
-    startTime = [NSDate date];
+    startTime = kCMTimeInvalid;
     [assetWriter startWriting];
     [assetWriter startSessionAtSourceTime:kCMTimeZero];
 }
@@ -313,11 +314,17 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 #pragma mark -
 #pragma mark GPUImageInput protocol
 
-- (void)newFrameReady;
+- (void)newFrameReadyAtTime:(CMTime)frameTime;
 {
     if (!assetWriterVideoInput.readyForMoreMediaData)
     {
 //        NSLog(@"Had to drop a frame");
+        return;
+    }
+    
+    if (CMTIME_IS_INVALID(frameTime))
+    {
+        // Drop frames forced by images and other things with no time constants
         return;
     }
 
@@ -349,15 +356,23 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
     }
     
     // May need to add a check here, because if two consecutive times with the same value are added to the movie, it aborts recording
-    CMTime currentTime = CMTimeMakeWithSeconds([[NSDate date] timeIntervalSinceDate:startTime],120);
     
-    if(![assetWriterPixelBufferInput appendPixelBuffer:pixel_buffer withPresentationTime:currentTime]) 
+//    CMTime currentTime = CMTimeMakeWithSeconds([[NSDate date] timeIntervalSinceDate:startTime],120);
+    
+    if (CMTIME_IS_INVALID(startTime))
     {
-        NSLog(@"Problem appending pixel buffer at time: %lld", currentTime.value);
+        startTime = frameTime;
+    }
+    
+    if(![assetWriterPixelBufferInput appendPixelBuffer:pixel_buffer withPresentationTime:CMTimeSubtract(frameTime, startTime)]) 
+    {
+        NSLog(@"Problem appending pixel buffer at time: %lld", frameTime.value);
     } 
     else 
     {
-//        NSLog(@"Recorded pixel buffer at time: %lld", currentTime.value);
+//        CMTime testTime = CMTimeSubtract(frameTime, startTime);
+//        
+//        NSLog(@"Recorded pixel buffer at time: %lld, %lld", frameTime.value, testTime.value);
     }
     CVPixelBufferUnlockBaseAddress(pixel_buffer, 0);
     
@@ -396,6 +411,11 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
             [self.delegate Completed];
         }
     }
+}
+
+- (BOOL)shouldIgnoreUpdatesToThisTarget;
+{
+    return NO;
 }
 
 @end

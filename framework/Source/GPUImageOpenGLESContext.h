@@ -3,6 +3,7 @@
 #import <OpenGLES/ES2/gl.h>
 #import <OpenGLES/ES2/glext.h>
 #import <QuartzCore/QuartzCore.h>
+#import <CoreMedia/CoreMedia.h>
 
 @interface GPUImageOpenGLESContext : NSObject
 {
@@ -24,10 +25,11 @@
 @end
 
 @protocol GPUImageInput
-- (void)newFrameReady;
+- (void)newFrameReadyAtTime:(CMTime)frameTime;
 - (void)setInputTexture:(GLuint)newInputTexture atIndex:(NSInteger)textureIndex;
 - (NSInteger)nextAvailableTextureIndex;
 - (void)setInputSize:(CGSize)newSize;
 - (CGSize)maximumOutputSize;
 - (void)endProcessing;
+- (BOOL)shouldIgnoreUpdatesToThisTarget;
 @end

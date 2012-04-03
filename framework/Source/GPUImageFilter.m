@@ -207,7 +207,7 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size)
     glGenFramebuffers(1, &filterFramebuffer);
     glBindFramebuffer(GL_FRAMEBUFFER, filterFramebuffer);
     
-    NSLog(@"Filter size: %f, %f for filter: %@", currentFBOSize.width, currentFBOSize.height, self);
+//    NSLog(@"Filter size: %f, %f for filter: %@", currentFBOSize.width, currentFBOSize.height, self);
     
     glBindTexture(GL_TEXTURE_2D, outputTexture);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (int)currentFBOSize.width, (int)currentFBOSize.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
@@ -281,12 +281,15 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size)
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);    
 }
 
-- (void)informTargetsAboutNewFrame;
-{
+- (void)informTargetsAboutNewFrameAtTime:(CMTime)frameTime;
+{    
     for (id<GPUImageInput> currentTarget in targets)
     {
-        [currentTarget setInputSize:inputTextureSize];
-        [currentTarget newFrameReady];
+        if (currentTarget != targetToIgnoreForUpdates)
+        {
+            [currentTarget setInputSize:inputTextureSize];
+            [currentTarget newFrameReadyAtTime:frameTime];
+        }
     }
 }
 
@@ -370,7 +373,7 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size)
 #pragma mark -
 #pragma mark GPUImageInput
 
-- (void)newFrameReady;
+- (void)newFrameReadyAtTime:(CMTime)frameTime;
 {
     static const GLfloat squareVertices[] = {
         -1.0f, -1.0f,
@@ -387,7 +390,7 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size)
     };
  
     [self renderToTextureWithVertices:squareVertices textureCoordinates:squareTextureCoordinates sourceTexture:filterSourceTexture];
-    [self informTargetsAboutNewFrame];
+    [self informTargetsAboutNewFrameAtTime:frameTime];
 }
 
 - (NSInteger)nextAvailableTextureIndex;

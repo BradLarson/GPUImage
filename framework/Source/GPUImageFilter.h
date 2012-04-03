@@ -55,7 +55,7 @@ typedef struct GPUMatrix4x4 GPUMatrix4x4;
 
 // Rendering
 - (void)renderToTextureWithVertices:(const GLfloat *)vertices textureCoordinates:(const GLfloat *)textureCoordinates sourceTexture:(GLuint)sourceTexture;
-- (void)informTargetsAboutNewFrame;
+- (void)informTargetsAboutNewFrameAtTime:(CMTime)frameTime;
 
 // Input parameters
 - (void)setBackgroundColorRed:(GLfloat)redComponent green:(GLfloat)greenComponent blue:(GLfloat)blueComponent alpha:(GLfloat)alphaComponent;
