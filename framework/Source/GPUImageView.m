@@ -10,7 +10,6 @@
 @interface GPUImageView () 
 {
     GLuint inputTextureForDisplay;
-    GLint backingWidth, backingHeight;
     GLuint displayRenderbuffer, displayFramebuffer;
     
     GLProgram *displayProgram;
@@ -28,6 +27,8 @@
 @end
 
 @implementation GPUImageView
+
+@synthesize sizeInPixels = _sizeInPixels;
 
 #pragma mark -
 #pragma mark Initialization and teardown
@@ -131,8 +132,13 @@
 	
 	[[[GPUImageOpenGLESContext sharedImageProcessingOpenGLESContext] context] renderbufferStorage:GL_RENDERBUFFER fromDrawable:(CAEAGLLayer*)self.layer];
 	
+    GLint backingWidth, backingHeight;
+
 	glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH, &backingWidth);
 	glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &backingHeight);
+    _sizeInPixels.width = (CGFloat)backingWidth;
+    _sizeInPixels.height = (CGFloat)backingHeight;
+    
 //	NSLog(@"Backing width: %d, height: %d", backingWidth, backingHeight);
 
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, displayRenderbuffer);
@@ -165,7 +171,7 @@
     
     glBindFramebuffer(GL_FRAMEBUFFER, displayFramebuffer);
     
-    glViewport(0, 0, backingWidth, backingHeight);
+    glViewport(0, 0, (GLint)_sizeInPixels.width, (GLint)_sizeInPixels.height);
 }
 
 - (void)presentFramebuffer;
@@ -241,11 +247,28 @@
     }
 }
 
--(void) endProcessing{}
+- (void)endProcessing
+{
+}
 
 - (BOOL)shouldIgnoreUpdatesToThisTarget;
 {
     return NO;
+}
+
+#pragma mark -
+#pragma mark Accessors
+
+- (CGSize)sizeInPixels;
+{
+    if (CGSizeEqualToSize(_sizeInPixels, CGSizeZero))
+    {
+        return [self maximumOutputSize];
+    }
+    else
+    {
+        return _sizeInPixels;
+    }
 }
 
 @end

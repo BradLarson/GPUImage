@@ -1,4 +1,5 @@
 #import "GPUImageVideoCamera.h"
+#import "GPUImageMovieWriter.h"
 
 #pragma mark -
 #pragma mark Private methods and instance variables
@@ -17,7 +18,7 @@
 @synthesize captureSession = _captureSession;
 @synthesize inputCamera = _inputCamera;
 @synthesize runBenchmark = _runBenchmark;
-
+@synthesize audioEncodingTarget = _audioEncodingTarget;
 
 #pragma mark -
 #pragma mark Initialization and teardown
@@ -151,9 +152,13 @@
     AVCaptureDevicePosition currentCameraPosition = [[videoInput device] position];
     
     if(currentCameraPosition == AVCaptureDevicePositionBack)
+    {
         currentCameraPosition = AVCaptureDevicePositionFront;
+    }
     else
+    {
         currentCameraPosition = AVCaptureDevicePositionBack;
+    }
     
     AVCaptureDevice *backFacingCamera = nil;
     NSArray *devices = [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];
@@ -288,5 +293,12 @@
 
 #pragma mark -
 #pragma mark Accessors
+
+- (void)setAudioEncodingTarget:(GPUImageMovieWriter *)newValue;
+{    
+    _audioEncodingTarget = newValue;
+    
+    _audioEncodingTarget.hasAudioTrack = YES;
+}
 
 @end

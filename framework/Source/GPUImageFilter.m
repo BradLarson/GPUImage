@@ -429,6 +429,11 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size)
 
 - (void)setInputSize:(CGSize)newSize;
 {
+    if (overrideInputSize)
+    {
+        return;
+    }
+    
     if ( (CGSizeEqualToSize(inputTextureSize, CGSizeZero)) || (CGSizeEqualToSize(newSize, CGSizeZero)) )
     {
         inputTextureSize = newSize;
@@ -439,6 +444,20 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size)
         [self recreateFilterFBO];
     }
 }
+
+- (void)forceProcessingAtSize:(CGSize)frameSize;
+{
+    if (CGSizeEqualToSize(frameSize, CGSizeZero))
+    {
+        overrideInputSize = NO;
+    }
+    else
+    {
+        overrideInputSize = YES;
+        inputTextureSize = frameSize;
+    }
+}
+
 
 - (CGSize)maximumOutputSize;
 {

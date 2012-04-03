@@ -110,6 +110,15 @@
     }
 }
 
+- (void)forceProcessingAtSize:(CGSize)frameSize;
+{
+    for (GPUImageOutput<GPUImageInput> *currentFilter in filters)
+    {
+        [currentFilter forceProcessingAtSize:frameSize];
+    }
+}
+
+
 - (CGSize)maximumOutputSize;
 {
     // I'm temporarily disabling adjustments for smaller output sizes until I figure out how to make this work better

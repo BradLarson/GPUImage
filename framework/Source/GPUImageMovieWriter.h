@@ -28,6 +28,7 @@
     CGSize videoSize;
 }
 
+@property (readwrite, nonatomic) BOOL hasAudioTrack;
 @property (nonatomic, copy) void(^CompletionBlock)(void);
 @property (nonatomic, copy) void(^FailureBlock)(NSError*);
 @property (nonatomic, assign) id<GPUImageMovieWriterDelegate> delegate;
@@ -38,5 +39,6 @@
 // Movie recording
 - (void)startRecording;
 - (void)finishRecording;
+- (void)newAudioSampleReadyAtTime:(CMTime)frameTime;
 
 @end

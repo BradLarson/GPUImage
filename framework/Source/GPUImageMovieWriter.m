@@ -45,9 +45,11 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 @end
 
 @implementation GPUImageMovieWriter
+
+@synthesize hasAudioTrack = _hasAudioTrack;
 @synthesize CompletionBlock;
 @synthesize FailureBlock;
-@synthesize delegate;
+@synthesize delegate = _delegate;
 
 #pragma mark -
 #pragma mark Initialization and teardown
@@ -193,6 +195,11 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 {
     [assetWriterVideoInput markAsFinished];
     [assetWriter finishWriting];    
+}
+
+- (void)newAudioSampleReadyAtTime:(CMTime)frameTime;
+{
+    
 }
 
 #pragma mark -
@@ -403,12 +410,15 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 
 - (void)endProcessing 
 {
-    if (CompletionBlock) {
+    if (CompletionBlock) 
+    {
         CompletionBlock();
     }
-    else {
-        if(self.delegate&&[delegate respondsToSelector:@selector(Completed)]){
-            [self.delegate Completed];
+    else 
+    {
+        if (_delegate && [_delegate respondsToSelector:@selector(Completed)])
+        {
+            [_delegate Completed];
         }
     }
 }
@@ -417,5 +427,23 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 {
     return NO;
 }
+
+#pragma mark -
+#pragma mark Accessors
+
+- (void)setHasAudioTrack:(BOOL)newValue
+{
+    _hasAudioTrack = newValue;
+    
+    if (_hasAudioTrack)
+    {
+        // Add audio track
+    }
+    else
+    {
+        // Remove audio track if it exists
+    }
+}
+
 
 @end

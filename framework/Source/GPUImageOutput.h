@@ -12,6 +12,8 @@ void runOnMainQueueWithoutDeadlocking(void (^block)(void));
     GLuint outputTexture;
     CGSize inputTextureSize, cachedMaximumOutputSize;
     id<GPUImageInput> targetToIgnoreForUpdates;
+    
+    BOOL overrideInputSize;
 }
 
 @property(readwrite, nonatomic) BOOL shouldSmoothlyScaleOutput;
@@ -27,6 +29,7 @@ void runOnMainQueueWithoutDeadlocking(void (^block)(void));
 // Manage the output texture
 - (void)initializeOutputTexture;
 - (void)deleteOutputTexture;
+- (void)forceProcessingAtSize:(CGSize)frameSize;
 
 // Still image processing
 - (UIImage *)imageFromCurrentlyProcessedOutput;

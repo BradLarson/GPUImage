@@ -134,6 +134,11 @@ void runOnMainQueueWithoutDeadlocking(void (^block)(void))
     }
 }
 
+- (void)forceProcessingAtSize:(CGSize)frameSize;
+{
+    
+}
+
 #pragma mark -
 #pragma mark Still image processing
 

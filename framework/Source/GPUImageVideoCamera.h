@@ -8,6 +8,8 @@
 // "In previous iOS versions, the front-facing camera would always deliver buffers in AVCaptureVideoOrientationLandscapeLeft and the back-facing camera would always deliver buffers in AVCaptureVideoOrientationLandscapeRight."
 // Currently, rotation is needed to handle each camera
 
+@class GPUImageMovieWriter;
+
 @interface GPUImageVideoCamera : GPUImageOutput <AVCaptureVideoDataOutputSampleBufferDelegate>
 {
     CVOpenGLESTextureCacheRef coreVideoTextureCache;    
@@ -21,6 +23,7 @@
 
 @property(readonly, retain) AVCaptureSession *captureSession;
 @property(readwrite, nonatomic) BOOL runBenchmark;
+@property(readwrite, nonatomic, retain) GPUImageMovieWriter *audioEncodingTarget;
 
 // Use this property to manage camera settings.Focus point, exposure point, etc.
 @property(readonly) AVCaptureDevice *inputCamera;
