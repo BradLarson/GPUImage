@@ -3,6 +3,7 @@
 @implementation GPUImageMovie
 
 @synthesize url = _url;
+@synthesize runBenchmark = _runBenchmark;
 
 #pragma mark -
 #pragma mark Initialization and teardown
@@ -14,6 +15,19 @@
         return nil;
     }
     
+    if ([GPUImageOpenGLESContext supportsFastTextureUpload])
+    {
+        [GPUImageOpenGLESContext useImageProcessingContext];
+        CVReturn err = CVOpenGLESTextureCacheCreate(kCFAllocatorDefault, NULL, (__bridge void *)[[GPUImageOpenGLESContext sharedImageProcessingOpenGLESContext] context], NULL, &coreVideoTextureCache);
+        if (err) 
+        {
+            NSAssert(NO, @"Error at CVOpenGLESTextureCacheCreate %d");
+        }
+        
+        // Need to remove the initially created texture
+        [self deleteOutputTexture];
+    }
+
     self.url = url;
     
     return self;
@@ -76,22 +90,72 @@
     CMTime currentSampleTime = CMSampleBufferGetOutputPresentationTimeStamp(movieSampleBuffer);
     CVImageBufferRef movieFrame = CMSampleBufferGetImageBuffer(movieSampleBuffer);
 
-    // Upload to texture
-    CVPixelBufferLockBaseAddress(movieFrame, 0);
     int bufferHeight = CVPixelBufferGetHeight(movieFrame);
     int bufferWidth = CVPixelBufferGetWidth(movieFrame);
-    
-    glBindTexture(GL_TEXTURE_2D, outputTexture);
-    // Using BGRA extension to pull in video frame data directly
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, bufferWidth, bufferHeight, 0, GL_BGRA, GL_UNSIGNED_BYTE, CVPixelBufferGetBaseAddress(movieFrame));
-    
-    CGSize currentSize = CGSizeMake(bufferWidth, bufferHeight);
-    for (id<GPUImageInput> currentTarget in targets)
+
+    CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
+
+    if ([GPUImageOpenGLESContext supportsFastTextureUpload])
     {
-        [currentTarget setInputSize:currentSize];
-        [currentTarget newFrameReadyAtTime:currentSampleTime];
+        CVPixelBufferLockBaseAddress(movieFrame, 0);
+        
+        [GPUImageOpenGLESContext useImageProcessingContext];
+        CVOpenGLESTextureRef texture = NULL;
+        CVReturn err = CVOpenGLESTextureCacheCreateTextureFromImage(kCFAllocatorDefault, coreVideoTextureCache, movieFrame, NULL, GL_TEXTURE_2D, GL_RGBA, bufferWidth, bufferHeight, GL_BGRA, GL_UNSIGNED_BYTE, 0, &texture);
+        
+        if (!texture || err) {
+            NSLog(@"CVOpenGLESTextureCacheCreateTextureFromImage failed (error: %d)", err);  
+            return;
+        }
+        
+        outputTexture = CVOpenGLESTextureGetName(texture);
+        //        glBindTexture(CVOpenGLESTextureGetTarget(texture), outputTexture);
+        glBindTexture(GL_TEXTURE_2D, outputTexture);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        
+        for (id<GPUImageInput> currentTarget in targets)
+        {
+            [currentTarget setInputSize:CGSizeMake(bufferWidth, bufferHeight)];
+            
+            NSInteger indexOfObject = [targets indexOfObject:currentTarget];
+            [currentTarget setInputTexture:outputTexture atIndex:[[targetTextureIndices objectAtIndex:indexOfObject] integerValue]];
+            
+            [currentTarget newFrameReadyAtTime:currentSampleTime];
+        }
+        
+        CVPixelBufferUnlockBaseAddress(movieFrame, 0);
+        
+        // Flush the CVOpenGLESTexture cache and release the texture
+        CVOpenGLESTextureCacheFlush(coreVideoTextureCache, 0);
+        CFRelease(texture);
+        outputTexture = 0;        
     }
-    CVPixelBufferUnlockBaseAddress(movieFrame, 0);
+    else
+    {
+        // Upload to texture
+        CVPixelBufferLockBaseAddress(movieFrame, 0);
+        
+        glBindTexture(GL_TEXTURE_2D, outputTexture);
+        // Using BGRA extension to pull in video frame data directly
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, bufferWidth, bufferHeight, 0, GL_BGRA, GL_UNSIGNED_BYTE, CVPixelBufferGetBaseAddress(movieFrame));
+        
+        CGSize currentSize = CGSizeMake(bufferWidth, bufferHeight);
+        for (id<GPUImageInput> currentTarget in targets)
+        {
+            [currentTarget setInputSize:currentSize];
+            [currentTarget newFrameReadyAtTime:currentSampleTime];
+        }
+        CVPixelBufferUnlockBaseAddress(movieFrame, 0);
+    }
+    
+    if (_runBenchmark)
+    {
+        CFAbsoluteTime currentFrameTime = (CFAbsoluteTimeGetCurrent() - startTime);
+        NSLog(@"Current frame time : %f ms", 1000.0 * currentFrameTime);
+    }
 }
 
 - (void)endProcessing;

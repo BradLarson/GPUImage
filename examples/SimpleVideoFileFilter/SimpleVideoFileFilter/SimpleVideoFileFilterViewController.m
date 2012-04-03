@@ -24,6 +24,7 @@
     NSURL *sampleURL = [[NSBundle mainBundle] URLForResource:@"sample_iPod" withExtension:@"m4v"];
     
     movieFile = [[GPUImageMovie alloc] initWithURL:sampleURL];
+    movieFile.runBenchmark = YES;
 //    filter = [[GPUImagePixellateFilter alloc] init];
     filter = [[GPUImageAdaptiveThresholdFilter alloc] init];
     GPUImageRotationFilter *rotationFilter = [[GPUImageRotationFilter alloc] initWithRotation:kGPUImageRotateRight];

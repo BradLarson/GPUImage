@@ -4,8 +4,12 @@
 #import "GPUImageOutput.h"
 
 @interface GPUImageMovie : GPUImageOutput
+{
+    CVOpenGLESTextureCacheRef coreVideoTextureCache;
+}
 
-@property (readwrite, retain) NSURL *url;
+@property(readwrite, retain) NSURL *url;
+@property(readwrite, nonatomic) BOOL runBenchmark;
 
 // Initialization and teardown
 - (id)initWithURL:(NSURL *)url;
