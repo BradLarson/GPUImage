@@ -11,6 +11,8 @@
 	AVCaptureVideoDataOutput *videoOutput;
 	AVCaptureAudioDataOutput *audioOutput;
     NSDate *startingCaptureTime;
+    
+    dispatch_queue_t audioProcessingQueue;
 }
 
 @end
@@ -119,6 +121,11 @@
     {
         CFRelease(coreVideoTextureCache);
     }
+    
+    if (audioProcessingQueue != NULL)
+    {
+        dispatch_release(audioProcessingQueue);
+    }
 }
 
 - (void)removeInputsAndOutputs;
@@ -204,7 +211,7 @@
     int bufferWidth = CVPixelBufferGetWidth(cameraFrame);
     int bufferHeight = CVPixelBufferGetHeight(cameraFrame);
     
-    CMTime currentTime = CMTimeMakeWithSeconds([[NSDate date] timeIntervalSinceDate:startingCaptureTime], 1000000000);
+    CMTime currentTime = CMTimeMakeWithSeconds([[NSDate date] timeIntervalSinceDate:startingCaptureTime], 1000);
     
     if ([GPUImageOpenGLESContext supportsFastTextureUpload])
     {
@@ -288,7 +295,7 @@
 
 - (void)processAudioSampleBuffer:(CMSampleBufferRef)sampleBuffer;
 {
-    CMSampleBufferSetOutputPresentationTimeStamp(sampleBuffer, CMTimeMakeWithSeconds([[NSDate date] timeIntervalSinceDate:startingCaptureTime], 1000000000));
+    CMSampleBufferSetOutputPresentationTimeStamp(sampleBuffer, CMTimeMakeWithSeconds([[NSDate date] timeIntervalSinceDate:startingCaptureTime], 1000));
     
     [self.audioEncodingTarget processAudioBuffer:sampleBuffer]; 
 }
@@ -331,7 +338,11 @@
         [_captureSession addInput:audioInput];
     }
     audioOutput = [[AVCaptureAudioDataOutput alloc] init];
-    [audioOutput setSampleBufferDelegate:self queue:dispatch_get_main_queue()];
+    
+    audioProcessingQueue = dispatch_queue_create("com.sunsetlakesoftware.GPUImage.audioProcessingQueue", NULL);
+
+//    [audioOutput setSampleBufferDelegate:self queue:dispatch_get_main_queue()];
+    [audioOutput setSampleBufferDelegate:self queue:audioProcessingQueue];
     if ([_captureSession canAddOutput:audioOutput])
     {
         [_captureSession addOutput:audioOutput];

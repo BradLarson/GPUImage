@@ -194,13 +194,13 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 - (void)startRecording;
 {
     startTime = kCMTimeInvalid;
-    [assetWriter startWriting];
-    [assetWriter startSessionAtSourceTime:kCMTimeZero];
+//    [assetWriter startWriting];
+//    [assetWriter startSessionAtSourceTime:kCMTimeZero];
 }
 
 - (void)finishRecording;
 {
-    [assetWriterVideoInput markAsFinished];
+//    [assetWriterVideoInput markAsFinished];
     [assetWriter finishWriting];    
 }
 
@@ -208,6 +208,16 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 {
     if (_hasAudioTrack)
     {
+        CMTime currentSampleTime = CMSampleBufferGetOutputPresentationTimeStamp(audioBuffer);
+        
+        if (CMTIME_IS_INVALID(startTime))
+        {
+            NSLog(@"Audio was the first sample");
+            [assetWriter startWriting];
+            [assetWriter startSessionAtSourceTime:currentSampleTime];
+            startTime = currentSampleTime;
+        }
+
         if (!assetWriterAudioInput.readyForMoreMediaData)
         {
             if (_shouldDropFramesIfOverloaded)
@@ -224,9 +234,7 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
             }
         }
         
-        CMTime currentSampleTime = CMSampleBufferGetOutputPresentationTimeStamp(audioBuffer);
         NSLog(@"Recorded audio sample time: %lld, %d, %lld", currentSampleTime.value, currentSampleTime.timescale, currentSampleTime.epoch);
-        
         [assetWriterAudioInput appendSampleBuffer:audioBuffer];
     }
 }
@@ -352,6 +360,22 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 
 - (void)newFrameReadyAtTime:(CMTime)frameTime;
 {
+    // Drop frames forced by images and other things with no time constants
+    // Also, if two consecutive times with the same value are added to the movie, it aborts recording, so I bail on that case
+    if ( (CMTIME_IS_INVALID(frameTime)) || (CMTIME_COMPARE_INLINE(frameTime, ==, previousFrameTime)) ) 
+    {
+        return;
+    }
+
+    if (CMTIME_IS_INVALID(startTime))
+    {
+        NSLog(@"Video was the first sample");
+        [assetWriter startWriting];
+        
+        [assetWriter startSessionAtSourceTime:frameTime];
+        startTime = frameTime;
+    }
+
     if (!assetWriterVideoInput.readyForMoreMediaData)
     {
         if (_shouldDropFramesIfOverloaded)
@@ -367,13 +391,6 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
         }
     }
     
-    // Drop frames forced by images and other things with no time constants
-    // Also, if two consecutive times with the same value are added to the movie, it aborts recording, so I bail on that case
-    if ( (CMTIME_IS_INVALID(frameTime)) || (CMTIME_COMPARE_INLINE(frameTime, ==, previousFrameTime)) ) 
-    {
-        return;
-    }
-
     // Render the frame with swizzled colors, so that they can be uploaded quickly as BGRA frames
     [GPUImageOpenGLESContext useImageProcessingContext];
     [self renderAtInternalSize];
@@ -400,13 +417,7 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
             glReadPixels(0, 0, videoSize.width, videoSize.height, GL_RGBA, GL_UNSIGNED_BYTE, pixelBufferData);
         }
     }
-    
-    if (CMTIME_IS_INVALID(startTime))
-    {
-        [assetWriter startSessionAtSourceTime:frameTime];
-        startTime = frameTime;
-    }
-    
+        
 //    if(![assetWriterPixelBufferInput appendPixelBuffer:pixel_buffer withPresentationTime:CMTimeSubtract(frameTime, startTime)]) 
     if(![assetWriterPixelBufferInput appendPixelBuffer:pixel_buffer withPresentationTime:frameTime]) 
     {
@@ -481,6 +492,21 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
         }
         else
         {
+            double preferredHardwareSampleRate = [[AVAudioSession sharedInstance] currentHardwareSampleRate];
+            
+            AudioChannelLayout acl;
+            bzero( &acl, sizeof(acl));
+            acl.mChannelLayoutTag = kAudioChannelLayoutTag_Mono;
+            
+            audioOutputSettings = [NSDictionary dictionaryWithObjectsAndKeys:
+                                         [ NSNumber numberWithInt: kAudioFormatMPEG4AAC], AVFormatIDKey,
+                                         [ NSNumber numberWithInt: 1 ], AVNumberOfChannelsKey,
+                                         [ NSNumber numberWithFloat: preferredHardwareSampleRate ], AVSampleRateKey,
+                                         [ NSData dataWithBytes: &acl length: sizeof( acl ) ], AVChannelLayoutKey,
+                                         //[ NSNumber numberWithInt:AVAudioQualityLow], AVEncoderAudioQualityKey,
+                                         [ NSNumber numberWithInt: 64000 ], AVEncoderBitRateKey,
+                                         nil];
+/*
             AudioChannelLayout acl;
             bzero( &acl, sizeof(acl));
             acl.mChannelLayoutTag = kAudioChannelLayoutTag_Mono;
@@ -491,7 +517,7 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
                                    [ NSNumber numberWithFloat: 44100.0 ], AVSampleRateKey,
                                    [ NSNumber numberWithInt: 64000 ], AVEncoderBitRateKey,
                                    [ NSData dataWithBytes: &acl length: sizeof( acl ) ], AVChannelLayoutKey,
-                                   nil];
+                                   nil];*/
         }
         
         assetWriterAudioInput = [AVAssetWriterInput assetWriterInputWithMediaType:AVMediaTypeAudio outputSettings:audioOutputSettings];
