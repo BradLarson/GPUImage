@@ -32,7 +32,7 @@
     {
 		return nil;
     }
-
+    
     return self;
 }
 
@@ -42,6 +42,9 @@
     {
 		return nil;
     }
+    
+	audioProcessingQueue = dispatch_queue_create("com.sunsetlakesoftware.GPUImage.processingQueue", NULL);
+    
     
     _runBenchmark = NO;
     
@@ -57,7 +60,7 @@
         // Need to remove the initially created texture
         [self deleteOutputTexture];
     }
-
+    
 	// Grab the back-facing or front-facing camera
     _inputCamera = nil;
 	NSArray *devices = [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];
@@ -68,12 +71,12 @@
 			_inputCamera = device;
 		}
 	}
-    	
+    
 	// Create the capture session
 	_captureSession = [[AVCaptureSession alloc] init];
 	
     [_captureSession beginConfiguration];
-
+    
 	// Add the video input	
 	NSError *error = nil;
 	videoInput = [[AVCaptureDeviceInput alloc] initWithDevice:_inputCamera error:&error];
@@ -85,13 +88,14 @@
 	// Add the video frame output	
 	videoOutput = [[AVCaptureVideoDataOutput alloc] init];
 	[videoOutput setAlwaysDiscardsLateVideoFrames:YES];
-
+    
 	[videoOutput setVideoSettings:[NSDictionary dictionaryWithObject:[NSNumber numberWithInt:kCVPixelFormatType_32BGRA] forKey:(id)kCVPixelBufferPixelFormatTypeKey]];
     //	dispatch_queue_t videoQueue = dispatch_queue_create("com.sunsetlakesoftware.colortracking.videoqueue", NULL);
     //	[videoOutput setSampleBufferDelegate:self queue:videoQueue];
-
-	[videoOutput setSampleBufferDelegate:self queue:dispatch_get_main_queue()];
     
+	//[videoOutput setSampleBufferDelegate:self queue:dispatch_get_main_queue()];
+	//this should be on the same queue as the audio
+    [videoOutput setSampleBufferDelegate:self queue:audioProcessingQueue];
 	if ([_captureSession canAddOutput:videoOutput])
 	{
 		[_captureSession addOutput:videoOutput];
@@ -104,17 +108,17 @@
     [_captureSession setSessionPreset:sessionPreset];
     
     [_captureSession commitConfiguration];
-
-//    inputTextureSize
-    	
+    
+    //    inputTextureSize
+    
 	return self;
 }
 
 - (void)dealloc 
 {
     [self stopCameraCapture];
-//    [videoOutput setSampleBufferDelegate:nil queue:dispatch_get_main_queue()];    
- 
+    //    [videoOutput setSampleBufferDelegate:nil queue:dispatch_get_main_queue()];    
+    
     [self removeInputsAndOutputs];
     
     if ([GPUImageOpenGLESContext supportsFastTextureUpload])
@@ -211,7 +215,7 @@
     int bufferWidth = CVPixelBufferGetWidth(cameraFrame);
     int bufferHeight = CVPixelBufferGetHeight(cameraFrame);
     
-    CMTime currentTime = CMTimeMakeWithSeconds([[NSDate date] timeIntervalSinceDate:startingCaptureTime], 1000);
+	CMTime currentTime = CMSampleBufferGetPresentationTimeStamp(sampleBuffer);
     
     if ([GPUImageOpenGLESContext supportsFastTextureUpload])
     {
@@ -295,8 +299,6 @@
 
 - (void)processAudioSampleBuffer:(CMSampleBufferRef)sampleBuffer;
 {
-    CMSampleBufferSetOutputPresentationTimeStamp(sampleBuffer, CMTimeMakeWithSeconds([[NSDate date] timeIntervalSinceDate:startingCaptureTime], 1000));
-    
     [self.audioEncodingTarget processAudioBuffer:sampleBuffer]; 
 }
 
@@ -314,14 +316,22 @@
 
 - (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection
 {
-    if (captureOutput == videoOutput)
-    {
-        [self processVideoSampleBuffer:sampleBuffer];
-    }
-    else if (captureOutput == audioOutput)
-    {
-        [self processAudioSampleBuffer:sampleBuffer];
-    }
+	//This may help keep memory footprint low
+	@autoreleasepool 
+	{
+		//these need to be on the main thread for proper timing
+		if (captureOutput == videoOutput)
+		{
+			dispatch_sync(dispatch_get_main_queue(), ^{ [self processVideoSampleBuffer:sampleBuffer]; });
+			
+		}
+		else if (captureOutput == audioOutput)
+		{
+			dispatch_sync(dispatch_get_main_queue(), ^{ [self processAudioSampleBuffer:sampleBuffer]; });
+            
+		}
+	}
+    
 }
 
 #pragma mark -
@@ -340,8 +350,8 @@
     audioOutput = [[AVCaptureAudioDataOutput alloc] init];
     
     audioProcessingQueue = dispatch_queue_create("com.sunsetlakesoftware.GPUImage.audioProcessingQueue", NULL);
-
-//    [audioOutput setSampleBufferDelegate:self queue:dispatch_get_main_queue()];
+    
+    //    [audioOutput setSampleBufferDelegate:self queue:dispatch_get_main_queue()];
     [audioOutput setSampleBufferDelegate:self queue:audioProcessingQueue];
     if ([_captureSession canAddOutput:audioOutput])
     {
@@ -351,9 +361,9 @@
     {
         NSLog(@"Couldn't add audio output");
     }
-
+    
     [_captureSession commitConfiguration];
-
+    
     [super setAudioEncodingTarget:newValue];
 }
 
