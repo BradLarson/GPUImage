@@ -29,18 +29,23 @@
     filter = [[GPUImageUnsharpMaskFilter alloc] init];
     GPUImageRotationFilter *rotationFilter = [[GPUImageRotationFilter alloc] initWithRotation:kGPUImageRotateRight];
     
-    [movieFile addTarget:rotationFilter];
-    [rotationFilter addTarget:filter];
+    [movieFile addTarget:filter];
+
+    // Only rotate the video for display, leave orientation the same for recording
     GPUImageView *filterView = (GPUImageView *)self.view;
-    [filter addTarget:filterView];
+    [filter addTarget:rotationFilter];
+    [rotationFilter addTarget:filterView];
 
     // In addition to displaying to the screen, write out a processed version of the movie to disk
     NSString *pathToMovie = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/Movie.m4v"];
     unlink([pathToMovie UTF8String]); // If a file already exists, AVAssetWriter won't let you record new frames, so delete the old movie
     NSURL *movieURL = [NSURL fileURLWithPath:pathToMovie];
 
-    movieWriter = [[GPUImageMovieWriter alloc] initWithMovieURL:movieURL size:CGSizeMake(480.0, 640.0)];
+    movieWriter = [[GPUImageMovieWriter alloc] initWithMovieURL:movieURL size:CGSizeMake(640.0, 480.0)];
+    movieWriter.shouldPassthroughAudio = YES;
     [filter addTarget:movieWriter];
+    movieFile.audioEncodingTarget = movieWriter;
+    movieWriter.shouldDropFramesIfOverloaded = NO;
     
     [movieWriter startRecording];
     [movieFile startProcessing];

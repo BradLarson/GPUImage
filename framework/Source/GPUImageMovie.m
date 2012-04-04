@@ -1,4 +1,5 @@
 #import "GPUImageMovie.h"
+#import "GPUImageMovieWriter.h"
 
 @implementation GPUImageMovie
 
@@ -38,36 +39,44 @@
 
 - (void)startProcessing;
 {
-    // AVURLAsset to read input movie (i.e. mov recorded to local storage)
     NSDictionary *inputOptions = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES] forKey:AVURLAssetPreferPreciseDurationAndTimingKey];
     AVURLAsset *inputAsset = [[AVURLAsset alloc] initWithURL:self.url options:inputOptions];
     
-    // Load the input asset tracks information
     [inputAsset loadValuesAsynchronouslyForKeys:[NSArray arrayWithObject:@"tracks"] completionHandler: ^{
         NSError *error = nil;
-        // Check status of "tracks", make sure they were loaded    
         AVKeyValueStatus tracksStatus = [inputAsset statusOfValueForKey:@"tracks" error:&error];
-        if (!tracksStatus == AVKeyValueStatusLoaded) {
-            // failed to load
+        if (!tracksStatus == AVKeyValueStatusLoaded) 
+        {
             return;
         }
-        /* Read video samples from input asset video track */
         AVAssetReader *reader = [AVAssetReader assetReaderWithAsset:inputAsset error:&error];
         
         NSMutableDictionary *outputSettings = [NSMutableDictionary dictionary];
         [outputSettings setObject: [NSNumber numberWithInt:kCVPixelFormatType_32BGRA]  forKey: (NSString*)kCVPixelBufferPixelFormatTypeKey];
+        // Maybe set alwaysCopiesSampleData to NO on iOS 5.0 for faster video decoding
         AVAssetReaderTrackOutput *readerVideoTrackOutput = [AVAssetReaderTrackOutput assetReaderTrackOutputWithTrack:[[inputAsset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0] outputSettings:outputSettings];
-        
-        // Assign the tracks to the reader and start to read
         [reader addOutput:readerVideoTrackOutput];
-        if ([reader startReading] == NO) {
-            // Handle error
-            NSLog(@"Error reading");
-        }
         
+        NSArray *audioTracks = [inputAsset tracksWithMediaType:AVMediaTypeAudio];
+        BOOL shouldRecordAudioTrack = (([audioTracks count] > 0) && (self.audioEncodingTarget != nil) );
+        AVAssetReaderTrackOutput *readerAudioTrackOutput = nil;
+
+        if (shouldRecordAudioTrack)
+        {            
+            // This might need to be extended to handle movies with more than one audio track
+            AVAssetTrack* audioTrack = [audioTracks objectAtIndex:0];
+            readerAudioTrackOutput = [AVAssetReaderTrackOutput assetReaderTrackOutputWithTrack:audioTrack outputSettings:nil];
+            [reader addOutput:readerAudioTrackOutput];
+        }
+
+        if ([reader startReading] == NO) 
+        {
+            NSLog(@"Error reading from file at URL: %@", self.url);
+            return;
+        }
+
         while (reader.status == AVAssetReaderStatusReading) 
         {
-            
             CMSampleBufferRef sampleBufferRef = [readerVideoTrackOutput copyNextSampleBuffer];
             if (sampleBufferRef) 
             {
@@ -78,7 +87,28 @@
                 CMSampleBufferInvalidate(sampleBufferRef);
                 CFRelease(sampleBufferRef);
             }
+            
+            if (shouldRecordAudioTrack)
+            {
+                CMSampleBufferRef audioSampleBufferRef = [readerAudioTrackOutput copyNextSampleBuffer];
+
+                if (audioSampleBufferRef) 
+                {
+//                    runOnMainQueueWithoutDeadlocking(^{
+                        [self.audioEncodingTarget processAudioBuffer:audioSampleBufferRef]; 
+//                    });
+                    
+                    CMSampleBufferInvalidate(audioSampleBufferRef);
+                    CFRelease(audioSampleBufferRef);
+                }
+                else
+                {
+//                    NSLog(@"Ran out of audio frames");
+                    shouldRecordAudioTrack = NO;
+                }
+            }
         }
+        
         if (reader.status == AVAssetWriterStatusCompleted) {
             [self endProcessing];
         }

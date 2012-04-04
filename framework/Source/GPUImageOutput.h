@@ -5,6 +5,8 @@
 
 void runOnMainQueueWithoutDeadlocking(void (^block)(void));
 
+@class GPUImageMovieWriter;
+
 @interface GPUImageOutput : NSObject
 {
     NSMutableArray *targets, *targetTextureIndices;
@@ -18,6 +20,7 @@ void runOnMainQueueWithoutDeadlocking(void (^block)(void));
 
 @property(readwrite, nonatomic) BOOL shouldSmoothlyScaleOutput;
 @property(readwrite, nonatomic) BOOL shouldIgnoreUpdatesToThisTarget;
+@property(readwrite, nonatomic, retain) GPUImageMovieWriter *audioEncodingTarget;
 
 // Managing targets
 - (void)setInputTextureForTarget:(id<GPUImageInput>)target atIndex:(NSInteger)inputTextureIndex;

@@ -7,7 +7,9 @@
 @interface GPUImageVideoCamera () 
 {
 	AVCaptureDeviceInput *videoInput;
+	AVCaptureDeviceInput *audioInput;
 	AVCaptureVideoDataOutput *videoOutput;
+	AVCaptureAudioDataOutput *audioOutput;
     NSDate *startingCaptureTime;
 }
 
@@ -18,7 +20,6 @@
 @synthesize captureSession = _captureSession;
 @synthesize inputCamera = _inputCamera;
 @synthesize runBenchmark = _runBenchmark;
-@synthesize audioEncodingTarget = _audioEncodingTarget;
 
 #pragma mark -
 #pragma mark Initialization and teardown
@@ -99,6 +100,7 @@
 	}
     
     [_captureSession setSessionPreset:sessionPreset];
+    
     [_captureSession commitConfiguration];
 
 //    inputTextureSize
@@ -123,6 +125,11 @@
 {
     [_captureSession removeInput:videoInput];
     [_captureSession removeOutput:videoOutput];
+    if (_microphone != nil)
+    {
+        [_captureSession removeInput:audioInput];
+        [_captureSession removeOutput:audioOutput];
+    }
 }
 
 #pragma mark -
@@ -190,60 +197,48 @@
     }
 }
 
-#pragma mark -
-#pragma mark Benchmarking
-
-- (CGFloat)averageFrameDurationDuringCapture;
-{
-    NSLog(@"Number of frames: %d", numberOfFramesCaptured);
-    return (totalFrameTimeDuringCapture / (CGFloat)numberOfFramesCaptured) * 1000.0;
-}
-
-#pragma mark -
-#pragma mark AVCaptureVideoDataOutputSampleBufferDelegate
-
-- (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection
+- (void)processVideoSampleBuffer:(CMSampleBufferRef)sampleBuffer;
 {
     CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
     CVImageBufferRef cameraFrame = CMSampleBufferGetImageBuffer(sampleBuffer);
     int bufferWidth = CVPixelBufferGetWidth(cameraFrame);
     int bufferHeight = CVPixelBufferGetHeight(cameraFrame);
-
-    CMTime currentTime = CMTimeMakeWithSeconds([[NSDate date] timeIntervalSinceDate:startingCaptureTime], 120);
+    
+    CMTime currentTime = CMTimeMakeWithSeconds([[NSDate date] timeIntervalSinceDate:startingCaptureTime], 1000000000);
     
     if ([GPUImageOpenGLESContext supportsFastTextureUpload])
     {
         CVPixelBufferLockBaseAddress(cameraFrame, 0);
-
+        
         [GPUImageOpenGLESContext useImageProcessingContext];
         CVOpenGLESTextureRef texture = NULL;
         CVReturn err = CVOpenGLESTextureCacheCreateTextureFromImage(kCFAllocatorDefault, coreVideoTextureCache, cameraFrame, NULL, GL_TEXTURE_2D, GL_RGBA, bufferWidth, bufferHeight, GL_BGRA, GL_UNSIGNED_BYTE, 0, &texture);
-                
+        
         if (!texture || err) {
             NSLog(@"CVOpenGLESTextureCacheCreateTextureFromImage failed (error: %d)", err);  
             return;
         }
         
         outputTexture = CVOpenGLESTextureGetName(texture);
-//        glBindTexture(CVOpenGLESTextureGetTarget(texture), outputTexture);
+        //        glBindTexture(CVOpenGLESTextureGetTarget(texture), outputTexture);
         glBindTexture(GL_TEXTURE_2D, outputTexture);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
+        
         for (id<GPUImageInput> currentTarget in targets)
         {
             [currentTarget setInputSize:CGSizeMake(bufferWidth, bufferHeight)];
-
+            
             NSInteger indexOfObject = [targets indexOfObject:currentTarget];
             [currentTarget setInputTexture:outputTexture atIndex:[[targetTextureIndices objectAtIndex:indexOfObject] integerValue]];
-
+            
             [currentTarget newFrameReadyAtTime:currentTime];
         }
         
         CVPixelBufferUnlockBaseAddress(cameraFrame, 0);
-
+        
         // Flush the CVOpenGLESTexture cache and release the texture
         CVOpenGLESTextureCacheFlush(coreVideoTextureCache, 0);
         CFRelease(texture);
@@ -264,8 +259,8 @@
         CVPixelBufferLockBaseAddress(cameraFrame, 0);
         
         glBindTexture(GL_TEXTURE_2D, outputTexture);
-                        
-//        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, bufferWidth, bufferHeight, 0, GL_BGRA, GL_UNSIGNED_BYTE, CVPixelBufferGetBaseAddress(cameraFrame));
+        
+        //        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, bufferWidth, bufferHeight, 0, GL_BGRA, GL_UNSIGNED_BYTE, CVPixelBufferGetBaseAddress(cameraFrame));
         
         // Using BGRA extension to pull in video frame data directly
         // The use of bytesPerRow / 4 accounts for a display glitch present in preview video frames when using the photo preset on the camera
@@ -288,7 +283,38 @@
             //        NSLog(@"Average frame time : %f ms", 1000.0 * (totalFrameTimeDuringCapture / numberOfFramesCaptured));
             //        NSLog(@"Current frame time : %f ms", 1000.0 * currentFrameTime);
         }
-    }    
+    }  
+}
+
+- (void)processAudioSampleBuffer:(CMSampleBufferRef)sampleBuffer;
+{
+    CMSampleBufferSetOutputPresentationTimeStamp(sampleBuffer, CMTimeMakeWithSeconds([[NSDate date] timeIntervalSinceDate:startingCaptureTime], 1000000000));
+    
+    [self.audioEncodingTarget processAudioBuffer:sampleBuffer]; 
+}
+
+#pragma mark -
+#pragma mark Benchmarking
+
+- (CGFloat)averageFrameDurationDuringCapture;
+{
+    NSLog(@"Number of frames: %d", numberOfFramesCaptured);
+    return (totalFrameTimeDuringCapture / (CGFloat)numberOfFramesCaptured) * 1000.0;
+}
+
+#pragma mark -
+#pragma mark AVCaptureVideoDataOutputSampleBufferDelegate
+
+- (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection
+{
+    if (captureOutput == videoOutput)
+    {
+        [self processVideoSampleBuffer:sampleBuffer];
+    }
+    else if (captureOutput == audioOutput)
+    {
+        [self processAudioSampleBuffer:sampleBuffer];
+    }
 }
 
 #pragma mark -
@@ -296,9 +322,28 @@
 
 - (void)setAudioEncodingTarget:(GPUImageMovieWriter *)newValue;
 {    
-    _audioEncodingTarget = newValue;
+    [_captureSession beginConfiguration];
     
-    _audioEncodingTarget.hasAudioTrack = YES;
+    _microphone = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeAudio];
+    audioInput = [AVCaptureDeviceInput deviceInputWithDevice:_microphone error:nil];
+    if ([_captureSession canAddInput:audioInput]) 
+    {
+        [_captureSession addInput:audioInput];
+    }
+    audioOutput = [[AVCaptureAudioDataOutput alloc] init];
+    [audioOutput setSampleBufferDelegate:self queue:dispatch_get_main_queue()];
+    if ([_captureSession canAddOutput:audioOutput])
+    {
+        [_captureSession addOutput:audioOutput];
+    }
+    else
+    {
+        NSLog(@"Couldn't add audio output");
+    }
+
+    [_captureSession commitConfiguration];
+
+    [super setAudioEncodingTarget:newValue];
 }
 
 @end

@@ -47,9 +47,11 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 @implementation GPUImageMovieWriter
 
 @synthesize hasAudioTrack = _hasAudioTrack;
+@synthesize shouldPassthroughAudio = _shouldPassthroughAudio;
 @synthesize CompletionBlock;
 @synthesize FailureBlock;
 @synthesize delegate = _delegate;
+@synthesize shouldDropFramesIfOverloaded = _shouldDropFramesIfOverloaded;
 
 #pragma mark -
 #pragma mark Initialization and teardown
@@ -65,6 +67,7 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
     movieURL = newMovieURL;
     startTime = kCMTimeInvalid;
     previousFrameTime = kCMTimeNegativeInfinity;
+    _shouldDropFramesIfOverloaded = YES;
     
     [GPUImageOpenGLESContext useImageProcessingContext];
     
@@ -129,11 +132,14 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
     if (error != nil)
     {
         NSLog(@"Error: %@", error);
-        if (FailureBlock) {
+        if (FailureBlock) 
+        {
             FailureBlock(error);
         }
-        else {
-            if(self.delegate&&[self.delegate respondsToSelector:@selector(Failed:)]){
+        else 
+        {
+            if(self.delegate && [self.delegate respondsToSelector:@selector(Failed:)])
+            {
                 [self.delegate Failed:error];
             }
         }
@@ -198,9 +204,31 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
     [assetWriter finishWriting];    
 }
 
-- (void)newAudioSampleReadyAtTime:(CMTime)frameTime;
+- (void)processAudioBuffer:(CMSampleBufferRef)audioBuffer;
 {
-    
+    if (_hasAudioTrack)
+    {
+        if (!assetWriterAudioInput.readyForMoreMediaData)
+        {
+            if (_shouldDropFramesIfOverloaded)
+            {
+                NSLog(@"Had to drop an audio frame");
+                return;
+            }
+            else
+            {
+                NSLog(@"Had to drop an audio frame");
+                return;
+//                while(!assetWriterAudioInput.readyForMoreMediaData){};
+  
+            }
+        }
+        
+        CMTime currentSampleTime = CMSampleBufferGetOutputPresentationTimeStamp(audioBuffer);
+        NSLog(@"Recorded audio sample time: %lld, %d, %lld", currentSampleTime.value, currentSampleTime.timescale, currentSampleTime.epoch);
+        
+        [assetWriterAudioInput appendSampleBuffer:audioBuffer];
+    }
 }
 
 #pragma mark -
@@ -326,8 +354,17 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 {
     if (!assetWriterVideoInput.readyForMoreMediaData)
     {
-//        NSLog(@"Had to drop a frame");
-        return;
+        if (_shouldDropFramesIfOverloaded)
+        {
+            NSLog(@"Had to drop a video frame");
+            return;
+        }
+        else
+        {
+            NSLog(@"Waiting on a video frame");
+
+            while(!assetWriterVideoInput.readyForMoreMediaData){};
+        }
     }
     
     // Drop frames forced by images and other things with no time constants
@@ -366,18 +403,18 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
     
     if (CMTIME_IS_INVALID(startTime))
     {
+        [assetWriter startSessionAtSourceTime:frameTime];
         startTime = frameTime;
     }
     
-    if(![assetWriterPixelBufferInput appendPixelBuffer:pixel_buffer withPresentationTime:CMTimeSubtract(frameTime, startTime)]) 
+//    if(![assetWriterPixelBufferInput appendPixelBuffer:pixel_buffer withPresentationTime:CMTimeSubtract(frameTime, startTime)]) 
+    if(![assetWriterPixelBufferInput appendPixelBuffer:pixel_buffer withPresentationTime:frameTime]) 
     {
         NSLog(@"Problem appending pixel buffer at time: %lld", frameTime.value);
     } 
     else 
     {
-//        CMTime testTime = CMTimeSubtract(frameTime, startTime);
-//        
-//        NSLog(@"Recorded pixel buffer at time: %lld, %lld", frameTime.value, testTime.value);
+        NSLog(@"Recorded video sample time: %lld, %d, %lld", frameTime.value, frameTime.timescale, frameTime.epoch);
     }
     CVPixelBufferUnlockBaseAddress(pixel_buffer, 0);
     
@@ -437,7 +474,29 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
     
     if (_hasAudioTrack)
     {
-        // Add audio track
+        NSDictionary *audioOutputSettings;
+        if (_shouldPassthroughAudio)
+        {
+            audioOutputSettings = nil;
+        }
+        else
+        {
+            AudioChannelLayout acl;
+            bzero( &acl, sizeof(acl));
+            acl.mChannelLayoutTag = kAudioChannelLayoutTag_Mono;
+            
+            audioOutputSettings = [NSDictionary dictionaryWithObjectsAndKeys:
+                                   [ NSNumber numberWithInt: kAudioFormatMPEG4AAC ], AVFormatIDKey,
+                                   [ NSNumber numberWithInt: 1 ], AVNumberOfChannelsKey,
+                                   [ NSNumber numberWithFloat: 44100.0 ], AVSampleRateKey,
+                                   [ NSNumber numberWithInt: 64000 ], AVEncoderBitRateKey,
+                                   [ NSData dataWithBytes: &acl length: sizeof( acl ) ], AVChannelLayoutKey,
+                                   nil];
+        }
+        
+        assetWriterAudioInput = [AVAssetWriterInput assetWriterInputWithMediaType:AVMediaTypeAudio outputSettings:audioOutputSettings];
+        [assetWriter addInput:assetWriterAudioInput];
+        assetWriterAudioInput.expectsMediaDataInRealTime = YES;
     }
     else
     {

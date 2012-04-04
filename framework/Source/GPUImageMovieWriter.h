@@ -17,7 +17,7 @@
 
     NSURL *movieURL;
 	AVAssetWriter *assetWriter;
-//	AVAssetWriterInput *assetWriterAudioIn;
+	AVAssetWriterInput *assetWriterAudioInput;
 	AVAssetWriterInput *assetWriterVideoInput;
     AVAssetWriterInputPixelBufferAdaptor *assetWriterPixelBufferInput;
 	dispatch_queue_t movieWritingQueue;
@@ -29,9 +29,11 @@
 }
 
 @property (readwrite, nonatomic) BOOL hasAudioTrack;
+@property (readwrite, nonatomic) BOOL shouldPassthroughAudio;
 @property (nonatomic, copy) void(^CompletionBlock)(void);
 @property (nonatomic, copy) void(^FailureBlock)(NSError*);
 @property (nonatomic, assign) id<GPUImageMovieWriterDelegate> delegate;
+@property (readwrite, nonatomic) BOOL shouldDropFramesIfOverloaded;
 
 // Initialization and teardown
 - (id)initWithMovieURL:(NSURL *)newMovieURL size:(CGSize)newSize;
@@ -39,6 +41,6 @@
 // Movie recording
 - (void)startRecording;
 - (void)finishRecording;
-- (void)newAudioSampleReadyAtTime:(CMTime)frameTime;
+- (void)processAudioBuffer:(CMSampleBufferRef)audioBuffer;
 
 @end

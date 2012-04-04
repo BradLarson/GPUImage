@@ -1,4 +1,5 @@
 #import "GPUImageOutput.h"
+#import "GPUImageMovieWriter.h"
 
 void runOnMainQueueWithoutDeadlocking(void (^block)(void))
 {
@@ -16,6 +17,7 @@ void runOnMainQueueWithoutDeadlocking(void (^block)(void))
 
 @synthesize shouldSmoothlyScaleOutput = _shouldSmoothlyScaleOutput;
 @synthesize shouldIgnoreUpdatesToThisTarget = _shouldIgnoreUpdatesToThisTarget;
+@synthesize audioEncodingTarget = _audioEncodingTarget;
 
 #pragma mark -
 #pragma mark Initialization and teardown
@@ -155,5 +157,11 @@ void runOnMainQueueWithoutDeadlocking(void (^block)(void))
 #pragma mark -
 #pragma mark Accessors
 
+- (void)setAudioEncodingTarget:(GPUImageMovieWriter *)newValue;
+{    
+    _audioEncodingTarget = newValue;
+    
+    _audioEncodingTarget.hasAudioTrack = YES;
+}
 
 @end
