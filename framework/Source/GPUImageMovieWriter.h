@@ -33,7 +33,9 @@
 @property (nonatomic, copy) void(^CompletionBlock)(void);
 @property (nonatomic, copy) void(^FailureBlock)(NSError*);
 @property (nonatomic, assign) id<GPUImageMovieWriterDelegate> delegate;
-@property (readwrite, nonatomic) BOOL shouldDropFramesIfOverloaded;
+@property (readwrite, nonatomic) BOOL encodingLiveVideo;
+@property (nonatomic, copy) void(^videoInputReadyCallback)(void);
+@property (nonatomic, copy) void(^audioInputReadyCallback)(void);
 
 // Initialization and teardown
 - (id)initWithMovieURL:(NSURL *)newMovieURL size:(CGSize)newSize;
@@ -42,5 +44,6 @@
 - (void)startRecording;
 - (void)finishRecording;
 - (void)processAudioBuffer:(CMSampleBufferRef)audioBuffer;
+- (void)enableSynchronizationCallbacks;
 
 @end

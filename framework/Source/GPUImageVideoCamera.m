@@ -352,7 +352,6 @@
     audioProcessingQueue = dispatch_queue_create("com.sunsetlakesoftware.GPUImage.audioProcessingQueue", NULL);
     
     //    [audioOutput setSampleBufferDelegate:self queue:dispatch_get_main_queue()];
-    [audioOutput setSampleBufferDelegate:self queue:audioProcessingQueue];
     if ([_captureSession canAddOutput:audioOutput])
     {
         [_captureSession addOutput:audioOutput];
@@ -361,6 +360,7 @@
     {
         NSLog(@"Couldn't add audio output");
     }
+    [audioOutput setSampleBufferDelegate:self queue:audioProcessingQueue];
     
     [_captureSession commitConfiguration];
     

@@ -1,6 +1,16 @@
 #import "GPUImageMovie.h"
 #import "GPUImageMovieWriter.h"
 
+@interface GPUImageMovie ()
+{
+    BOOL audioEncodingIsFinished, videoEncodingIsFinished;
+    GPUImageMovieWriter *synchronizedMovieWriter;
+    CVOpenGLESTextureCacheRef coreVideoTextureCache;
+    AVAssetReader *reader;
+}
+
+@end
+
 @implementation GPUImageMovie
 
 @synthesize url = _url;
@@ -37,6 +47,12 @@
 #pragma mark -
 #pragma mark Movie processing
 
+- (void)enableSynchronizedEncodingUsingMovieWriter:(GPUImageMovieWriter *)movieWriter;
+{
+    synchronizedMovieWriter = movieWriter;
+    movieWriter.encodingLiveVideo = NO;
+}
+
 - (void)startProcessing;
 {
     NSDictionary *inputOptions = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES] forKey:AVURLAssetPreferPreciseDurationAndTimingKey];
@@ -49,7 +65,7 @@
         {
             return;
         }
-        AVAssetReader *reader = [AVAssetReader assetReaderWithAsset:inputAsset error:&error];
+        reader = [AVAssetReader assetReaderWithAsset:inputAsset error:&error];
         
         NSMutableDictionary *outputSettings = [NSMutableDictionary dictionary];
         [outputSettings setObject: [NSNumber numberWithInt:kCVPixelFormatType_32BGRA]  forKey: (NSString*)kCVPixelBufferPixelFormatTypeKey];
@@ -63,6 +79,8 @@
 
         if (shouldRecordAudioTrack)
         {            
+            audioEncodingIsFinished = NO;
+            
             // This might need to be extended to handle movies with more than one audio track
             AVAssetTrack* audioTrack = [audioTracks objectAtIndex:0];
             readerAudioTrackOutput = [AVAssetReaderTrackOutput assetReaderTrackOutputWithTrack:audioTrack outputSettings:nil];
@@ -74,45 +92,90 @@
             NSLog(@"Error reading from file at URL: %@", self.url);
             return;
         }
-
-        while (reader.status == AVAssetReaderStatusReading) 
-        {
-            CMSampleBufferRef sampleBufferRef = [readerVideoTrackOutput copyNextSampleBuffer];
-            if (sampleBufferRef) 
-            {
-                runOnMainQueueWithoutDeadlocking(^{
-                    [self processMovieFrame:sampleBufferRef]; 
-                });
-                
-                CMSampleBufferInvalidate(sampleBufferRef);
-                CFRelease(sampleBufferRef);
-            }
-            
-            if (shouldRecordAudioTrack)
-            {
-                CMSampleBufferRef audioSampleBufferRef = [readerAudioTrackOutput copyNextSampleBuffer];
-
-                if (audioSampleBufferRef) 
-                {
-//                    runOnMainQueueWithoutDeadlocking(^{
-                        [self.audioEncodingTarget processAudioBuffer:audioSampleBufferRef]; 
-//                    });
-                    
-                    CMSampleBufferInvalidate(audioSampleBufferRef);
-                    CFRelease(audioSampleBufferRef);
-                }
-                else
-                {
-//                    NSLog(@"Ran out of audio frames");
-                    shouldRecordAudioTrack = NO;
-                }
-            }
-        }
         
-        if (reader.status == AVAssetWriterStatusCompleted) {
-            [self endProcessing];
+        if (synchronizedMovieWriter != nil)
+        {
+            __unsafe_unretained GPUImageMovie *weakSelf = self;
+            
+            [synchronizedMovieWriter setVideoInputReadyCallback:^{
+                [weakSelf readNextVideoFrameFromOutput:readerVideoTrackOutput];
+            }];
+
+            [synchronizedMovieWriter setAudioInputReadyCallback:^{
+                [weakSelf readNextAudioSampleFromOutput:readerAudioTrackOutput];
+            }];
+            
+            [synchronizedMovieWriter enableSynchronizationCallbacks];
+        }
+        else
+        {
+            while (reader.status == AVAssetReaderStatusReading) 
+            {
+                [self readNextVideoFrameFromOutput:readerVideoTrackOutput];
+                
+                if ( (shouldRecordAudioTrack) && (!audioEncodingIsFinished) )
+                {
+                    [self readNextAudioSampleFromOutput:readerAudioTrackOutput];
+                }
+                
+            }            
+
+            if (reader.status == AVAssetWriterStatusCompleted) {
+                [self endProcessing];
+            }
         }
     }];
+}
+
+- (void)readNextVideoFrameFromOutput:(AVAssetReaderTrackOutput *)readerVideoTrackOutput;
+{
+    if (reader.status == AVAssetReaderStatusReading)
+    {
+        CMSampleBufferRef sampleBufferRef = [readerVideoTrackOutput copyNextSampleBuffer];
+        if (sampleBufferRef) 
+        {
+            runOnMainQueueWithoutDeadlocking(^{
+                [self processMovieFrame:sampleBufferRef]; 
+            });
+            
+            CMSampleBufferInvalidate(sampleBufferRef);
+            CFRelease(sampleBufferRef);
+        }
+        else
+        {
+            videoEncodingIsFinished = YES;
+            [self endProcessing];
+        }
+    }
+    else if (synchronizedMovieWriter != nil)
+    {
+        if (reader.status == AVAssetWriterStatusCompleted) 
+        {
+            [self endProcessing];
+        }
+    }
+}
+
+- (void)readNextAudioSampleFromOutput:(AVAssetReaderTrackOutput *)readerAudioTrackOutput;
+{
+    if (audioEncodingIsFinished)
+    {
+        return;
+    }
+
+    CMSampleBufferRef audioSampleBufferRef = [readerAudioTrackOutput copyNextSampleBuffer];
+    
+    if (audioSampleBufferRef) 
+    {
+        [self.audioEncodingTarget processAudioBuffer:audioSampleBufferRef]; 
+        
+        CMSampleBufferInvalidate(audioSampleBufferRef);
+        CFRelease(audioSampleBufferRef);
+    }
+    else
+    {
+        audioEncodingIsFinished = YES;
+    }
 }
 
 - (void)processMovieFrame:(CMSampleBufferRef)movieSampleBuffer; 
@@ -193,6 +256,12 @@
     for (id<GPUImageInput> currentTarget in targets)
     {
         [currentTarget endProcessing];
+    }
+    
+    if (synchronizedMovieWriter != nil)
+    {
+        [synchronizedMovieWriter setVideoInputReadyCallback:^{}];
+        [synchronizedMovieWriter setAudioInputReadyCallback:^{}];
     }
 }
 

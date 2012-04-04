@@ -42,10 +42,12 @@
     NSURL *movieURL = [NSURL fileURLWithPath:pathToMovie];
 
     movieWriter = [[GPUImageMovieWriter alloc] initWithMovieURL:movieURL size:CGSizeMake(640.0, 480.0)];
-    movieWriter.shouldPassthroughAudio = YES;
     [filter addTarget:movieWriter];
+
+    // Configure this for video from the movie file, where we want to preserve all video frames and audio samples
+    movieWriter.shouldPassthroughAudio = YES;
     movieFile.audioEncodingTarget = movieWriter;
-    movieWriter.shouldDropFramesIfOverloaded = NO;
+    [movieFile enableSynchronizedEncodingUsingMovieWriter:movieWriter];
     
     [movieWriter startRecording];
     [movieFile startProcessing];

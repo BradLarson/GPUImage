@@ -29,7 +29,7 @@ BSD-style, with the full license available with the framework in License.txt.
 ## Technical requirements ##
 
 - OpenGL ES 2.0: Applications using this will not run on the original iPhone, iPhone 3G, and 1st and 2nd generation iPod touches
-- iOS 4.0 as a deployment target
+- iOS 4.1 as a deployment target (4.0 didn't have some extensions needed for movie reading)
 - iOS 5.0 SDK to build
 - Devices must have a camera to use camera-related functionality (obviously)
 - The framework uses automatic reference counting (ARC), but should support projects using both ARC and manual reference counting if added as a subproject as explained below. For manual reference counting applications targeting iOS 4.x, you'll need add -fobjc-arc to the Other Linker Flags for your application project.
@@ -240,6 +240,10 @@ This sets up a video source coming from the iOS device's back-facing camera, usi
 
 For blending filters and others that take in more than one image, you can create multiple outputs and add a single filter as a target for both of these outputs. The order with which the outputs are added as targets will affect the order in which the input images are blended or otherwise processed.
 
+Also, if you wish to enable microphone audio capture for recording to a movie, you'll need to set the audioEncodingTarget of the camera to be your movie writer, like for the following:
+
+    videoCamera.audioEncodingTarget = movieWriter;
+
 
 ### Capturing and filtering a still photo ###
 
@@ -348,6 +352,10 @@ The following is an example of how you would load a sample movie, pass it throug
 
 	movieWriter = [[GPUImageMovieWriter alloc] initWithMovieURL:movieURL size:CGSizeMake(480.0, 640.0)];
 	[pixellateFilter addTarget:movieWriter];
+
+    movieWriter.shouldPassthroughAudio = YES;
+    movieFile.audioEncodingTarget = movieWriter;
+    [movieFile enableSynchronizedEncodingUsingMovieWriter:movieWriter];
 
 	[movieWriter startRecording];
 	[movieFile startProcessing];

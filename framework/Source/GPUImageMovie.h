@@ -4,9 +4,6 @@
 #import "GPUImageOutput.h"
 
 @interface GPUImageMovie : GPUImageOutput
-{
-    CVOpenGLESTextureCacheRef coreVideoTextureCache;
-}
 
 @property(readwrite, retain) NSURL *url;
 @property(readwrite, nonatomic) BOOL runBenchmark;
@@ -15,6 +12,9 @@
 - (id)initWithURL:(NSURL *)url;
 
 // Movie processing
+- (void)enableSynchronizedEncodingUsingMovieWriter:(GPUImageMovieWriter *)movieWriter;
+- (void)readNextVideoFrameFromOutput:(AVAssetReaderTrackOutput *)readerVideoTrackOutput;
+- (void)readNextAudioSampleFromOutput:(AVAssetReaderTrackOutput *)readerAudioTrackOutput;
 - (void)startProcessing;
 - (void)endProcessing;
 - (void)processMovieFrame:(CMSampleBufferRef)movieSampleBuffer; 
