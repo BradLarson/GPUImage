@@ -37,9 +37,9 @@
 #pragma mark -
 #pragma mark Still image processing
 
-- (UIImage *)imageFromCurrentlyProcessedOutput;
+- (UIImage *)imageFromCurrentlyProcessedOutputWithOrientation:(UIImageOrientation)imageOrientation;
 {
-    return [self.terminalFilter imageFromCurrentlyProcessedOutput];
+    return [self.terminalFilter imageFromCurrentlyProcessedOutputWithOrientation:imageOrientation];
 }
 
 - (UIImage *)imageByFilteringImage:(UIImage *)imageToFilter;

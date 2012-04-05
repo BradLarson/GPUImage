@@ -277,7 +277,7 @@ This will give you a live, filtered feed of the still camera's preview video. On
 	
 The above code captures a full-size photo processed by the same filter chain used in the preview view and saves that photo to disk as a JPEG in the application's documents directory.
 
-Note that the framework currently can't handle images larger than 2048 pixels wide or high on older devices (those before the iPhone 4S, iPad 3, or Retina iPad) due to texture size limitations. This means that the iPhone 4, whose camera outputs still photos larger than this, won't be able to capture photos like this. A tiling mechanism is being implemented to work around this. All other devices should be able to capture and filter photos using this method.
+Note that the framework currently can't handle images larger than 2048 pixels wide or high on older devices (those before the iPhone 4S, iPad 2, or Retina iPad) due to texture size limitations. This means that the iPhone 4, whose camera outputs still photos larger than this, won't be able to capture photos like this. A tiling mechanism is being implemented to work around this. All other devices should be able to capture and filter photos using this method.
 
 ### Processing a still image ###
 

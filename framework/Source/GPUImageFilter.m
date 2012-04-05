@@ -124,7 +124,7 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size)
     free((void *)data);
 }
 
-- (UIImage *)imageFromCurrentlyProcessedOutput;
+- (UIImage *)imageFromCurrentlyProcessedOutputWithOrientation:(UIImageOrientation)imageOrientation;
 {
     [GPUImageOpenGLESContext useImageProcessingContext];
     [self setOutputFBO];
@@ -142,26 +142,6 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size)
     CGImageRef cgImageFromBytes = CGImageCreate((int)currentFBOSize.width, (int)currentFBOSize.height, 8, 32, 4 * (int)currentFBOSize.width, defaultRGBColorSpace, kCGBitmapByteOrderDefault | kCGImageAlphaLast, dataProvider, NULL, NO, kCGRenderingIntentDefault);
     
     // Capture image with current device orientation
-	UIDeviceOrientation deviceOrientation = [[UIDevice currentDevice] orientation];
-    UIImageOrientation imageOrientation = UIImageOrientationLeft;
-	switch (deviceOrientation)
-    {
-		case UIDeviceOrientationPortrait:
-			imageOrientation = UIImageOrientationUp;
-			break;
-		case UIDeviceOrientationPortraitUpsideDown:
-			imageOrientation = UIImageOrientationDown;
-			break;
-		case UIDeviceOrientationLandscapeLeft:
-			imageOrientation = UIImageOrientationLeft;
-			break;
-		case UIDeviceOrientationLandscapeRight:
-			imageOrientation = UIImageOrientationRight;
-			break;
-		default:
-			imageOrientation = UIImageOrientationUp;
-			break;
-	}
     UIImage *finalImage = [UIImage imageWithCGImage:cgImageFromBytes scale:1.0 orientation:imageOrientation];
 
     CGImageRelease(cgImageFromBytes);

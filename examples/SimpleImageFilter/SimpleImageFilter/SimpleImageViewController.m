@@ -47,6 +47,7 @@
     sepiaFilter = [[GPUImageSepiaFilter alloc] init];
     
     GPUImageView *imageView = (GPUImageView *)self.view;
+    [sepiaFilter forceProcessingAtSize:imageView.sizeInPixels]; // This is now needed to make the filter run at the smaller output size
     
     [sourcePicture addTarget:sepiaFilter];
     [sepiaFilter addTarget:imageView];

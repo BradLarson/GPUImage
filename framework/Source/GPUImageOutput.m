@@ -146,6 +146,32 @@ void runOnMainQueueWithoutDeadlocking(void (^block)(void))
 
 - (UIImage *)imageFromCurrentlyProcessedOutput;
 {
+	UIDeviceOrientation deviceOrientation = [[UIDevice currentDevice] orientation];
+    UIImageOrientation imageOrientation = UIImageOrientationLeft;
+	switch (deviceOrientation)
+    {
+		case UIDeviceOrientationPortrait:
+			imageOrientation = UIImageOrientationUp;
+			break;
+		case UIDeviceOrientationPortraitUpsideDown:
+			imageOrientation = UIImageOrientationDown;
+			break;
+		case UIDeviceOrientationLandscapeLeft:
+			imageOrientation = UIImageOrientationLeft;
+			break;
+		case UIDeviceOrientationLandscapeRight:
+			imageOrientation = UIImageOrientationRight;
+			break;
+		default:
+			imageOrientation = UIImageOrientationUp;
+			break;
+	}
+    
+    return [self imageFromCurrentlyProcessedOutputWithOrientation:imageOrientation];
+}
+
+- (UIImage *)imageFromCurrentlyProcessedOutputWithOrientation:(UIImageOrientation)imageOrientation;
+{
     return nil;
 }
 

@@ -36,6 +36,7 @@ void runOnMainQueueWithoutDeadlocking(void (^block)(void));
 
 // Still image processing
 - (UIImage *)imageFromCurrentlyProcessedOutput;
+- (UIImage *)imageFromCurrentlyProcessedOutputWithOrientation:(UIImageOrientation)imageOrientation;
 - (UIImage *)imageByFilteringImage:(UIImage *)imageToFilter;
 
 @end
