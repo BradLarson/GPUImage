@@ -6,7 +6,7 @@
 
 @interface GPUImageRawData ()
 {
-    CGSize imageSize;
+    
     BOOL hasReadFromTheCurrentFrame;
     
 	GLuint dataFramebuffer, dataRenderbuffer;
@@ -95,12 +95,71 @@
     glGenFramebuffers(1, &dataFramebuffer);
     glBindFramebuffer(GL_FRAMEBUFFER, dataFramebuffer);
 
-    glGenRenderbuffers(1, &dataRenderbuffer);
-    glBindRenderbuffer(GL_RENDERBUFFER, dataRenderbuffer);
-
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_RGBA8_OES, (int)imageSize.width, (int)imageSize.height);
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, dataRenderbuffer);	
-	
+    if ([GPUImageOpenGLESContext supportsFastTextureUpload])
+    {
+        CVReturn err = CVOpenGLESTextureCacheCreate(kCFAllocatorDefault, NULL, (__bridge void *)[[GPUImageOpenGLESContext sharedImageProcessingOpenGLESContext] context], NULL, &rawDataTextureCache);
+        if (err) 
+        {
+            NSAssert(NO, @"Error at CVOpenGLESTextureCacheCreate %d");
+        }
+        
+        // Code originally sourced from http://allmybrain.com/2011/12/08/rendering-to-a-texture-with-ios-5-texture-cache-api/
+        
+        CFDictionaryRef empty; // empty value for attr value.
+        CFMutableDictionaryRef attrs;
+        empty = CFDictionaryCreate(kCFAllocatorDefault, // our empty IOSurface properties dictionary
+                                   NULL,
+                                   NULL,
+                                   0,
+                                   &kCFTypeDictionaryKeyCallBacks,
+                                   &kCFTypeDictionaryValueCallBacks);
+        attrs = CFDictionaryCreateMutable(kCFAllocatorDefault,
+                                          1,
+                                          &kCFTypeDictionaryKeyCallBacks,
+                                          &kCFTypeDictionaryValueCallBacks);
+        
+        CFDictionarySetValue(attrs,
+                             kCVPixelBufferIOSurfacePropertiesKey,
+                             empty);
+        
+        //CVPixelBufferPoolCreatePixelBuffer (NULL, [assetWriterPixelBufferInput pixelBufferPool], &renderTarget);
+        
+        CVPixelBufferCreate(kCFAllocatorDefault, 
+                            (int)imageSize.width, 
+                            (int)imageSize.height,
+                            kCVPixelFormatType_32BGRA,
+                            attrs,
+                            &renderTarget);
+        
+        CVOpenGLESTextureRef renderTexture;
+        CVOpenGLESTextureCacheCreateTextureFromImage (kCFAllocatorDefault,
+                                                      rawDataTextureCache, renderTarget,
+                                                      NULL, // texture attributes
+                                                      GL_TEXTURE_2D,
+                                                      GL_RGBA, // opengl format
+                                                      (int)imageSize.width, 
+                                                      (int)imageSize.height,
+                                                      GL_BGRA, // native iOS format
+                                                      GL_UNSIGNED_BYTE,
+                                                      0,
+                                                      &renderTexture);
+        CFRelease(attrs);
+        CFRelease(empty);
+        glBindTexture(CVOpenGLESTextureGetTarget(renderTexture), CVOpenGLESTextureGetName(renderTexture));
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, CVOpenGLESTextureGetName(renderTexture), 0);
+    }
+    else
+    {
+        
+        glGenRenderbuffers(1, &dataRenderbuffer);
+        glBindRenderbuffer(GL_RENDERBUFFER, dataRenderbuffer);
+        
+        glRenderbufferStorage(GL_RENDERBUFFER, GL_RGBA8_OES, (int)imageSize.width, (int)imageSize.height);
+        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, dataRenderbuffer);	
+	}
 	GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
     
     NSAssert(status == GL_FRAMEBUFFER_COMPLETE, @"Incomplete filter FBO: %d", status);
@@ -199,7 +258,6 @@
 - (void)newFrameReadyAtTime:(CMTime)frameTime;
 {
     hasReadFromTheCurrentFrame = NO;
-
     [self.delegate newImageFrameAvailableFromDataSource:self];
 }
 
@@ -248,10 +306,23 @@
     }
     else
     {
+        //CVPixelBufferRef pixel_buffer = NULL;
+        
+        CVPixelBufferUnlockBaseAddress(renderTarget, 0);
         [GPUImageOpenGLESContext useImageProcessingContext];
+        CVOpenGLESTextureCacheFlush(rawDataTextureCache, 0);
         [self renderAtInternalSize];
-        glReadPixels(0, 0, imageSize.width, imageSize.height, GL_RGBA, GL_UNSIGNED_BYTE, _rawBytesForImage);
-
+        
+        if ([GPUImageOpenGLESContext supportsFastTextureUpload]) {
+            
+            CVPixelBufferLockBaseAddress(renderTarget, 0);
+            _rawBytesForImage = (GLubyte *)CVPixelBufferGetBaseAddress(renderTarget);
+            
+        } else {
+            glReadPixels(0, 0, imageSize.width, imageSize.height, GL_RGBA, GL_UNSIGNED_BYTE, _rawBytesForImage);
+        }
+        
+        
         return _rawBytesForImage;
     }
     
