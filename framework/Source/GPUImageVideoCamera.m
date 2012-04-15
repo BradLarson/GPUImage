@@ -1,3 +1,4 @@
+
 #import "GPUImageVideoCamera.h"
 #import "GPUImageMovieWriter.h"
 
@@ -206,6 +207,10 @@
         //captureSession.sessionPreset = oriPreset;
         [_captureSession commitConfiguration];
     }
+}
+
+- (AVCaptureDevicePosition)getCameraPosition {
+    return [[videoInput device] position];
 }
 
 - (void)processVideoSampleBuffer:(CMSampleBufferRef)sampleBuffer;
