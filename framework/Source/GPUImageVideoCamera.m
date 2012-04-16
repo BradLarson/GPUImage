@@ -325,18 +325,19 @@
 	@autoreleasepool 
 	{
 		//these need to be on the main thread for proper timing
-		if (captureOutput == videoOutput)
+		if (captureOutput == audioOutput)
 		{
-			dispatch_sync(dispatch_get_main_queue(), ^{ [self processVideoSampleBuffer:sampleBuffer]; });
-			
+			runOnMainQueueWithoutDeadlocking(^{ 
+                [self processAudioSampleBuffer:sampleBuffer]; 
+            });
 		}
-		else if (captureOutput == audioOutput)
+		else
 		{
-			dispatch_sync(dispatch_get_main_queue(), ^{ [self processAudioSampleBuffer:sampleBuffer]; });
-            
+			runOnMainQueueWithoutDeadlocking(^{ 
+                [self processVideoSampleBuffer:sampleBuffer]; 
+            });
 		}
 	}
-    
 }
 
 #pragma mark -
