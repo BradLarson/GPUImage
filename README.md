@@ -29,7 +29,7 @@ BSD-style, with the full license available with the framework in License.txt.
 ## Technical requirements ##
 
 - OpenGL ES 2.0: Applications using this will not run on the original iPhone, iPhone 3G, and 1st and 2nd generation iPod touches
-- iOS 4.1 as a deployment target (4.0 didn't have some extensions needed for movie reading)
+- iOS 4.1 as a deployment target (4.0 didn't have some extensions needed for movie reading). iOS 4.3 is needed as a deployment target if you wish to show live video previews when taking a still photo.
 - iOS 5.0 SDK to build
 - Devices must have a camera to use camera-related functionality (obviously)
 - The framework uses automatic reference counting (ARC), but should support projects using both ARC and manual reference counting if added as a subproject as explained below. For manual reference counting applications targeting iOS 4.x, you'll need add -fobjc-arc to the Other Linker Flags for your application project.
@@ -260,7 +260,9 @@ To capture and filter still photos, you can use a process similar to the one for
 
 	[stillCamera startCameraCapture];
 
-This will give you a live, filtered feed of the still camera's preview video. Once you want to capture a photo, you use a callback block like the following:
+This will give you a live, filtered feed of the still camera's preview video. Note that this preview video is only provided on iOS 4.3 and higher, so you may need to set that as your deployment target if you wish to have this functionality.
+
+Once you want to capture a photo, you use a callback block like the following:
 
 	[stillCamera capturePhotoProcessedUpToFilter:filter withCompletionHandler:^(UIImage *processedImage, NSError *error){
 	    NSData *dataForPNGFile = UIImageJPEGRepresentation(processedImage, 0.8);

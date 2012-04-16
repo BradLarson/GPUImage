@@ -249,7 +249,22 @@
     locationToPickFrom.x = MIN(MAX(locationInImage.x, 0.0), (imageSize.width - 1.0));
     locationToPickFrom.y = MIN(MAX((imageSize.height - locationInImage.y), 0.0), (imageSize.height - 1.0));
     
-    return imageColorBytes[(int)(round((locationToPickFrom.y * imageSize.width) + locationToPickFrom.x))];
+    if ([GPUImageOpenGLESContext supportsFastTextureUpload])    
+    {
+        // When reading directly from the texture using the fast texture cache, values are in BGRA, not RGBA
+        
+        GPUByteColorVector flippedColor = imageColorBytes[(int)(round((locationToPickFrom.y * imageSize.width) + locationToPickFrom.x))];
+        GLubyte temporaryRed = flippedColor.red;
+        
+        flippedColor.red = flippedColor.blue;
+        flippedColor.blue = temporaryRed;
+
+        return flippedColor;
+    }
+    else
+    {
+        return imageColorBytes[(int)(round((locationToPickFrom.y * imageSize.width) + locationToPickFrom.x))];
+    }
 }
 
 #pragma mark -
@@ -294,34 +309,38 @@
 
 - (GLubyte *)rawBytesForImage;
 {
-    if (_rawBytesForImage == NULL)
+    if ( (_rawBytesForImage == NULL) && (![GPUImageOpenGLESContext supportsFastTextureUpload]) )
     {
         _rawBytesForImage = (GLubyte *) calloc(imageSize.width * imageSize.height * 4, sizeof(GLubyte));
         hasReadFromTheCurrentFrame = NO;
     }
-    
+ 
     if (hasReadFromTheCurrentFrame)
     {
         return _rawBytesForImage;
     }
     else
     {
-        //CVPixelBufferRef pixel_buffer = NULL;
+        // Note: the fast texture caches speed up 640x480 frame reads from 9.6 ms to 3.1 ms on iPhone 4S
         
-        CVPixelBufferUnlockBaseAddress(renderTarget, 0);
         [GPUImageOpenGLESContext useImageProcessingContext];
-        CVOpenGLESTextureCacheFlush(rawDataTextureCache, 0);
-        [self renderAtInternalSize];
-        
-        if ([GPUImageOpenGLESContext supportsFastTextureUpload]) {
-            
-            CVPixelBufferLockBaseAddress(renderTarget, 0);
-            _rawBytesForImage = (GLubyte *)CVPixelBufferGetBaseAddress(renderTarget);
-            
-        } else {
-            glReadPixels(0, 0, imageSize.width, imageSize.height, GL_RGBA, GL_UNSIGNED_BYTE, _rawBytesForImage);
+        if ([GPUImageOpenGLESContext supportsFastTextureUpload]) 
+        {
+            CVPixelBufferUnlockBaseAddress(renderTarget, 0);
+//            CVOpenGLESTextureCacheFlush(rawDataTextureCache, 0);
         }
         
+        [self renderAtInternalSize];
+        
+        if ([GPUImageOpenGLESContext supportsFastTextureUpload]) 
+        {
+            CVPixelBufferLockBaseAddress(renderTarget, 0);
+            _rawBytesForImage = (GLubyte *)CVPixelBufferGetBaseAddress(renderTarget);
+        } 
+        else 
+        {
+            glReadPixels(0, 0, imageSize.width, imageSize.height, GL_RGBA, GL_UNSIGNED_BYTE, _rawBytesForImage);
+        }
         
         return _rawBytesForImage;
     }
