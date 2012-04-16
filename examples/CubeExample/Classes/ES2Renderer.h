@@ -12,14 +12,14 @@
 @private
     EAGLContext *context;
 
-	GLuint textureForCubeFace;
+	GLuint textureForCubeFace, outputTexture;
     
     // The pixel dimensions of the CAEAGLLayer
     GLint backingWidth;
     GLint backingHeight;
 
     // The OpenGL ES names for the framebuffer and renderbuffer used to render to this view
-    GLuint defaultFramebuffer, colorRenderbuffer, depthBuffer, msaaFramebuffer, msaaRenderbuffer, msaaDepthbuffer;
+    GLuint defaultFramebuffer, colorRenderbuffer, depthBuffer;
 
 	CATransform3D currentCalculatedMatrix;
 
@@ -31,8 +31,12 @@
 
 }
 
+@property(readonly) GLuint outputTexture;
+@property(nonatomic, copy) void(^newFrameAvailableBlock)(void);
+
+- (id)initWithSize:(CGSize)newSize;
+
 - (void)renderByRotatingAroundX:(float)xRotation rotatingAroundY:(float)yRotation;
-- (BOOL)resizeFromLayer:(CAEAGLLayer *)layer;
 - (void)convert3DTransform:(CATransform3D *)transform3D toMatrix:(GLfloat *)matrix;
 
 @end

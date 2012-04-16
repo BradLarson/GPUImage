@@ -5,8 +5,8 @@
 @protocol GPUImageMovieWriterDelegate <NSObject>
 
 @optional
--(void)Completed;
--(void)Failed:(NSError*)error;
+- (void)movieRecordingCompleted;
+- (void)movieRecordingFailedWithError:(NSError*)error;
 
 @end
 
@@ -28,14 +28,14 @@
     CGSize videoSize;
 }
 
-@property (readwrite, nonatomic) BOOL hasAudioTrack;
-@property (readwrite, nonatomic) BOOL shouldPassthroughAudio;
-@property (nonatomic, copy) void(^CompletionBlock)(void);
-@property (nonatomic, copy) void(^FailureBlock)(NSError*);
-@property (nonatomic, assign) id<GPUImageMovieWriterDelegate> delegate;
-@property (readwrite, nonatomic) BOOL encodingLiveVideo;
-@property (nonatomic, copy) void(^videoInputReadyCallback)(void);
-@property (nonatomic, copy) void(^audioInputReadyCallback)(void);
+@property(readwrite, nonatomic) BOOL hasAudioTrack;
+@property(readwrite, nonatomic) BOOL shouldPassthroughAudio;
+@property(nonatomic, copy) void(^completionBlock)(void);
+@property(nonatomic, copy) void(^failureBlock)(NSError*);
+@property(nonatomic, assign) id<GPUImageMovieWriterDelegate> delegate;
+@property(readwrite, nonatomic) BOOL encodingLiveVideo;
+@property(nonatomic, copy) void(^videoInputReadyCallback)(void);
+@property(nonatomic, copy) void(^audioInputReadyCallback)(void);
 
 // Initialization and teardown
 - (id)initWithMovieURL:(NSURL *)newMovieURL size:(CGSize)newSize;

@@ -369,6 +369,12 @@ Once recording is finished, you need to remove the movie recorder from the filte
 
 A movie won't be usable until it has been finished off, so if this is interrupted before this point, the recording will be lost.
 
+### Interacting with OpenGL ES ###
+
+GPUImage can both export and import textures from OpenGL ES through the use of its GPUImageTextureOutput and GPUImageTextureInput classes, respectively. This lets you record a movie from an OpenGL ES scene that is rendered to a framebuffer object with a bound texture, or filter video or images and then feed them into OpenGL ES as a texture to be displayed in the scene.
+
+The one caution with this approach is that the textures used in these processes must be shared between GPUImage's OpenGL ES context and any other context via a share group or something similar.
+
 ## Sample applications ##
 
 Several sample applications are bundled with the framework source. Most are compatible with both iPhone and iPad-class devices. They attempt to show off various aspects of the framework and should be used as the best examples of the API while the framework is under development. These include:
@@ -392,6 +398,12 @@ This demonstrates every filter supplied with GPUImage.
 ### BenchmarkSuite ###
 
 This is used to test the performance of the overall framework by testing it against CPU-bound routines and Core Image. Benchmarks involving still images and video are run against all three, with results displayed in-application.
+
+### CubeExample ###
+
+This demonstrates the ability of GPUImage to interact with OpenGL ES rendering. Frames are captured from the camera, a sepia filter applied to them, and then they are fed into a texture to be applied to the face of a cube you can rotate with your finger. This cube in turn is rendered to a texture-backed framebuffer object, and that texture is fed back into GPUImage to have a pixellation filter applied to it before rendering to screen.
+
+In other words, the path of this application is camera -> sepia tone filter -> cube -> pixellation filter -> display.
 
 ### ColorObjectTracking ###
 

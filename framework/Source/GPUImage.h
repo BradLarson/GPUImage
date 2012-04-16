@@ -13,6 +13,7 @@
 #import "GPUImageFilterPipeline.h"
 #import "GPUImageTextureOutput.h"
 #import "GPUImageFilterGroup.h"
+#import "GPUImageTextureInput.h"
 
 // Filters
 #import "GPUImageFilter.h"

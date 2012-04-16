@@ -49,8 +49,8 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 @synthesize hasAudioTrack = _hasAudioTrack;
 @synthesize encodingLiveVideo = _encodingLiveVideo;
 @synthesize shouldPassthroughAudio = _shouldPassthroughAudio;
-@synthesize CompletionBlock;
-@synthesize FailureBlock;
+@synthesize completionBlock;
+@synthesize failureBlock;
 @synthesize videoInputReadyCallback;
 @synthesize audioInputReadyCallback;
 
@@ -135,15 +135,15 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
     if (error != nil)
     {
         NSLog(@"Error: %@", error);
-        if (FailureBlock) 
+        if (failureBlock) 
         {
-            FailureBlock(error);
+            failureBlock(error);
         }
         else 
         {
-            if(self.delegate && [self.delegate respondsToSelector:@selector(Failed:)])
+            if(self.delegate && [self.delegate respondsToSelector:@selector(movieRecordingFailedWithError:)])
             {
-                [self.delegate Failed:error];
+                [self.delegate movieRecordingFailedWithError:error];
             }
         }
     }
@@ -463,15 +463,15 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 
 - (void)endProcessing 
 {
-    if (CompletionBlock) 
+    if (completionBlock) 
     {
-        CompletionBlock();
+        completionBlock();
     }
     else 
     {
-        if (_delegate && [_delegate respondsToSelector:@selector(Completed)])
+        if (_delegate && [_delegate respondsToSelector:@selector(movieRecordingCompleted)])
         {
-            [_delegate Completed];
+            [_delegate movieRecordingCompleted];
         }
     }
 }
