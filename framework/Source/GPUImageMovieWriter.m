@@ -113,6 +113,8 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 
 - (void)dealloc;
 {
+    [self destroyDataFBO];
+
     if (frameData != NULL)
     {
         free(frameData);

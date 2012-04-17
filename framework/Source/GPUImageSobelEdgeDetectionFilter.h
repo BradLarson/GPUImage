@@ -1,7 +1,5 @@
 #import "GPUImageTwoPassFilter.h"
 
-extern NSString *const kGPUImageSobelEdgeDetectionVertexShaderString;
-
 @interface GPUImageSobelEdgeDetectionFilter : GPUImageTwoPassFilter
 {
     GLint imageWidthFactorUniform, imageHeightFactorUniform;

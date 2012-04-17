@@ -119,6 +119,12 @@ For example, an application that takes in live video from the camera, converts t
 
 - **GPUImageBoxBlurFilter**: A hardware-accelerated 9-hit box blur of an image
 
+- **GPUImage3x3ConvolutionFilter**: Runs a 3x3 convolution kernel against the image
+  - *convolutionKernel*: The convolution kernel is a 3x3 matrix of values to apply to the pixel and its 8 surrounding pixels. The matrix is specified in row-major order, with the top left pixel being one.one and the bottom right three.three. If the values in the matrix don't add up to 1.0, the image could be brightened or darkened.
+
+- **GPUImageEmbossFilter**: Applies an embossing effect on the image
+  - *intensity*: The strength of the embossing, from  0.0 to 4.0, with 1.0 as the normal level
+
 ### Blending modes ###
 
 - **GPUImageChromaKeyBlendFilter**: Selectively replaces a color in the first image with the second image

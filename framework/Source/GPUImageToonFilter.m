@@ -1,5 +1,6 @@
 #import "GPUImageToonFilter.h"
 #import "GPUImageSobelEdgeDetectionFilter.h"
+#import "GPUImage3x3ConvolutionFilter.h"
 
 // Code from "Graphics Shaders: Theory and Practice" by M. Bailey and S. Cunningham 
 NSString *const kGPUImageToonFragmentShaderString = SHADER_STRING
@@ -77,7 +78,7 @@ NSString *const kGPUImageToonFragmentShaderString = SHADER_STRING
 
 - (id)init;
 {
-    if (!(self = [super initWithVertexShaderFromString:kGPUImageSobelEdgeDetectionVertexShaderString fragmentShaderFromString:kGPUImageToonFragmentShaderString]))
+    if (!(self = [super initWithVertexShaderFromString:kGPUImageNearbyTexelSamplingVertexShaderString fragmentShaderFromString:kGPUImageToonFragmentShaderString]))
     {
 		return nil;
     }

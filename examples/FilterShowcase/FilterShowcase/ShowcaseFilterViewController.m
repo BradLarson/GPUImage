@@ -300,7 +300,39 @@
             
             filter = [[GPUImageCGAColorspaceFilter alloc] init];
         }; break;
-
+        case GPUIMAGE_CONVOLUTION:
+        {
+            self.title = @"3x3 Convolution";
+            self.filterSettingsSlider.hidden = YES;
+            
+            filter = [[GPUImage3x3ConvolutionFilter alloc] init];
+//            [(GPUImage3x3ConvolutionFilter *)filter setConvolutionKernel:(GPUMatrix3x3){
+//                {-2.0f, -1.0f, 0.0f},
+//                {-1.0f,  1.0f, 1.0f},
+//                { 0.0f,  1.0f, 2.0f}
+//            }];
+            [(GPUImage3x3ConvolutionFilter *)filter setConvolutionKernel:(GPUMatrix3x3){
+                {1.0f,  1.0f, 1.0f},
+                {1.0f, -8.0f, 1.0f},
+                {1.0f,  1.0f, 1.0f}
+            }];
+//            [(GPUImage3x3ConvolutionFilter *)filter setConvolutionKernel:(GPUMatrix3x3){
+//                { 0.11f,  0.11f, 0.11f},
+//                { 0.11f,  0.11f, 0.11f},
+//                { 0.11f,  0.11f, 0.11f}
+//            }];
+        }; break;
+        case GPUIMAGE_EMBOSS:
+        {
+            self.title = @"Emboss";
+            self.filterSettingsSlider.hidden = NO;
+            
+            [self.filterSettingsSlider setMinimumValue:0.0];
+            [self.filterSettingsSlider setMaximumValue:5.0];
+            [self.filterSettingsSlider setValue:1.0];
+            
+            filter = [[GPUImageEmbossFilter alloc] init];
+        }; break;
         case GPUIMAGE_POSTERIZE:
         {
             self.title = @"Posterize";
@@ -601,6 +633,7 @@
         case GPUIMAGE_CHROMAKEY: [(GPUImageChromaKeyBlendFilter *)filter setThresholdSensitivity:[(UISlider *)sender value]]; break;
         case GPUIMAGE_KUWAHARA: [(GPUImageKuwaharaFilter *)filter setRadius:round([(UISlider *)sender value])]; break;
         case GPUIMAGE_SWIRL: [(GPUImageSwirlFilter *)filter setAngle:[(UISlider *)sender value]]; break;
+        case GPUIMAGE_EMBOSS: [(GPUImageEmbossFilter *)filter setIntensity:[(UISlider *)sender value]]; break;
 //        case GPUIMAGE_BULGE: [(GPUImageBulgeDistortionFilter *)filter setRadius:[(UISlider *)sender value]]; break;
         case GPUIMAGE_BULGE: [(GPUImageBulgeDistortionFilter *)filter setScale:[(UISlider *)sender value]]; break;
         case GPUIMAGE_PINCH: [(GPUImagePinchDistortionFilter *)filter setScale:[(UISlider *)sender value]]; break;

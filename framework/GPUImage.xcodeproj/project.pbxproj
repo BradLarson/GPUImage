@@ -150,6 +150,10 @@
 		BCF3D68C153CC124009A1FE5 /* GPUImageTextureInput.m in Sources */ = {isa = PBXBuildFile; fileRef = BCF3D68A153CC124009A1FE5 /* GPUImageTextureInput.m */; };
 		BCF3D6DD153CFF61009A1FE5 /* GPUImageTiltShiftFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = BCF3D6DB153CFF61009A1FE5 /* GPUImageTiltShiftFilter.h */; };
 		BCF3D6DE153CFF61009A1FE5 /* GPUImageTiltShiftFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = BCF3D6DC153CFF61009A1FE5 /* GPUImageTiltShiftFilter.m */; };
+		BCF3D70A153DCC9A009A1FE5 /* GPUImage3x3ConvolutionFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = BCF3D708153DCC9A009A1FE5 /* GPUImage3x3ConvolutionFilter.h */; };
+		BCF3D70B153DCC9A009A1FE5 /* GPUImage3x3ConvolutionFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = BCF3D709153DCC9A009A1FE5 /* GPUImage3x3ConvolutionFilter.m */; };
+		BCF3D70F153DF9E7009A1FE5 /* GPUImageEmbossFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = BCF3D70D153DF9E6009A1FE5 /* GPUImageEmbossFilter.h */; };
+		BCF3D710153DF9E7009A1FE5 /* GPUImageEmbossFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = BCF3D70E153DF9E6009A1FE5 /* GPUImageEmbossFilter.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -309,6 +313,10 @@
 		BCF3D68A153CC124009A1FE5 /* GPUImageTextureInput.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GPUImageTextureInput.m; path = Source/GPUImageTextureInput.m; sourceTree = SOURCE_ROOT; };
 		BCF3D6DB153CFF61009A1FE5 /* GPUImageTiltShiftFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GPUImageTiltShiftFilter.h; path = Source/GPUImageTiltShiftFilter.h; sourceTree = SOURCE_ROOT; };
 		BCF3D6DC153CFF61009A1FE5 /* GPUImageTiltShiftFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GPUImageTiltShiftFilter.m; path = Source/GPUImageTiltShiftFilter.m; sourceTree = SOURCE_ROOT; };
+		BCF3D708153DCC9A009A1FE5 /* GPUImage3x3ConvolutionFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GPUImage3x3ConvolutionFilter.h; path = Source/GPUImage3x3ConvolutionFilter.h; sourceTree = SOURCE_ROOT; };
+		BCF3D709153DCC9A009A1FE5 /* GPUImage3x3ConvolutionFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GPUImage3x3ConvolutionFilter.m; path = Source/GPUImage3x3ConvolutionFilter.m; sourceTree = SOURCE_ROOT; };
+		BCF3D70D153DF9E6009A1FE5 /* GPUImageEmbossFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GPUImageEmbossFilter.h; path = Source/GPUImageEmbossFilter.h; sourceTree = SOURCE_ROOT; };
+		BCF3D70E153DF9E6009A1FE5 /* GPUImageEmbossFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GPUImageEmbossFilter.m; path = Source/GPUImageEmbossFilter.m; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -519,6 +527,10 @@
 				BCC1E60F152156620006EFA5 /* GPUImageUnsharpMaskFilter.m */,
 				BCF3D6DB153CFF61009A1FE5 /* GPUImageTiltShiftFilter.h */,
 				BCF3D6DC153CFF61009A1FE5 /* GPUImageTiltShiftFilter.m */,
+				BCF3D708153DCC9A009A1FE5 /* GPUImage3x3ConvolutionFilter.h */,
+				BCF3D709153DCC9A009A1FE5 /* GPUImage3x3ConvolutionFilter.m */,
+				BCF3D70D153DF9E6009A1FE5 /* GPUImageEmbossFilter.h */,
+				BCF3D70E153DF9E6009A1FE5 /* GPUImageEmbossFilter.m */,
 			);
 			name = "Image processing";
 			sourceTree = "<group>";
@@ -676,6 +688,8 @@
 				BCABED9015263CF20098A93E /* GPUImageStretchDistortionFilter.h in Headers */,
 				BCF3D68B153CC124009A1FE5 /* GPUImageTextureInput.h in Headers */,
 				BCF3D6DD153CFF61009A1FE5 /* GPUImageTiltShiftFilter.h in Headers */,
+				BCF3D70A153DCC9A009A1FE5 /* GPUImage3x3ConvolutionFilter.h in Headers */,
+				BCF3D70F153DF9E7009A1FE5 /* GPUImageEmbossFilter.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -842,6 +856,8 @@
 				BCABED9115263CF20098A93E /* GPUImageStretchDistortionFilter.m in Sources */,
 				BCF3D68C153CC124009A1FE5 /* GPUImageTextureInput.m in Sources */,
 				BCF3D6DE153CFF61009A1FE5 /* GPUImageTiltShiftFilter.m in Sources */,
+				BCF3D70B153DCC9A009A1FE5 /* GPUImage3x3ConvolutionFilter.m in Sources */,
+				BCF3D710153DF9E7009A1FE5 /* GPUImageEmbossFilter.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

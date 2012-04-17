@@ -79,6 +79,8 @@
 
 - (void)dealloc
 {
+    [self destroyDataFBO];
+    
     if (_rawBytesForImage != NULL)
     {
         free(_rawBytesForImage);

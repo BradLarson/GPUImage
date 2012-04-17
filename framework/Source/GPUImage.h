@@ -65,3 +65,5 @@
 #import "GPUImagePolarPixellateFilter.h"
 #import "GPUImageStretchDistortionFilter.h"
 #import "GPUImageTiltShiftFilter.h"
+#import "GPUImage3x3ConvolutionFilter.h"
+#import "GPUImageEmbossFilter.h"
