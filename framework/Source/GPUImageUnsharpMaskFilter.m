@@ -47,7 +47,6 @@ NSString *const kGPUImageUnsharpMaskFragmentShaderString = SHADER_STRING
     
     // To prevent double updating of this filter, disable updates from the sharp image side
     targetToIgnoreForUpdates = unsharpMaskFilter;
-//    unsharpMaskFilter.shouldIgnoreUpdatesToThisTarget = YES;
     
     self.initialFilters = [NSArray arrayWithObjects:blurFilter, unsharpMaskFilter, nil];
     self.terminalFilter = unsharpMaskFilter;

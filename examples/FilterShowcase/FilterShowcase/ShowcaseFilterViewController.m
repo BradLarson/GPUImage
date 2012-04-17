@@ -279,6 +279,20 @@
             
             filter = [[GPUImageToonFilter alloc] init];
         }; break;            
+        case GPUIMAGE_TILTSHIFT:
+        {
+            self.title = @"Tilt Shift";
+            self.filterSettingsSlider.hidden = NO;
+            
+            [self.filterSettingsSlider setMinimumValue:0.2];
+            [self.filterSettingsSlider setMaximumValue:0.8];
+            [self.filterSettingsSlider setValue:0.5];
+            
+            filter = [[GPUImageTiltShiftFilter alloc] init];
+            [(GPUImageTiltShiftFilter *)filter setTopFocusLevel:0.4];
+            [(GPUImageTiltShiftFilter *)filter setBottomFocusLevel:0.6];
+            [(GPUImageTiltShiftFilter *)filter setFocusFallOffRate:0.2];
+        }; break;
         case GPUIMAGE_CGA:
         {
             self.title = @"CGA Colorspace";
@@ -547,7 +561,7 @@
         [rotationFilter addTarget:filter];
         videoCamera.runBenchmark = YES;
         
-        if (filterType != GPUIMAGE_UNSHARPMASK)
+        if ( (filterType != GPUIMAGE_UNSHARPMASK) && (filterType != GPUIMAGE_TILTSHIFT) )
         {
             // The picture is only used for two-image blend filters
             UIImage *inputImage = [UIImage imageNamed:@"WID-small.jpg"];
@@ -607,6 +621,12 @@
             perspectiveTransform = CATransform3DRotate(perspectiveTransform, [(UISlider*)sender value], 0.0, 1.0, 0.0);
 
             [(GPUImageTransformFilter *)filter setTransform3D:perspectiveTransform];            
+        }; break;
+        case GPUIMAGE_TILTSHIFT:
+        {
+            CGFloat midpoint = [(UISlider *)sender value];
+            [(GPUImageTiltShiftFilter *)filter setTopFocusLevel:midpoint - 0.1];
+            [(GPUImageTiltShiftFilter *)filter setBottomFocusLevel:midpoint + 0.1];
         }; break;
         default: break;
     }

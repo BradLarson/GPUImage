@@ -111,6 +111,12 @@ For example, an application that takes in live video from the camera, converts t
   - *excludeCirclePoint*: The center of the circular area being excluded from the blur
   - *excludeBlurSize*: The size of the area between the blurred portion and the clear circle 
 
+- **GPUImageTiltShiftFilter**: A simulated tilt shift lens effect
+  - *blurSize*: A multiplier for the size of the out-of-focus blur, ranging from 0.0 on up, with a default of 2.0
+  - *topFocusLevel*: The normalized location of the top of the in-focus area in the image, this value should be lower than bottomFocusLevel, default 0.4
+  - *bottomFocusLevel*: The normalized location of the bottom of the in-focus area in the image, this value should be higher than topFocusLevel, default 0.6
+  - *focusFallOffRate*: The rate at which the image gets blurry away from the in-focus region, default 0.2
+
 - **GPUImageBoxBlurFilter**: A hardware-accelerated 9-hit box blur of an image
 
 ### Blending modes ###

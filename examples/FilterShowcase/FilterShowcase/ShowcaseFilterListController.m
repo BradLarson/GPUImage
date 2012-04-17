@@ -83,6 +83,7 @@
 		case GPUIMAGE_SOBELEDGEDETECTION: cell.textLabel.text = @"Sobel edge detection"; break;
 		case GPUIMAGE_SKETCH: cell.textLabel.text = @"Sketch"; break;
 		case GPUIMAGE_TOON: cell.textLabel.text = @"Toon"; break;
+		case GPUIMAGE_TILTSHIFT: cell.textLabel.text = @"Tilt shift"; break;
 		case GPUIMAGE_CGA: cell.textLabel.text = @"CGA colorspace"; break;
 		case GPUIMAGE_POSTERIZE: cell.textLabel.text = @"Posterize"; break;
 		case GPUIMAGE_SWIRL: cell.textLabel.text = @"Swirl"; break;

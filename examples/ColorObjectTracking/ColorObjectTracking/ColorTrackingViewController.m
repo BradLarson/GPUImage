@@ -116,7 +116,6 @@
 	
 	trackingDot.actions = newActions;
     
-    //	[glView.layer addSublayer:trackingDot];
 	trackingDot.position = CGPointMake(100.0f, 100.0f);
 	trackingDot.opacity = 0.0f;
     

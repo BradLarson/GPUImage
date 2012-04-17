@@ -64,3 +64,4 @@
 #import "GPUImageCGAColorspaceFilter.h"
 #import "GPUImagePolarPixellateFilter.h"
 #import "GPUImageStretchDistortionFilter.h"
+#import "GPUImageTiltShiftFilter.h"
