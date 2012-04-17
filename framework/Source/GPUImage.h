@@ -67,3 +67,5 @@
 #import "GPUImageTiltShiftFilter.h"
 #import "GPUImage3x3ConvolutionFilter.h"
 #import "GPUImageEmbossFilter.h"
+#import "GPUImageCannyEdgeDetectionFilter.h"
+#import "GPUImageThresholdEdgeDetection.h"
