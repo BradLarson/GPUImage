@@ -33,7 +33,7 @@
 //    [(GPUImageTiltShiftFilter *)filter setFocusFallOffRate:0.2];
     
 //    filter = [[GPUImageSketchFilter alloc] init];
-//    filter = [[GPUImageUnsharpMaskFilter alloc] init];
+//    filter = [[GPUImageSmoothToonFilter alloc] init];
     GPUImageRotationFilter *rotationFilter = [[GPUImageRotationFilter alloc] initWithRotation:kGPUImageRotateRight];
     
     [videoCamera addTarget:rotationFilter];

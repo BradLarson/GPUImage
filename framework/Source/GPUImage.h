@@ -30,6 +30,7 @@
 #import "GPUImageSobelEdgeDetectionFilter.h"
 #import "GPUImageSketchFilter.h"
 #import "GPUImageToonFilter.h"
+#import "GPUImageSmoothToonFilter.h"
 #import "GPUImageMultiplyBlendFilter.h"
 #import "GPUImageDissolveBlendFilter.h"
 #import "GPUImageKuwaharaFilter.h"

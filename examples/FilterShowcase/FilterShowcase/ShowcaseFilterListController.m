@@ -84,6 +84,7 @@
 		case GPUIMAGE_CANNYEDGEDETECTION: cell.textLabel.text = @"Canny edge detection"; break;
 		case GPUIMAGE_SKETCH: cell.textLabel.text = @"Sketch"; break;
 		case GPUIMAGE_TOON: cell.textLabel.text = @"Toon"; break;
+		case GPUIMAGE_SMOOTHTOON: cell.textLabel.text = @"Smooth toon"; break;
 		case GPUIMAGE_TILTSHIFT: cell.textLabel.text = @"Tilt shift"; break;
 		case GPUIMAGE_CGA: cell.textLabel.text = @"CGA colorspace"; break;
 		case GPUIMAGE_CONVOLUTION: cell.textLabel.text = @"3x3 convolution"; break;

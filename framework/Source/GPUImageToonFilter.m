@@ -22,12 +22,11 @@ NSString *const kGPUImageToonFragmentShaderString = SHADER_STRING
  uniform sampler2D inputImageTexture;
  
  uniform highp float intensity;
+ uniform highp float threshold;
+ uniform highp float quantizationLevels;
  
  const highp vec3 W = vec3(0.2125, 0.7154, 0.0721);
  
- const highp float threshold = 0.2;
- const highp float quantize = 10.0;
-
  void main()
  {
      vec4 textureColor = texture2D(inputImageTexture, textureCoordinate);
@@ -46,7 +45,7 @@ NSString *const kGPUImageToonFragmentShaderString = SHADER_STRING
      
      float mag = length(vec2(h, v));
 
-     vec3 posterizedImageColor = floor((textureColor.rgb * quantize) + 0.5) / quantize;
+     vec3 posterizedImageColor = floor((textureColor.rgb * quantizationLevels) + 0.5) / quantizationLevels;
      
      float thresholdTest = 1.0 - step(threshold, mag);
      
@@ -72,6 +71,8 @@ NSString *const kGPUImageToonFragmentShaderString = SHADER_STRING
 
 @synthesize imageWidthFactor = _imageWidthFactor; 
 @synthesize imageHeightFactor = _imageHeightFactor; 
+@synthesize threshold = _threshold; 
+@synthesize quantizationLevels = _quantizationLevels; 
 
 #pragma mark -
 #pragma mark Initialization and teardown
@@ -87,7 +88,12 @@ NSString *const kGPUImageToonFragmentShaderString = SHADER_STRING
     
     imageWidthFactorUniform = [filterProgram uniformIndex:@"imageWidthFactor"];
     imageHeightFactorUniform = [filterProgram uniformIndex:@"imageHeightFactor"];
+    thresholdUniform = [filterProgram uniformIndex:@"threshold"];
+    quantizationLevelsUniform = [filterProgram uniformIndex:@"quantizationLevels"];
     
+    self.threshold = 0.2;
+    self.quantizationLevels = 10.0;    
+
     return self;
 }
 
@@ -126,6 +132,24 @@ NSString *const kGPUImageToonFragmentShaderString = SHADER_STRING
     [GPUImageOpenGLESContext useImageProcessingContext];
     [filterProgram use];
     glUniform1f(imageHeightFactorUniform, 1.0 / _imageHeightFactor);
+}
+
+- (void)setThreshold:(CGFloat)newValue;
+{
+    _threshold = newValue;
+    
+    [GPUImageOpenGLESContext useImageProcessingContext];
+    [filterProgram use];
+    glUniform1f(thresholdUniform, _threshold);
+}
+
+- (void)setQuantizationLevels:(CGFloat)newValue;
+{
+    _quantizationLevels = newValue;
+    
+    [GPUImageOpenGLESContext useImageProcessingContext];
+    [filterProgram use];
+    glUniform1f(quantizationLevelsUniform, _quantizationLevels);
 }
 
 
