@@ -62,6 +62,10 @@
     
     GPUImagePicture *stillImageSource = [[GPUImagePicture alloc] initWithImage:inputImage];
     GPUImageSepiaFilter *stillImageFilter = [[GPUImageSepiaFilter alloc] init];
+    GPUImageVignetteFilter *vignetteImageFilter = [[GPUImageVignetteFilter alloc] init];
+    vignetteImageFilter.x = 0.6;
+    vignetteImageFilter.y = 0.4;
+    
 //    GPUImageSketchFilter *stillImageFilter = [[GPUImageSketchFilter alloc] init];
     
     // There's a problem with the Kuwahara filter where it doesn't finish rendering before the image is extracted from it.
@@ -70,9 +74,10 @@
 //    stillImageFilter.radius = 9;
     
     [stillImageSource addTarget:stillImageFilter];
+    [stillImageFilter addTarget:vignetteImageFilter];
     [stillImageSource processImage];
     
-    UIImage *currentFilteredVideoFrame = [stillImageFilter imageFromCurrentlyProcessedOutput];
+    UIImage *currentFilteredVideoFrame = [vignetteImageFilter imageFromCurrentlyProcessedOutput];
     
     // Do a simpler image filtering
 //    GPUImageSepiaFilter *stillImageFilter2 = [[GPUImageSepiaFilter alloc] init];

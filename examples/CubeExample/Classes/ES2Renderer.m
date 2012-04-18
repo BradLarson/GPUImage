@@ -1,9 +1,5 @@
 #import "ES2Renderer.h"
 
-#define DRAWTEXTURE 1
-
-//#define MSAA 1
-
 // uniform index
 enum {
     UNIFORM_MODELVIEWMATRIX,
@@ -35,8 +31,8 @@ enum {
 {
     if ((self = [super init]))
     {
-//        context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
-        context = [[GPUImageOpenGLESContext sharedImageProcessingOpenGLESContext] context];
+        // Need to use a share group based on the GPUImage context to share textures with the 3-D scene
+        context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2 sharegroup:[[[GPUImageOpenGLESContext sharedImageProcessingOpenGLESContext] context] sharegroup]];
 
         if (!context || ![EAGLContext setCurrentContext:context] || ![self loadShaders])
         {
@@ -76,7 +72,6 @@ enum {
         
 
         videoCamera = [[GPUImageVideoCamera alloc] initWithSessionPreset:AVCaptureSessionPreset640x480 cameraPosition:AVCaptureDevicePositionBack];
-//        inputFilter = [[GPUImagePixellateFilter alloc] init];
         inputFilter = [[GPUImageSepiaFilter alloc] init];
         GPUImageRotationFilter *rotationFilter = [[GPUImageRotationFilter alloc] initWithRotation:kGPUImageRotateRight];
         textureOutput = [[GPUImageTextureOutput alloc] init];
@@ -197,8 +192,6 @@ enum {
 
     };
 	
-    // This application only creates a single context which is already set current at this point.
-    // This call is redundant, but needed if dealing with multiple contexts.
     [EAGLContext setCurrentContext:context];
 
     glBindFramebuffer(GL_FRAMEBUFFER, defaultFramebuffer);
@@ -206,22 +199,14 @@ enum {
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
 
-    // This application only creates a single default framebuffer which is already bound at this point.
-    // This call is redundant, but needed if dealing with multiple framebuffers.
-	
-	
-	
     glViewport(0, 0, backingWidth, backingHeight);
 
-//    glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 	
-    // Use shader program
     glUseProgram(program);	
 	    
 	// Perform incremental rotation based on current angles in X and Y	
-
 	if ((xRotation != 0.0) || (yRotation != 0.0))
 	{
 		GLfloat totalRotation = sqrt(xRotation*xRotation + yRotation*yRotation);
@@ -236,35 +221,18 @@ enum {
 	else
 	{
 	}
-//	GLfloat totalRotation = sqrt(xRotation*xRotation + yRotation*yRotation);
-	
-	
-//
-//	CATransform3D temporaryMatrix = CATransform3DRotate(currentCalculatedMatrix, totalRotation * M_PI / 180.0, 
-//														((xRotation/totalRotation) * currentCalculatedMatrix.m12 + (yRotation/totalRotation) * currentCalculatedMatrix.m11),
-//														((xRotation/totalRotation) * currentCalculatedMatrix.m22 + (yRotation/totalRotation) * currentCalculatedMatrix.m21),
-//														((xRotation/totalRotation) * currentCalculatedMatrix.m32 + (yRotation/totalRotation) * currentCalculatedMatrix.m31));
-//	if ((temporaryMatrix.m11 >= -100.0) && (temporaryMatrix.m11 <= 100.0))
-//	{
-//		currentCalculatedMatrix = temporaryMatrix;
-//	}
 	
 	GLfloat currentModelViewMatrix[16];
 	
 
 	[self convert3DTransform:&currentCalculatedMatrix toMatrix:currentModelViewMatrix];
-	
-#ifdef DRAWTEXTURE
-	glEnable(GL_TEXTURE_2D);
-    glActiveTexture(GL_TEXTURE4);
-
     
+    glActiveTexture(GL_TEXTURE4);
 	glBindTexture(GL_TEXTURE_2D, textureForCubeFace);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-#endif
 	
     // Update uniform value
 	glUniform1i(uniforms[UNIFORM_TEXTURE], 4);
@@ -276,31 +244,12 @@ enum {
 	glVertexAttribPointer(ATTRIB_TEXTUREPOSITION, 2, GL_FLOAT, 0, 0, cubeTexCoords);
 	glEnableVertexAttribArray(ATTRIB_TEXTUREPOSITION);
 
-    // Validate program before drawing. This is a good check, but only really necessary in a debug build.
-    // DEBUG macro must be defined in your debug configurations if that's not already the case.
-#if defined(DEBUG)
-    if (![self validateProgram:program])
-    {
-        NSLog(@"Failed to validate program: %d", program);
-        return;
-    }
-#endif
-
-	
 	glDrawArrays(GL_TRIANGLES, 0, 36);
 
-    // Draw
-//	glDrawElements(GL_TRIANGLE_STRIP, 14, GL_UNSIGNED_SHORT, cubeIndices);
-//	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_SHORT, cubeIndices);
-
-    // This application only creates a single color renderbuffer which is already bound at this point.
-    // This call is redundant, but needed if dealing with multiple renderbuffers.	
+    // The flush is required at the end here to make sure the FBO texture is written to before passing it back to GPUImage
+    glFlush();
 
 	newFrameAvailableBlock();
-    
-//	glBindRenderbuffer(GL_RENDERBUFFER, colorRenderbuffer);
-//	
-//	[context presentRenderbuffer:GL_RENDERBUFFER];
 }
 
 - (BOOL)compileShader:(GLuint *)shader type:(GLenum)type file:(NSString *)file
