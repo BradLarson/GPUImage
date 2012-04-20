@@ -45,14 +45,13 @@
     
     sourcePicture = [[GPUImagePicture alloc] initWithImage:inputImage smoothlyScaleOutput:YES];
     sepiaFilter = [[GPUImageSepiaFilter alloc] init];
-    sepiaFilter2 = [[GPUImageSepiaFilter alloc] init];
     
     GPUImageView *imageView = (GPUImageView *)self.view;
+    [sepiaFilter forceProcessingAtSize:imageView.sizeInPixels]; // This is now needed to make the filter run at the smaller output size
     
     [sourcePicture addTarget:sepiaFilter];
-    [sepiaFilter addTarget:sepiaFilter2];
-    [sepiaFilter2 addTarget:imageView];
-    
+    [sepiaFilter addTarget:imageView];
+
     [sourcePicture processImage];
 }
 
@@ -63,6 +62,10 @@
     
     GPUImagePicture *stillImageSource = [[GPUImagePicture alloc] initWithImage:inputImage];
     GPUImageSepiaFilter *stillImageFilter = [[GPUImageSepiaFilter alloc] init];
+    GPUImageVignetteFilter *vignetteImageFilter = [[GPUImageVignetteFilter alloc] init];
+    vignetteImageFilter.x = 0.6;
+    vignetteImageFilter.y = 0.4;
+    
 //    GPUImageSketchFilter *stillImageFilter = [[GPUImageSketchFilter alloc] init];
     
     // There's a problem with the Kuwahara filter where it doesn't finish rendering before the image is extracted from it.
@@ -71,9 +74,10 @@
 //    stillImageFilter.radius = 9;
     
     [stillImageSource addTarget:stillImageFilter];
+    [stillImageFilter addTarget:vignetteImageFilter];
     [stillImageSource processImage];
     
-    UIImage *currentFilteredVideoFrame = [stillImageFilter imageFromCurrentlyProcessedOutput];
+    UIImage *currentFilteredVideoFrame = [vignetteImageFilter imageFromCurrentlyProcessedOutput];
     
     // Do a simpler image filtering
 //    GPUImageSepiaFilter *stillImageFilter2 = [[GPUImageSepiaFilter alloc] init];
@@ -96,8 +100,7 @@
     if (![dataForPNGFile2 writeToFile:[documentsDirectory stringByAppendingPathComponent:@"Lambeau-filtered2.png"] options:NSAtomicWrite error:&error])
     {
         return;
-    }
-    
+    }    
 }
 
 @end

@@ -29,7 +29,7 @@ BSD-style, with the full license available with the framework in License.txt.
 ## Technical requirements ##
 
 - OpenGL ES 2.0: Applications using this will not run on the original iPhone, iPhone 3G, and 1st and 2nd generation iPod touches
-- iOS 4.0 as a deployment target
+- iOS 4.1 as a deployment target (4.0 didn't have some extensions needed for movie reading). iOS 4.3 is needed as a deployment target if you wish to show live video previews when taking a still photo.
 - iOS 5.0 SDK to build
 - Devices must have a camera to use camera-related functionality (obviously)
 - The framework uses automatic reference counting (ARC), but should support projects using both ARC and manual reference counting if added as a subproject as explained below. For manual reference counting applications targeting iOS 4.x, you'll need add -fobjc-arc to the Other Linker Flags for your application project.
@@ -71,32 +71,65 @@ For example, an application that takes in live video from the camera, converts t
 
 - **GPUImageColorInvertFilter**: Inverts the colors of an image
 
+- **GPUImageGrayscaleFilter**: Converts an image to grayscale (a slightly faster implementation of the saturation filter, without the ability to vary the color contribution)
+
 - **GPUImageSepiaFilter**: Simple sepia tone filter
   - *intensity*: The degree to which the sepia tone replaces the normal image color (0.0 - 1.0, with 1.0 as the default)
+
+- **GPUImageLuminanceThresholdFilter**: Pixels with a luminance above the threshold will appear white, and those below will be black
+  - *threshold*: The luminance threshold, from 0.0 to 1.0, with a default of 0.5
+
+- **GPUImageAdaptiveThresholdFilter**: Determines the local luminance around a pixel, then turns the pixel black if it is below that local luminance and white if above. This can be useful for picking out text under varying lighting conditions.
 
 ### Image processing ###
 
 - **GPUImageRotationFilter**: This lets you rotate an image left or right by 90 degrees, or flip it horizontally or vertically
 
+- **GPUImageTransformFilter**: This applies an arbitrary 2-D or 3-D transformation to an image
+  - *affineTransform*: This takes in a CGAffineTransform to adjust an image in 2-D
+  - *transform3D*: This takes in a CATransform3D to manipulate an image in 3-D
+
 - **GPUImageCropFilter**: This crops an image to a specific region, then passes only that region on to the next stage in the filter
-- *cropRegion*: A rectangular area to crop out of the image, normalized to coordinates from 0.0 - 1.0. The (0.0, 0.0) position is in the upper left of the image.
+  - *cropRegion*: A rectangular area to crop out of the image, normalized to coordinates from 0.0 - 1.0. The (0.0, 0.0) position is in the upper left of the image.
 
 - **GPUImageSharpenFilter**: Sharpens the image
   - *sharpness*: The sharpness adjustment to apply (-4.0 - 4.0, with 0.0 as the default)
 
+- **GPUImageUnsharpMaskFilter**: Applies an unsharp mask
+  - *blurSize*: A multiplier for the underlying blur size, ranging from 0.0 on up, with a default of 1.0
+  - *intensity*: The strength of the sharpening, from 0.0 on up, with a default of 1.0
+
 - **GPUImageFastBlurFilter**: A hardware-accelerated 9-hit Gaussian blur of an image
   - *blurPasses*: The number of times to re-apply this blur on an image. More passes lead to a blurrier image, yet they require more processing power. The default is 1.
 
-- **GPUImageGaussianBlurFilter**: A more generalized Gaussian blur filter
-  - *blurSize*: The fractional area of the image to blur each pixel over
+- **GPUImageGaussianBlurFilter**: A more generalized 9x9 Gaussian blur filter
+  - *blurSize*: A multiplier for the size of the blur, ranging from 0.0 on up, with a default of 1.0
 
 - **GPUImageGaussianSelectiveBlurFilter**: A Gaussian blur that preserves focus within a circular region
-  - *blurSize*: The fractional area of the image to blur each pixel over
+  - *blurSize*: A multiplier for the size of the blur, ranging from 0.0 on up, with a default of 1.0
   - *excludeCircleRadius*: The radius of the circular area being excluded from the blur
   - *excludeCirclePoint*: The center of the circular area being excluded from the blur
   - *excludeBlurSize*: The size of the area between the blurred portion and the clear circle 
 
+- **GPUImageTiltShiftFilter**: A simulated tilt shift lens effect
+  - *blurSize*: A multiplier for the size of the out-of-focus blur, ranging from 0.0 on up, with a default of 2.0
+  - *topFocusLevel*: The normalized location of the top of the in-focus area in the image, this value should be lower than bottomFocusLevel, default 0.4
+  - *bottomFocusLevel*: The normalized location of the bottom of the in-focus area in the image, this value should be higher than topFocusLevel, default 0.6
+  - *focusFallOffRate*: The rate at which the image gets blurry away from the in-focus region, default 0.2
+
+- **GPUImageBoxBlurFilter**: A hardware-accelerated 9-hit box blur of an image
+
+- **GPUImage3x3ConvolutionFilter**: Runs a 3x3 convolution kernel against the image
+  - *convolutionKernel*: The convolution kernel is a 3x3 matrix of values to apply to the pixel and its 8 surrounding pixels. The matrix is specified in row-major order, with the top left pixel being one.one and the bottom right three.three. If the values in the matrix don't add up to 1.0, the image could be brightened or darkened.
+
+- **GPUImageEmbossFilter**: Applies an embossing effect on the image
+  - *intensity*: The strength of the embossing, from  0.0 to 4.0, with 1.0 as the normal level
+
 ### Blending modes ###
+
+- **GPUImageChromaKeyBlendFilter**: Selectively replaces a color in the first image with the second image
+  - *thresholdSensitivity*: How close a color match needs to exist to the target color to be replaced (default of 0.4)
+  - *smoothing*: How smoothly to blend for the color match (default of 0.1)
 
 - **GPUImageDissolveBlendFilter**: Applies a dissolve blend of two images
   - *mix*: The degree with which the second image overrides the first (0.0 - 1.0, with 0.5 as the default)
@@ -128,10 +161,19 @@ For example, an application that takes in live video from the camera, converts t
 - **GPUImagePixellateFilter**: Applies a pixellation effect on an image or video
   - *fractionalWidthOfAPixel*: How large the pixels are, as a fraction of the width and height of the image (0.0 - 1.0, default 0.05)
 
+- **GPUImagePolarPixellateFilter**: Applies a pixellation effect on an image or video, based on polar coordinates instead of Cartesian ones
+  - *center*: The center about which to apply the pixellation, defaulting to (0.5, 0.5)
+  - *pixelSize*: The fractional pixel size, split into width and height components. The default is (0.05, 0.05)
+
 - **GPUImageSobelEdgeDetectionFilter**: Sobel edge detection, with edges highlighted in white
-  - *intensity*: The degree to which the original image colors are replaced by the detected edges (0.0 - 1.0, with 1.0 as the default)
   - *imageWidthFactor*: 
   - *imageHeightFactor*: These parameters affect the visibility of the detected edges
+
+- **GPUImageCannyEdgeDetectionFilter**: This uses a Gaussian blur before applying a Sobel operator to highlight edges
+  - *imageWidthFactor*: 
+  - *imageHeightFactor*: These parameters affect the visibility of the detected edges
+  - *blurSize*: A multiplier for the prepass blur size, ranging from 0.0 on up, with a default of 1.0
+  - *threshold*: Any edge above this threshold will be black, and anything below white. Ranges from 0.0 to 1.0, with 0.5 as the default
 
 - **GPUImageSketchFilter**: Converts video to look like a sketch. This is just the Sobel edge detection filter with the colors inverted
   - *intensity*: The degree to which the original image colors are replaced by the detected edges (0.0 - 1.0, with 1.0 as the default)
@@ -141,11 +183,36 @@ For example, an application that takes in live video from the camera, converts t
 - **GPUImageToonFilter**: This uses Sobel edge detection to place a black border around objects, and then it quantizes the colors present in the image to give a cartoon-like quality to the image.
   - *imageWidthFactor*: 
   - *imageHeightFactor*: These parameters affect the visibility of the detected edges
+  - *threshold*: The sensitivity of the edge detection, with lower values being more sensitive. Ranges from 0.0 to 1.0, with 0.2 as the default
+  - *quantizationLevels*: The number of color levels to represent in the final image. Default is 10.0
+
+- **GPUImageSmoothToonFilter**: This uses a similar process as the GPUImageToonFilter, only it precedes the toon effect with a Gaussian blur to smooth out noise.
+  - *imageWidthFactor*: 
+  - *imageHeightFactor*: These parameters affect the visibility of the detected edges
+  - *blurSize*: A multiplier for the prepass blur size, ranging from 0.0 on up, with a default of 0.5
+  - *threshold*: The sensitivity of the edge detection, with lower values being more sensitive. Ranges from 0.0 to 1.0, with 0.2 as the default
+  - *quantizationLevels*: The number of color levels to represent in the final image. Default is 10.0
+
+- **GPUImagePosterizeFilter**: This reduces the color dynamic range into the number of steps specified, leading to a cartoon-like simple shading of the image.
+  - *colorLevels*: The number of color levels to reduce the image space to. This ranges from 1 to 256, with a default of 10.
 
 - **GPUImageSwirlFilter**: Creates a swirl distortion on the image
   - *radius*: The radius from the center to apply the distortion, with a default of 0.5
   - *center*: The center of the image (in normalized coordinates from 0 - 1.0) about which to twist, with a default of (0.5, 0.5)
   - *angle*: The amount of twist to apply to the image, with a default of 1.0
+
+- **GPUImageBulgeDistortionFilter**: Creates a bulge distortion on the image
+  - *radius*: The radius from the center to apply the distortion, with a default of 0.25
+  - *center*: The center of the image (in normalized coordinates from 0 - 1.0) about which to distort, with a default of (0.5, 0.5)
+  - *scale*: The amount of distortion to apply, from -1.0 to 1.0, with a default of 0.5
+
+- **GPUImagePinchDistortionFilter**: Creates a pinch distortion of the image
+  - *radius*: The radius from the center to apply the distortion, with a default of 1.0
+  - *center*: The center of the image (in normalized coordinates from 0 - 1.0) about which to distort, with a default of (0.5, 0.5)
+  - *scale*: The amount of distortion to apply, from -2.0 to 2.0, with a default of 1.0
+
+- **GPUImageStretchDistortionFilter**: Creates a stretch distortion of the image
+  - *center*: The center of the image (in normalized coordinates from 0 - 1.0) about which to distort, with a default of (0.5, 0.5)
 
 - **GPUImageVignetteFilter**: Performs a vignetting effect, fading out the image at the edges
   - *x*:
@@ -200,6 +267,47 @@ This sets up a video source coming from the iOS device's back-facing camera, usi
 
 For blending filters and others that take in more than one image, you can create multiple outputs and add a single filter as a target for both of these outputs. The order with which the outputs are added as targets will affect the order in which the input images are blended or otherwise processed.
 
+Also, if you wish to enable microphone audio capture for recording to a movie, you'll need to set the audioEncodingTarget of the camera to be your movie writer, like for the following:
+
+    videoCamera.audioEncodingTarget = movieWriter;
+
+
+### Capturing and filtering a still photo ###
+
+To capture and filter still photos, you can use a process similar to the one for filtering video. Instead of a GPUImageVideoCamera, you use a GPUImageStillCamera:
+
+	stillCamera = [[GPUImageStillCamera alloc] init];
+	filter = [[GPUImageGammaFilter alloc] init];
+	GPUImageRotationFilter *rotationFilter = [[GPUImageRotationFilter alloc] initWithRotation:kGPUImageRotateRight];
+
+	[stillCamera addTarget:rotationFilter];
+	[rotationFilter addTarget:filter];
+	GPUImageView *filterView = (GPUImageView *)self.view;
+	[filter addTarget:filterView];
+
+	[stillCamera startCameraCapture];
+
+This will give you a live, filtered feed of the still camera's preview video. Note that this preview video is only provided on iOS 4.3 and higher, so you may need to set that as your deployment target if you wish to have this functionality.
+
+Once you want to capture a photo, you use a callback block like the following:
+
+	[stillCamera capturePhotoProcessedUpToFilter:filter withCompletionHandler:^(UIImage *processedImage, NSError *error){
+	    NSData *dataForPNGFile = UIImageJPEGRepresentation(processedImage, 0.8);
+    
+	    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+	    NSString *documentsDirectory = [paths objectAtIndex:0];
+    
+	    NSError *error2 = nil;
+	    if (![dataForPNGFile writeToFile:[documentsDirectory stringByAppendingPathComponent:@"FilteredPhoto.jpg"] options:NSAtomicWrite error:&error2])
+	    {
+	        return;
+	    }
+	}];
+	
+The above code captures a full-size photo processed by the same filter chain used in the preview view and saves that photo to disk as a JPEG in the application's documents directory.
+
+Note that the framework currently can't handle images larger than 2048 pixels wide or high on older devices (those before the iPhone 4S, iPad 2, or Retina iPad) due to texture size limitations. This means that the iPhone 4, whose camera outputs still photos larger than this, won't be able to capture photos like this. A tiling mechanism is being implemented to work around this. All other devices should be able to capture and filter photos using this method.
+
 ### Processing a still image ###
 
 There are a couple of ways to process a still image and create a result. The first way you can do this is by creating a still image source object and manually creating a filter chain:
@@ -218,6 +326,7 @@ For single filters that you wish to apply to an image, you can simply do the fol
 
 	GPUImageSepiaFilter *stillImageFilter2 = [[GPUImageSepiaFilter alloc] init];
 	UIImage *quickFilteredImage = [stillImageFilter2 imageByFilteringImage:inputImage];
+
 
 ### Writing a custom filter ###
 
@@ -273,6 +382,10 @@ The following is an example of how you would load a sample movie, pass it throug
 	movieWriter = [[GPUImageMovieWriter alloc] initWithMovieURL:movieURL size:CGSizeMake(480.0, 640.0)];
 	[pixellateFilter addTarget:movieWriter];
 
+    movieWriter.shouldPassthroughAudio = YES;
+    movieFile.audioEncodingTarget = movieWriter;
+    [movieFile enableSynchronizedEncodingUsingMovieWriter:movieWriter];
+
 	[movieWriter startRecording];
 	[movieFile startProcessing];
 
@@ -282,6 +395,12 @@ Once recording is finished, you need to remove the movie recorder from the filte
 	[movieWriter finishRecording];
 
 A movie won't be usable until it has been finished off, so if this is interrupted before this point, the recording will be lost.
+
+### Interacting with OpenGL ES ###
+
+GPUImage can both export and import textures from OpenGL ES through the use of its GPUImageTextureOutput and GPUImageTextureInput classes, respectively. This lets you record a movie from an OpenGL ES scene that is rendered to a framebuffer object with a bound texture, or filter video or images and then feed them into OpenGL ES as a texture to be displayed in the scene.
+
+The one caution with this approach is that the textures used in these processes must be shared between GPUImage's OpenGL ES context and any other context via a share group or something similar.
 
 ## Sample applications ##
 
@@ -306,6 +425,12 @@ This demonstrates every filter supplied with GPUImage.
 ### BenchmarkSuite ###
 
 This is used to test the performance of the overall framework by testing it against CPU-bound routines and Core Image. Benchmarks involving still images and video are run against all three, with results displayed in-application.
+
+### CubeExample ###
+
+This demonstrates the ability of GPUImage to interact with OpenGL ES rendering. Frames are captured from the camera, a sepia filter applied to them, and then they are fed into a texture to be applied to the face of a cube you can rotate with your finger. This cube in turn is rendered to a texture-backed framebuffer object, and that texture is fed back into GPUImage to have a pixellation filter applied to it before rendering to screen.
+
+In other words, the path of this application is camera -> sepia tone filter -> cube -> pixellation filter -> display.
 
 ### ColorObjectTracking ###
 

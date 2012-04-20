@@ -1,14 +1,15 @@
 #import <UIKit/UIKit.h>
 
-@class EAGLView;
+@class DisplayViewController;
 
-@interface CubeExampleAppDelegate : NSObject <UIApplicationDelegate> {
+@interface CubeExampleAppDelegate : NSObject <UIApplicationDelegate> 
+{
+    DisplayViewController *rootViewController;
+
     UIWindow *window;
-    EAGLView *glView;
 }
 
-@property (nonatomic, retain) IBOutlet UIWindow *window;
-@property (nonatomic, retain) IBOutlet EAGLView *glView;
+@property (strong, nonatomic) UIWindow *window;
 
 @end
 

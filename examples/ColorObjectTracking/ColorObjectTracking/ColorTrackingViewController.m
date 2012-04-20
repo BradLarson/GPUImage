@@ -116,7 +116,6 @@
 	
 	trackingDot.actions = newActions;
     
-    //	[glView.layer addSublayer:trackingDot];
 	trackingDot.position = CGPointMake(100.0f, 100.0f);
 	trackingDot.opacity = 0.0f;
     
@@ -186,12 +185,24 @@
 {
 	CGFloat currentXTotal = 0.0f, currentYTotal = 0.0f, currentPixelTotal = 0.0f;
 	
-	for (NSUInteger currentPixel = 0; currentPixel < (textureSize.width * textureSize.height); currentPixel++)
-	{
-		currentXTotal += (CGFloat)pixels[currentPixel * 4] / 255.0f;
-		currentYTotal += (CGFloat)pixels[(currentPixel * 4) + 1] / 255.0f;
-		currentPixelTotal += (CGFloat)pixels[(currentPixel * 4) + 3] / 255.0f;
-	}
+    if ([GPUImageOpenGLESContext supportsFastTextureUpload]) 
+    {
+        for (NSUInteger currentPixel = 0; currentPixel < (textureSize.width * textureSize.height); currentPixel++)
+        {
+            currentXTotal += (CGFloat)pixels[(currentPixel * 4) + 2] / 255.0f;
+            currentYTotal += (CGFloat)pixels[(currentPixel * 4) + 1] / 255.0f;
+            currentPixelTotal += (CGFloat)pixels[(currentPixel * 4) + 3] / 255.0f;
+        }
+    }
+    else
+    {
+        for (NSUInteger currentPixel = 0; currentPixel < (textureSize.width * textureSize.height); currentPixel++)
+        {
+            currentXTotal += (CGFloat)pixels[currentPixel * 4] / 255.0f;
+            currentYTotal += (CGFloat)pixels[(currentPixel * 4) + 1] / 255.0f;
+            currentPixelTotal += (CGFloat)pixels[(currentPixel * 4) + 3] / 255.0f;
+        }
+    }
 	
 	return CGPointMake(currentXTotal / currentPixelTotal, currentYTotal / currentPixelTotal);
 }

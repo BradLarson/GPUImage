@@ -4,7 +4,6 @@
 // Hardcode the vertex shader for standard filters, but this can be overridden
 NSString *const kGPUImageVertexShaderString = SHADER_STRING
 (
- 
  attribute vec4 position;
  attribute vec4 inputTextureCoordinate;
  
@@ -15,7 +14,18 @@ NSString *const kGPUImageVertexShaderString = SHADER_STRING
 	gl_Position = position;
 	textureCoordinate = inputTextureCoordinate.xy;
  }
+);
 
+NSString *const kGPUImagePassthroughFragmentShaderString = SHADER_STRING
+(
+ varying highp vec2 textureCoordinate;
+ 
+ uniform sampler2D inputImageTexture;
+ 
+ void main()
+ {
+     gl_FragColor = texture2D(inputImageTexture, textureCoordinate);
+ }
 );
 
 void dataProviderReleaseCallback (void *info, const void *data, size_t size);
@@ -31,6 +41,11 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size);
     {
 		return nil;
     }
+
+    backgroundColorRed = 0.0;
+    backgroundColorGreen = 0.0;
+    backgroundColorBlue = 0.0;
+    backgroundColorAlpha = 0.0;
 
     [GPUImageOpenGLESContext useImageProcessingContext];
     filterProgram = [[GLProgram alloc] initWithVertexShaderString:vertexShaderString fragmentShaderString:fragmentShaderString];
@@ -109,7 +124,7 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size)
     free((void *)data);
 }
 
-- (UIImage *)imageFromCurrentlyProcessedOutput;
+- (UIImage *)imageFromCurrentlyProcessedOutputWithOrientation:(UIImageOrientation)imageOrientation;
 {
     [GPUImageOpenGLESContext useImageProcessingContext];
     [self setOutputFBO];
@@ -127,26 +142,6 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size)
     CGImageRef cgImageFromBytes = CGImageCreate((int)currentFBOSize.width, (int)currentFBOSize.height, 8, 32, 4 * (int)currentFBOSize.width, defaultRGBColorSpace, kCGBitmapByteOrderDefault | kCGImageAlphaLast, dataProvider, NULL, NO, kCGRenderingIntentDefault);
     
     // Capture image with current device orientation
-	UIDeviceOrientation deviceOrientation = [[UIDevice currentDevice] orientation];
-    UIImageOrientation imageOrientation = UIImageOrientationLeft;
-	switch (deviceOrientation)
-    {
-		case UIDeviceOrientationPortrait:
-			imageOrientation = UIImageOrientationUp;
-			break;
-		case UIDeviceOrientationPortraitUpsideDown:
-			imageOrientation = UIImageOrientationDown;
-			break;
-		case UIDeviceOrientationLandscapeLeft:
-			imageOrientation = UIImageOrientationLeft;
-			break;
-		case UIDeviceOrientationLandscapeRight:
-			imageOrientation = UIImageOrientationRight;
-			break;
-		default:
-			imageOrientation = UIImageOrientationUp;
-			break;
-	}
     UIImage *finalImage = [UIImage imageWithCGImage:cgImageFromBytes scale:1.0 orientation:imageOrientation];
 
     CGImageRelease(cgImageFromBytes);
@@ -192,7 +187,7 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size)
     glGenFramebuffers(1, &filterFramebuffer);
     glBindFramebuffer(GL_FRAMEBUFFER, filterFramebuffer);
     
-//    NSLog(@"Filter size: %f, %f", currentFBOSize.width, currentFBOSize.height);
+//    NSLog(@"Filter size: %f, %f for filter: %@", currentFBOSize.width, currentFBOSize.height, self);
     
     glBindTexture(GL_TEXTURE_2D, outputTexture);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (int)currentFBOSize.width, (int)currentFBOSize.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
@@ -244,7 +239,7 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size)
     
     [filterProgram use];
     
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glClearColor(backgroundColorRed, backgroundColorGreen, backgroundColorBlue, backgroundColorAlpha);
     glClear(GL_COLOR_BUFFER_BIT);
 
 	glActiveTexture(GL_TEXTURE2);
@@ -266,17 +261,28 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size)
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);    
 }
 
-- (void)informTargetsAboutNewFrame;
-{
+- (void)informTargetsAboutNewFrameAtTime:(CMTime)frameTime;
+{    
     for (id<GPUImageInput> currentTarget in targets)
     {
-        [currentTarget setInputSize:inputTextureSize];
-        [currentTarget newFrameReady];
+        if (currentTarget != targetToIgnoreForUpdates)
+        {
+            [currentTarget setInputSize:inputTextureSize];
+            [currentTarget newFrameReadyAtTime:frameTime];
+        }
     }
 }
 
 #pragma mark -
 #pragma mark Input parameters
+
+- (void)setBackgroundColorRed:(GLfloat)redComponent green:(GLfloat)greenComponent blue:(GLfloat)blueComponent alpha:(GLfloat)alphaComponent;
+{
+    backgroundColorRed = redComponent;
+    backgroundColorGreen = greenComponent;
+    backgroundColorBlue = blueComponent;
+    backgroundColorAlpha = alphaComponent;
+}
 
 - (void)setInteger:(GLint)newInteger forUniform:(NSString *)uniformName;
 {
@@ -347,7 +353,7 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size)
 #pragma mark -
 #pragma mark GPUImageInput
 
-- (void)newFrameReady;
+- (void)newFrameReadyAtTime:(CMTime)frameTime;
 {
     static const GLfloat squareVertices[] = {
         -1.0f, -1.0f,
@@ -364,7 +370,7 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size)
     };
  
     [self renderToTextureWithVertices:squareVertices textureCoordinates:squareTextureCoordinates sourceTexture:filterSourceTexture];
-    [self informTargetsAboutNewFrame];
+    [self informTargetsAboutNewFrameAtTime:frameTime];
 }
 
 - (NSInteger)nextAvailableTextureIndex;
@@ -395,16 +401,50 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size)
 {
     cachedMaximumOutputSize = CGSizeZero;
     [self destroyFilterFBO];
+    [self deleteOutputTexture];
+    
+    [self initializeOutputTexture];
     [self setFilterFBO];
 }
 
 - (void)setInputSize:(CGSize)newSize;
 {
-    inputTextureSize = newSize;
+    if (overrideInputSize)
+    {
+        return;
+    }
+    
+    if ( (CGSizeEqualToSize(inputTextureSize, CGSizeZero)) || (CGSizeEqualToSize(newSize, CGSizeZero)) )
+    {
+        inputTextureSize = newSize;
+    }
+    else if (!CGSizeEqualToSize(inputTextureSize, newSize))
+    {
+        inputTextureSize = newSize;
+        [self recreateFilterFBO];
+    }
 }
+
+- (void)forceProcessingAtSize:(CGSize)frameSize;
+{
+    if (CGSizeEqualToSize(frameSize, CGSizeZero))
+    {
+        overrideInputSize = NO;
+    }
+    else
+    {
+        overrideInputSize = YES;
+        inputTextureSize = frameSize;
+    }
+}
+
 
 - (CGSize)maximumOutputSize;
 {
+    // I'm temporarily disabling adjustments for smaller output sizes until I figure out how to make this work better
+    return CGSizeZero;
+
+    /*
     if (CGSizeEqualToSize(cachedMaximumOutputSize, CGSizeZero))
     {
         for (id<GPUImageInput> currentTarget in targets)
@@ -417,6 +457,15 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size)
     }
     
     return cachedMaximumOutputSize;
+     */
+}
+
+- (void)endProcessing 
+{
+    for (id<GPUImageInput> currentTarget in targets)
+    {
+        [currentTarget endProcessing];
+    }
 }
 
 #pragma mark -

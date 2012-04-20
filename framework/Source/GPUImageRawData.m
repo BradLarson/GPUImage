@@ -4,22 +4,9 @@
 #import "GLProgram.h"
 #import "GPUImageFilter.h"
 
-NSString *const kGPUImageDataFragmentShaderString = SHADER_STRING
-(
- varying highp vec2 textureCoordinate;
- 
- uniform sampler2D inputImageTexture;
- 
- void main()
- {
-     gl_FragColor = texture2D(inputImageTexture, textureCoordinate);
- }
-);
-
-
 @interface GPUImageRawData ()
 {
-    CGSize imageSize;
+    
     BOOL hasReadFromTheCurrentFrame;
     
 	GLuint dataFramebuffer, dataRenderbuffer;
@@ -62,7 +49,7 @@ NSString *const kGPUImageDataFragmentShaderString = SHADER_STRING
     _rawBytesForImage = NULL;
 
     [GPUImageOpenGLESContext useImageProcessingContext];
-    dataProgram = [[GLProgram alloc] initWithVertexShaderString:kGPUImageVertexShaderString fragmentShaderString:kGPUImageDataFragmentShaderString];
+    dataProgram = [[GLProgram alloc] initWithVertexShaderString:kGPUImageVertexShaderString fragmentShaderString:kGPUImagePassthroughFragmentShaderString];
     
     [dataProgram addAttribute:@"position"];
 	[dataProgram addAttribute:@"inputTextureCoordinate"];
@@ -92,6 +79,8 @@ NSString *const kGPUImageDataFragmentShaderString = SHADER_STRING
 
 - (void)dealloc
 {
+    [self destroyDataFBO];
+    
     if (_rawBytesForImage != NULL)
     {
         free(_rawBytesForImage);
@@ -108,12 +97,71 @@ NSString *const kGPUImageDataFragmentShaderString = SHADER_STRING
     glGenFramebuffers(1, &dataFramebuffer);
     glBindFramebuffer(GL_FRAMEBUFFER, dataFramebuffer);
 
-    glGenRenderbuffers(1, &dataRenderbuffer);
-    glBindRenderbuffer(GL_RENDERBUFFER, dataRenderbuffer);
-
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_RGBA8_OES, (int)imageSize.width, (int)imageSize.height);
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, dataRenderbuffer);	
-	
+    if ([GPUImageOpenGLESContext supportsFastTextureUpload])
+    {
+        CVReturn err = CVOpenGLESTextureCacheCreate(kCFAllocatorDefault, NULL, (__bridge void *)[[GPUImageOpenGLESContext sharedImageProcessingOpenGLESContext] context], NULL, &rawDataTextureCache);
+        if (err) 
+        {
+            NSAssert(NO, @"Error at CVOpenGLESTextureCacheCreate %d");
+        }
+        
+        // Code originally sourced from http://allmybrain.com/2011/12/08/rendering-to-a-texture-with-ios-5-texture-cache-api/
+        
+        CFDictionaryRef empty; // empty value for attr value.
+        CFMutableDictionaryRef attrs;
+        empty = CFDictionaryCreate(kCFAllocatorDefault, // our empty IOSurface properties dictionary
+                                   NULL,
+                                   NULL,
+                                   0,
+                                   &kCFTypeDictionaryKeyCallBacks,
+                                   &kCFTypeDictionaryValueCallBacks);
+        attrs = CFDictionaryCreateMutable(kCFAllocatorDefault,
+                                          1,
+                                          &kCFTypeDictionaryKeyCallBacks,
+                                          &kCFTypeDictionaryValueCallBacks);
+        
+        CFDictionarySetValue(attrs,
+                             kCVPixelBufferIOSurfacePropertiesKey,
+                             empty);
+        
+        //CVPixelBufferPoolCreatePixelBuffer (NULL, [assetWriterPixelBufferInput pixelBufferPool], &renderTarget);
+        
+        CVPixelBufferCreate(kCFAllocatorDefault, 
+                            (int)imageSize.width, 
+                            (int)imageSize.height,
+                            kCVPixelFormatType_32BGRA,
+                            attrs,
+                            &renderTarget);
+        
+        CVOpenGLESTextureRef renderTexture;
+        CVOpenGLESTextureCacheCreateTextureFromImage (kCFAllocatorDefault,
+                                                      rawDataTextureCache, renderTarget,
+                                                      NULL, // texture attributes
+                                                      GL_TEXTURE_2D,
+                                                      GL_RGBA, // opengl format
+                                                      (int)imageSize.width, 
+                                                      (int)imageSize.height,
+                                                      GL_BGRA, // native iOS format
+                                                      GL_UNSIGNED_BYTE,
+                                                      0,
+                                                      &renderTexture);
+        CFRelease(attrs);
+        CFRelease(empty);
+        glBindTexture(CVOpenGLESTextureGetTarget(renderTexture), CVOpenGLESTextureGetName(renderTexture));
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, CVOpenGLESTextureGetName(renderTexture), 0);
+    }
+    else
+    {
+        
+        glGenRenderbuffers(1, &dataRenderbuffer);
+        glBindRenderbuffer(GL_RENDERBUFFER, dataRenderbuffer);
+        
+        glRenderbufferStorage(GL_RENDERBUFFER, GL_RGBA8_OES, (int)imageSize.width, (int)imageSize.height);
+        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, dataRenderbuffer);	
+	}
 	GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
     
     NSAssert(status == GL_FRAMEBUFFER_COMPLETE, @"Incomplete filter FBO: %d", status);
@@ -203,16 +251,30 @@ NSString *const kGPUImageDataFragmentShaderString = SHADER_STRING
     locationToPickFrom.x = MIN(MAX(locationInImage.x, 0.0), (imageSize.width - 1.0));
     locationToPickFrom.y = MIN(MAX((imageSize.height - locationInImage.y), 0.0), (imageSize.height - 1.0));
     
-    return imageColorBytes[(int)(round((locationToPickFrom.y * imageSize.width) + locationToPickFrom.x))];
+    if ([GPUImageOpenGLESContext supportsFastTextureUpload])    
+    {
+        // When reading directly from the texture using the fast texture cache, values are in BGRA, not RGBA
+        
+        GPUByteColorVector flippedColor = imageColorBytes[(int)(round((locationToPickFrom.y * imageSize.width) + locationToPickFrom.x))];
+        GLubyte temporaryRed = flippedColor.red;
+        
+        flippedColor.red = flippedColor.blue;
+        flippedColor.blue = temporaryRed;
+
+        return flippedColor;
+    }
+    else
+    {
+        return imageColorBytes[(int)(round((locationToPickFrom.y * imageSize.width) + locationToPickFrom.x))];
+    }
 }
 
 #pragma mark -
 #pragma mark GPUImageInput protocol
 
-- (void)newFrameReady;
+- (void)newFrameReadyAtTime:(CMTime)frameTime;
 {
     hasReadFromTheCurrentFrame = NO;
-
     [self.delegate newImageFrameAvailableFromDataSource:self];
 }
 
@@ -235,27 +297,53 @@ NSString *const kGPUImageDataFragmentShaderString = SHADER_STRING
     return imageSize;
 }
 
+- (void)endProcessing;
+{
+}
+
+- (BOOL)shouldIgnoreUpdatesToThisTarget;
+{
+    return NO;
+}
+
 #pragma mark -
 #pragma mark Accessors
 
 - (GLubyte *)rawBytesForImage;
 {
-    if (_rawBytesForImage == NULL)
+    if ( (_rawBytesForImage == NULL) && (![GPUImageOpenGLESContext supportsFastTextureUpload]) )
     {
         _rawBytesForImage = (GLubyte *) calloc(imageSize.width * imageSize.height * 4, sizeof(GLubyte));
         hasReadFromTheCurrentFrame = NO;
     }
-    
+ 
     if (hasReadFromTheCurrentFrame)
     {
         return _rawBytesForImage;
     }
     else
     {
+        // Note: the fast texture caches speed up 640x480 frame reads from 9.6 ms to 3.1 ms on iPhone 4S
+        
         [GPUImageOpenGLESContext useImageProcessingContext];
+        if ([GPUImageOpenGLESContext supportsFastTextureUpload]) 
+        {
+            CVPixelBufferUnlockBaseAddress(renderTarget, 0);
+//            CVOpenGLESTextureCacheFlush(rawDataTextureCache, 0);
+        }
+        
         [self renderAtInternalSize];
-        glReadPixels(0, 0, imageSize.width, imageSize.height, GL_RGBA, GL_UNSIGNED_BYTE, _rawBytesForImage);
-
+        
+        if ([GPUImageOpenGLESContext supportsFastTextureUpload]) 
+        {
+            CVPixelBufferLockBaseAddress(renderTarget, 0);
+            _rawBytesForImage = (GLubyte *)CVPixelBufferGetBaseAddress(renderTarget);
+        } 
+        else 
+        {
+            glReadPixels(0, 0, imageSize.width, imageSize.height, GL_RGBA, GL_UNSIGNED_BYTE, _rawBytesForImage);
+        }
+        
         return _rawBytesForImage;
     }
     

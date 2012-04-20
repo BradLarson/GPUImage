@@ -41,6 +41,15 @@
     GPUImageFilter *filter1 = [[GPUImageFilter alloc] initWithFragmentShaderFromFile:@"Shader1"];
     GPUImageFilter *filter2 = [[GPUImageFilter alloc] initWithFragmentShaderFromFile:@"Shader2"];
     GPUImageSepiaFilter *filter3 = [[GPUImageSepiaFilter alloc] init];
+
+    // For thumbnails smaller than the input video size, we currently need to make them render at a smaller size.
+    // This is to avoid wasting processing time on larger frames than will be displayed.
+    // You'll need to use -forceProcessingAtSize: with a zero size to re-enable full frame processing of video.
+    
+    [rotationFilter forceProcessingAtSize:view1.sizeInPixels];
+    [filter1 forceProcessingAtSize:view2.sizeInPixels];
+    [filter2 forceProcessingAtSize:view3.sizeInPixels];
+    [filter3 forceProcessingAtSize:view4.sizeInPixels];
     
     [videoCamera addTarget:rotationFilter];
     

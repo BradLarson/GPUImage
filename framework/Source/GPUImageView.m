@@ -4,25 +4,12 @@
 #import "GPUImageOpenGLESContext.h"
 #import "GPUImageFilter.h"
 
-NSString *const kGPUImageDisplayFragmentShaderString = SHADER_STRING
-(
- varying highp vec2 textureCoordinate;
- 
- uniform sampler2D inputImageTexture;
- 
- void main()
- {
-     gl_FragColor = texture2D(inputImageTexture, textureCoordinate);
- }
-);
-
 #pragma mark -
 #pragma mark Private methods and instance variables
 
 @interface GPUImageView () 
 {
     GLuint inputTextureForDisplay;
-    GLint backingWidth, backingHeight;
     GLuint displayRenderbuffer, displayFramebuffer;
     
     GLProgram *displayProgram;
@@ -40,6 +27,8 @@ NSString *const kGPUImageDisplayFragmentShaderString = SHADER_STRING
 @end
 
 @implementation GPUImageView
+
+@synthesize sizeInPixels = _sizeInPixels;
 
 #pragma mark -
 #pragma mark Initialization and teardown
@@ -86,7 +75,7 @@ NSString *const kGPUImageDisplayFragmentShaderString = SHADER_STRING
     eaglLayer.drawableProperties = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:NO], kEAGLDrawablePropertyRetainedBacking, kEAGLColorFormatRGBA8, kEAGLDrawablePropertyColorFormat, nil];		
 
     [GPUImageOpenGLESContext useImageProcessingContext];
-    displayProgram = [[GLProgram alloc] initWithVertexShaderString:kGPUImageVertexShaderString fragmentShaderString:kGPUImageDisplayFragmentShaderString];
+    displayProgram = [[GLProgram alloc] initWithVertexShaderString:kGPUImageVertexShaderString fragmentShaderString:kGPUImagePassthroughFragmentShaderString];
 
     [displayProgram addAttribute:@"position"];
 	[displayProgram addAttribute:@"inputTextureCoordinate"];
@@ -143,8 +132,13 @@ NSString *const kGPUImageDisplayFragmentShaderString = SHADER_STRING
 	
 	[[[GPUImageOpenGLESContext sharedImageProcessingOpenGLESContext] context] renderbufferStorage:GL_RENDERBUFFER fromDrawable:(CAEAGLLayer*)self.layer];
 	
+    GLint backingWidth, backingHeight;
+
 	glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH, &backingWidth);
 	glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &backingHeight);
+    _sizeInPixels.width = (CGFloat)backingWidth;
+    _sizeInPixels.height = (CGFloat)backingHeight;
+    
 //	NSLog(@"Backing width: %d, height: %d", backingWidth, backingHeight);
 
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, displayRenderbuffer);
@@ -177,7 +171,7 @@ NSString *const kGPUImageDisplayFragmentShaderString = SHADER_STRING
     
     glBindFramebuffer(GL_FRAMEBUFFER, displayFramebuffer);
     
-    glViewport(0, 0, backingWidth, backingHeight);
+    glViewport(0, 0, (GLint)_sizeInPixels.width, (GLint)_sizeInPixels.height);
 }
 
 - (void)presentFramebuffer;
@@ -189,7 +183,7 @@ NSString *const kGPUImageDisplayFragmentShaderString = SHADER_STRING
 #pragma mark -
 #pragma mark GPUInput protocol
 
-- (void)newFrameReady;
+- (void)newFrameReadyAtTime:(CMTime)frameTime;
 {
     [GPUImageOpenGLESContext useImageProcessingContext];
     [self setDisplayFramebuffer];
@@ -250,6 +244,30 @@ NSString *const kGPUImageDisplayFragmentShaderString = SHADER_STRING
     else
     {
         return self.bounds.size;
+    }
+}
+
+- (void)endProcessing
+{
+}
+
+- (BOOL)shouldIgnoreUpdatesToThisTarget;
+{
+    return NO;
+}
+
+#pragma mark -
+#pragma mark Accessors
+
+- (CGSize)sizeInPixels;
+{
+    if (CGSizeEqualToSize(_sizeInPixels, CGSizeZero))
+    {
+        return [self maximumOutputSize];
+    }
+    else
+    {
+        return _sizeInPixels;
     }
 }
 

@@ -1,13 +1,21 @@
 #import "CubeExampleAppDelegate.h"
-#import "EAGLView.h"
+#import "DisplayViewController.h"
 
 @implementation CubeExampleAppDelegate
 
 @synthesize window;
-@synthesize glView;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    self.window = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
+    // Override point for customization after application launch.
+    self.window.backgroundColor = [UIColor whiteColor];
+    
+    rootViewController = [[DisplayViewController alloc] initWithNibName:nil bundle:nil];
+    [self.window addSubview:rootViewController.view];
+    
+    [self.window makeKeyAndVisible];
+
     return YES;
 }
 
@@ -26,7 +34,6 @@
 - (void)dealloc
 {
     [window release];
-    [glView release];
 
     [super dealloc];
 }

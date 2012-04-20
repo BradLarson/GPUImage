@@ -4,10 +4,10 @@
 @interface SimpleVideoFilterViewController : UIViewController
 {
     GPUImageVideoCamera *videoCamera;
-    GPUImageFilter *filter;
+    GPUImageOutput<GPUImageInput> *filter;
     GPUImageMovieWriter *movieWriter;
 }
 
-- (IBAction)updatePixelWidth:(id)sender;
+- (IBAction)updateSliderValue:(id)sender;
 
 @end

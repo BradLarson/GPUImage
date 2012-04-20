@@ -6,6 +6,5 @@
 @protocol ESRenderer <NSObject>
 
 - (void)renderByRotatingAroundX:(float)xRotation rotatingAroundY:(float)yRotation;
-- (BOOL)resizeFromLayer:(CAEAGLLayer *)layer;
 
 @end

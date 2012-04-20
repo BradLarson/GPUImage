@@ -1,17 +1,22 @@
 #import <Foundation/Foundation.h>
 #import <AVFoundation/AVFoundation.h>
-#import <CoreMedia/CoreMedia.h>
 #import "GPUImageOpenGLESContext.h"
 #import "GPUImageOutput.h"
 
-@interface GPUImageMovie : GPUImageOutput {
-  CVPixelBufferRef _currentBuffer;
-}
+@interface GPUImageMovie : GPUImageOutput
 
-@property (readwrite, retain) NSURL *url;
+@property(readwrite, retain) NSURL *url;
+@property(readwrite, nonatomic) BOOL runBenchmark;
 
--(id)initWithURL:(NSURL *)url;
--(void)startProcessing;
--(void)endProcessing;
+// Initialization and teardown
+- (id)initWithURL:(NSURL *)url;
+
+// Movie processing
+- (void)enableSynchronizedEncodingUsingMovieWriter:(GPUImageMovieWriter *)movieWriter;
+- (void)readNextVideoFrameFromOutput:(AVAssetReaderTrackOutput *)readerVideoTrackOutput;
+- (void)readNextAudioSampleFromOutput:(AVAssetReaderTrackOutput *)readerAudioTrackOutput;
+- (void)startProcessing;
+- (void)endProcessing;
+- (void)processMovieFrame:(CMSampleBufferRef)movieSampleBuffer; 
 
 @end

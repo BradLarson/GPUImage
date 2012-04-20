@@ -1,8 +1,23 @@
 #import "GPUImageOutput.h"
+#import "GPUImageMovieWriter.h"
+
+void runOnMainQueueWithoutDeadlocking(void (^block)(void))
+{
+	if ([NSThread isMainThread])
+	{
+		block();
+	}
+	else
+	{
+		dispatch_sync(dispatch_get_main_queue(), block);
+	}
+}
 
 @implementation GPUImageOutput
 
 @synthesize shouldSmoothlyScaleOutput = _shouldSmoothlyScaleOutput;
+@synthesize shouldIgnoreUpdatesToThisTarget = _shouldIgnoreUpdatesToThisTarget;
+@synthesize audioEncodingTarget = _audioEncodingTarget;
 
 #pragma mark -
 #pragma mark Initialization and teardown
@@ -38,22 +53,38 @@
 
 - (void)addTarget:(id<GPUImageInput>)newTarget;
 {
-    // Check if contain this target
+    NSInteger nextAvailableTextureIndex = [newTarget nextAvailableTextureIndex];
+    [self addTarget:newTarget atTextureLocation:nextAvailableTextureIndex];
+    if ([newTarget shouldIgnoreUpdatesToThisTarget])
+    {
+        targetToIgnoreForUpdates = newTarget;
+    }
+}
+
+- (void)addTarget:(id<GPUImageInput>)newTarget atTextureLocation:(NSInteger)textureLocation;
+{
     if([targets containsObject:newTarget])
+    {
         return;
+    }
     
     cachedMaximumOutputSize = CGSizeZero;
-    NSInteger nextAvailableTextureIndex = [newTarget nextAvailableTextureIndex];
-    [self setInputTextureForTarget:newTarget atIndex:nextAvailableTextureIndex];
+    [self setInputTextureForTarget:newTarget atIndex:textureLocation];
     [targets addObject:newTarget];
-    [targetTextureIndices addObject:[NSNumber numberWithInteger:nextAvailableTextureIndex]];
+    [targetTextureIndices addObject:[NSNumber numberWithInteger:textureLocation]];
 }
 
 - (void)removeTarget:(id<GPUImageInput>)targetToRemove;
 {
-    // Check if contain this target
     if(![targets containsObject:targetToRemove])
+    {
         return;
+    }
+    
+    if (targetToIgnoreForUpdates == targetToRemove)
+    {
+        targetToIgnoreForUpdates = nil;
+    }
     
     cachedMaximumOutputSize = CGSizeZero;
     [targetToRemove setInputSize:CGSizeZero];
@@ -105,8 +136,58 @@
     }
 }
 
+- (void)forceProcessingAtSize:(CGSize)frameSize;
+{
+    
+}
+
+#pragma mark -
+#pragma mark Still image processing
+
+- (UIImage *)imageFromCurrentlyProcessedOutput;
+{
+	UIDeviceOrientation deviceOrientation = [[UIDevice currentDevice] orientation];
+    UIImageOrientation imageOrientation = UIImageOrientationLeft;
+	switch (deviceOrientation)
+    {
+		case UIDeviceOrientationPortrait:
+			imageOrientation = UIImageOrientationUp;
+			break;
+		case UIDeviceOrientationPortraitUpsideDown:
+			imageOrientation = UIImageOrientationDown;
+			break;
+		case UIDeviceOrientationLandscapeLeft:
+			imageOrientation = UIImageOrientationLeft;
+			break;
+		case UIDeviceOrientationLandscapeRight:
+			imageOrientation = UIImageOrientationRight;
+			break;
+		default:
+			imageOrientation = UIImageOrientationUp;
+			break;
+	}
+    
+    return [self imageFromCurrentlyProcessedOutputWithOrientation:imageOrientation];
+}
+
+- (UIImage *)imageFromCurrentlyProcessedOutputWithOrientation:(UIImageOrientation)imageOrientation;
+{
+    return nil;
+}
+
+- (UIImage *)imageByFilteringImage:(UIImage *)imageToFilter;
+{
+    return nil;
+}
+
 #pragma mark -
 #pragma mark Accessors
 
+- (void)setAudioEncodingTarget:(GPUImageMovieWriter *)newValue;
+{    
+    _audioEncodingTarget = newValue;
+    
+    _audioEncodingTarget.hasAudioTrack = YES;
+}
 
 @end

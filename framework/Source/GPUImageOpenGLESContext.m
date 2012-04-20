@@ -1,5 +1,6 @@
 #import "GPUImageOpenGLESContext.h"
 #import <OpenGLES/EAGLDrawable.h>
+#import <AVFoundation/AVFoundation.h>
 
 @implementation GPUImageOpenGLESContext
 
@@ -42,6 +43,14 @@
 }
 
 #pragma mark -
+#pragma mark Manage fast texture upload
+
++ (BOOL)supportsFastTextureUpload;
+{
+    return (CVOpenGLESTextureCacheCreate != NULL);
+}
+
+#pragma mark -
 #pragma mark Accessors
 
 - (EAGLContext *)context;
@@ -53,7 +62,6 @@
         [EAGLContext setCurrentContext:_context];
         
         // Set up a few global settings for the image processing pipeline
-        glEnable(GL_TEXTURE_2D);
         glDisable(GL_DEPTH_TEST);
     }
     

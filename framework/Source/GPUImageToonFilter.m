@@ -1,5 +1,6 @@
 #import "GPUImageToonFilter.h"
 #import "GPUImageSobelEdgeDetectionFilter.h"
+#import "GPUImage3x3ConvolutionFilter.h"
 
 // Code from "Graphics Shaders: Theory and Practice" by M. Bailey and S. Cunningham 
 NSString *const kGPUImageToonFragmentShaderString = SHADER_STRING
@@ -21,15 +22,14 @@ NSString *const kGPUImageToonFragmentShaderString = SHADER_STRING
  uniform sampler2D inputImageTexture;
  
  uniform highp float intensity;
+ uniform highp float threshold;
+ uniform highp float quantizationLevels;
  
  const highp vec3 W = vec3(0.2125, 0.7154, 0.0721);
  
- const highp float threshold = 0.2;
- const highp float quantize = 10.0;
-
  void main()
  {
-     vec3 textureColor = texture2D(inputImageTexture, textureCoordinate).rgb;
+     vec4 textureColor = texture2D(inputImageTexture, textureCoordinate);
      
      float i00   = textureColor.g;
      float im1m1 = texture2D(inputImageTexture, bottomLeftTextureCoordinate).g;
@@ -45,6 +45,13 @@ NSString *const kGPUImageToonFragmentShaderString = SHADER_STRING
      
      float mag = length(vec2(h, v));
 
+     vec3 posterizedImageColor = floor((textureColor.rgb * quantizationLevels) + 0.5) / quantizationLevels;
+     
+     float thresholdTest = 1.0 - step(threshold, mag);
+     
+     gl_FragColor = vec4(posterizedImageColor * thresholdTest, textureColor.a);
+
+     /*
      if (mag > threshold)
      {
          gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
@@ -53,10 +60,10 @@ NSString *const kGPUImageToonFragmentShaderString = SHADER_STRING
      {
          textureColor *= vec3(quantize);
          textureColor += vec3(0.5);
-         ivec3 integerColor = ivec3(textureColor);
-         textureColor = vec3(integerColor) / quantize;
+         textureColor = floor(textureColor) / quantize;
          gl_FragColor = vec4(textureColor, texture2D(inputImageTexture, topTextureCoordinate).w);
      }
+      */
  }
 );
 
@@ -64,13 +71,15 @@ NSString *const kGPUImageToonFragmentShaderString = SHADER_STRING
 
 @synthesize imageWidthFactor = _imageWidthFactor; 
 @synthesize imageHeightFactor = _imageHeightFactor; 
+@synthesize threshold = _threshold; 
+@synthesize quantizationLevels = _quantizationLevels; 
 
 #pragma mark -
 #pragma mark Initialization and teardown
 
 - (id)init;
 {
-    if (!(self = [self initWithVertexShaderFromString:kGPUImageSobelEdgeDetectionVertexShaderString fragmentShaderFromString:kGPUImageToonFragmentShaderString]))
+    if (!(self = [super initWithVertexShaderFromString:kGPUImageNearbyTexelSamplingVertexShaderString fragmentShaderFromString:kGPUImageToonFragmentShaderString]))
     {
 		return nil;
     }
@@ -79,7 +88,12 @@ NSString *const kGPUImageToonFragmentShaderString = SHADER_STRING
     
     imageWidthFactorUniform = [filterProgram uniformIndex:@"imageWidthFactor"];
     imageHeightFactorUniform = [filterProgram uniformIndex:@"imageHeightFactor"];
+    thresholdUniform = [filterProgram uniformIndex:@"threshold"];
+    quantizationLevelsUniform = [filterProgram uniformIndex:@"quantizationLevels"];
     
+    self.threshold = 0.2;
+    self.quantizationLevels = 10.0;    
+
     return self;
 }
 
@@ -118,6 +132,24 @@ NSString *const kGPUImageToonFragmentShaderString = SHADER_STRING
     [GPUImageOpenGLESContext useImageProcessingContext];
     [filterProgram use];
     glUniform1f(imageHeightFactorUniform, 1.0 / _imageHeightFactor);
+}
+
+- (void)setThreshold:(CGFloat)newValue;
+{
+    _threshold = newValue;
+    
+    [GPUImageOpenGLESContext useImageProcessingContext];
+    [filterProgram use];
+    glUniform1f(thresholdUniform, _threshold);
+}
+
+- (void)setQuantizationLevels:(CGFloat)newValue;
+{
+    _quantizationLevels = newValue;
+    
+    [GPUImageOpenGLESContext useImageProcessingContext];
+    [filterProgram use];
+    glUniform1f(quantizationLevelsUniform, _quantizationLevels);
 }
 
 

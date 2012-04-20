@@ -1,11 +1,11 @@
 #import "GPUImageOutput.h"
-#import <UIKit/UIKit.h>
 
 #define STRINGIZE(x) #x
 #define STRINGIZE2(x) STRINGIZE(x)
 #define SHADER_STRING(text) @ STRINGIZE2(text)
 
 extern NSString *const kGPUImageVertexShaderString;
+extern NSString *const kGPUImagePassthroughFragmentShaderString;
 
 struct GPUVector4 {
     GLfloat one;
@@ -15,6 +15,13 @@ struct GPUVector4 {
 };
 typedef struct GPUVector4 GPUVector4;
 
+struct GPUVector3 {
+    GLfloat one;
+    GLfloat two;
+    GLfloat three;
+};
+typedef struct GPUVector3 GPUVector3;
+
 struct GPUMatrix4x4 {
     GPUVector4 one;
     GPUVector4 two;
@@ -22,6 +29,13 @@ struct GPUMatrix4x4 {
     GPUVector4 four;
 };
 typedef struct GPUMatrix4x4 GPUMatrix4x4;
+
+struct GPUMatrix3x3 {
+    GPUVector3 one;
+    GPUVector3 two;
+    GPUVector3 three;
+};
+typedef struct GPUMatrix3x3 GPUMatrix3x3;
 
 @interface GPUImageFilter : GPUImageOutput <GPUImageInput>
 {
@@ -32,6 +46,7 @@ typedef struct GPUMatrix4x4 GPUMatrix4x4;
     GLProgram *filterProgram;
     GLint filterPositionAttribute, filterTextureCoordinateAttribute;
     GLint filterInputTextureUniform, filterInputTextureUniform2;
+    GLfloat backgroundColorRed, backgroundColorGreen, backgroundColorBlue, backgroundColorAlpha;
     
     CGSize currentFilterSize;
 }
@@ -42,10 +57,6 @@ typedef struct GPUMatrix4x4 GPUMatrix4x4;
 - (id)initWithFragmentShaderFromFile:(NSString *)fragmentShaderFilename;
 - (void)initializeAttributes;
 - (void)setupFilterForSize:(CGSize)filterFrameSize;
-
-// Still image processing
-- (UIImage *)imageFromCurrentlyProcessedOutput;
-- (UIImage *)imageByFilteringImage:(UIImage *)imageToFilter;
 
 - (void)recreateFilterFBO;
 
@@ -58,9 +69,10 @@ typedef struct GPUMatrix4x4 GPUMatrix4x4;
 
 // Rendering
 - (void)renderToTextureWithVertices:(const GLfloat *)vertices textureCoordinates:(const GLfloat *)textureCoordinates sourceTexture:(GLuint)sourceTexture;
-- (void)informTargetsAboutNewFrame;
+- (void)informTargetsAboutNewFrameAtTime:(CMTime)frameTime;
 
 // Input parameters
+- (void)setBackgroundColorRed:(GLfloat)redComponent green:(GLfloat)greenComponent blue:(GLfloat)blueComponent alpha:(GLfloat)alphaComponent;
 - (void)setInteger:(GLint)newInteger forUniform:(NSString *)uniformName;
 - (void)setFloat:(GLfloat)newFloat forUniform:(NSString *)uniformName;
 - (void)setSize:(CGSize)newSize forUniform:(NSString *)uniformName;

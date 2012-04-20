@@ -35,18 +35,18 @@ NSString *const kGPUImageRotationFragmentShaderString =  SHADER_STRING
 
 - (void)setInputSize:(CGSize)newSize;
 {
+    CGSize processedSize = newSize;
+    
     if ( (rotationMode == kGPUImageRotateLeft) || (rotationMode == kGPUImageRotateRight) )
     {
-        inputTextureSize.width = newSize.height;
-        inputTextureSize.height = newSize.width;
+        processedSize.width = newSize.height;
+        processedSize.height = newSize.width;
     }
-    else
-    {
-        inputTextureSize = newSize;
-    }
+    
+    [super setInputSize:processedSize];
 }
 
-- (void)newFrameReady;
+- (void)newFrameReadyAtTime:(CMTime)frameTime;
 {
     static const GLfloat rotationSquareVertices[] = {
         -1.0f, -1.0f,
@@ -99,7 +99,7 @@ NSString *const kGPUImageRotationFragmentShaderString =  SHADER_STRING
         case kGPUImageFlipVertical: [self renderToTextureWithVertices:rotationSquareVertices textureCoordinates:horizontalFlipTextureCoordinates sourceTexture:filterSourceTexture]; break;
    		case kGPUImageRotateRightFlipVertical: [self renderToTextureWithVertices:rotationSquareVertices textureCoordinates:rotateRightVerticalFlipTextureCoordinates sourceTexture:filterSourceTexture]; break;
     }
-    [self informTargetsAboutNewFrame];
+    [self informTargetsAboutNewFrameAtTime:frameTime];
 }
 
 @end

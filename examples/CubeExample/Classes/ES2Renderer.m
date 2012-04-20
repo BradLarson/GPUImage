@@ -1,9 +1,5 @@
 #import "ES2Renderer.h"
 
-#define DRAWTEXTURE 1
-
-//#define MSAA 1
-
 // uniform index
 enum {
     UNIFORM_MODELVIEWMATRIX,
@@ -28,35 +24,54 @@ enum {
 
 @implementation ES2Renderer
 
-// Create an OpenGL ES 2.0 context
-- (id)init
+@synthesize outputTexture;
+@synthesize newFrameAvailableBlock;
+
+- (id)initWithSize:(CGSize)newSize;
 {
     if ((self = [super init]))
     {
-//        context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
-        context = [[GPUImageOpenGLESContext sharedImageProcessingOpenGLESContext] context];
+        // Need to use a share group based on the GPUImage context to share textures with the 3-D scene
+        context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2 sharegroup:[[[GPUImageOpenGLESContext sharedImageProcessingOpenGLESContext] context] sharegroup]];
 
         if (!context || ![EAGLContext setCurrentContext:context] || ![self loadShaders])
         {
             [self release];
             return nil;
         }
+        
+        backingWidth = (int)newSize.width;
+        backingHeight = (int)newSize.height;
 		
 		currentCalculatedMatrix = CATransform3DIdentity;
 		currentCalculatedMatrix = CATransform3DScale(currentCalculatedMatrix, 0.5, 0.5 * (320.0/480.0), 0.5);
+        
+        glActiveTexture(GL_TEXTURE0);
+        glGenTextures(1, &outputTexture);
+        glBindTexture(GL_TEXTURE_2D, outputTexture);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        // This is necessary for non-power-of-two textures
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glBindTexture(GL_TEXTURE_2D, 0);
 
-        glEnable(GL_TEXTURE_2D);
-
-        // Create default framebuffer object. The backing will be allocated for the current layer in -resizeFromLayer
+        glActiveTexture(GL_TEXTURE1);
         glGenFramebuffers(1, &defaultFramebuffer);
         glBindFramebuffer(GL_FRAMEBUFFER, defaultFramebuffer);
-
-        glGenRenderbuffers(1, &colorRenderbuffer);
-        glBindRenderbuffer(GL_RENDERBUFFER, colorRenderbuffer);
-        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, colorRenderbuffer);
         
+        glBindTexture(GL_TEXTURE_2D, outputTexture);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, backingWidth, backingHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, outputTexture, 0);
+        
+        GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+        
+        NSAssert(status == GL_FRAMEBUFFER_COMPLETE, @"Incomplete filter FBO: %d", status);
+        glBindTexture(GL_TEXTURE_2D, 0);
+        
+        
+
         videoCamera = [[GPUImageVideoCamera alloc] initWithSessionPreset:AVCaptureSessionPreset640x480 cameraPosition:AVCaptureDevicePositionBack];
-//        inputFilter = [[GPUImagePixellateFilter alloc] init];
         inputFilter = [[GPUImageSepiaFilter alloc] init];
         GPUImageRotationFilter *rotationFilter = [[GPUImageRotationFilter alloc] initWithRotation:kGPUImageRotateRight];
         textureOutput = [[GPUImageTextureOutput alloc] init];
@@ -75,36 +90,6 @@ enum {
 
 - (void)renderByRotatingAroundX:(float)xRotation rotatingAroundY:(float)yRotation;
 {
- /*   static const GLfloat cubeVertices[] = { 
-        -1.0, -1.0, -1.0, // 0
-         1.0, -1.0, -1.0, // 1
-         1.0,  1.0, -1.0, // 2
-        -1.0,  1.0, -1.0, // 3
-        -1.0, -1.0,  1.0, // 4
-         1.0, -1.0,  1.0, // 5
-         1.0,  1.0,  1.0, // 6
-        -1.0,  1.0,  1.0  // 7
-    };  */
-/*    static const GLushort cubeIndices[] = { 
-        0, 2, 1,
-        0, 3, 2,
-        
-        1, 2, 6,
-        6, 5, 1,
-        
-        4, 5, 6,
-        6, 7, 4,
-        
-        2, 3, 6,
-        6, 3, 7,
-        
-        0, 7, 3,
-        0, 4, 7,
-        
-        0, 1, 5,
-        0, 5, 4
-    };*/
-
     static const GLfloat cubeVertices[] = { 
         -1.0, -1.0, -1.0, // 0
         1.0,  1.0, -1.0, // 2
@@ -155,41 +140,6 @@ enum {
         -1.0, -1.0,  1.0 // 4
     };  
 
-    /*
-	static const GLfloat cubeVertices[] = {
-		-1.0, -1.0,  1.0,
-		1.0, -1.0,  1.0,
-		-1.0,  1.0,  1.0,
-		1.0,  1.0,  1.0,
-		-1.0, -1.0, -1.0,
-		1.0, -1.0, -1.0,
-		-1.0,  1.0, -1.0,
-		1.0,  1.0, -1.0,
-	};
-	
-	static const GLushort cubeIndices[] = {
-		0, 1, 2, 3, 7, 1, 5, 4, 7, 6, 2, 4, 0, 1
-	};
-	*/
-#ifdef DRAWTEXTURE
-    /*
-	const GLfloat cubeTexCoords[] = {
-        1.0, 0.0,
-        0.0, 0.0,
-        1.0, 1.0,
-        0.0, 1.0,
-		0.0, 0.0,
-		1.0, 0.0,
-		0.0, 1.0,
-		1.0, 1.0,
-        1.0, 1.0,
-        0.0, 1.0,
-		0.0, 0.0,
-		1.0, 0.0,
-		0.0, 1.0,
-		1.0, 1.0,
-    };
-*/
 	const GLfloat cubeTexCoords[] = {
         0.0, 0.0,
         1.0, 1.0,
@@ -241,37 +191,22 @@ enum {
         
 
     };
-#endif
 	
-    // This application only creates a single context which is already set current at this point.
-    // This call is redundant, but needed if dealing with multiple contexts.
     [EAGLContext setCurrentContext:context];
 
-#ifdef MSAA
-	glBindFramebuffer(GL_FRAMEBUFFER, msaaFramebuffer); 
-#else
     glBindFramebuffer(GL_FRAMEBUFFER, defaultFramebuffer);
-#endif
 	
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
 
-    // This application only creates a single default framebuffer which is already bound at this point.
-    // This call is redundant, but needed if dealing with multiple framebuffers.
-	
-	
-	
     glViewport(0, 0, backingWidth, backingHeight);
 
-//    glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 	
-    // Use shader program
     glUseProgram(program);	
 	    
 	// Perform incremental rotation based on current angles in X and Y	
-
 	if ((xRotation != 0.0) || (yRotation != 0.0))
 	{
 		GLfloat totalRotation = sqrt(xRotation*xRotation + yRotation*yRotation);
@@ -286,35 +221,18 @@ enum {
 	else
 	{
 	}
-//	GLfloat totalRotation = sqrt(xRotation*xRotation + yRotation*yRotation);
-	
-	
-//
-//	CATransform3D temporaryMatrix = CATransform3DRotate(currentCalculatedMatrix, totalRotation * M_PI / 180.0, 
-//														((xRotation/totalRotation) * currentCalculatedMatrix.m12 + (yRotation/totalRotation) * currentCalculatedMatrix.m11),
-//														((xRotation/totalRotation) * currentCalculatedMatrix.m22 + (yRotation/totalRotation) * currentCalculatedMatrix.m21),
-//														((xRotation/totalRotation) * currentCalculatedMatrix.m32 + (yRotation/totalRotation) * currentCalculatedMatrix.m31));
-//	if ((temporaryMatrix.m11 >= -100.0) && (temporaryMatrix.m11 <= 100.0))
-//	{
-//		currentCalculatedMatrix = temporaryMatrix;
-//	}
 	
 	GLfloat currentModelViewMatrix[16];
 	
 
 	[self convert3DTransform:&currentCalculatedMatrix toMatrix:currentModelViewMatrix];
-	
-#ifdef DRAWTEXTURE
-	glEnable(GL_TEXTURE_2D);
-    glActiveTexture(GL_TEXTURE4);
-
     
+    glActiveTexture(GL_TEXTURE4);
 	glBindTexture(GL_TEXTURE_2D, textureForCubeFace);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-#endif
 	
     // Update uniform value
 	glUniform1i(uniforms[UNIFORM_TEXTURE], 4);
@@ -326,35 +244,12 @@ enum {
 	glVertexAttribPointer(ATTRIB_TEXTUREPOSITION, 2, GL_FLOAT, 0, 0, cubeTexCoords);
 	glEnableVertexAttribArray(ATTRIB_TEXTUREPOSITION);
 
-    // Validate program before drawing. This is a good check, but only really necessary in a debug build.
-    // DEBUG macro must be defined in your debug configurations if that's not already the case.
-#if defined(DEBUG)
-    if (![self validateProgram:program])
-    {
-        NSLog(@"Failed to validate program: %d", program);
-        return;
-    }
-#endif
-
-	
 	glDrawArrays(GL_TRIANGLES, 0, 36);
 
-    // Draw
-//	glDrawElements(GL_TRIANGLE_STRIP, 14, GL_UNSIGNED_SHORT, cubeIndices);
-//	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_SHORT, cubeIndices);
+    // The flush is required at the end here to make sure the FBO texture is written to before passing it back to GPUImage
+    glFlush();
 
-    // This application only creates a single color renderbuffer which is already bound at this point.
-    // This call is redundant, but needed if dealing with multiple renderbuffers.	
-	
-#ifdef MSAA
-	glBindFramebuffer(GL_READ_FRAMEBUFFER_APPLE, msaaFramebuffer); 
-	glBindFramebuffer(GL_DRAW_FRAMEBUFFER_APPLE, defaultFramebuffer);
-	
-	glResolveMultisampleFramebufferAPPLE();
-#endif
-	glBindRenderbuffer(GL_RENDERBUFFER, colorRenderbuffer);
-	
-	[context presentRenderbuffer:GL_RENDERBUFFER];	
+	newFrameAvailableBlock();
 }
 
 - (BOOL)compileShader:(GLuint *)shader type:(GLenum)type file:(NSString *)file
@@ -511,49 +406,6 @@ enum {
         glDeleteShader(fragShader);
 
     return TRUE;
-}
-
-- (BOOL)resizeFromLayer:(CAEAGLLayer *)layer
-{
-    [EAGLContext setCurrentContext:context];
-    // Allocate color buffer backing based on the current layer size
-	glBindFramebuffer(GL_FRAMEBUFFER, defaultFramebuffer);
-    glBindRenderbuffer(GL_RENDERBUFFER, colorRenderbuffer);
-    [context renderbufferStorage:GL_RENDERBUFFER fromDrawable:layer];
-    glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH, &backingWidth);
-    glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &backingHeight);
-
-//    glGenRenderbuffers(1, &depthBuffer);
-//    glBindRenderbuffer(GL_RENDERBUFFER, depthBuffer);
-//    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, backingWidth, backingHeight);
-//    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthBuffer);
-//
-    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-    {
-        NSLog(@"Failed to make complete framebuffer object %x", glCheckFramebufferStatus(GL_FRAMEBUFFER));
-        return NO;
-    }
-#ifdef MSAA
-	// Multisampled antialiasing
-	glGenFramebuffers(1, &msaaFramebuffer); 
-	glGenRenderbuffers(1, &msaaRenderbuffer);
-	
-	glBindFramebuffer(GL_FRAMEBUFFER, msaaFramebuffer); 
-	glBindRenderbuffer(GL_RENDERBUFFER, msaaRenderbuffer);   
-	
-	// 4X MSAA
-	glRenderbufferStorageMultisampleAPPLE(GL_RENDERBUFFER, 4, GL_RGBA8_OES, backingWidth, backingHeight); 
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, msaaRenderbuffer); 
-		
-	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-	{
-		NSLog(@"Failed to make complete framebuffer object %x", glCheckFramebufferStatus(GL_FRAMEBUFFER));
-		return NO;
-		
-	}
-#endif
-	
-    return YES;
 }
 
 - (void)dealloc
