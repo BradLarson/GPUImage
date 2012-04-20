@@ -491,7 +491,7 @@
         }; break;
         case GPUIMAGE_EXCLUSIONBLEND:
         {
-            self.title = @"Exlusion Blend";
+            self.title = @"Exclusion Blend";
             self.filterSettingsSlider.hidden = YES;
             
             filter = [[GPUImageExclusionBlendFilter alloc] init];
