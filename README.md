@@ -88,6 +88,7 @@ For example, an application that takes in live video from the camera, converts t
 - **GPUImageTransformFilter**: This applies an arbitrary 2-D or 3-D transformation to an image
   - *affineTransform*: This takes in a CGAffineTransform to adjust an image in 2-D
   - *transform3D*: This takes in a CATransform3D to manipulate an image in 3-D
+  - *ignoreAspectRatio*: By default, the aspect ratio of the transformed image is maintained, but this can be set to YES to make the transformation independent of aspect ratio
 
 - **GPUImageCropFilter**: This crops an image to a specific region, then passes only that region on to the next stage in the filter
   - *cropRegion*: A rectangular area to crop out of the image, normalized to coordinates from 0.0 - 1.0. The (0.0, 0.0) position is in the upper left of the image.

@@ -249,6 +249,7 @@
             
             filter = [[GPUImageTransformFilter alloc] init];
             [(GPUImageTransformFilter *)filter setAffineTransform:CGAffineTransformMakeRotation(2.0)];
+//            [(GPUImageTransformFilter *)filter setIgnoreAspectRatio:YES];
         }; break;
         case GPUIMAGE_TRANSFORM3D:
         {
