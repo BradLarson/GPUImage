@@ -30,6 +30,8 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
     GLubyte *frameData;
     
     CMTime startTime, previousFrameTime;
+    
+    BOOL isRecording;
 }
 
 // Movie recording
@@ -126,6 +128,8 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 
 - (void)initializeMovie;
 {
+    isRecording = NO;
+    
     frameData = (GLubyte *) malloc((int)videoSize.width * (int)videoSize.height * 4);
 
 //    frameData = (GLubyte *) calloc(videoSize.width * videoSize.height * 4, sizeof(GLubyte));
@@ -197,6 +201,7 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 
 - (void)startRecording;
 {
+    isRecording = YES;
     startTime = kCMTimeInvalid;
 //    [assetWriter startWriting];
     
@@ -205,12 +210,18 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 
 - (void)finishRecording;
 {
+    isRecording = NO;
 //    [assetWriterVideoInput markAsFinished];
     [assetWriter finishWriting];    
 }
 
 - (void)processAudioBuffer:(CMSampleBufferRef)audioBuffer;
 {
+    if (!isRecording)
+    {
+        return;
+    }
+    
     if (_hasAudioTrack)
     {
         CMTime currentSampleTime = CMSampleBufferGetOutputPresentationTimeStamp(audioBuffer);
@@ -365,6 +376,8 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 	glVertexAttribPointer(colorSwizzlingTextureCoordinateAttribute, 2, GL_FLOAT, 0, 0, textureCoordinates);
     
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+    
+    glFlush();
 }
 
 #pragma mark -
@@ -372,6 +385,11 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 
 - (void)newFrameReadyAtTime:(CMTime)frameTime;
 {
+    if (!isRecording)
+    {
+        return;
+    }
+
     // Drop frames forced by images and other things with no time constants
     // Also, if two consecutive times with the same value are added to the movie, it aborts recording, so I bail on that case
     if ( (CMTIME_IS_INVALID(frameTime)) || (CMTIME_COMPARE_INLINE(frameTime, ==, previousFrameTime)) ) 
