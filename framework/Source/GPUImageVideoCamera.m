@@ -231,9 +231,11 @@
         CVReturn err = CVOpenGLESTextureCacheCreateTextureFromImage(kCFAllocatorDefault, coreVideoTextureCache, cameraFrame, NULL, GL_TEXTURE_2D, GL_RGBA, bufferWidth, bufferHeight, GL_BGRA, GL_UNSIGNED_BYTE, 0, &texture);
         
         if (!texture || err) {
-            NSLog(@"CVOpenGLESTextureCacheCreateTextureFromImage failed (error: %d)", err);  
+            NSLog(@"Camera CVOpenGLESTextureCacheCreateTextureFromImage failed (error: %d)", err);
             return;
         }
+        
+//        NSLog(@"Good frame");
         
         outputTexture = CVOpenGLESTextureGetName(texture);
         //        glBindTexture(CVOpenGLESTextureGetTarget(texture), outputTexture);

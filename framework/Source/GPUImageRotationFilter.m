@@ -37,7 +37,7 @@ NSString *const kGPUImageRotationFragmentShaderString =  SHADER_STRING
 {
     CGSize processedSize = newSize;
     
-    if ( (rotationMode == kGPUImageRotateLeft) || (rotationMode == kGPUImageRotateRight) )
+    if ( (rotationMode == kGPUImageRotateLeft) || (rotationMode == kGPUImageRotateRight) || (rotationMode == kGPUImageRotateRightFlipVertical) )
     {
         processedSize.width = newSize.height;
         processedSize.height = newSize.width;
