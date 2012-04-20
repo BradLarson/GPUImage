@@ -267,6 +267,13 @@
             
             filter = [[GPUImageDifferenceBlendFilter alloc] init];
         }; break;
+		case GPUIMAGE_SUBTRACTBLEND:
+        {
+            self.title = @"Subtract Blend";
+            self.filterSettingsSlider.hidden = YES;
+            
+            filter = [[GPUImageSubtractBlendFilter alloc] init];
+        }; break;
         case GPUIMAGE_HARDLIGHTBLEND:
         {
             self.title = @"Hard Light Blend";

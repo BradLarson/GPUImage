@@ -43,6 +43,7 @@
 #import "GPUImageScreenBlendFilter.h"
 #import "GPUImageExclusionBlendFilter.h"
 #import "GPUImageDifferenceBlendFilter.h"
+#import "GPUImageSubtractBlendFilter.h"
 #import "GPUImageHardLightBlendFilter.h"
 #import "GPUImageSoftLightBlendFilter.h"
 #import "GPUImageCropFilter.h"
