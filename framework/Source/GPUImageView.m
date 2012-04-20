@@ -3,6 +3,7 @@
 #import <QuartzCore/QuartzCore.h>
 #import "GPUImageOpenGLESContext.h"
 #import "GPUImageFilter.h"
+#import <AVFoundation/AVFoundation.h>
 
 #pragma mark -
 #pragma mark Private methods and instance variables
@@ -15,6 +16,10 @@
     GLProgram *displayProgram;
     GLint displayPositionAttribute, displayTextureCoordinateAttribute;
     GLint displayInputTextureUniform;
+    
+    CGSize inputImageSize;
+    GLfloat imageVertices[8];
+    GLfloat backgroundColorRed, backgroundColorGreen, backgroundColorBlue, backgroundColorAlpha;
 }
 
 // Initialization and teardown
@@ -24,11 +29,15 @@
 - (void)createDisplayFramebuffer;
 - (void)destroyDisplayFramebuffer;
 
+// Handling fill mode
+- (void)recalculateViewGeometry;
+
 @end
 
 @implementation GPUImageView
 
 @synthesize sizeInPixels = _sizeInPixels;
+@synthesize fillMode = _fillMode;
 
 #pragma mark -
 #pragma mark Initialization and teardown
@@ -70,6 +79,9 @@
         self.contentScaleFactor = [[UIScreen mainScreen] scale];
     }
 
+    [self setBackgroundColorRed:0.0 green:0.0 blue:0.0 alpha:1.0];
+    self.fillMode = kGPUImageFillModePreserveAspectRatio;
+    
     CAEAGLLayer *eaglLayer = (CAEAGLLayer *)self.layer;    
     eaglLayer.opaque = YES;
     eaglLayer.drawableProperties = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:NO], kEAGLDrawablePropertyRetainedBacking, kEAGLColorFormatRGBA8, kEAGLDrawablePropertyColorFormat, nil];		
@@ -181,6 +193,58 @@
 }
 
 #pragma mark -
+#pragma mark Handling fill mode
+
+- (void)recalculateViewGeometry;
+{
+    CGFloat heightScaling, widthScaling;
+    
+    CGSize currentViewSize = self.bounds.size;
+    
+//    CGFloat imageAspectRatio = inputImageSize.width / inputImageSize.height; 
+//    CGFloat viewAspectRatio = currentViewSize.width / currentViewSize.height; 
+    
+    CGRect insetRect = AVMakeRectWithAspectRatioInsideRect(inputImageSize, self.bounds);
+
+    switch(_fillMode)
+    {
+        case kGPUImageFillModeStretch:
+        {
+            widthScaling = 1.0;
+            heightScaling = 1.0;
+        }; break;
+        case kGPUImageFillModePreserveAspectRatio:
+        {
+            widthScaling = insetRect.size.width / currentViewSize.width; 
+            heightScaling = insetRect.size.height / currentViewSize.height; 
+        }; break;
+        case kGPUImageFillModePreserveAspectRatioAndFill:
+        {
+//            CGFloat widthHolder = insetRect.size.width / currentViewSize.width;
+            widthScaling = currentViewSize.height / insetRect.size.height;
+            heightScaling = currentViewSize.width / insetRect.size.width;
+        }; break;
+    }
+    
+    imageVertices[0] = -widthScaling;
+    imageVertices[1] = -heightScaling;
+    imageVertices[2] = widthScaling;
+    imageVertices[3] = -heightScaling;
+    imageVertices[4] = -widthScaling;
+    imageVertices[5] = heightScaling;
+    imageVertices[6] = widthScaling;
+    imageVertices[7] = heightScaling;
+}
+
+- (void)setBackgroundColorRed:(GLfloat)redComponent green:(GLfloat)greenComponent blue:(GLfloat)blueComponent alpha:(GLfloat)alphaComponent;
+{
+    backgroundColorRed = redComponent;
+    backgroundColorGreen = greenComponent;
+    backgroundColorBlue = blueComponent;
+    backgroundColorAlpha = alphaComponent;
+}
+
+#pragma mark -
 #pragma mark GPUInput protocol
 
 - (void)newFrameReadyAtTime:(CMTime)frameTime;
@@ -190,15 +254,8 @@
     
     [displayProgram use];
     
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glClearColor(backgroundColorRed, backgroundColorGreen, backgroundColorBlue, backgroundColorAlpha);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    
-    static const GLfloat squareVertices[] = {
-        -1.0f, -1.0f,
-        1.0f, -1.0f,
-        -1.0f,  1.0f,
-        1.0f,  1.0f,
-    };
     
     static const GLfloat textureCoordinates[] = {
         0.0f, 1.0f,
@@ -211,7 +268,7 @@
 	glBindTexture(GL_TEXTURE_2D, inputTextureForDisplay);
 	glUniform1i(displayInputTextureUniform, 4);	
     
-    glVertexAttribPointer(displayPositionAttribute, 2, GL_FLOAT, 0, 0, squareVertices);
+    glVertexAttribPointer(displayPositionAttribute, 2, GL_FLOAT, 0, 0, imageVertices);
 	glVertexAttribPointer(displayTextureCoordinateAttribute, 2, GL_FLOAT, 0, 0, textureCoordinates);
     
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
@@ -231,8 +288,12 @@
 
 - (void)setInputSize:(CGSize)newSize;
 {
+    if (!CGSizeEqualToSize(inputImageSize, newSize))
+    {
+        inputImageSize = newSize;
+        [self recalculateViewGeometry];
+    }    
 }
-
 
 - (CGSize)maximumOutputSize;
 {
@@ -269,6 +330,12 @@
     {
         return _sizeInPixels;
     }
+}
+
+- (void)setFillMode:(GPUImageFillModeType)newValue;
+{
+    _fillMode = newValue;
+    [self recalculateViewGeometry];
 }
 
 @end

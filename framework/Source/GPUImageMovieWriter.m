@@ -129,9 +129,7 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
     frameData = (GLubyte *) malloc((int)videoSize.width * (int)videoSize.height * 4);
 
 //    frameData = (GLubyte *) calloc(videoSize.width * videoSize.height * 4, sizeof(GLubyte));
-
     NSError *error = nil;
-    
 //    assetWriter = [[AVAssetWriter alloc] initWithURL:movieURL fileType:AVFileTypeAppleM4V error:&error];
     assetWriter = [[AVAssetWriter alloc] initWithURL:movieURL fileType:AVFileTypeQuickTimeMovie error:&error];
     if (error != nil)

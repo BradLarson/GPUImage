@@ -40,6 +40,8 @@
     [rotationFilter addTarget:filter];
     GPUImageView *filterView = (GPUImageView *)self.view;
     [filter addTarget:filterView];
+//    filterView.fillMode = kGPUImageFillModeStretch;
+//    filterView.fillMode = kGPUImageFillModePreserveAspectRatioAndFill;
     
     // Record a movie for 10 s and store it in /Documents, visible via iTunes file sharing
     
