@@ -293,7 +293,6 @@
 				GCC_PREFIX_HEADER = CubeExample_Prefix.pch;
 				"GCC_THUMB_SUPPORT[arch=armv6]" = "";
 				INFOPLIST_FILE = "CubeExample-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 3.0;
 				PRODUCT_NAME = CubeExample;
 			};
 			name = Debug;
@@ -307,7 +306,6 @@
 				GCC_PREFIX_HEADER = CubeExample_Prefix.pch;
 				"GCC_THUMB_SUPPORT[arch=armv6]" = "";
 				INFOPLIST_FILE = "CubeExample-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 3.0;
 				PRODUCT_NAME = CubeExample;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -324,6 +322,8 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = "../../framework/**";
+				IPHONEOS_DEPLOYMENT_TARGET = 4.1;
+				OTHER_LDFLAGS = "-fobjc-arc";
 				PREBINDING = NO;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -340,7 +340,9 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = "../../framework/**";
+				IPHONEOS_DEPLOYMENT_TARGET = 4.1;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				OTHER_LDFLAGS = "-fobjc-arc";
 				PREBINDING = NO;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";

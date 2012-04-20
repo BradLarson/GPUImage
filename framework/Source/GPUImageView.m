@@ -78,10 +78,10 @@
     {
         self.contentScaleFactor = [[UIScreen mainScreen] scale];
     }
-
+    
     [self setBackgroundColorRed:0.0 green:0.0 blue:0.0 alpha:1.0];
     self.fillMode = kGPUImageFillModePreserveAspectRatio;
-    
+
     CAEAGLLayer *eaglLayer = (CAEAGLLayer *)self.layer;    
     eaglLayer.opaque = YES;
     eaglLayer.drawableProperties = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:NO], kEAGLDrawablePropertyRetainedBacking, kEAGLColorFormatRGBA8, kEAGLDrawablePropertyColorFormat, nil];		
@@ -107,7 +107,7 @@
     displayPositionAttribute = [displayProgram attributeIndex:@"position"];
     displayTextureCoordinateAttribute = [displayProgram attributeIndex:@"inputTextureCoordinate"];
     displayInputTextureUniform = [displayProgram uniformIndex:@"inputImageTexture"]; // This does assume a name of "inputTexture" for the fragment shader
-    
+
     [displayProgram use];    
 	glEnableVertexAttribArray(displayPositionAttribute);
 	glEnableVertexAttribArray(displayTextureCoordinateAttribute);

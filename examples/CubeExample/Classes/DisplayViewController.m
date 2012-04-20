@@ -31,7 +31,7 @@
 	self.view = primaryView;
 
     renderer = [[ES2Renderer alloc] initWithSize:[primaryView sizeInPixels]];
-    
+
     textureInput = [[GPUImageTextureInput alloc] initWithTexture:renderer.outputTexture size:[primaryView sizeInPixels]];
     filter = [[GPUImagePixellateFilter alloc] init];
     [(GPUImagePixellateFilter *)filter setFractionalWidthOfAPixel:0.01];

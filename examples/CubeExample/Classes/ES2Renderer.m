@@ -64,9 +64,9 @@ enum {
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, backingWidth, backingHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, outputTexture, 0);
         
-        GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
-        
-        NSAssert(status == GL_FRAMEBUFFER_COMPLETE, @"Incomplete filter FBO: %d", status);
+//        GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+//        
+//        NSAssert(status == GL_FRAMEBUFFER_COMPLETE, @"Incomplete filter FBO: %d", status);
         glBindTexture(GL_TEXTURE_2D, 0);
         
         
