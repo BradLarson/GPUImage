@@ -244,6 +244,9 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size)
 
 	glActiveTexture(GL_TEXTURE2);
 	glBindTexture(GL_TEXTURE_2D, sourceTexture);
+	
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glEnable(GL_BLEND);
 
 	glUniform1i(filterInputTextureUniform, 2);	
 

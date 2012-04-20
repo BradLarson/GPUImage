@@ -47,6 +47,7 @@
 #import "GPUImageScreenBlendFilter.h"
 #import "GPUImageExclusionBlendFilter.h"
 #import "GPUImageDifferenceBlendFilter.h"
+#import "GPUImageSubtractBlendFilter.h"
 #import "GPUImageHardLightBlendFilter.h"
 #import "GPUImageSoftLightBlendFilter.h"
 #import "GPUImageCropFilter.h"
@@ -70,3 +71,4 @@
 #import "GPUImageEmbossFilter.h"
 #import "GPUImageCannyEdgeDetectionFilter.h"
 #import "GPUImageThresholdEdgeDetection.h"
+#import "GPUImageMaskFilter.h"

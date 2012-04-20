@@ -74,6 +74,7 @@
         case GPUIMAGE_CROP: cell.textLabel.text = @"Crop"; break;
         case GPUIMAGE_TRANSFORM: cell.textLabel.text = @"Transform (2-D)"; break;
         case GPUIMAGE_TRANSFORM3D: cell.textLabel.text = @"Transform (3-D)"; break;
+		case GPUIMAGE_MASK: cell.textLabel.text = @"Mask"; break;
         case GPUIMAGE_COLORINVERT: cell.textLabel.text = @"Color invert"; break;
         case GPUIMAGE_GRAYSCALE: cell.textLabel.text = @"Grayscale"; break;
 		case GPUIMAGE_SEPIA: cell.textLabel.text = @"Sepia tone"; break;
@@ -105,6 +106,7 @@
 	    case GPUIMAGE_DARKEN: cell.textLabel.text = @"Darken blend"; break;
 	    case GPUIMAGE_EXCLUSIONBLEND: cell.textLabel.text = @"Exclusion blend"; break;
 	    case GPUIMAGE_DIFFERENCEBLEND: cell.textLabel.text = @"Difference blend"; break;
+		case GPUIMAGE_SUBTRACTBLEND: cell.textLabel.text = @"Subtract blend"; break;
 	    case GPUIMAGE_HARDLIGHTBLEND: cell.textLabel.text = @"Hard light blend"; break;
 	    case GPUIMAGE_SOFTLIGHTBLEND: cell.textLabel.text = @"Soft light blend"; break;
         case GPUIMAGE_KUWAHARA: cell.textLabel.text = @"Kuwahara"; break;
