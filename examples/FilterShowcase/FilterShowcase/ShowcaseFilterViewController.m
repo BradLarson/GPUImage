@@ -228,6 +228,16 @@
             
             filter = [[GPUImageCropFilter alloc] initWithCropRegion:CGRectMake(0.0, 0.0, 0.5, 0.5)];
         }; break;
+		case GPUIMAGE_MASK:
+		{
+            self.title = @"Mask";
+            self.filterSettingsSlider.hidden = YES;
+            
+            filter = [[GPUImageMaskFilter alloc] init];
+			
+			[(GPUImageFilter*)filter setBackgroundColorRed:0.0 green:1.0 blue:0.0 alpha:1.0];
+			
+        }; break;
         case GPUIMAGE_TRANSFORM:
         {
             self.title = @"Transform (2-D)";
@@ -257,7 +267,7 @@
             perspectiveTransform = CATransform3DRotate(perspectiveTransform, 0.75, 0.0, 1.0, 0.0);
             
             [(GPUImageTransformFilter *)filter setTransform3D:perspectiveTransform];
-        }; break;
+		}; break;
         case GPUIMAGE_SOBELEDGEDETECTION:
         {
             self.title = @"Edge Detection";
@@ -625,8 +635,19 @@
         
         if ( (filterType != GPUIMAGE_UNSHARPMASK) && (filterType != GPUIMAGE_TILTSHIFT) )
         {
-            // The picture is only used for two-image blend filters
-            UIImage *inputImage = [UIImage imageNamed:@"WID-small.jpg"];
+			UIImage *inputImage;
+			
+			if (filterType == GPUIMAGE_MASK) 
+			{
+				inputImage = [UIImage imageNamed:@"mask"];
+			}
+			else
+			{
+				// The picture is only used for two-image blend filters
+				inputImage = [UIImage imageNamed:@"WID-small.jpg"];
+			}
+			
+			
             sourcePicture = [[GPUImagePicture alloc] initWithImage:inputImage smoothlyScaleOutput:YES];
             [sourcePicture addTarget:filter];
         }

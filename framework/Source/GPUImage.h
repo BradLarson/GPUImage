@@ -71,3 +71,4 @@
 #import "GPUImageEmbossFilter.h"
 #import "GPUImageCannyEdgeDetectionFilter.h"
 #import "GPUImageThresholdEdgeDetection.h"
+#import "GPUImageMaskFilter.h"

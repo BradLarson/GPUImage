@@ -11,6 +11,7 @@ typedef enum {
     GPUIMAGE_TRANSFORM,
     GPUIMAGE_TRANSFORM3D,
     GPUIMAGE_CROP,
+	GPUIMAGE_MASK,
     GPUIMAGE_GAMMA,
     GPUIMAGE_HAZE,
     GPUIMAGE_SEPIA,
@@ -60,6 +61,7 @@ typedef enum {
     GPUIMAGE_FILTERGROUP,
     GPUIMAGE_NUMFILTERS
 } GPUImageShowcaseFilterType; 
+
 
 @interface ShowcaseFilterViewController : UIViewController
 {
