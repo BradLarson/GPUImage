@@ -16,7 +16,7 @@
 		BC982B1314F046AC0001FF6F /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = BC982B1214F046AC0001FF6F /* main.m */; };
 		BC982B1714F046AC0001FF6F /* ShowcaseAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = BC982B1614F046AC0001FF6F /* ShowcaseAppDelegate.m */; };
 		BC982B2014F048160001FF6F /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC982B1D14F048160001FF6F /* CoreMedia.framework */; };
-		BC982B2114F048160001FF6F /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC982B1E14F048160001FF6F /* CoreVideo.framework */; };
+		BC982B2114F048160001FF6F /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC982B1E14F048160001FF6F /* CoreVideo.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		BC982B2214F048160001FF6F /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC982B1F14F048160001FF6F /* QuartzCore.framework */; };
 		BC982B2414F0481C0001FF6F /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC982B2314F0481C0001FF6F /* AVFoundation.framework */; };
 		BC982B2614F048230001FF6F /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC982B2514F048230001FF6F /* OpenGLES.framework */; };

@@ -15,7 +15,7 @@
 		BCC1E6B11523E3630006EFA5 /* PhotoAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = BCC1E6B01523E3630006EFA5 /* PhotoAppDelegate.m */; };
 		BCC1E6C51523E3A10006EFA5 /* libGPUImage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BCC1E6C01523E3880006EFA5 /* libGPUImage.a */; };
 		BCC1E6CA1523E3C50006EFA5 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCC1E6C61523E3C50006EFA5 /* CoreMedia.framework */; };
-		BCC1E6CB1523E3C50006EFA5 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCC1E6C71523E3C50006EFA5 /* CoreVideo.framework */; };
+		BCC1E6CB1523E3C50006EFA5 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCC1E6C71523E3C50006EFA5 /* CoreVideo.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		BCC1E6CC1523E3C50006EFA5 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCC1E6C81523E3C50006EFA5 /* OpenGLES.framework */; };
 		BCC1E6CD1523E3C50006EFA5 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCC1E6C91523E3C50006EFA5 /* QuartzCore.framework */; };
 		BCC1E6D01523E4780006EFA5 /* PhotoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = BCC1E6CF1523E4780006EFA5 /* PhotoViewController.m */; };

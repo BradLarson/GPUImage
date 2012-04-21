@@ -18,7 +18,7 @@
 		BCB5DDE914E868C0000AF3C2 /* SimpleVideoFileFilterViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = BCB5DDE714E868C0000AF3C2 /* SimpleVideoFileFilterViewController.xib */; };
 		BCB5DDF914E876DD000AF3C2 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCB5DDF814E876DD000AF3C2 /* AVFoundation.framework */; };
 		BCB5DDFC14E876ED000AF3C2 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCB5DDFA14E876ED000AF3C2 /* CoreMedia.framework */; };
-		BCB5DDFD14E876ED000AF3C2 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCB5DDFB14E876ED000AF3C2 /* CoreVideo.framework */; };
+		BCB5DDFD14E876ED000AF3C2 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCB5DDFB14E876ED000AF3C2 /* CoreVideo.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		BCB5DDFF14E87783000AF3C2 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCB5DDFE14E87783000AF3C2 /* QuartzCore.framework */; };
 		BCB5DE0114E87789000AF3C2 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCB5DE0014E87789000AF3C2 /* OpenGLES.framework */; };
 		BCB5DE0214E8779B000AF3C2 /* libGPUImage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BCB5DDF314E8756B000AF3C2 /* libGPUImage.a */; };

@@ -19,7 +19,7 @@
 		BCB5E7A314E346BE00701302 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCB5E7A214E346BE00701302 /* AVFoundation.framework */; };
 		BCB5E7A414E346CE00701302 /* libGPUImage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BC245E1214DDCA1F009FE7EB /* libGPUImage.a */; };
 		BCB5E7A614E346F100701302 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCB5E7A514E346F100701302 /* OpenGLES.framework */; };
-		BCB5E7A814E3471100701302 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCB5E7A714E3471100701302 /* CoreVideo.framework */; };
+		BCB5E7A814E3471100701302 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCB5E7A714E3471100701302 /* CoreVideo.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		BCB5E7AA14E3472100701302 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCB5E7A914E3472100701302 /* CoreMedia.framework */; };
 		BCB5E7B214E460D300701302 /* Threshold.fsh in Resources */ = {isa = PBXBuildFile; fileRef = BCB5E7B114E460D300701302 /* Threshold.fsh */; };
 /* End PBXBuildFile section */

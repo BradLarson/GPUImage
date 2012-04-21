@@ -15,7 +15,7 @@
 		BC01CA9614E7620600967264 /* MultiViewAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = BC01CA9514E7620600967264 /* MultiViewAppDelegate.m */; };
 		BC01CAAA14E762DE00967264 /* libGPUImage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BC01CAA514E762BF00967264 /* libGPUImage.a */; };
 		BC01CAAC14E762E600967264 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC01CAAB14E762E600967264 /* CoreMedia.framework */; };
-		BC01CAAE14E762EE00967264 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC01CAAD14E762EE00967264 /* CoreVideo.framework */; };
+		BC01CAAE14E762EE00967264 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC01CAAD14E762EE00967264 /* CoreVideo.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		BC01CAB014E762F600967264 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC01CAAF14E762F600967264 /* QuartzCore.framework */; };
 		BC01CAB214E762FD00967264 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC01CAB114E762FD00967264 /* OpenGLES.framework */; };
 		BC01CAB514E763FC00967264 /* MultiViewViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = BC01CAB414E763FC00967264 /* MultiViewViewController.m */; };
