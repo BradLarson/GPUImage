@@ -48,6 +48,12 @@ typedef struct GPUMatrix3x3 GPUMatrix3x3;
     GLint filterInputTextureUniform, filterInputTextureUniform2;
     GLfloat backgroundColorRed, backgroundColorGreen, backgroundColorBlue, backgroundColorAlpha;
     
+    BOOL preparedToCaptureImage;
+    
+    CVOpenGLESTextureCacheRef filterTextureCache;
+    CVPixelBufferRef renderTarget;
+    CVOpenGLESTextureRef renderTexture;
+
     CGSize currentFilterSize;
 }
 
@@ -70,6 +76,7 @@ typedef struct GPUMatrix3x3 GPUMatrix3x3;
 // Rendering
 - (void)renderToTextureWithVertices:(const GLfloat *)vertices textureCoordinates:(const GLfloat *)textureCoordinates sourceTexture:(GLuint)sourceTexture;
 - (void)informTargetsAboutNewFrameAtTime:(CMTime)frameTime;
+- (void)prepareForImageCapture;
 
 // Input parameters
 - (void)setBackgroundColorRed:(GLfloat)redComponent green:(GLfloat)greenComponent blue:(GLfloat)blueComponent alpha:(GLfloat)alphaComponent;

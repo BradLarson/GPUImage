@@ -75,6 +75,7 @@
     
     [stillImageSource addTarget:stillImageFilter];
     [stillImageFilter addTarget:vignetteImageFilter];
+    [vignetteImageFilter prepareForImageCapture];
     [stillImageSource processImage];
     
     UIImage *currentFilteredVideoFrame = [vignetteImageFilter imageFromCurrentlyProcessedOutput];

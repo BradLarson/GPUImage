@@ -50,6 +50,7 @@
     
     stillCamera = [[GPUImageStillCamera alloc] init];
     filter = [[GPUImageGammaFilter alloc] init];
+    [filter prepareForImageCapture];
 //    filter = [[GPUImageSepiaFilter alloc] init];
     GPUImageRotationFilter *rotationFilter = [[GPUImageRotationFilter alloc] initWithRotation:kGPUImageRotateRight];
     

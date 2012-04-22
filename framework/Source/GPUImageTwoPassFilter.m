@@ -97,14 +97,74 @@
 
 - (void)createFilterFBOofSize:(CGSize)currentFBOSize;
 {
-    [super createFilterFBOofSize:currentFBOSize];
+    if ([GPUImageOpenGLESContext supportsFastTextureUpload] && preparedToCaptureImage)
+    {
+        preparedToCaptureImage = NO;
+        [super createFilterFBOofSize:currentFBOSize];
+        preparedToCaptureImage = YES;
+    }
+    else
+    {
+        [super createFilterFBOofSize:currentFBOSize];
+    }
     
     glGenFramebuffers(1, &secondFilterFramebuffer);
     glBindFramebuffer(GL_FRAMEBUFFER, secondFilterFramebuffer);
-    
-    glBindTexture(GL_TEXTURE_2D, secondFilterOutputTexture);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (int)currentFBOSize.width, (int)currentFBOSize.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, secondFilterOutputTexture, 0);
+
+    if ([GPUImageOpenGLESContext supportsFastTextureUpload] && preparedToCaptureImage)
+    {
+        CVReturn err = CVOpenGLESTextureCacheCreate(kCFAllocatorDefault, NULL, (__bridge void *)[[GPUImageOpenGLESContext sharedImageProcessingOpenGLESContext] context], NULL, &filterTextureCache);
+        if (err) 
+        {
+            NSAssert(NO, @"Error at CVOpenGLESTextureCacheCreate %d");
+        }
+        
+        // Code originally sourced from http://allmybrain.com/2011/12/08/rendering-to-a-texture-with-ios-5-texture-cache-api/
+        
+        CFDictionaryRef empty; // empty value for attr value.
+        CFMutableDictionaryRef attrs;
+        empty = CFDictionaryCreate(kCFAllocatorDefault, NULL, NULL, 0, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks); // our empty IOSurface properties dictionary
+        attrs = CFDictionaryCreateMutable(kCFAllocatorDefault, 1, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
+        CFDictionarySetValue(attrs, kCVPixelBufferIOSurfacePropertiesKey, empty);
+        
+        err = CVPixelBufferCreate(kCFAllocatorDefault, (int)currentFBOSize.width, (int)currentFBOSize.height, kCVPixelFormatType_32BGRA, attrs, &renderTarget);
+        if (err) 
+        {
+            NSLog(@"FBO size: %f, %f", currentFBOSize.width, currentFBOSize.height);
+            NSAssert(NO, @"Error at CVPixelBufferCreate %d");
+        }
+        
+        err = CVOpenGLESTextureCacheCreateTextureFromImage (kCFAllocatorDefault,
+                                                            filterTextureCache, renderTarget,
+                                                            NULL, // texture attributes
+                                                            GL_TEXTURE_2D,
+                                                            GL_RGBA, // opengl format
+                                                            (int)currentFBOSize.width, 
+                                                            (int)currentFBOSize.height,
+                                                            GL_BGRA, // native iOS format
+                                                            GL_UNSIGNED_BYTE,
+                                                            0,
+                                                            &renderTexture);
+        if (err) 
+        {
+            NSAssert(NO, @"Error at CVOpenGLESTextureCacheCreateTextureFromImage %d");
+        }
+        
+        CFRelease(attrs);
+        CFRelease(empty);
+        glBindTexture(CVOpenGLESTextureGetTarget(renderTexture), CVOpenGLESTextureGetName(renderTexture));
+        secondFilterOutputTexture = CVOpenGLESTextureGetName(renderTexture);
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, CVOpenGLESTextureGetName(renderTexture), 0);
+    }
+    else
+    {
+        glBindTexture(GL_TEXTURE_2D, secondFilterOutputTexture);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (int)currentFBOSize.width, (int)currentFBOSize.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, secondFilterOutputTexture, 0);
+    }
 	
 	GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
     
@@ -134,7 +194,6 @@
 
 - (void)setOutputFBO;
 {
-    // Override this for filters that have multiple framebuffers
     [self setSecondFilterFBO];
 }
 
@@ -172,5 +231,20 @@
     
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 }
+
+- (void)prepareForImageCapture;
+{
+    preparedToCaptureImage = YES;
+    
+    if ([GPUImageOpenGLESContext supportsFastTextureUpload])
+    {
+        if (secondFilterOutputTexture)
+        {
+            glDeleteTextures(1, &secondFilterOutputTexture);
+            secondFilterOutputTexture = 0;
+        }
+    }
+}
+
 
 @end

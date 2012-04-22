@@ -131,6 +131,7 @@
     
     GPUImagePicture *stillImageSource = [[GPUImagePicture alloc] initWithImage:imageToProcess];
     GPUImageSepiaFilter *stillImageFilter = [[GPUImageSepiaFilter alloc] init];
+    [stillImageFilter prepareForImageCapture];
     
     [stillImageSource addTarget:stillImageFilter];
     [stillImageSource processImage];
