@@ -1,4 +1,5 @@
 #import "PhotoViewController.h"
+#import <AssetsLibrary/AssetsLibrary.h>
 
 @interface PhotoViewController ()
 
@@ -92,6 +93,25 @@
         {
             return;
         }
+
+        // Save to assets library
+        ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
+		
+        CGImageRef imageRef = [processedImage CGImage];
+        CGImageRetain(imageRef);
+		
+        [library writeImageToSavedPhotosAlbum:imageRef metadata:nil completionBlock:^(NSURL *assetURL, NSError *error2)
+         {
+             if (error2) {
+                 NSLog(@"ERROR: the image failed to be written");
+             }
+             else {
+                 NSLog(@"PHOTO SAVED - assetURL: %@", assetURL);
+             }
+			 
+             [processedImage self];
+   			 CGImageRelease(imageRef);
+         }];
     }];
 }
 

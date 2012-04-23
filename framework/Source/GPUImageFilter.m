@@ -29,6 +29,7 @@ NSString *const kGPUImagePassthroughFragmentShaderString = SHADER_STRING
 );
 
 void dataProviderReleaseCallback (void *info, const void *data, size_t size);
+void dataProviderUnlockCallback (void *info, const void *data, size_t size);
 
 @implementation GPUImageFilter
 
@@ -126,6 +127,12 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size)
     free((void *)data);
 }
 
+void dataProviderUnlockCallback (void *info, const void *data, size_t size)
+{
+    CVPixelBufferUnlockBaseAddress((CVPixelBufferRef)info, 0);
+    CFRelease((CVPixelBufferRef)info);
+}
+
 - (UIImage *)imageFromCurrentlyProcessedOutputWithOrientation:(UIImageOrientation)imageOrientation;
 {
     [GPUImageOpenGLESContext useImageProcessingContext];
@@ -135,18 +142,14 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size)
     NSUInteger totalBytesForImage = (int)currentFBOSize.width * (int)currentFBOSize.height * 4;
     GLubyte *rawImagePixels;
     
-    if ([GPUImageOpenGLESContext supportsFastTextureUpload] && preparedToCaptureImage) 
-    {
-        CVPixelBufferUnlockBaseAddress(renderTarget, 0);
-    }
-    
     CGDataProviderRef dataProvider;
     if ([GPUImageOpenGLESContext supportsFastTextureUpload] && preparedToCaptureImage) 
     {
         glFlush();
+        CFRetain(renderTarget); // I need to retain the pixel buffer here and release in the data source callback to prevent its bytes from being prematurely deallocated during a photo write operation
         CVPixelBufferLockBaseAddress(renderTarget, 0);
         rawImagePixels = (GLubyte *)CVPixelBufferGetBaseAddress(renderTarget);
-        dataProvider = CGDataProviderCreateWithData(NULL, rawImagePixels, totalBytesForImage, NULL);
+        dataProvider = CGDataProviderCreateWithData(renderTarget, rawImagePixels, totalBytesForImage, dataProviderUnlockCallback);
     } 
     else 
     {
@@ -331,6 +334,12 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size)
     
     [filterProgram use];
     
+//    if ([GPUImageOpenGLESContext supportsFastTextureUpload] && preparedToCaptureImage)
+//    {
+//        CVReturn lockStatus = CVPixelBufferLockBaseAddress(renderTarget, 0);
+//        NSLog(@"Lock status: %d", lockStatus);
+//    }
+    
     glClearColor(backgroundColorRed, backgroundColorGreen, backgroundColorBlue, backgroundColorAlpha);
     glClear(GL_COLOR_BUFFER_BIT);
 
@@ -351,6 +360,11 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size)
 	glVertexAttribPointer(filterTextureCoordinateAttribute, 2, GL_FLOAT, 0, 0, textureCoordinates);
     
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);    
+    
+//    if ([GPUImageOpenGLESContext supportsFastTextureUpload] && preparedToCaptureImage)
+//    {
+//        CVPixelBufferUnlockBaseAddress(renderTarget, 0);
+//    }
 }
 
 - (void)informTargetsAboutNewFrameAtTime:(CMTime)frameTime;
