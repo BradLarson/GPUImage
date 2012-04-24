@@ -51,8 +51,9 @@
     
     stillCamera = [[GPUImageStillCamera alloc] init];
     filter = [[GPUImageGammaFilter alloc] init];
+//    filter = [[GPUImageSmoothToonFilter alloc] init];
     [filter prepareForImageCapture];
-//    filter = [[GPUImageSepiaFilter alloc] init];
+    filter = [[GPUImageSepiaFilter alloc] init];
     GPUImageRotationFilter *rotationFilter = [[GPUImageRotationFilter alloc] initWithRotation:kGPUImageRotateRight];
     
     [stillCamera addTarget:rotationFilter];
@@ -77,7 +78,7 @@
 - (IBAction)updateSliderValue:(id)sender
 {
 //    [(GPUImagePixellateFilter *)filter setFractionalWidthOfAPixel:[(UISlider *)sender value]];
-    [(GPUImageGammaFilter *)filter setGamma:[(UISlider *)sender value]];
+//    [(GPUImageGammaFilter *)filter setGamma:[(UISlider *)sender value]];
 }
 
 - (IBAction)takePhoto:(id)sender;

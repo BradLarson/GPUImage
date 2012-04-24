@@ -297,8 +297,11 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
             CFRelease(renderTarget);
             renderTarget = NULL;
             
-            CFRelease(renderTexture);
-            renderTexture = NULL;
+            if (renderTexture)
+            {
+                CFRelease(renderTexture);
+                renderTexture = NULL;
+            }
         }
 	}	
 }

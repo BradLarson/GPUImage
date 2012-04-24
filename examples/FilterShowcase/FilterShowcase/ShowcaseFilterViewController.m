@@ -657,7 +657,7 @@
         [filter addTarget:filterView];
     } 
 
-    [videoCamera startCameraCapture];    
+    [videoCamera startCameraCapture];
 }
 
 #pragma mark -

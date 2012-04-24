@@ -24,6 +24,7 @@
     
     CVOpenGLESTextureCacheRef coreVideoTextureCache;
     CVPixelBufferRef renderTarget;
+    CVOpenGLESTextureRef renderTexture;
 
     CGSize videoSize;
 }

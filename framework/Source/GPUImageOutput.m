@@ -180,6 +180,11 @@ void runOnMainQueueWithoutDeadlocking(void (^block)(void))
     return nil;
 }
 
+- (void)prepareForImageCapture;
+{
+    
+}
+
 #pragma mark -
 #pragma mark Accessors
 

@@ -38,5 +38,6 @@ void runOnMainQueueWithoutDeadlocking(void (^block)(void));
 - (UIImage *)imageFromCurrentlyProcessedOutput;
 - (UIImage *)imageFromCurrentlyProcessedOutputWithOrientation:(UIImageOrientation)imageOrientation;
 - (UIImage *)imageByFilteringImage:(UIImage *)imageToFilter;
+- (void)prepareForImageCapture;
 
 @end

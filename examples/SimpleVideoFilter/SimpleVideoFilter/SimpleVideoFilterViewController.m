@@ -36,6 +36,7 @@
 //    filter = [[GPUImageSketchFilter alloc] init];
 //    filter = [[GPUImageSmoothToonFilter alloc] init];
     GPUImageRotationFilter *rotationFilter = [[GPUImageRotationFilter alloc] initWithRotation:kGPUImageRotateRight];
+//    GPUImageRotationFilter *rotationFilter = [[GPUImageRotationFilter alloc] initWithRotation:kGPUImageRotateRightFlipVertical];
     
     [videoCamera addTarget:rotationFilter];
     [rotationFilter addTarget:filter];

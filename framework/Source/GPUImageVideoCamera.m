@@ -235,8 +235,6 @@
             return;
         }
         
-//        NSLog(@"Good frame");
-        
         outputTexture = CVOpenGLESTextureGetName(texture);
         //        glBindTexture(CVOpenGLESTextureGetTarget(texture), outputTexture);
         glBindTexture(GL_TEXTURE_2D, outputTexture);
@@ -348,27 +346,43 @@
 - (void)setAudioEncodingTarget:(GPUImageMovieWriter *)newValue;
 {    
     [_captureSession beginConfiguration];
-    
-    _microphone = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeAudio];
-    audioInput = [AVCaptureDeviceInput deviceInputWithDevice:_microphone error:nil];
-    if ([_captureSession canAddInput:audioInput]) 
+
+    if (newValue == nil)
     {
-        [_captureSession addInput:audioInput];
-    }
-    audioOutput = [[AVCaptureAudioDataOutput alloc] init];
-    
-    audioProcessingQueue = dispatch_queue_create("com.sunsetlakesoftware.GPUImage.audioProcessingQueue", NULL);
-    
-    //    [audioOutput setSampleBufferDelegate:self queue:dispatch_get_main_queue()];
-    if ([_captureSession canAddOutput:audioOutput])
-    {
-        [_captureSession addOutput:audioOutput];
+        if (audioOutput)
+        {
+            [_captureSession removeInput:audioInput];
+            [_captureSession removeOutput:audioOutput];
+            audioInput = nil;
+            audioOutput = nil;
+            _microphone = nil;
+            dispatch_release(audioProcessingQueue);
+            audioProcessingQueue = NULL;
+        }        
     }
     else
-    {
-        NSLog(@"Couldn't add audio output");
+    {        
+        _microphone = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeAudio];
+        audioInput = [AVCaptureDeviceInput deviceInputWithDevice:_microphone error:nil];
+        if ([_captureSession canAddInput:audioInput]) 
+        {
+            [_captureSession addInput:audioInput];
+        }
+        audioOutput = [[AVCaptureAudioDataOutput alloc] init];
+        
+        audioProcessingQueue = dispatch_queue_create("com.sunsetlakesoftware.GPUImage.audioProcessingQueue", NULL);
+        
+        //    [audioOutput setSampleBufferDelegate:self queue:dispatch_get_main_queue()];
+        if ([_captureSession canAddOutput:audioOutput])
+        {
+            [_captureSession addOutput:audioOutput];
+        }
+        else
+        {
+            NSLog(@"Couldn't add audio output");
+        }
+        [audioOutput setSampleBufferDelegate:self queue:audioProcessingQueue];        
     }
-    [audioOutput setSampleBufferDelegate:self queue:audioProcessingQueue];
     
     [_captureSession commitConfiguration];
     

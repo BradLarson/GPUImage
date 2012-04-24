@@ -134,7 +134,6 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 
 //    frameData = (GLubyte *) calloc(videoSize.width * videoSize.height * 4, sizeof(GLubyte));
     NSError *error = nil;
-//    assetWriter = [[AVAssetWriter alloc] initWithURL:movieURL fileType:AVFileTypeAppleM4V error:&error];
     assetWriter = [[AVAssetWriter alloc] initWithURL:movieURL fileType:AVFileTypeQuickTimeMovie error:&error];
     if (error != nil)
     {
@@ -210,6 +209,8 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 
 - (void)finishRecording;
 {
+    CVOpenGLESTextureCacheFlush(coreVideoTextureCache, 0);
+    
     isRecording = NO;
 //    [assetWriterVideoInput markAsFinished];
     [assetWriter finishWriting];    
@@ -284,7 +285,6 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 
         CVPixelBufferPoolCreatePixelBuffer (NULL, [assetWriterPixelBufferInput pixelBufferPool], &renderTarget);
 
-        CVOpenGLESTextureRef renderTexture;
         CVOpenGLESTextureCacheCreateTextureFromImage (kCFAllocatorDefault, coreVideoTextureCache, renderTarget,
                                                       NULL, // texture attributes
                                                       GL_TEXTURE_2D,
@@ -329,6 +329,24 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 		glDeleteRenderbuffers(1, &movieRenderbuffer);
 		movieRenderbuffer = 0;
 	}	
+    
+    if ([GPUImageOpenGLESContext supportsFastTextureUpload])
+    {
+        if (coreVideoTextureCache)
+        {
+            CFRelease(coreVideoTextureCache);
+        }
+
+        if (renderTexture)
+        {
+            CFRelease(renderTexture);
+        }
+        if (renderTarget)
+        {
+            CVPixelBufferRelease(renderTarget);
+        }
+
+    }
 }
 
 - (void)setFilterFBO;
@@ -508,10 +526,31 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
     
     if (_hasAudioTrack)
     {
-        NSDictionary *audioOutputSettings;
+        NSDictionary *audioOutputSettings = nil;
         if (_shouldPassthroughAudio)
         {
-            audioOutputSettings = nil;
+//            float ver = [[[UIDevice currentDevice] systemVersion] floatValue];
+//            if (ver < 4.3) // Older iOS versions complain about using nil settings for passthrough audio, so I need to check for that
+//            {
+//                double preferredHardwareSampleRate = [[AVAudioSession sharedInstance] currentHardwareSampleRate];
+//                
+//                AudioChannelLayout acl;
+//                bzero( &acl, sizeof(acl));
+//                acl.mChannelLayoutTag = kAudioChannelLayoutTag_Mono;
+//                
+//                audioOutputSettings = [NSDictionary dictionaryWithObjectsAndKeys:
+//                                       [ NSNumber numberWithInt: kAudioFormatMPEG4AAC], AVFormatIDKey,
+//                                       [ NSNumber numberWithInt: 1 ], AVNumberOfChannelsKey,
+//                                       [ NSNumber numberWithFloat: preferredHardwareSampleRate ], AVSampleRateKey,
+//                                       [ NSData dataWithBytes: &acl length: sizeof( acl ) ], AVChannelLayoutKey,
+//                                       //[ NSNumber numberWithInt:AVAudioQualityLow], AVEncoderAudioQualityKey,
+//                                       [ NSNumber numberWithInt: 64000 ], AVEncoderBitRateKey,
+//                                       nil];
+//            }
+//            else
+//            {
+                audioOutputSettings = nil;                
+//            }
         }
         else
         {

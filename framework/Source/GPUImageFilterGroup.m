@@ -55,6 +55,11 @@
     return processedImage;
 }
 
+- (void)prepareForImageCapture;
+{
+    [self.terminalFilter prepareForImageCapture];
+}
+
 #pragma mark -
 #pragma mark GPUImageOutput overrides
 
