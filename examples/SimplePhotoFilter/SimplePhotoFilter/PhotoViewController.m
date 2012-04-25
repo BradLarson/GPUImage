@@ -50,10 +50,11 @@
 	// Do any additional setup after loading the view.
     
     stillCamera = [[GPUImageStillCamera alloc] init];
-    filter = [[GPUImageGammaFilter alloc] init];
+//    filter = [[GPUImageGammaFilter alloc] init];
+//    filter = [[GPUImageSketchFilter alloc] init];
 //    filter = [[GPUImageSmoothToonFilter alloc] init];
-    [filter prepareForImageCapture];
     filter = [[GPUImageSepiaFilter alloc] init];
+    [filter prepareForImageCapture];
     GPUImageRotationFilter *rotationFilter = [[GPUImageRotationFilter alloc] initWithRotation:kGPUImageRotateRight];
     
     [stillCamera addTarget:rotationFilter];

@@ -209,7 +209,8 @@
     }
 }
 
-- (AVCaptureDevicePosition)getCameraPosition {
+- (AVCaptureDevicePosition)getCameraPosition 
+{
     return [[videoInput device] position];
 }
 

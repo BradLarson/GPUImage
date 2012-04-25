@@ -209,8 +209,6 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 
 - (void)finishRecording;
 {
-    CVOpenGLESTextureCacheFlush(coreVideoTextureCache, 0);
-    
     isRecording = NO;
 //    [assetWriterVideoInput markAsFinished];
     [assetWriter finishWriting];    

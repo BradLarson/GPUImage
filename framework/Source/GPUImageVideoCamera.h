@@ -36,6 +36,7 @@
 - (void)processVideoSampleBuffer:(CMSampleBufferRef)sampleBuffer;
 - (void)processAudioSampleBuffer:(CMSampleBufferRef)sampleBuffer;
 - (AVCaptureDevicePosition)getCameraPosition;
+
 // Rotate the camera
 - (void)rotateCamera;
 

@@ -25,13 +25,13 @@
 //    videoCamera = [[GPUImageVideoCamera alloc] initWithSessionPreset:AVCaptureSessionPreset640x480 cameraPosition:AVCaptureDevicePositionFront];
 //    videoCamera = [[GPUImageVideoCamera alloc] initWithSessionPreset:AVCaptureSessionPreset1280x720 cameraPosition:AVCaptureDevicePositionBack];
 //    videoCamera = [[GPUImageVideoCamera alloc] initWithSessionPreset:AVCaptureSessionPreset1920x1080 cameraPosition:AVCaptureDevicePositionBack];
-    filter = [[GPUImagePixellateFilter alloc] init];
+//    filter = [[GPUImagePixellateFilter alloc] init];
     
-//    filter = [[GPUImageTiltShiftFilter alloc] init];
-//    [(GPUImageTiltShiftFilter *)filter setTopFocusLevel:0.65];
-//    [(GPUImageTiltShiftFilter *)filter setBottomFocusLevel:0.85];
-//    [(GPUImageTiltShiftFilter *)filter setBlurSize:1.5];
-//    [(GPUImageTiltShiftFilter *)filter setFocusFallOffRate:0.2];
+    filter = [[GPUImageTiltShiftFilter alloc] init];
+    [(GPUImageTiltShiftFilter *)filter setTopFocusLevel:0.65];
+    [(GPUImageTiltShiftFilter *)filter setBottomFocusLevel:0.85];
+    [(GPUImageTiltShiftFilter *)filter setBlurSize:1.5];
+    [(GPUImageTiltShiftFilter *)filter setFocusFallOffRate:0.2];
     
 //    filter = [[GPUImageSketchFilter alloc] init];
 //    filter = [[GPUImageSmoothToonFilter alloc] init];
@@ -61,8 +61,17 @@
     dispatch_time_t startTime = dispatch_time(DISPATCH_TIME_NOW, delayToStartRecording * NSEC_PER_SEC);
     dispatch_after(startTime, dispatch_get_main_queue(), ^(void){
         NSLog(@"Start recording");
+
         videoCamera.audioEncodingTarget = movieWriter;
         [movieWriter startRecording];
+
+//        NSError *error = nil;
+//        if (![videoCamera.inputCamera lockForConfiguration:&error])
+//        {
+//            NSLog(@"Error locking for configuration: %@", error);
+//        }
+//        [videoCamera.inputCamera setTorchMode:AVCaptureTorchModeOn];
+//        [videoCamera.inputCamera unlockForConfiguration];
 
         double delayInSeconds = 10.0;
         dispatch_time_t stopTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
@@ -71,6 +80,10 @@
             videoCamera.audioEncodingTarget = nil;
             [movieWriter finishRecording];
             NSLog(@"Movie completed");
+            
+//            [videoCamera.inputCamera lockForConfiguration:nil];
+//            [videoCamera.inputCamera setTorchMode:AVCaptureTorchModeOff];
+//            [videoCamera.inputCamera unlockForConfiguration];
         });
     });
 }
