@@ -72,3 +72,4 @@
 #import "GPUImageCannyEdgeDetectionFilter.h"
 #import "GPUImageThresholdEdgeDetection.h"
 #import "GPUImageMaskFilter.h"
+#import "GPUImageHistogramFilter.h"
