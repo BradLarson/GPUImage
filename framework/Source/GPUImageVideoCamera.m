@@ -246,12 +246,20 @@
 
         for (id<GPUImageInput> currentTarget in targets)
         {
-            [currentTarget setInputSize:CGSizeMake(bufferWidth, bufferHeight)];
-            
-            NSInteger indexOfObject = [targets indexOfObject:currentTarget];
-            [currentTarget setInputTexture:outputTexture atIndex:[[targetTextureIndices objectAtIndex:indexOfObject] integerValue]];
-            
-            [currentTarget newFrameReadyAtTime:currentTime];
+            if (currentTarget != self.targetToIgnoreForUpdates)
+            {
+                [currentTarget setInputSize:CGSizeMake(bufferWidth, bufferHeight)];
+                
+                NSInteger indexOfObject = [targets indexOfObject:currentTarget];
+                [currentTarget setInputTexture:outputTexture atIndex:[[targetTextureIndices objectAtIndex:indexOfObject] integerValue]];
+                
+                [currentTarget newFrameReadyAtTime:currentTime];
+            }
+            else
+            {
+                NSInteger indexOfObject = [targets indexOfObject:currentTarget];
+                [currentTarget setInputTexture:outputTexture atIndex:[[targetTextureIndices objectAtIndex:indexOfObject] integerValue]];
+            }
         }
         
         CVPixelBufferUnlockBaseAddress(cameraFrame, 0);
@@ -286,8 +294,11 @@
         
         for (id<GPUImageInput> currentTarget in targets)
         {
-            [currentTarget setInputSize:CGSizeMake(bufferWidth, bufferHeight)];
-            [currentTarget newFrameReadyAtTime:currentTime];
+            if (currentTarget != self.targetToIgnoreForUpdates)
+            {
+                [currentTarget setInputSize:CGSizeMake(bufferWidth, bufferHeight)];
+                [currentTarget newFrameReadyAtTime:currentTime];
+            }
         }
         
         CVPixelBufferUnlockBaseAddress(cameraFrame, 0);

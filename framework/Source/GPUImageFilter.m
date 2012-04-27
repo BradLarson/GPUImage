@@ -374,13 +374,14 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
 {    
     for (id<GPUImageInput> currentTarget in targets)
     {
-        if (currentTarget != targetToIgnoreForUpdates)
+        if (currentTarget != self.targetToIgnoreForUpdates)
         {
             if ([GPUImageOpenGLESContext supportsFastTextureUpload] && preparedToCaptureImage)
             {
                 NSInteger indexOfObject = [targets indexOfObject:currentTarget];
                 [self setInputTextureForTarget:currentTarget atIndex:[[targetTextureIndices objectAtIndex:indexOfObject] integerValue]];
             }
+            
             [currentTarget setInputSize:inputTextureSize];
             [currentTarget newFrameReadyAtTime:frameTime];
         }

@@ -16,6 +16,9 @@ typedef enum { kGPUImageHistogramRed, kGPUImageHistogramGreen, kGPUImageHistogra
 // This dictates the scaling of the histogram heights. By default this is 0.004 (1/255)
 @property(readwrite, nonatomic) CGFloat scalingFactor;
 
+// Rather than sampling every pixel, this dictates what fraction of the image is sampled. By default, this is 8 with a minimum of 1.
+@property(readwrite, nonatomic) NSUInteger downsamplingFactor;
+
 // Initialization and teardown
 - (id)initWithHistogramType:(GPUImageHistogramType)newHistogramType;
 

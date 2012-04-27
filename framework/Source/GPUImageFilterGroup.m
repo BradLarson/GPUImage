@@ -85,7 +85,7 @@
 {
     for (GPUImageOutput<GPUImageInput> *currentFilter in _initialFilters)
     {
-        if (currentFilter != targetToIgnoreForUpdates)
+        if (currentFilter != self.targetToIgnoreForUpdates)
         {
             [currentFilter newFrameReadyAtTime:frameTime];
         }

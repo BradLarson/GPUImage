@@ -13,7 +13,6 @@ void runOnMainQueueWithoutDeadlocking(void (^block)(void));
     
     GLuint outputTexture;
     CGSize inputTextureSize, cachedMaximumOutputSize;
-    id<GPUImageInput> targetToIgnoreForUpdates;
     
     BOOL overrideInputSize;
 }
@@ -21,6 +20,7 @@ void runOnMainQueueWithoutDeadlocking(void (^block)(void));
 @property(readwrite, nonatomic) BOOL shouldSmoothlyScaleOutput;
 @property(readwrite, nonatomic) BOOL shouldIgnoreUpdatesToThisTarget;
 @property(readwrite, nonatomic, retain) GPUImageMovieWriter *audioEncodingTarget;
+@property(readwrite, nonatomic, unsafe_unretained) id<GPUImageInput> targetToIgnoreForUpdates;
 
 // Managing targets
 - (void)setInputTextureForTarget:(id<GPUImageInput>)target atIndex:(NSInteger)inputTextureIndex;

@@ -18,6 +18,7 @@ void runOnMainQueueWithoutDeadlocking(void (^block)(void))
 @synthesize shouldSmoothlyScaleOutput = _shouldSmoothlyScaleOutput;
 @synthesize shouldIgnoreUpdatesToThisTarget = _shouldIgnoreUpdatesToThisTarget;
 @synthesize audioEncodingTarget = _audioEncodingTarget;
+@synthesize targetToIgnoreForUpdates = _targetToIgnoreForUpdates;
 
 #pragma mark -
 #pragma mark Initialization and teardown
@@ -57,7 +58,7 @@ void runOnMainQueueWithoutDeadlocking(void (^block)(void))
     [self addTarget:newTarget atTextureLocation:nextAvailableTextureIndex];
     if ([newTarget shouldIgnoreUpdatesToThisTarget])
     {
-        targetToIgnoreForUpdates = newTarget;
+        _targetToIgnoreForUpdates = newTarget;
     }
 }
 
@@ -81,9 +82,9 @@ void runOnMainQueueWithoutDeadlocking(void (^block)(void))
         return;
     }
     
-    if (targetToIgnoreForUpdates == targetToRemove)
+    if (_targetToIgnoreForUpdates == targetToRemove)
     {
-        targetToIgnoreForUpdates = nil;
+        _targetToIgnoreForUpdates = nil;
     }
     
     cachedMaximumOutputSize = CGSizeZero;

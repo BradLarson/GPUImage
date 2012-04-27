@@ -73,3 +73,5 @@
 #import "GPUImageThresholdEdgeDetection.h"
 #import "GPUImageMaskFilter.h"
 #import "GPUImageHistogramFilter.h"
+#import "GPUImageHistogramGenerator.h"
+

@@ -665,7 +665,29 @@
         }
 
         GPUImageView *filterView = (GPUImageView *)self.view;
-        [filter addTarget:filterView];
+        
+        if (filterType == GPUIMAGE_HISTOGRAM)
+        {
+            GPUImageHistogramGenerator *histogramGraph = [[GPUImageHistogramGenerator alloc] init];
+            
+            [histogramGraph forceProcessingAtSize:CGSizeMake(256.0, 330.0)];
+            [histogramGraph setColorForGraphRed:1.0 green:0.0 blue:0.0];
+            
+            GPUImageDissolveBlendFilter *blendFilter = [[GPUImageDissolveBlendFilter alloc] init];
+            blendFilter.mix = 0.5;
+            
+            [filter addTarget:histogramGraph];
+            
+            [rotationFilter addTarget:blendFilter];
+            [histogramGraph addTarget:blendFilter];
+            rotationFilter.targetToIgnoreForUpdates = blendFilter; // Avoid double-updating the blend
+            
+            [blendFilter addTarget:filterView];
+        }
+        else
+        {
+            [filter addTarget:filterView];
+        }
     } 
 
     [videoCamera startCameraCapture];
