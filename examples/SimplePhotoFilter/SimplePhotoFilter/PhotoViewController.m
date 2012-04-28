@@ -38,6 +38,7 @@
     [photoCaptureButton setTitle:@"Capture Photo" forState:UIControlStateNormal];
 	photoCaptureButton.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin;
     [photoCaptureButton addTarget:self action:@selector(takePhoto:) forControlEvents:UIControlEventTouchUpInside];
+    [photoCaptureButton setTitleColor:[UIColor grayColor] forState:UIControlStateDisabled];
     
     [primaryView addSubview:photoCaptureButton];
     
@@ -84,7 +85,10 @@
 
 - (IBAction)takePhoto:(id)sender;
 {
+    [photoCaptureButton setEnabled:NO];
+    
     [stillCamera capturePhotoProcessedUpToFilter:filter withCompletionHandler:^(UIImage *processedImage, NSError *error){
+        
         NSData *dataForPNGFile = UIImageJPEGRepresentation(processedImage, 0.8);
         
         NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
@@ -113,6 +117,9 @@
 			 
              [processedImage self];
    			 CGImageRelease(imageRef);
+             runOnMainQueueWithoutDeadlocking(^{
+                 [photoCaptureButton setEnabled:YES];
+             });
          }];
     }];
 }
