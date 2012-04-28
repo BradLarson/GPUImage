@@ -204,11 +204,11 @@
             self.title = @"Histogram";
             self.filterSettingsSlider.hidden = NO;
             
-            [self.filterSettingsSlider setMinimumValue:0.0];
-            [self.filterSettingsSlider setMaximumValue:0.1];
-            [self.filterSettingsSlider setValue:0.1];
+            [self.filterSettingsSlider setMinimumValue:4.0];
+            [self.filterSettingsSlider setMaximumValue:32.0];
+            [self.filterSettingsSlider setValue:16.0];
             
-            filter = [[GPUImageHistogramFilter alloc] initWithHistogramType:kGPUImageHistogramRed];
+            filter = [[GPUImageHistogramFilter alloc] initWithHistogramType:kGPUImageHistogramRGB];
         }; break;
 		case GPUIMAGE_THRESHOLD:
         {
@@ -671,7 +671,6 @@
             GPUImageHistogramGenerator *histogramGraph = [[GPUImageHistogramGenerator alloc] init];
             
             [histogramGraph forceProcessingAtSize:CGSizeMake(256.0, 330.0)];
-            [histogramGraph setColorForGraphRed:1.0 green:0.0 blue:0.0];
             
             GPUImageDissolveBlendFilter *blendFilter = [[GPUImageDissolveBlendFilter alloc] init];
             blendFilter.mix = 0.5;
@@ -708,7 +707,7 @@
         case GPUIMAGE_BRIGHTNESS: [(GPUImageBrightnessFilter *)filter setBrightness:[(UISlider *)sender value]]; break;
         case GPUIMAGE_EXPOSURE: [(GPUImageExposureFilter *)filter setExposure:[(UISlider *)sender value]]; break;
         case GPUIMAGE_SHARPEN: [(GPUImageSharpenFilter *)filter setSharpness:[(UISlider *)sender value]]; break;
-        case GPUIMAGE_HISTOGRAM: [(GPUImageHistogramFilter *)filter setScalingFactor:[(UISlider *)sender value]]; break;
+        case GPUIMAGE_HISTOGRAM: [(GPUImageHistogramFilter *)filter setDownsamplingFactor:round([(UISlider *)sender value])]; break;
         case GPUIMAGE_UNSHARPMASK: [(GPUImageUnsharpMaskFilter *)filter setIntensity:[(UISlider *)sender value]]; break;
 //        case GPUIMAGE_UNSHARPMASK: [(GPUImageUnsharpMaskFilter *)filter setBlurSize:[(UISlider *)sender value]]; break;
         case GPUIMAGE_GAMMA: [(GPUImageGammaFilter *)filter setGamma:[(UISlider *)sender value]]; break;
