@@ -2,11 +2,13 @@
 
 @class GPUImageGaussianBlurFilter;
 @class GPUImageThresholdEdgeDetection;
+@class GPUImageSketchFilter;
 
 @interface GPUImageCannyEdgeDetectionFilter : GPUImageFilterGroup
 {
     GPUImageGaussianBlurFilter *blurFilter;
     GPUImageThresholdEdgeDetection *edgeDetectionFilter;
+//    GPUImageSketchFilter *edgeDetectionFilter;
 }
 
 // The image width and height factors tweak the appearance of the edges. By default, they match the filter size in pixels

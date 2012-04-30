@@ -74,4 +74,5 @@
 #import "GPUImageMaskFilter.h"
 #import "GPUImageHistogramFilter.h"
 #import "GPUImageHistogramGenerator.h"
-
+#import "GPUImagePrewittEdgeDetectionFilter.h"
+#import "GPUImageXYDerivativeFilter.h"

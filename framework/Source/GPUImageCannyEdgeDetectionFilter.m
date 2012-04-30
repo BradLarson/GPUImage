@@ -1,6 +1,7 @@
 #import "GPUImageCannyEdgeDetectionFilter.h"
 #import "GPUImageGaussianBlurFilter.h"
 #import "GPUImageThresholdEdgeDetection.h"
+#import "GPUImageSketchFilter.h"
 
 @implementation GPUImageCannyEdgeDetectionFilter
 
@@ -22,6 +23,7 @@
     
     // Second pass: run the Sobel edge detection on this blurred image
     edgeDetectionFilter = [[GPUImageThresholdEdgeDetection alloc] init];
+//    edgeDetectionFilter = [[GPUImageSketchFilter alloc] init];
     [self addFilter:edgeDetectionFilter];
     
     // Texture location 0 needs to be the sharp image for both the blur and the second stage processing
@@ -30,7 +32,7 @@
     self.initialFilters = [NSArray arrayWithObject:blurFilter];
     self.terminalFilter = edgeDetectionFilter;
     
-    self.blurSize = 1.0;
+    self.blurSize = 1.5;
     self.threshold = 0.9;
     
     return self;
@@ -77,6 +79,7 @@
 - (CGFloat)threshold;
 {
     return edgeDetectionFilter.threshold;
+//    return 0;
 }
 
 @end

@@ -1,9 +1,8 @@
-#import "GPUImageThresholdEdgeDetection.h"
+#import "GPUImagePrewittEdgeDetectionFilter.h"
 
-@implementation GPUImageThresholdEdgeDetection
+@implementation GPUImagePrewittEdgeDetectionFilter
 
-// Invert the colorspace for a sketch
-NSString *const kGPUImageThresholdEdgeDetectionFragmentShaderString = SHADER_STRING
+NSString *const kGPUImagePrewittFragmentShaderString = SHADER_STRING
 (
  precision highp float;
  
@@ -20,9 +19,6 @@ NSString *const kGPUImageThresholdEdgeDetectionFragmentShaderString = SHADER_STR
  varying vec2 bottomRightTextureCoordinate;
  
  uniform sampler2D inputImageTexture;
- uniform lowp float threshold;
- 
- const highp vec3 W = vec3(0.2125, 0.7154, 0.0721);
  
  void main()
  {
@@ -34,45 +30,27 @@ NSString *const kGPUImageThresholdEdgeDetectionFragmentShaderString = SHADER_STR
      float rightIntensity = texture2D(inputImageTexture, rightTextureCoordinate).r;
      float bottomIntensity = texture2D(inputImageTexture, bottomTextureCoordinate).r;
      float topIntensity = texture2D(inputImageTexture, topTextureCoordinate).r;
-     float h = -topLeftIntensity - 2.0 * topIntensity - topRightIntensity + bottomLeftIntensity + 2.0 * bottomIntensity + bottomRightIntensity;
-     float v = -bottomLeftIntensity - 2.0 * leftIntensity - topLeftIntensity + bottomRightIntensity + 2.0 * rightIntensity + topRightIntensity;
+     float h = -topLeftIntensity - topIntensity - topRightIntensity + bottomLeftIntensity + bottomIntensity + bottomRightIntensity;
+     float v = -bottomLeftIntensity - leftIntensity - topLeftIntensity + bottomRightIntensity + rightIntensity + topRightIntensity;
      
-     float mag = 1.0 - length(vec2(h, v));
-     mag = step(threshold, mag);
+     float mag = length(vec2(h, v));
      
      gl_FragColor = vec4(vec3(mag), 1.0);
  }
- );
+);
 
 #pragma mark -
 #pragma mark Initialization and teardown
 
-@synthesize threshold = _threshold;
-
-
 - (id)init;
 {
-    if (!(self = [self initWithFragmentShaderFromString:kGPUImageThresholdEdgeDetectionFragmentShaderString]))
+    if (!(self = [self initWithFragmentShaderFromString:kGPUImagePrewittFragmentShaderString]))
     {
 		return nil;
     }
     
-    thresholdUniform = [secondFilterProgram uniformIndex:@"threshold"];
-    self.threshold = 0.9;
-    
     return self;
 }
 
-#pragma mark -
-#pragma mark Accessors
-
-- (void)setThreshold:(CGFloat)newValue;
-{
-    _threshold = newValue;
-    
-    [GPUImageOpenGLESContext useImageProcessingContext];
-    [secondFilterProgram use];
-    glUniform1f(thresholdUniform, _threshold);
-}
 
 @end

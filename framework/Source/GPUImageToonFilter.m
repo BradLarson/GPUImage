@@ -31,17 +31,16 @@ NSString *const kGPUImageToonFragmentShaderString = SHADER_STRING
  {
      vec4 textureColor = texture2D(inputImageTexture, textureCoordinate);
      
-     float i00   = textureColor.g;
-     float im1m1 = texture2D(inputImageTexture, bottomLeftTextureCoordinate).g;
-     float ip1p1 = texture2D(inputImageTexture, topRightTextureCoordinate).g;
-     float im1p1 = texture2D(inputImageTexture, topLeftTextureCoordinate).g;
-     float ip1m1 = texture2D(inputImageTexture, bottomRightTextureCoordinate).g;
-     float im10 = texture2D(inputImageTexture, leftTextureCoordinate).g;
-     float ip10 = texture2D(inputImageTexture, rightTextureCoordinate).g;
-     float i0m1 = texture2D(inputImageTexture, bottomTextureCoordinate).g;
-     float i0p1 = texture2D(inputImageTexture, topTextureCoordinate).g;
-     float h = -im1p1 - 2.0 * i0p1 - ip1p1 + im1m1 + 2.0 * i0m1 + ip1m1;
-     float v = -im1m1 - 2.0 * im10 - im1p1 + ip1m1 + 2.0 * ip10 + ip1p1;
+     float bottomLeftIntensity = texture2D(inputImageTexture, bottomLeftTextureCoordinate).r;
+     float topRightIntensity = texture2D(inputImageTexture, topRightTextureCoordinate).r;
+     float topLeftIntensity = texture2D(inputImageTexture, topLeftTextureCoordinate).r;
+     float bottomRightIntensity = texture2D(inputImageTexture, bottomRightTextureCoordinate).r;
+     float leftIntensity = texture2D(inputImageTexture, leftTextureCoordinate).r;
+     float rightIntensity = texture2D(inputImageTexture, rightTextureCoordinate).r;
+     float bottomIntensity = texture2D(inputImageTexture, bottomTextureCoordinate).r;
+     float topIntensity = texture2D(inputImageTexture, topTextureCoordinate).r;
+     float h = -topLeftIntensity - 2.0 * topIntensity - topRightIntensity + bottomLeftIntensity + 2.0 * bottomIntensity + bottomRightIntensity;
+     float v = -bottomLeftIntensity - 2.0 * leftIntensity - topLeftIntensity + bottomRightIntensity + 2.0 * rightIntensity + topRightIntensity;
      
      float mag = length(vec2(h, v));
 

@@ -282,10 +282,24 @@
 		}; break;
         case GPUIMAGE_SOBELEDGEDETECTION:
         {
-            self.title = @"Edge Detection";
+            self.title = @"Sobel Edge Detection";
             self.filterSettingsSlider.hidden = YES;
             
             filter = [[GPUImageSobelEdgeDetectionFilter alloc] init];
+        }; break;
+        case GPUIMAGE_XYGRADIENT:
+        {
+            self.title = @"XY Derivative";
+            self.filterSettingsSlider.hidden = YES;
+            
+            filter = [[GPUImageXYDerivativeFilter alloc] init];
+        }; break;
+        case GPUIMAGE_PREWITTEDGEDETECTION:
+        {
+            self.title = @"Prewitt Edge Detection";
+            self.filterSettingsSlider.hidden = YES;
+            
+            filter = [[GPUImagePrewittEdgeDetectionFilter alloc] init];
         }; break;
         case GPUIMAGE_CANNYEDGEDETECTION:
         {
@@ -295,7 +309,11 @@
             [self.filterSettingsSlider setMinimumValue:0.0];
             [self.filterSettingsSlider setMaximumValue:2.0];
             [self.filterSettingsSlider setValue:1.0];
-            
+
+//            [self.filterSettingsSlider setMinimumValue:0.0];
+//            [self.filterSettingsSlider setMaximumValue:1.0];
+//            [self.filterSettingsSlider setValue:0.9];
+
             filter = [[GPUImageCannyEdgeDetectionFilter alloc] init];
         }; break;
 
@@ -720,6 +738,7 @@
         case GPUIMAGE_SWIRL: [(GPUImageSwirlFilter *)filter setAngle:[(UISlider *)sender value]]; break;
         case GPUIMAGE_EMBOSS: [(GPUImageEmbossFilter *)filter setIntensity:[(UISlider *)sender value]]; break;
         case GPUIMAGE_CANNYEDGEDETECTION: [(GPUImageCannyEdgeDetectionFilter *)filter setBlurSize:[(UISlider*)sender value]]; break;
+//        case GPUIMAGE_CANNYEDGEDETECTION: [(GPUImageCannyEdgeDetectionFilter *)filter setThreshold:[(UISlider*)sender value]]; break;
         case GPUIMAGE_SMOOTHTOON: [(GPUImageSmoothToonFilter *)filter setBlurSize:[(UISlider*)sender value]]; break;
 //        case GPUIMAGE_BULGE: [(GPUImageBulgeDistortionFilter *)filter setRadius:[(UISlider *)sender value]]; break;
         case GPUIMAGE_BULGE: [(GPUImageBulgeDistortionFilter *)filter setScale:[(UISlider *)sender value]]; break;
