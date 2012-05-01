@@ -74,6 +74,10 @@
 		BCAD0979154F39CA00278521 /* GPUImagePrewittEdgeDetectionFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = BCAD0977154F39CA00278521 /* GPUImagePrewittEdgeDetectionFilter.m */; };
 		BCAD097D154F3CB000278521 /* GPUImageXYDerivativeFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = BCAD097B154F3CAF00278521 /* GPUImageXYDerivativeFilter.h */; };
 		BCAD097E154F3CB000278521 /* GPUImageXYDerivativeFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = BCAD097C154F3CB000278521 /* GPUImageXYDerivativeFilter.m */; };
+		BCAD0981154F7B2800278521 /* GPUImageHarrisCornerDetectionFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = BCAD097F154F7B2700278521 /* GPUImageHarrisCornerDetectionFilter.h */; };
+		BCAD0982154F7B2800278521 /* GPUImageHarrisCornerDetectionFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = BCAD0980154F7B2800278521 /* GPUImageHarrisCornerDetectionFilter.m */; };
+		BCAD0985154F931C00278521 /* GPUImageAlphaBlendFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = BCAD0983154F931C00278521 /* GPUImageAlphaBlendFilter.h */; };
+		BCAD0986154F931C00278521 /* GPUImageAlphaBlendFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = BCAD0984154F931C00278521 /* GPUImageAlphaBlendFilter.m */; };
 		BCB5DE0D14E87F32000AF3C2 /* GPUImagePixellateFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = BCB5DE0B14E87F32000AF3C2 /* GPUImagePixellateFilter.h */; };
 		BCB5DE0E14E87F32000AF3C2 /* GPUImagePixellateFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = BCB5DE0C14E87F32000AF3C2 /* GPUImagePixellateFilter.m */; };
 		BCB5E75C14E2086300701302 /* GPUImageView.h in Headers */ = {isa = PBXBuildFile; fileRef = BCB5E75A14E2086300701302 /* GPUImageView.h */; };
@@ -261,6 +265,10 @@
 		BCAD0977154F39CA00278521 /* GPUImagePrewittEdgeDetectionFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GPUImagePrewittEdgeDetectionFilter.m; path = Source/GPUImagePrewittEdgeDetectionFilter.m; sourceTree = SOURCE_ROOT; };
 		BCAD097B154F3CAF00278521 /* GPUImageXYDerivativeFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GPUImageXYDerivativeFilter.h; path = Source/GPUImageXYDerivativeFilter.h; sourceTree = SOURCE_ROOT; };
 		BCAD097C154F3CB000278521 /* GPUImageXYDerivativeFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GPUImageXYDerivativeFilter.m; path = Source/GPUImageXYDerivativeFilter.m; sourceTree = SOURCE_ROOT; };
+		BCAD097F154F7B2700278521 /* GPUImageHarrisCornerDetectionFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GPUImageHarrisCornerDetectionFilter.h; path = Source/GPUImageHarrisCornerDetectionFilter.h; sourceTree = SOURCE_ROOT; };
+		BCAD0980154F7B2800278521 /* GPUImageHarrisCornerDetectionFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GPUImageHarrisCornerDetectionFilter.m; path = Source/GPUImageHarrisCornerDetectionFilter.m; sourceTree = SOURCE_ROOT; };
+		BCAD0983154F931C00278521 /* GPUImageAlphaBlendFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GPUImageAlphaBlendFilter.h; path = Source/GPUImageAlphaBlendFilter.h; sourceTree = SOURCE_ROOT; };
+		BCAD0984154F931C00278521 /* GPUImageAlphaBlendFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GPUImageAlphaBlendFilter.m; path = Source/GPUImageAlphaBlendFilter.m; sourceTree = SOURCE_ROOT; };
 		BCB5DE0B14E87F32000AF3C2 /* GPUImagePixellateFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GPUImagePixellateFilter.h; path = Source/GPUImagePixellateFilter.h; sourceTree = SOURCE_ROOT; };
 		BCB5DE0C14E87F32000AF3C2 /* GPUImagePixellateFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GPUImagePixellateFilter.m; path = Source/GPUImagePixellateFilter.m; sourceTree = SOURCE_ROOT; };
 		BCB5E75A14E2086300701302 /* GPUImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GPUImageView.h; path = Source/GPUImageView.h; sourceTree = SOURCE_ROOT; };
@@ -468,6 +476,8 @@
 				83AE9F971540DFE500F7FC13 /* GPUImageSubtractBlendFilter.m */,
 				BC54D561151904FF003F4A41 /* GPUImageChromaKeyBlendFilter.h */,
 				BC54D562151904FF003F4A41 /* GPUImageChromaKeyBlendFilter.m */,
+				BCAD0983154F931C00278521 /* GPUImageAlphaBlendFilter.h */,
+				BCAD0984154F931C00278521 /* GPUImageAlphaBlendFilter.m */,
 			);
 			name = Blends;
 			sourceTree = "<group>";
@@ -489,6 +499,8 @@
 				BCAD0977154F39CA00278521 /* GPUImagePrewittEdgeDetectionFilter.m */,
 				BCAD097B154F3CAF00278521 /* GPUImageXYDerivativeFilter.h */,
 				BCAD097C154F3CB000278521 /* GPUImageXYDerivativeFilter.m */,
+				BCAD097F154F7B2700278521 /* GPUImageHarrisCornerDetectionFilter.h */,
+				BCAD0980154F7B2800278521 /* GPUImageHarrisCornerDetectionFilter.m */,
 				BC1B717A14F566E200ACA2AB /* GPUImageSketchFilter.h */,
 				BC1B717B14F566E200ACA2AB /* GPUImageSketchFilter.m */,
 				BCF3D720153E0E0B009A1FE5 /* GPUImageThresholdEdgeDetection.h */,
@@ -768,7 +780,12 @@
 				BCC11D72154B44DC0044F5A0 /* GPUImageHistogramGenerator.h in Headers */,
 				BCAD0978154F39CA00278521 /* GPUImagePrewittEdgeDetectionFilter.h in Headers */,
 				BCAD097D154F3CB000278521 /* GPUImageXYDerivativeFilter.h in Headers */,
+<<<<<<< HEAD
 				F2C19D6E154FC53A00857A72 /* GPUImageMosaicFilter.h in Headers */,
+=======
+				BCAD0981154F7B2800278521 /* GPUImageHarrisCornerDetectionFilter.h in Headers */,
+				BCAD0985154F931C00278521 /* GPUImageAlphaBlendFilter.h in Headers */,
+>>>>>>> upstream/master
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -949,7 +966,12 @@
 				BCC11D73154B44DC0044F5A0 /* GPUImageHistogramGenerator.m in Sources */,
 				BCAD0979154F39CA00278521 /* GPUImagePrewittEdgeDetectionFilter.m in Sources */,
 				BCAD097E154F3CB000278521 /* GPUImageXYDerivativeFilter.m in Sources */,
+<<<<<<< HEAD
 				F2C19D6F154FC53A00857A72 /* GPUImageMosaicFilter.m in Sources */,
+=======
+				BCAD0982154F7B2800278521 /* GPUImageHarrisCornerDetectionFilter.m in Sources */,
+				BCAD0986154F931C00278521 /* GPUImageAlphaBlendFilter.m in Sources */,
+>>>>>>> upstream/master
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

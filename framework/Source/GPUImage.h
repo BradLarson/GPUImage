@@ -76,3 +76,5 @@
 #import "GPUImageHistogramGenerator.h"
 #import "GPUImagePrewittEdgeDetectionFilter.h"
 #import "GPUImageXYDerivativeFilter.h"
+#import "GPUImageHarrisCornerDetectionFilter.h"
+#import "GPUImageAlphaBlendFilter.h"
