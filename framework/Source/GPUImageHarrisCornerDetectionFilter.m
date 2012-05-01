@@ -4,6 +4,7 @@
 #import "GPUImageXYDerivativeFilter.h"
 #import "GPUImageGrayscaleFilter.h"
 #import "GPUImageFastBlurFilter.h"
+#import "GPUImageNonMaximumSuppressionFilter.h"
 
 // This is the Harris corner detector, as described in 
 // C. Harris and M. Stephens. A Combined Corner and Edge Detector. Proc. Alvey Vision Conf., Univ. Manchester, pp. 147-151, 1988.
@@ -16,7 +17,7 @@ NSString *const kGPUImageHarrisCornerDetectionFragmentShaderString = SHADER_STRI
  
  uniform sampler2D inputImageTexture;
  
- const mediump float harrisConstant = 0.01;
+ const mediump float harrisConstant = 0.04;
  
  void main()
  {
@@ -31,7 +32,8 @@ NSString *const kGPUImageHarrisCornerDetectionFragmentShaderString = SHADER_STRI
      // Original Harris detector
 //     highp float harrisIntensity = derivativeElements.x * derivativeElements.y - (derivativeElements.z * derivativeElements.z) - harrisConstant * derivativeSum * derivativeSum;
      
-     gl_FragColor = vec4(vec3(harrisIntensity * 8.0), 1.0);
+     gl_FragColor = vec4(vec3(harrisIntensity * 10.0), 1.0);
+//     gl_FragColor = vec4(derivativeElements, 1.0);
  }
 );
 
@@ -41,7 +43,7 @@ NSString *const kGPUImageSimpleThresholdFragmentShaderString = SHADER_STRING
  
  uniform sampler2D inputImageTexture;
  
- const lowp float threshold = 0.2;
+ const lowp float threshold = 0.10;
  
  void main()
  {
@@ -50,6 +52,8 @@ NSString *const kGPUImageSimpleThresholdFragmentShaderString = SHADER_STRING
      lowp float thresholdValue = step(threshold, intensity);
      
      gl_FragColor = vec4(thresholdValue, 0.0, 0.0, thresholdValue);
+//     gl_FragColor = vec4(intensity, intensity, intensity, 1.0);
+//     gl_FragColor = vec4(intensity, 0.0, 0.0, intensity);
  }
  );
 
@@ -62,43 +66,47 @@ NSString *const kGPUImageSimpleThresholdFragmentShaderString = SHADER_STRING
     {
 		return nil;
     }
-    
-    // First pass: reduce to luminance
-    luminanceFilter = [[GPUImageGrayscaleFilter alloc] init];
-    [self addFilter:luminanceFilter];
-    
-    // Second pass: take the derivative of the luminance texture
+
+//    preblurFilter = [[GPUImageFastBlurFilter alloc] init];
+//    [self addFilter:preblurFilter];
+
+    // First pass: reduce to luminance and take the derivative of the luminance texture
     derivativeFilter = [[GPUImageXYDerivativeFilter alloc] init];
-    derivativeFilter.imageWidthFactor = 256.0;
-    derivativeFilter.imageHeightFactor = 256.0;
+//    derivativeFilter.imageWidthFactor = 256.0;
+//    derivativeFilter.imageHeightFactor = 256.0;
     [self addFilter:derivativeFilter];
     
-    // Third pass: blur the derivative
+    // Second pass: blur the derivative
 //    blurFilter = [[GPUImageGaussianBlurFilter alloc] init];
     blurFilter = [[GPUImageFastBlurFilter alloc] init];
     [self addFilter:blurFilter];
     
-    // Fourth pass: apply the Harris corner detection calculation
+    // Third pass: apply the Harris corner detection calculation
     harrisCornerDetectionFilter = [[GPUImageFilter alloc] initWithFragmentShaderFromString:kGPUImageHarrisCornerDetectionFragmentShaderString];
     [self addFilter:harrisCornerDetectionFilter];
     
-    // TODO: Non-maximum suppression filter here
+    // Fourth pass: apply non-maximum suppression to find the local maxima
+//    nonMaximumSuppressionFilter = [[GPUImageNonMaximumSuppressionFilter alloc] init];
+//    [self addFilter:nonMaximumSuppressionFilter];
     
     // Fifth pass: threshold the result
     simpleThresholdFilter = [[GPUImageFilter alloc] initWithFragmentShaderFromString:kGPUImageSimpleThresholdFragmentShaderString];
     [self addFilter:simpleThresholdFilter];
     
-    [luminanceFilter addTarget:derivativeFilter];
+//    [preblurFilter addTarget:luminanceFilter];
     [derivativeFilter addTarget:blurFilter];    
     [blurFilter addTarget:harrisCornerDetectionFilter];
+//    [harrisCornerDetectionFilter addTarget:nonMaximumSuppressionFilter];
+//    [nonMaximumSuppressionFilter addTarget:simpleThresholdFilter];
     [harrisCornerDetectionFilter addTarget:simpleThresholdFilter];
     
-    self.initialFilters = [NSArray arrayWithObjects:luminanceFilter, nil];
+//    self.initialFilters = [NSArray arrayWithObjects:preblurFilter, nil];
+    self.initialFilters = [NSArray arrayWithObjects:derivativeFilter, nil];
 //    self.terminalFilter = harrisCornerDetectionFilter;
     self.terminalFilter = simpleThresholdFilter;
     
 //    self.intensity = 1.0;
-    self.blurSize = 1.5;
+    self.blurSize = 1.0;
     
     return self;
 }

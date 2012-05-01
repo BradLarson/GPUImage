@@ -78,12 +78,12 @@ NSString *const kGPUImageFastBlurFragmentShaderString = SHADER_STRING
     
     verticalPassTexelWidthOffsetUniform = [filterProgram uniformIndex:@"texelWidthOffset"];
     verticalPassTexelHeightOffsetUniform = [filterProgram uniformIndex:@"texelHeightOffset"];
+    firstBlurSizeUniform = [filterProgram uniformIndex:@"blurSize"];
     
     horizontalPassTexelWidthOffsetUniform = [secondFilterProgram uniformIndex:@"texelWidthOffset"];
     horizontalPassTexelHeightOffsetUniform = [secondFilterProgram uniformIndex:@"texelHeightOffset"];
-    
+    secondBlurSizeUniform = [secondFilterProgram uniformIndex:@"blurSize"];
 
-    blurSizeUniform = [filterProgram uniformIndex:@"blurSize"];
     self.blurSize = 1.0;
 
     return self;
@@ -123,7 +123,10 @@ NSString *const kGPUImageFastBlurFragmentShaderString = SHADER_STRING
     
     [GPUImageOpenGLESContext useImageProcessingContext];
     [filterProgram use];
-    glUniform1f(blurSizeUniform, _blurSize);
+    glUniform1f(firstBlurSizeUniform, _blurSize);
+
+    [secondFilterProgram use];
+    glUniform1f(secondBlurSizeUniform, _blurSize);
 }
 
 @end
