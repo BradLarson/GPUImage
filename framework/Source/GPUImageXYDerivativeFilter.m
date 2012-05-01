@@ -1,5 +1,8 @@
 #import "GPUImageXYDerivativeFilter.h"
 
+// I'm using the Prewitt operator to obtain the derivative, then squaring the X and Y components and placing the product of the two in Z.
+// This is primarily intended to be used with corner detection filters.
+
 @implementation GPUImageXYDerivativeFilter
 
 NSString *const kGPUImageGradientFragmentShaderString = SHADER_STRING
@@ -20,14 +23,23 @@ NSString *const kGPUImageGradientFragmentShaderString = SHADER_STRING
  
  uniform sampler2D inputImageTexture;
  
+ const float harrisConstant = -0.5;
+ 
  void main()
  {
+     float bottomLeftIntensity = texture2D(inputImageTexture, bottomLeftTextureCoordinate).r;
+     float topRightIntensity = texture2D(inputImageTexture, topRightTextureCoordinate).r;
+     float topLeftIntensity = texture2D(inputImageTexture, topLeftTextureCoordinate).r;
+     float bottomRightIntensity = texture2D(inputImageTexture, bottomRightTextureCoordinate).r;
      float leftIntensity = texture2D(inputImageTexture, leftTextureCoordinate).r;
      float rightIntensity = texture2D(inputImageTexture, rightTextureCoordinate).r;
      float bottomIntensity = texture2D(inputImageTexture, bottomTextureCoordinate).r;
      float topIntensity = texture2D(inputImageTexture, topTextureCoordinate).r;
      
-     gl_FragColor = vec4(rightIntensity - leftIntensity, bottomIntensity - topIntensity, 0.0, 1.0);
+     float verticalDerivative = abs(-topLeftIntensity - topIntensity - topRightIntensity + bottomLeftIntensity + bottomIntensity + bottomRightIntensity);
+     float horizontalDerivative = abs(-bottomLeftIntensity - leftIntensity - topLeftIntensity + bottomRightIntensity + rightIntensity + topRightIntensity);
+     
+     gl_FragColor = vec4(verticalDerivative * verticalDerivative, horizontalDerivative * horizontalDerivative, verticalDerivative * horizontalDerivative, 1.0);
  }
 );
 

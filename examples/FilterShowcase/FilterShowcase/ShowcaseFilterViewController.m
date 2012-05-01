@@ -294,6 +294,13 @@
             
             filter = [[GPUImageXYDerivativeFilter alloc] init];
         }; break;
+        case GPUIMAGE_HARRISCORNERDETECTION:
+        {
+            self.title = @"Harris Corner Detection";
+            self.filterSettingsSlider.hidden = YES;
+            
+            filter = [[GPUImageHarrisCornerDetectionFilter alloc] init];
+        }; break;
         case GPUIMAGE_PREWITTEDGEDETECTION:
         {
             self.title = @"Prewitt Edge Detection";
@@ -697,6 +704,15 @@
             
             [rotationFilter addTarget:blendFilter];
             [histogramGraph addTarget:blendFilter];
+            rotationFilter.targetToIgnoreForUpdates = blendFilter; // Avoid double-updating the blend
+            
+            [blendFilter addTarget:filterView];
+        }
+        else if (filterType == GPUIMAGE_HARRISCORNERDETECTION)
+        {
+            GPUImageAlphaBlendFilter *blendFilter = [[GPUImageAlphaBlendFilter alloc] init];
+            [rotationFilter addTarget:blendFilter];
+            [filter addTarget:blendFilter];
             rotationFilter.targetToIgnoreForUpdates = blendFilter; // Avoid double-updating the blend
             
             [blendFilter addTarget:filterView];
