@@ -78,3 +78,4 @@
 #import "GPUImageXYDerivativeFilter.h"
 #import "GPUImageHarrisCornerDetectionFilter.h"
 #import "GPUImageAlphaBlendFilter.h"
+#import "GPUImageNonMaximumSuppressionFilter.h"

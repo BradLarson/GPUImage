@@ -2,7 +2,7 @@
 
 @interface GPUImageFastBlurFilter : GPUImageTwoPassFilter
 {
-    GLint verticalPassTexelWidthOffsetUniform, verticalPassTexelHeightOffsetUniform, horizontalPassTexelWidthOffsetUniform, horizontalPassTexelHeightOffsetUniform, blurSizeUniform;
+    GLint verticalPassTexelWidthOffsetUniform, verticalPassTexelHeightOffsetUniform, horizontalPassTexelWidthOffsetUniform, horizontalPassTexelHeightOffsetUniform, firstBlurSizeUniform, secondBlurSizeUniform;
 }
 
 // The number of times to sequentially blur the incoming image. The more passes, the slower the filter.
