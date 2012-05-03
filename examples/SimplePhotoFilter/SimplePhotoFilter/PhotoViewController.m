@@ -52,10 +52,11 @@
     stillCamera = [[GPUImageStillCamera alloc] init];
 //    filter = [[GPUImageGammaFilter alloc] init];
     filter = [[GPUImageSketchFilter alloc] init];
-    [(GPUImageSketchFilter *)filter setImageHeightFactor:640.0];
-    [(GPUImageSketchFilter *)filter setImageWidthFactor:480.0];
+//    [(GPUImageSketchFilter *)filter setImageHeightFactor:640.0];
+//    [(GPUImageSketchFilter *)filter setImageWidthFactor:480.0];
 //    filter = [[GPUImageSmoothToonFilter alloc] init];
 //    filter = [[GPUImageSepiaFilter alloc] init];
+    
     [filter prepareForImageCapture];
     GPUImageRotationFilter *rotationFilter = [[GPUImageRotationFilter alloc] initWithRotation:kGPUImageRotateRight];
     
@@ -118,6 +119,7 @@
 			 
              [processedImage self];
    			 CGImageRelease(imageRef);
+             
              runOnMainQueueWithoutDeadlocking(^{
                  [photoCaptureButton setEnabled:YES];
              });

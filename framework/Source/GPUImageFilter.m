@@ -145,7 +145,8 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
     CGDataProviderRef dataProvider;
     if ([GPUImageOpenGLESContext supportsFastTextureUpload] && preparedToCaptureImage) 
     {
-        glFlush();
+//        glFlush();
+        glFinish();
         CFRetain(renderTarget); // I need to retain the pixel buffer here and release in the data source callback to prevent its bytes from being prematurely deallocated during a photo write operation
         CVPixelBufferLockBaseAddress(renderTarget, 0);
         rawImagePixels = (GLubyte *)CVPixelBufferGetBaseAddress(renderTarget);
