@@ -3,8 +3,8 @@
 //  Face Esplode
 //
 //  Created by Jacob Gundersen on 4/27/12.
-//  Copyright (c) 2012 Interrobang Software LLC. All rights reserved.
-//
+//  The shaders are mostly taken from UnitZeroOne's WebGL example here:  
+//  http://unitzeroone.com/blog/2011/03/22/jump-flood-voronoi-for-webgl/
 
 #import "GPUImageFilter.h"
 
