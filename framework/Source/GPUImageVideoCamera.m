@@ -46,8 +46,8 @@
     
 	audioProcessingQueue = dispatch_queue_create("com.sunsetlakesoftware.GPUImage.processingQueue", NULL);
     
-    
     _runBenchmark = NO;
+    capturePaused = NO;
     
     if ([GPUImageOpenGLESContext supportsFastTextureUpload])
     {
@@ -172,6 +172,16 @@
     }
 }
 
+- (void)pauseCameraCapture;
+{
+    capturePaused = YES;
+}
+
+- (void)resumeCameraCapture;
+{
+    capturePaused = NO;
+}
+
 - (void)rotateCamera
 {
     NSError *error;
@@ -224,6 +234,11 @@
 
 - (void)processVideoSampleBuffer:(CMSampleBufferRef)sampleBuffer;
 {
+    if (capturePaused)
+    {
+        return;
+    }
+    
     CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
     CVImageBufferRef cameraFrame = CMSampleBufferGetImageBuffer(sampleBuffer);
     int bufferWidth = CVPixelBufferGetWidth(cameraFrame);

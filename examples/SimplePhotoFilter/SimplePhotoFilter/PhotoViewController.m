@@ -56,7 +56,7 @@
 //    [(GPUImageSketchFilter *)filter setImageWidthFactor:480.0];
 //    filter = [[GPUImageSmoothToonFilter alloc] init];
 //    filter = [[GPUImageSepiaFilter alloc] init];
-    
+        
     [filter prepareForImageCapture];
     GPUImageRotationFilter *rotationFilter = [[GPUImageRotationFilter alloc] initWithRotation:kGPUImageRotateRight];
     
@@ -90,6 +90,7 @@
     [photoCaptureButton setEnabled:NO];
     
     [stillCamera capturePhotoProcessedUpToFilter:filter withCompletionHandler:^(UIImage *processedImage, NSError *error){
+        [stillCamera pauseCameraCapture]; // This is necessary when using iOS 5.0 texture caches in order to prevent overwriting the image in memory with new frames        
         
         NSData *dataForPNGFile = UIImageJPEGRepresentation(processedImage, 0.8);
         
@@ -117,8 +118,10 @@
                  NSLog(@"PHOTO SAVED - assetURL: %@", assetURL);
              }
 			 
-             [processedImage self];
+//             [processedImage self];
    			 CGImageRelease(imageRef);
+
+             [stillCamera resumeCameraCapture]; // This is necessary when using iOS 5.0 texture caches in order to prevent overwriting the image in memory with new frames        
              
              runOnMainQueueWithoutDeadlocking(^{
                  [photoCaptureButton setEnabled:YES];
