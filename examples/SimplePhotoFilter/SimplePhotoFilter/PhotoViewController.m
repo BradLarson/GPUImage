@@ -90,7 +90,6 @@
     [photoCaptureButton setEnabled:NO];
     
     [stillCamera capturePhotoProcessedUpToFilter:filter withCompletionHandler:^(UIImage *processedImage, NSError *error){
-        [stillCamera pauseCameraCapture]; // This is necessary when using iOS 5.0 texture caches in order to prevent overwriting the image in memory with new frames        
         
         NSData *dataForPNGFile = UIImageJPEGRepresentation(processedImage, 0.8);
         
@@ -121,8 +120,6 @@
 //             [processedImage self];
    			 CGImageRelease(imageRef);
 
-             [stillCamera resumeCameraCapture]; // This is necessary when using iOS 5.0 texture caches in order to prevent overwriting the image in memory with new frames        
-             
              runOnMainQueueWithoutDeadlocking(^{
                  [photoCaptureButton setEnabled:YES];
              });

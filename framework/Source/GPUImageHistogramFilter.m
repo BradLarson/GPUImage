@@ -237,6 +237,11 @@ NSString *const kGPUImageHistogramAccumulationFragmentShaderString = SHADER_STRI
 
 - (void)renderToTextureWithVertices:(const GLfloat *)vertices textureCoordinates:(const GLfloat *)textureCoordinates sourceTexture:(GLuint)sourceTexture;
 {
+    if (self.preventRendering)
+    {
+        return;
+    }
+    
     [GPUImageOpenGLESContext useImageProcessingContext];
     
     glReadPixels(0, 0, inputTextureSize.width, inputTextureSize.height, GL_RGBA, GL_UNSIGNED_BYTE, vertexSamplingCoordinates);

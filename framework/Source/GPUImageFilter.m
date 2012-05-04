@@ -33,6 +33,9 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size);
 
 @implementation GPUImageFilter
 
+@synthesize renderTarget;
+@synthesize preventRendering = _preventRendering;
+
 #pragma mark -
 #pragma mark Initialization and teardown
 
@@ -44,6 +47,7 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size);
     }
 
     preparedToCaptureImage = NO;
+    _preventRendering = NO;
     
     backgroundColorRed = 0.0;
     backgroundColorGreen = 0.0;
@@ -129,8 +133,11 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size)
 
 void dataProviderUnlockCallback (void *info, const void *data, size_t size)
 {
-    CVPixelBufferUnlockBaseAddress((CVPixelBufferRef)info, 0);
-    CFRelease((CVPixelBufferRef)info);
+    GPUImageFilter *filter = (__bridge_transfer GPUImageFilter*)info;
+    
+    CVPixelBufferUnlockBaseAddress([filter renderTarget], 0);
+    CFRelease([filter renderTarget]);
+    filter.preventRendering = NO;
 }
 
 - (UIImage *)imageFromCurrentlyProcessedOutputWithOrientation:(UIImageOrientation)imageOrientation;
@@ -149,8 +156,9 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
         glFinish();
         CFRetain(renderTarget); // I need to retain the pixel buffer here and release in the data source callback to prevent its bytes from being prematurely deallocated during a photo write operation
         CVPixelBufferLockBaseAddress(renderTarget, 0);
+        self.preventRendering = YES; // Locks don't seem to work, so prevent any rendering to the filter which might overwrite the pixel buffer data until done processing
         rawImagePixels = (GLubyte *)CVPixelBufferGetBaseAddress(renderTarget);
-        dataProvider = CGDataProviderCreateWithData(renderTarget, rawImagePixels, totalBytesForImage, dataProviderUnlockCallback);
+        dataProvider = CGDataProviderCreateWithData((__bridge_retained void*)self, rawImagePixels, totalBytesForImage, dataProviderUnlockCallback);
     } 
     else 
     {
@@ -333,6 +341,11 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
 
 - (void)renderToTextureWithVertices:(const GLfloat *)vertices textureCoordinates:(const GLfloat *)textureCoordinates sourceTexture:(GLuint)sourceTexture;
 {
+    if (self.preventRendering)
+    {
+        return;
+    }
+    
     [GPUImageOpenGLESContext useImageProcessingContext];
     [self setFilterFBO];
     
@@ -539,7 +552,7 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
 
 - (void)setInputSize:(CGSize)newSize;
 {
-    if (overrideInputSize)
+    if (overrideInputSize || self.preventRendering)
     {
         return;
     }

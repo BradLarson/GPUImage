@@ -53,9 +53,12 @@ typedef struct GPUMatrix3x3 GPUMatrix3x3;
     CVOpenGLESTextureCacheRef filterTextureCache;
     CVPixelBufferRef renderTarget;
     CVOpenGLESTextureRef renderTexture;
-
+    
     CGSize currentFilterSize;
 }
+
+@property(readonly) CVPixelBufferRef renderTarget;
+@property(readwrite, nonatomic) BOOL preventRendering;
 
 // Initialization and teardown
 - (id)initWithVertexShaderFromString:(NSString *)vertexShaderString fragmentShaderFromString:(NSString *)fragmentShaderString;

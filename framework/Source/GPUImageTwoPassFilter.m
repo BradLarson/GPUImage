@@ -202,6 +202,11 @@
 
 - (void)renderToTextureWithVertices:(const GLfloat *)vertices textureCoordinates:(const GLfloat *)textureCoordinates sourceTexture:(GLuint)sourceTexture;
 {
+    if (self.preventRendering)
+    {
+        return;
+    }
+    
     // Run the first stage of the two-pass filter
     [super renderToTextureWithVertices:vertices textureCoordinates:textureCoordinates sourceTexture:sourceTexture];
     
