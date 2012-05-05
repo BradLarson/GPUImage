@@ -351,12 +351,6 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
     
     [filterProgram use];
     
-//    if ([GPUImageOpenGLESContext supportsFastTextureUpload] && preparedToCaptureImage)
-//    {
-//        CVReturn lockStatus = CVPixelBufferLockBaseAddress(renderTarget, 0);
-//        NSLog(@"Lock status: %d", lockStatus);
-//    }
-    
     glClearColor(backgroundColorRed, backgroundColorGreen, backgroundColorBlue, backgroundColorAlpha);
     glClear(GL_COLOR_BUFFER_BIT);
 
@@ -377,11 +371,6 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
 	glVertexAttribPointer(filterTextureCoordinateAttribute, 2, GL_FLOAT, 0, 0, textureCoordinates);
     
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);    
-    
-//    if ([GPUImageOpenGLESContext supportsFastTextureUpload] && preparedToCaptureImage)
-//    {
-//        CVPixelBufferUnlockBaseAddress(renderTarget, 0);
-//    }
 }
 
 - (void)informTargetsAboutNewFrameAtTime:(CMTime)frameTime;

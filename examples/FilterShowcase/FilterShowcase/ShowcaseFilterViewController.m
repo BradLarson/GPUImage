@@ -697,8 +697,8 @@
             
             [histogramGraph forceProcessingAtSize:CGSizeMake(256.0, 330.0)];
             
-            GPUImageDissolveBlendFilter *blendFilter = [[GPUImageDissolveBlendFilter alloc] init];
-            blendFilter.mix = 0.5;
+            GPUImageAlphaBlendFilter *blendFilter = [[GPUImageAlphaBlendFilter alloc] init];
+            blendFilter.mix = 0.75;
             
             [filter addTarget:histogramGraph];
             
