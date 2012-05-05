@@ -142,6 +142,10 @@ void runOnMainQueueWithoutDeadlocking(void (^block)(void))
     
 }
 
+- (void)forceProcessingAtSizeRespectingAspectRatio:(CGSize)frameSize;
+{
+}
+
 #pragma mark -
 #pragma mark Still image processing
 

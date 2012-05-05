@@ -1,5 +1,6 @@
 #import "GPUImageFilter.h"
 #import "GPUImagePicture.h"
+#import <AVFoundation/AVFoundation.h>
 
 // Hardcode the vertex shader for standard filters, but this can be overridden
 NSString *const kGPUImageVertexShaderString = SHADER_STRING
@@ -541,9 +542,23 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
 
 - (void)setInputSize:(CGSize)newSize;
 {
-    if (overrideInputSize || self.preventRendering)
+    if (self.preventRendering)
     {
         return;
+    }
+    
+    if (overrideInputSize)
+    {
+        if (CGSizeEqualToSize(forcedMaximumSize, CGSizeZero))
+        {
+            return;
+        }
+        else
+        {
+            CGRect insetRect = AVMakeRectWithAspectRatioInsideRect(newSize, CGRectMake(0.0, 0.0, forcedMaximumSize.width, forcedMaximumSize.height));
+            inputTextureSize = insetRect.size;
+            return;
+        }
     }
     
     if ( (CGSizeEqualToSize(inputTextureSize, CGSizeZero)) || (CGSizeEqualToSize(newSize, CGSizeZero)) )
@@ -558,7 +573,7 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
 }
 
 - (void)forceProcessingAtSize:(CGSize)frameSize;
-{
+{    
     if (CGSizeEqualToSize(frameSize, CGSizeZero))
     {
         overrideInputSize = NO;
@@ -567,6 +582,20 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
     {
         overrideInputSize = YES;
         inputTextureSize = frameSize;
+        forcedMaximumSize = CGSizeZero;
+    }
+}
+
+- (void)forceProcessingAtSizeRespectingAspectRatio:(CGSize)frameSize;
+{
+    if (CGSizeEqualToSize(frameSize, CGSizeZero))
+    {
+        overrideInputSize = NO;
+    }
+    else
+    {
+        overrideInputSize = YES;
+        forcedMaximumSize = frameSize;
     }
 }
 
