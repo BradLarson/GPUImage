@@ -1,3 +1,5 @@
+// 2448x3264 pixel image = 31,961,088 bytes for uncompressed RGBA
+
 #import "GPUImageStillCamera.h"
 
 @interface GPUImageStillCamera ()
@@ -40,7 +42,7 @@
 #pragma mark -
 #pragma mark Photography controls
 
-- (void)capturePhotoProcessedUpToFilter:(GPUImageOutput<GPUImageInput> *)finalFilterInChain withCompletionHandler:(void (^)(UIImage *processedImage, NSError *error))block;
+- (void)capturePhotoAsImageProcessedUpToFilter:(GPUImageOutput<GPUImageInput> *)finalFilterInChain withCompletionHandler:(void (^)(UIImage *processedImage, NSError *error))block;
 {
     [photoOutput captureStillImageAsynchronouslyFromConnection:[[photoOutput connections] objectAtIndex:0] completionHandler:^(CMSampleBufferRef imageSampleBuffer, NSError *error) {
 
@@ -53,4 +55,51 @@
     
     return;
 }
+
+- (void)capturePhotoAsJPEGProcessedUpToFilter:(GPUImageOutput<GPUImageInput> *)finalFilterInChain withCompletionHandler:(void (^)(NSData *processedJPEG, NSError *error))block;
+{
+//    report_memory(@"Before still image capture");
+    [photoOutput captureStillImageAsynchronouslyFromConnection:[[photoOutput connections] objectAtIndex:0] completionHandler:^(CMSampleBufferRef imageSampleBuffer, NSError *error) {
+//        report_memory(@"Before filter processing");
+        
+        [self captureOutput:photoOutput didOutputSampleBuffer:imageSampleBuffer fromConnection:[[photoOutput connections] objectAtIndex:0]];
+//        report_memory(@"After filter processing");
+        
+        NSData *dataForJPEGFile = nil;
+        @autoreleasepool {
+            UIImage *filteredPhoto = [finalFilterInChain imageFromCurrentlyProcessedOutput];
+            
+//            report_memory(@"After UIImage generation");
+
+            dataForJPEGFile = UIImageJPEGRepresentation(filteredPhoto, 0.8);
+//            report_memory(@"After JPEG generation");
+        }
+
+//        report_memory(@"After autorelease pool");
+
+        block(dataForJPEGFile, error);        
+    }];
+    
+    return;
+}
+
+- (void)capturePhotoAsPNGProcessedUpToFilter:(GPUImageOutput<GPUImageInput> *)finalFilterInChain withCompletionHandler:(void (^)(NSData *processedPNG, NSError *error))block;
+{
+    [photoOutput captureStillImageAsynchronouslyFromConnection:[[photoOutput connections] objectAtIndex:0] completionHandler:^(CMSampleBufferRef imageSampleBuffer, NSError *error) {
+        
+        [self captureOutput:photoOutput didOutputSampleBuffer:imageSampleBuffer fromConnection:[[photoOutput connections] objectAtIndex:0]];
+        
+        NSData *dataForPNGFile = nil;
+        @autoreleasepool { 
+            UIImage *filteredPhoto = [finalFilterInChain imageFromCurrentlyProcessedOutput];
+            dataForPNGFile = UIImagePNGRepresentation(filteredPhoto);
+        }
+        
+        block(dataForPNGFile, error);        
+    }];
+    
+    return;
+}
+
+
 @end

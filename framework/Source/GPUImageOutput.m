@@ -1,5 +1,6 @@
 #import "GPUImageOutput.h"
 #import "GPUImageMovieWriter.h"
+#import <mach/mach.h>
 
 void runOnMainQueueWithoutDeadlocking(void (^block)(void))
 {
@@ -11,6 +12,29 @@ void runOnMainQueueWithoutDeadlocking(void (^block)(void))
 	{
 		dispatch_sync(dispatch_get_main_queue(), block);
 	}
+}
+
+void report_memory(NSString *tag) 
+{    
+    if (!tag)
+        tag = @"Default";
+    
+    struct task_basic_info info;
+    
+    mach_msg_type_number_t size = sizeof(info);
+    
+    kern_return_t kerr = task_info(mach_task_self(),
+                                   
+                                   TASK_BASIC_INFO,
+                                   
+                                   (task_info_t)&info,
+                                   
+                                   &size);    
+    if( kerr == KERN_SUCCESS ) {        
+        NSLog(@"%@ - Memory used: %u", tag, info.resident_size); //in bytes        
+    } else {        
+        NSLog(@"%@ - Error: %s", tag, mach_error_string(kerr));        
+    }    
 }
 
 @implementation GPUImageOutput

@@ -188,7 +188,6 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
     CGImageRelease(cgImageFromBytes);
     CGDataProviderRelease(dataProvider);
     CGColorSpaceRelease(defaultRGBColorSpace);
-//    free(rawImagePixels);
     
     return finalImage;
 }
@@ -545,9 +544,13 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
 {
     cachedMaximumOutputSize = CGSizeZero;
     [self destroyFilterFBO];
-    [self deleteOutputTexture];
     
-    [self initializeOutputTexture];
+    if (!([GPUImageOpenGLESContext supportsFastTextureUpload] && preparedToCaptureImage))
+    {
+        [self deleteOutputTexture];
+        [self initializeOutputTexture];
+    }
+    
     [self setFilterFBO];
 }
 

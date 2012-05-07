@@ -4,6 +4,7 @@
 #import "GLProgram.h"
 
 void runOnMainQueueWithoutDeadlocking(void (^block)(void));
+void report_memory(NSString *tag);
 
 @class GPUImageMovieWriter;
 
