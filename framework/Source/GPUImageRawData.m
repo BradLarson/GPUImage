@@ -169,6 +169,8 @@
 
 - (void)destroyDataFBO;
 {
+    [GPUImageOpenGLESContext useImageProcessingContext];
+
     if (dataFramebuffer)
 	{
 		glDeleteFramebuffers(1, &dataFramebuffer);

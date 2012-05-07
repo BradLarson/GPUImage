@@ -382,10 +382,16 @@
 //                { 0.0f,  1.0f, 2.0f}
 //            }];
             [(GPUImage3x3ConvolutionFilter *)filter setConvolutionKernel:(GPUMatrix3x3){
-                {1.0f,  1.0f, 1.0f},
-                {1.0f, -8.0f, 1.0f},
-                {1.0f,  1.0f, 1.0f}
+                {-1.0f,  0.0f, 1.0f},
+                {-2.0f, 0.0f, 2.0f},
+                {-1.0f,  0.0f, 1.0f}
             }];
+
+//            [(GPUImage3x3ConvolutionFilter *)filter setConvolutionKernel:(GPUMatrix3x3){
+//                {1.0f,  1.0f, 1.0f},
+//                {1.0f, -8.0f, 1.0f},
+//                {1.0f,  1.0f, 1.0f}
+//            }];
 //            [(GPUImage3x3ConvolutionFilter *)filter setConvolutionKernel:(GPUMatrix3x3){
 //                { 0.11f,  0.11f, 0.11f},
 //                { 0.11f,  0.11f, 0.11f},

@@ -56,8 +56,9 @@
     [(GPUImageSketchFilter *)filter setImageWidthFactor:768.0];
 //    filter = [[GPUImageSmoothToonFilter alloc] init];
 //    filter = [[GPUImageSepiaFilter alloc] init];
-        
-    [filter prepareForImageCapture];
+     	
+	[filter prepareForImageCapture];
+    
     GPUImageRotationFilter *rotationFilter = [[GPUImageRotationFilter alloc] initWithRotation:kGPUImageRotateRight];
     
     [stillCamera addTarget:rotationFilter];
@@ -70,9 +71,6 @@
 //    [stillCamera.inputCamera unlockForConfiguration];
     
     [stillCamera startCameraCapture];
-    
-    
-    
 }
 
 - (void)viewDidUnload
@@ -97,17 +95,18 @@
     [photoCaptureButton setEnabled:NO];
     
     [stillCamera capturePhotoProcessedUpToFilter:filter withCompletionHandler:^(UIImage *processedImage, NSError *error){
-        
-        NSData *dataForPNGFile = UIImageJPEGRepresentation(processedImage, 0.8);
-        
-        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-        NSString *documentsDirectory = [paths objectAtIndex:0];
-        
-        NSError *error2 = nil;
-        if (![dataForPNGFile writeToFile:[documentsDirectory stringByAppendingPathComponent:@"FilteredPhoto.jpg"] options:NSAtomicWrite error:&error2])
-        {
-            return;
-        }
+
+        // Having both this and the asset library saving uses twice the memory sometimes
+//        NSData *dataForPNGFile = UIImageJPEGRepresentation(processedImage, 0.8);
+//        
+//        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+//        NSString *documentsDirectory = [paths objectAtIndex:0];
+//        
+//        NSError *error2 = nil;
+//        if (![dataForPNGFile writeToFile:[documentsDirectory stringByAppendingPathComponent:@"FilteredPhoto.jpg"] options:NSAtomicWrite error:&error2])
+//        {
+//            return;
+//        }
 
         // Save to assets library
         ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
@@ -124,7 +123,6 @@
                  NSLog(@"PHOTO SAVED - assetURL: %@", assetURL);
              }
 			 
-//             [processedImage self];
    			 CGImageRelease(imageRef);
 
              runOnMainQueueWithoutDeadlocking(^{

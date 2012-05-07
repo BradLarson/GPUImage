@@ -130,6 +130,8 @@ void runOnMainQueueWithoutDeadlocking(void (^block)(void))
 
 - (void)deleteOutputTexture;
 {
+    [GPUImageOpenGLESContext useImageProcessingContext];
+
     if (outputTexture)
     {
         glDeleteTextures(1, &outputTexture);

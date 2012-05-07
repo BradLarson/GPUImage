@@ -138,6 +138,7 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
     
     CVPixelBufferUnlockBaseAddress([filter renderTarget], 0);
     CFRelease([filter renderTarget]);
+
     filter.preventRendering = NO;
 }
 
@@ -296,14 +297,13 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
 {
     if (filterFramebuffer)
 	{
+        [GPUImageOpenGLESContext useImageProcessingContext];
+
 		glDeleteFramebuffers(1, &filterFramebuffer);
 		filterFramebuffer = 0;
         
         if (filterTextureCache != NULL)
         {
-            CFRelease(filterTextureCache);
-            filterTextureCache = NULL;
-            
             CFRelease(renderTarget);
             renderTarget = NULL;
             
@@ -312,6 +312,10 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
                 CFRelease(renderTexture);
                 renderTexture = NULL;
             }
+            
+            CVOpenGLESTextureCacheFlush(filterTextureCache, 0);
+            CFRelease(filterTextureCache);
+            filterTextureCache = NULL;
         }
 	}	
 }
@@ -400,6 +404,8 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
     {
         if (outputTexture)
         {
+            [GPUImageOpenGLESContext useImageProcessingContext];
+
             glDeleteTextures(1, &outputTexture);
             outputTexture = 0;
         }

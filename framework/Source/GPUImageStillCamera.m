@@ -34,6 +34,7 @@
 - (void)removeInputsAndOutputs;
 {
     [self.captureSession removeOutput:photoOutput];
+    [super removeInputsAndOutputs];
 }
 
 #pragma mark -
