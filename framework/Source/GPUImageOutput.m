@@ -52,14 +52,6 @@ void runOnMainQueueWithoutDeadlocking(void (^block)(void))
     [target setInputTexture:outputTexture atIndex:inputTextureIndex];
 }
 
-
-/**
- Adds a target to receive notifications when new frames are available.
- 
- The target will be asked for it's next available texture.
- 
- See [GPUImageInput newFrameReadyAtTime:]
- */
 - (void)addTarget:(id<GPUImageInput>)newTarget;
 {
     NSInteger nextAvailableTextureIndex = [newTarget nextAvailableTextureIndex];
@@ -70,11 +62,6 @@ void runOnMainQueueWithoutDeadlocking(void (^block)(void))
     }
 }
 
-/**
- Adds a target to receive notifications when new frames are available.
- 
- See [GPUImageInput newFrameReadyAtTime:]
- */
 - (void)addTarget:(id<GPUImageInput>)newTarget atTextureLocation:(NSInteger)textureLocation;
 {
     if([targets containsObject:newTarget])
@@ -88,9 +75,6 @@ void runOnMainQueueWithoutDeadlocking(void (^block)(void))
     [targetTextureIndices addObject:[NSNumber numberWithInteger:textureLocation]];
 }
 
-/**
- Removes a target. The target will no longer receive notifications when new frames are available.
- */
 - (void)removeTarget:(id<GPUImageInput>)targetToRemove;
 {
     if(![targets containsObject:targetToRemove])
@@ -112,9 +96,6 @@ void runOnMainQueueWithoutDeadlocking(void (^block)(void))
     [targets removeObject:targetToRemove];
 }
 
-/**
- Removes all targets.
- */
 - (void)removeAllTargets;
 {
     cachedMaximumOutputSize = CGSizeZero;
@@ -202,26 +183,11 @@ void runOnMainQueueWithoutDeadlocking(void (^block)(void))
     return [self imageFromCurrentlyProcessedOutputWithOrientation:imageOrientation];
 }
 
-/**
- Convenience method to retreive the currently processed image with a different orientation.
- 
- See also: [GPUImageOutput imageFromCurrentlyProcessedOutput]
- See also: [GPUImageFilter imageFromCurrentlyProcessedOutputWithOrientation:]
- */
 - (UIImage *)imageFromCurrentlyProcessedOutputWithOrientation:(UIImageOrientation)imageOrientation;
 {
     return nil;
 }
 
-/**
- Convenience method to process an image with a filter.
- 
- This method is useful for using filters on still images without building a full pipeline.
- 
- The returned image will have device's current orientation using [[UIDevice currentDevice] orientation].
- 
- See also: [GPUImageFilter imageByFilteringImage:]
- */
 - (UIImage *)imageByFilteringImage:(UIImage *)imageToFilter;
 {
     return nil;
