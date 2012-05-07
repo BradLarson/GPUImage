@@ -175,6 +175,12 @@ void report_memory(NSString *tag)
 #pragma mark -
 #pragma mark Still image processing
 
+/**
+ Retreive the currently processed output image as an UIImage.
+ 
+ The image's orientation will be the device's current orientation.
+ See also: [GPUImageOutput imageFromCurrentlyProcessedOutputWithOrientation:]
+ */
 - (UIImage *)imageFromCurrentlyProcessedOutput;
 {
 	UIDeviceOrientation deviceOrientation = [[UIDevice currentDevice] orientation];
