@@ -161,6 +161,8 @@
 
 - (void)destroyDisplayFramebuffer;
 {
+    [GPUImageOpenGLESContext useImageProcessingContext];
+
     if (displayFramebuffer)
 	{
 		glDeleteFramebuffers(1, &displayFramebuffer);

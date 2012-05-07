@@ -217,22 +217,9 @@ NSString *const kGPUImageHistogramAccumulationFragmentShaderString = SHADER_STRI
     [self informTargetsAboutNewFrameAtTime:frameTime];
 }
 
-- (void)informTargetsAboutNewFrameAtTime:(CMTime)frameTime;
-{    
-    for (id<GPUImageInput> currentTarget in targets)
-    {
-        if (currentTarget != self.targetToIgnoreForUpdates)
-        {
-            if ([GPUImageOpenGLESContext supportsFastTextureUpload] && preparedToCaptureImage)
-            {
-                NSInteger indexOfObject = [targets indexOfObject:currentTarget];
-                [self setInputTextureForTarget:currentTarget atIndex:[[targetTextureIndices objectAtIndex:indexOfObject] integerValue]];
-            }
-
-            [currentTarget setInputSize:[self sizeOfFBO]];
-            [currentTarget newFrameReadyAtTime:frameTime];
-        }
-    }
+- (CGSize)outputFrameSize;
+{
+    return [self sizeOfFBO];
 }
 
 - (void)renderToTextureWithVertices:(const GLfloat *)vertices textureCoordinates:(const GLfloat *)textureCoordinates sourceTexture:(GLuint)sourceTexture;

@@ -316,6 +316,8 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 
 - (void)destroyDataFBO;
 {
+    [GPUImageOpenGLESContext useImageProcessingContext];
+
     if (movieFramebuffer)
 	{
 		glDeleteFramebuffers(1, &movieFramebuffer);
