@@ -46,6 +46,10 @@ For example, an application that takes in live video from the camera, converts t
 
     GPUImageVideoCamera -> GPUImageSepiaFilter -> GPUImageView
 
+## Documentation ##
+
+It is generated as a build phase using appledoc. To disable documentation building, set the User Defined Build Setting "BUILD%5f;DOCUMENTATION" to 0. You should ensure that "APPLEDOC%5f;PATH" points to an appledoc binary, available on <a href="https://github.com/tomaz/appledoc">Github</a> or through <a href="https://github.com/mxcl/homebrew">Homebrew</a>. It will also build and install a .docset file, which you can view with your favorite documentation tool.
+
 ## Built-in filters ##
 
 ### Color adjustments ###
