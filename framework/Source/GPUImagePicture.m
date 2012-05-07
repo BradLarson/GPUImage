@@ -46,7 +46,7 @@
     GLubyte *imageData = NULL;
     CFDataRef dataFromImageDataProvider;
 
-//    CFAbsoluteTime elapsedTime, startTime = CFAbsoluteTimeGetCurrent();
+    CFAbsoluteTime elapsedTime, startTime = CFAbsoluteTimeGetCurrent();
 
     if (shouldRedrawUsingCoreGraphics)
     {
@@ -55,19 +55,20 @@
         
         CGColorSpaceRef genericRGBColorspace = CGColorSpaceCreateDeviceRGB();    
         CGContextRef imageContext = CGBitmapContextCreate(imageData, (int)pixelSizeOfImage.width, (int)pixelSizeOfImage.height, 8, (int)pixelSizeOfImage.width * 4, genericRGBColorspace,  kCGBitmapByteOrder32Little | kCGImageAlphaPremultipliedFirst);
-        CGContextDrawImage(imageContext, CGRectMake(0.0, 0.0, pixelSizeOfImage.width, pixelSizeOfImage.height), [newImageSource CGImage]);
+//        CGContextSetBlendMode(imageContext, kCGBlendModeCopy); // From Technical Q&A QA1708: http://developer.apple.com/library/ios/#qa/qa1708/_index.html
+        CGContextDrawImage(imageContext, CGRectMake(0.0, 0.0, pixelSizeOfImage.width, pixelSizeOfImage.height), [imageSource CGImage]);
         CGContextRelease(imageContext);
         CGColorSpaceRelease(genericRGBColorspace);
     }
     else
     {
         // Access the raw image bytes directly
-        dataFromImageDataProvider = CGDataProviderCopyData(CGImageGetDataProvider([newImageSource CGImage]));
+        dataFromImageDataProvider = CGDataProviderCopyData(CGImageGetDataProvider([imageSource CGImage]));
         imageData = (GLubyte *)CFDataGetBytePtr(dataFromImageDataProvider);
     }    
     
-//    elapsedTime = (CFAbsoluteTimeGetCurrent() - startTime) * 1000.0;
-//    NSLog(@"Core Graphics drawing time: %f", elapsedTime);
+    elapsedTime = (CFAbsoluteTimeGetCurrent() - startTime) * 1000.0;
+    NSLog(@"Core Graphics drawing time: %f", elapsedTime);
 
     glBindTexture(GL_TEXTURE_2D, outputTexture);
     if (self.shouldSmoothlyScaleOutput)
