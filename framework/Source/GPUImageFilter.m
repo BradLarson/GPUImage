@@ -390,10 +390,15 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
                 [self setInputTextureForTarget:currentTarget atIndex:[[targetTextureIndices objectAtIndex:indexOfObject] integerValue]];
             }
             
-            [currentTarget setInputSize:inputTextureSize];
+            [currentTarget setInputSize:[self outputFrameSize]];
             [currentTarget newFrameReadyAtTime:frameTime];
         }
     }
+}
+
+- (CGSize)outputFrameSize;
+{
+    return inputTextureSize;
 }
 
 - (void)prepareForImageCapture;
