@@ -25,13 +25,13 @@
 //    videoCamera = [[GPUImageVideoCamera alloc] initWithSessionPreset:AVCaptureSessionPreset640x480 cameraPosition:AVCaptureDevicePositionFront];
 //    videoCamera = [[GPUImageVideoCamera alloc] initWithSessionPreset:AVCaptureSessionPreset1280x720 cameraPosition:AVCaptureDevicePositionBack];
 //    videoCamera = [[GPUImageVideoCamera alloc] initWithSessionPreset:AVCaptureSessionPreset1920x1080 cameraPosition:AVCaptureDevicePositionBack];
-//    filter = [[GPUImagePixellateFilter alloc] init];
+    filter = [[GPUImageSepiaFilter alloc] init];
     
-    filter = [[GPUImageTiltShiftFilter alloc] init];
-    [(GPUImageTiltShiftFilter *)filter setTopFocusLevel:0.65];
-    [(GPUImageTiltShiftFilter *)filter setBottomFocusLevel:0.85];
-    [(GPUImageTiltShiftFilter *)filter setBlurSize:1.5];
-    [(GPUImageTiltShiftFilter *)filter setFocusFallOffRate:0.2];
+//    filter = [[GPUImageTiltShiftFilter alloc] init];
+//    [(GPUImageTiltShiftFilter *)filter setTopFocusLevel:0.65];
+//    [(GPUImageTiltShiftFilter *)filter setBottomFocusLevel:0.85];
+//    [(GPUImageTiltShiftFilter *)filter setBlurSize:1.5];
+//    [(GPUImageTiltShiftFilter *)filter setFocusFallOffRate:0.2];
     
 //    filter = [[GPUImageSketchFilter alloc] init];
 //    filter = [[GPUImageSmoothToonFilter alloc] init];

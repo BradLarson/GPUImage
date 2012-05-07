@@ -53,9 +53,12 @@ typedef struct GPUMatrix3x3 GPUMatrix3x3;
     CVOpenGLESTextureCacheRef filterTextureCache;
     CVPixelBufferRef renderTarget;
     CVOpenGLESTextureRef renderTexture;
-
+    
     CGSize currentFilterSize;
 }
+
+@property(readonly) CVPixelBufferRef renderTarget;
+@property(readwrite, nonatomic) BOOL preventRendering;
 
 // Initialization and teardown
 - (id)initWithVertexShaderFromString:(NSString *)vertexShaderString fragmentShaderFromString:(NSString *)fragmentShaderString;
@@ -76,6 +79,7 @@ typedef struct GPUMatrix3x3 GPUMatrix3x3;
 // Rendering
 - (void)renderToTextureWithVertices:(const GLfloat *)vertices textureCoordinates:(const GLfloat *)textureCoordinates sourceTexture:(GLuint)sourceTexture;
 - (void)informTargetsAboutNewFrameAtTime:(CMTime)frameTime;
+- (CGSize)outputFrameSize;
 
 // Input parameters
 - (void)setBackgroundColorRed:(GLfloat)redComponent green:(GLfloat)greenComponent blue:(GLfloat)blueComponent alpha:(GLfloat)alphaComponent;

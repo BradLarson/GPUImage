@@ -46,8 +46,8 @@
     
 	audioProcessingQueue = dispatch_queue_create("com.sunsetlakesoftware.GPUImage.processingQueue", NULL);
     
-    
     _runBenchmark = NO;
+    capturePaused = NO;
     
     if ([GPUImageOpenGLESContext supportsFastTextureUpload])
     {
@@ -107,6 +107,14 @@
 	}
     
     [_captureSession setSessionPreset:sessionPreset];
+
+// This will let you get 60 FPS video from the 720p preset on an iPhone 4S, but only that device and that preset
+//    AVCaptureConnection *conn = [videoOutput connectionWithMediaType:AVMediaTypeVideo];
+//    
+//    if (conn.supportsVideoMinFrameDuration)
+//        conn.videoMinFrameDuration = CMTimeMake(1,60);
+//    if (conn.supportsVideoMaxFrameDuration)
+//        conn.videoMaxFrameDuration = CMTimeMake(1,60);
     
     [_captureSession commitConfiguration];
     
@@ -164,6 +172,16 @@
     }
 }
 
+- (void)pauseCameraCapture;
+{
+    capturePaused = YES;
+}
+
+- (void)resumeCameraCapture;
+{
+    capturePaused = NO;
+}
+
 - (void)rotateCamera
 {
     NSError *error;
@@ -216,6 +234,11 @@
 
 - (void)processVideoSampleBuffer:(CMSampleBufferRef)sampleBuffer;
 {
+    if (capturePaused)
+    {
+        return;
+    }
+    
     CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
     CVImageBufferRef cameraFrame = CMSampleBufferGetImageBuffer(sampleBuffer);
     int bufferWidth = CVPixelBufferGetWidth(cameraFrame);

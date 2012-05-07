@@ -32,8 +32,8 @@ NSString *const kGPUImageDissolveBlendFragmentShaderString = SHADER_STRING
     }
     
     mixUniform = [filterProgram uniformIndex:@"mixturePercent"];
-    self.mix = 0.5;
-
+    self.mix = 1.0;
+    
     return self;
 }
 

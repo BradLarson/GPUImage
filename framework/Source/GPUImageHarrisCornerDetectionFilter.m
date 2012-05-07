@@ -33,7 +33,6 @@ NSString *const kGPUImageHarrisCornerDetectionFragmentShaderString = SHADER_STRI
 //     highp float harrisIntensity = derivativeElements.x * derivativeElements.y - (derivativeElements.z * derivativeElements.z) - harrisConstant * derivativeSum * derivativeSum;
      
      gl_FragColor = vec4(vec3(harrisIntensity * 10.0), 1.0);
-//     gl_FragColor = vec4(derivativeElements, 1.0);
  }
 );
 

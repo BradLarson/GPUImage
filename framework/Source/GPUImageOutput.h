@@ -12,7 +12,7 @@ void runOnMainQueueWithoutDeadlocking(void (^block)(void));
     NSMutableArray *targets, *targetTextureIndices;
     
     GLuint outputTexture;
-    CGSize inputTextureSize, cachedMaximumOutputSize;
+    CGSize inputTextureSize, cachedMaximumOutputSize, forcedMaximumSize;
     
     BOOL overrideInputSize;
 }
@@ -33,6 +33,7 @@ void runOnMainQueueWithoutDeadlocking(void (^block)(void));
 - (void)initializeOutputTexture;
 - (void)deleteOutputTexture;
 - (void)forceProcessingAtSize:(CGSize)frameSize;
+- (void)forceProcessingAtSizeRespectingAspectRatio:(CGSize)frameSize;
 
 // Still image processing
 - (UIImage *)imageFromCurrentlyProcessedOutput;

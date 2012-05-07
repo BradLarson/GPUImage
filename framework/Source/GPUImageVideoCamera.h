@@ -18,6 +18,8 @@
     AVCaptureSession *_captureSession;
     AVCaptureDevice *_inputCamera;
     AVCaptureDevice *_microphone;
+    
+    BOOL capturePaused;
 }
 
 @property(readonly, retain) AVCaptureSession *captureSession;
@@ -33,6 +35,8 @@
 // Manage the camera video stream
 - (void)startCameraCapture;
 - (void)stopCameraCapture;
+- (void)pauseCameraCapture;
+- (void)resumeCameraCapture;
 - (void)processVideoSampleBuffer:(CMSampleBufferRef)sampleBuffer;
 - (void)processAudioSampleBuffer:(CMSampleBufferRef)sampleBuffer;
 - (AVCaptureDevicePosition)getCameraPosition;

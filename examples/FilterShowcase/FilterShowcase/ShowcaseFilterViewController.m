@@ -52,7 +52,7 @@
 {
     videoCamera = [[GPUImageVideoCamera alloc] initWithSessionPreset:AVCaptureSessionPreset640x480 cameraPosition:AVCaptureDevicePositionBack];
     GPUImageRotationFilter *rotationFilter = [[GPUImageRotationFilter alloc] initWithRotation:kGPUImageRotateRight];
-
+    
     switch (filterType)
     {
         case GPUIMAGE_SEPIA:
@@ -237,7 +237,7 @@
             [self.filterSettingsSlider setMaximumValue:1.0];
             [self.filterSettingsSlider setValue:0.5];
             
-            filter = [[GPUImageCropFilter alloc] initWithCropRegion:CGRectMake(0.0, 0.0, 0.5, 0.5)];
+            filter = [[GPUImageCropFilter alloc] initWithCropRegion:CGRectMake(0.0, 0.0, 0.5, 0.25)];
         }; break;
 		case GPUIMAGE_MASK:
 		{
@@ -382,10 +382,16 @@
 //                { 0.0f,  1.0f, 2.0f}
 //            }];
             [(GPUImage3x3ConvolutionFilter *)filter setConvolutionKernel:(GPUMatrix3x3){
-                {1.0f,  1.0f, 1.0f},
-                {1.0f, -8.0f, 1.0f},
-                {1.0f,  1.0f, 1.0f}
+                {-1.0f,  0.0f, 1.0f},
+                {-2.0f, 0.0f, 2.0f},
+                {-1.0f,  0.0f, 1.0f}
             }];
+
+//            [(GPUImage3x3ConvolutionFilter *)filter setConvolutionKernel:(GPUMatrix3x3){
+//                {1.0f,  1.0f, 1.0f},
+//                {1.0f, -8.0f, 1.0f},
+//                {1.0f,  1.0f, 1.0f}
+//            }];
 //            [(GPUImage3x3ConvolutionFilter *)filter setConvolutionKernel:(GPUMatrix3x3){
 //                { 0.11f,  0.11f, 0.11f},
 //                { 0.11f,  0.11f, 0.11f},
@@ -697,8 +703,8 @@
             
             [histogramGraph forceProcessingAtSize:CGSizeMake(256.0, 330.0)];
             
-            GPUImageDissolveBlendFilter *blendFilter = [[GPUImageDissolveBlendFilter alloc] init];
-            blendFilter.mix = 0.5;
+            GPUImageAlphaBlendFilter *blendFilter = [[GPUImageAlphaBlendFilter alloc] init];
+            blendFilter.mix = 0.75;
             
             [filter addTarget:histogramGraph];
             
@@ -765,7 +771,7 @@
 //        case GPUIMAGE_FASTBLUR: [(GPUImageFastBlurFilter *)filter setBlurSize:[(UISlider*)sender value]]; break;
         case GPUIMAGE_GAUSSIAN_SELECTIVE: [(GPUImageGaussianSelectiveBlurFilter *)filter setExcludeCircleRadius:[(UISlider*)sender value]]; break;
         case GPUIMAGE_FILTERGROUP: [(GPUImagePixellateFilter *)[(GPUImageFilterGroup *)filter filterAtIndex:1] setFractionalWidthOfAPixel:[(UISlider *)sender value]]; break;
-        case GPUIMAGE_CROP: [(GPUImageCropFilter *)filter setCropRegion:CGRectMake(0.0, 0.0, [(UISlider*)sender value], [(UISlider*)sender value])]; break;
+        case GPUIMAGE_CROP: [(GPUImageCropFilter *)filter setCropRegion:CGRectMake(0.0, 0.0, [(UISlider*)sender value], [(UISlider*)sender value] * 0.5)]; break;
         case GPUIMAGE_TRANSFORM: [(GPUImageTransformFilter *)filter setAffineTransform:CGAffineTransformMakeRotation([(UISlider*)sender value])]; break;
         case GPUIMAGE_TRANSFORM3D:
         {

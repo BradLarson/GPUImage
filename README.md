@@ -162,6 +162,9 @@ For example, an application that takes in live video from the camera, converts t
 
 - **GPUImageSoftLightBlendFilter**: Applies a soft light blend of two images
 
+- **GPUImageAlphaBlendFilter**: Blends the second image over the first, based on the second's alpha channel
+  - *mix*: The degree with which the second image overrides the first (0.0 - 1.0, with 1.0 as the default)
+
 ### Visual effects ###
 
 - **GPUImagePixellateFilter**: Applies a pixellation effect on an image or video

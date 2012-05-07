@@ -52,17 +52,23 @@
     stillCamera = [[GPUImageStillCamera alloc] init];
 //    filter = [[GPUImageGammaFilter alloc] init];
     filter = [[GPUImageSketchFilter alloc] init];
-    [(GPUImageSketchFilter *)filter setImageHeightFactor:640.0];
-    [(GPUImageSketchFilter *)filter setImageWidthFactor:480.0];
+    [(GPUImageSketchFilter *)filter setImageHeightFactor:1024.0];
+    [(GPUImageSketchFilter *)filter setImageWidthFactor:768.0];
 //    filter = [[GPUImageSmoothToonFilter alloc] init];
 //    filter = [[GPUImageSepiaFilter alloc] init];
-    [filter prepareForImageCapture];
+     	
+	[filter prepareForImageCapture];
+    
     GPUImageRotationFilter *rotationFilter = [[GPUImageRotationFilter alloc] initWithRotation:kGPUImageRotateRight];
     
     [stillCamera addTarget:rotationFilter];
     [rotationFilter addTarget:filter];
     GPUImageView *filterView = (GPUImageView *)self.view;
     [filter addTarget:filterView];
+    
+//    [stillCamera.inputCamera lockForConfiguration:nil];
+//    [stillCamera.inputCamera setFlashMode:AVCaptureFlashModeOn];
+//    [stillCamera.inputCamera unlockForConfiguration];
     
     [stillCamera startCameraCapture];
 }
@@ -89,17 +95,18 @@
     [photoCaptureButton setEnabled:NO];
     
     [stillCamera capturePhotoProcessedUpToFilter:filter withCompletionHandler:^(UIImage *processedImage, NSError *error){
-        
-        NSData *dataForPNGFile = UIImageJPEGRepresentation(processedImage, 0.8);
-        
-        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-        NSString *documentsDirectory = [paths objectAtIndex:0];
-        
-        NSError *error2 = nil;
-        if (![dataForPNGFile writeToFile:[documentsDirectory stringByAppendingPathComponent:@"FilteredPhoto.jpg"] options:NSAtomicWrite error:&error2])
-        {
-            return;
-        }
+
+        // Having both this and the asset library saving uses twice the memory sometimes
+//        NSData *dataForPNGFile = UIImageJPEGRepresentation(processedImage, 0.8);
+//        
+//        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+//        NSString *documentsDirectory = [paths objectAtIndex:0];
+//        
+//        NSError *error2 = nil;
+//        if (![dataForPNGFile writeToFile:[documentsDirectory stringByAppendingPathComponent:@"FilteredPhoto.jpg"] options:NSAtomicWrite error:&error2])
+//        {
+//            return;
+//        }
 
         // Save to assets library
         ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
@@ -116,8 +123,8 @@
                  NSLog(@"PHOTO SAVED - assetURL: %@", assetURL);
              }
 			 
-             [processedImage self];
    			 CGImageRelease(imageRef);
+
              runOnMainQueueWithoutDeadlocking(^{
                  [photoCaptureButton setEnabled:YES];
              });

@@ -22,12 +22,13 @@ NSString *const kGPUImageHistogramGeneratorFragmentShaderString = SHADER_STRING
  varying highp float height;
  
  uniform sampler2D inputImageTexture;
+ uniform lowp vec4 backgroundColor;
  
  void main()
  {
      lowp vec3 colorChannels = texture2D(inputImageTexture, textureCoordinate).rgb;
-     lowp vec3 heightTest = step(height, colorChannels);
-     gl_FragColor = vec4(heightTest, 1.0);
+     lowp vec4 heightTest = vec4(step(height, colorChannels), 1.0);
+     gl_FragColor = mix(backgroundColor, heightTest, heightTest.r + heightTest.g + heightTest.b);
  }
 );
 
@@ -44,7 +45,27 @@ NSString *const kGPUImageHistogramGeneratorFragmentShaderString = SHADER_STRING
         return nil;
     }
     
+    backgroundColorUniform = [filterProgram uniformIndex:@"backgroundColor"];
+
+    [self setBackgroundColorRed:0.0 green:0.0 blue:0.0 alpha:0.0];
+    
     return self;
+}
+
+#pragma mark -
+#pragma mark Accessors
+
+- (void)setBackgroundColorRed:(GLfloat)redComponent green:(GLfloat)greenComponent blue:(GLfloat)blueComponent alpha:(GLfloat)alphaComponent;
+{
+    GLfloat backgroundColor[4];
+    backgroundColor[0] = redComponent;
+    backgroundColor[1] = greenComponent;    
+    backgroundColor[2] = blueComponent;
+    backgroundColor[3] = alphaComponent;
+    
+    [GPUImageOpenGLESContext useImageProcessingContext];
+    [filterProgram use];
+    glUniform4fv(backgroundColorUniform, 1, backgroundColor);    
 }
 
 @end

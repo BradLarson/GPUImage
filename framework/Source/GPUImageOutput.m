@@ -130,6 +130,8 @@ void runOnMainQueueWithoutDeadlocking(void (^block)(void))
 
 - (void)deleteOutputTexture;
 {
+    [GPUImageOpenGLESContext useImageProcessingContext];
+
     if (outputTexture)
     {
         glDeleteTextures(1, &outputTexture);
@@ -140,6 +142,10 @@ void runOnMainQueueWithoutDeadlocking(void (^block)(void))
 - (void)forceProcessingAtSize:(CGSize)frameSize;
 {
     
+}
+
+- (void)forceProcessingAtSizeRespectingAspectRatio:(CGSize)frameSize;
+{
 }
 
 #pragma mark -

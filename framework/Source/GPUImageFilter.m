@@ -1,5 +1,6 @@
 #import "GPUImageFilter.h"
 #import "GPUImagePicture.h"
+#import <AVFoundation/AVFoundation.h>
 
 // Hardcode the vertex shader for standard filters, but this can be overridden
 NSString *const kGPUImageVertexShaderString = SHADER_STRING
@@ -33,6 +34,9 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size);
 
 @implementation GPUImageFilter
 
+@synthesize renderTarget;
+@synthesize preventRendering = _preventRendering;
+
 #pragma mark -
 #pragma mark Initialization and teardown
 
@@ -44,6 +48,7 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size);
     }
 
     preparedToCaptureImage = NO;
+    _preventRendering = NO;
     
     backgroundColorRed = 0.0;
     backgroundColorGreen = 0.0;
@@ -129,8 +134,12 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size)
 
 void dataProviderUnlockCallback (void *info, const void *data, size_t size)
 {
-    CVPixelBufferUnlockBaseAddress((CVPixelBufferRef)info, 0);
-    CFRelease((CVPixelBufferRef)info);
+    GPUImageFilter *filter = (__bridge_transfer GPUImageFilter*)info;
+    
+    CVPixelBufferUnlockBaseAddress([filter renderTarget], 0);
+    CFRelease([filter renderTarget]);
+
+    filter.preventRendering = NO;
 }
 
 - (UIImage *)imageFromCurrentlyProcessedOutputWithOrientation:(UIImageOrientation)imageOrientation;
@@ -145,11 +154,13 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
     CGDataProviderRef dataProvider;
     if ([GPUImageOpenGLESContext supportsFastTextureUpload] && preparedToCaptureImage) 
     {
-        glFlush();
+//        glFlush();
+        glFinish();
         CFRetain(renderTarget); // I need to retain the pixel buffer here and release in the data source callback to prevent its bytes from being prematurely deallocated during a photo write operation
         CVPixelBufferLockBaseAddress(renderTarget, 0);
+        self.preventRendering = YES; // Locks don't seem to work, so prevent any rendering to the filter which might overwrite the pixel buffer data until done processing
         rawImagePixels = (GLubyte *)CVPixelBufferGetBaseAddress(renderTarget);
-        dataProvider = CGDataProviderCreateWithData(renderTarget, rawImagePixels, totalBytesForImage, dataProviderUnlockCallback);
+        dataProvider = CGDataProviderCreateWithData((__bridge_retained void*)self, rawImagePixels, totalBytesForImage, dataProviderUnlockCallback);
     } 
     else 
     {
@@ -286,14 +297,13 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
 {
     if (filterFramebuffer)
 	{
+        [GPUImageOpenGLESContext useImageProcessingContext];
+
 		glDeleteFramebuffers(1, &filterFramebuffer);
 		filterFramebuffer = 0;
         
         if (filterTextureCache != NULL)
         {
-            CFRelease(filterTextureCache);
-            filterTextureCache = NULL;
-            
             CFRelease(renderTarget);
             renderTarget = NULL;
             
@@ -302,6 +312,10 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
                 CFRelease(renderTexture);
                 renderTexture = NULL;
             }
+            
+            CVOpenGLESTextureCacheFlush(filterTextureCache, 0);
+            CFRelease(filterTextureCache);
+            filterTextureCache = NULL;
         }
 	}	
 }
@@ -332,16 +346,15 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
 
 - (void)renderToTextureWithVertices:(const GLfloat *)vertices textureCoordinates:(const GLfloat *)textureCoordinates sourceTexture:(GLuint)sourceTexture;
 {
+    if (self.preventRendering)
+    {
+        return;
+    }
+    
     [GPUImageOpenGLESContext useImageProcessingContext];
     [self setFilterFBO];
     
     [filterProgram use];
-    
-//    if ([GPUImageOpenGLESContext supportsFastTextureUpload] && preparedToCaptureImage)
-//    {
-//        CVReturn lockStatus = CVPixelBufferLockBaseAddress(renderTarget, 0);
-//        NSLog(@"Lock status: %d", lockStatus);
-//    }
     
     glClearColor(backgroundColorRed, backgroundColorGreen, backgroundColorBlue, backgroundColorAlpha);
     glClear(GL_COLOR_BUFFER_BIT);
@@ -363,11 +376,6 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
 	glVertexAttribPointer(filterTextureCoordinateAttribute, 2, GL_FLOAT, 0, 0, textureCoordinates);
     
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);    
-    
-//    if ([GPUImageOpenGLESContext supportsFastTextureUpload] && preparedToCaptureImage)
-//    {
-//        CVPixelBufferUnlockBaseAddress(renderTarget, 0);
-//    }
 }
 
 - (void)informTargetsAboutNewFrameAtTime:(CMTime)frameTime;
@@ -382,10 +390,15 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
                 [self setInputTextureForTarget:currentTarget atIndex:[[targetTextureIndices objectAtIndex:indexOfObject] integerValue]];
             }
             
-            [currentTarget setInputSize:inputTextureSize];
+            [currentTarget setInputSize:[self outputFrameSize]];
             [currentTarget newFrameReadyAtTime:frameTime];
         }
     }
+}
+
+- (CGSize)outputFrameSize;
+{
+    return inputTextureSize;
 }
 
 - (void)prepareForImageCapture;
@@ -396,6 +409,8 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
     {
         if (outputTexture)
         {
+            [GPUImageOpenGLESContext useImageProcessingContext];
+
             glDeleteTextures(1, &outputTexture);
             outputTexture = 0;
         }
@@ -538,9 +553,23 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
 
 - (void)setInputSize:(CGSize)newSize;
 {
-    if (overrideInputSize)
+    if (self.preventRendering)
     {
         return;
+    }
+    
+    if (overrideInputSize)
+    {
+        if (CGSizeEqualToSize(forcedMaximumSize, CGSizeZero))
+        {
+            return;
+        }
+        else
+        {
+            CGRect insetRect = AVMakeRectWithAspectRatioInsideRect(newSize, CGRectMake(0.0, 0.0, forcedMaximumSize.width, forcedMaximumSize.height));
+            inputTextureSize = insetRect.size;
+            return;
+        }
     }
     
     if ( (CGSizeEqualToSize(inputTextureSize, CGSizeZero)) || (CGSizeEqualToSize(newSize, CGSizeZero)) )
@@ -555,7 +584,7 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
 }
 
 - (void)forceProcessingAtSize:(CGSize)frameSize;
-{
+{    
     if (CGSizeEqualToSize(frameSize, CGSizeZero))
     {
         overrideInputSize = NO;
@@ -564,6 +593,20 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
     {
         overrideInputSize = YES;
         inputTextureSize = frameSize;
+        forcedMaximumSize = CGSizeZero;
+    }
+}
+
+- (void)forceProcessingAtSizeRespectingAspectRatio:(CGSize)frameSize;
+{
+    if (CGSizeEqualToSize(frameSize, CGSizeZero))
+    {
+        overrideInputSize = NO;
+    }
+    else
+    {
+        overrideInputSize = YES;
+        forcedMaximumSize = frameSize;
     }
 }
 

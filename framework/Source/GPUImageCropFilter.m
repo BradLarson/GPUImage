@@ -42,17 +42,19 @@ NSString *const kGPUImageCropFragmentShaderString =  SHADER_STRING
 }
 
 #pragma mark -
+#pragma mark Rendering
+
+- (CGSize)outputFrameSize;
+{
+    CGSize adjustedSize;
+    adjustedSize.width = inputTextureSize.width * _cropRegion.size.width;
+    adjustedSize.height = inputTextureSize.height * _cropRegion.size.height;
+    return adjustedSize;
+}
+
+#pragma mark -
 #pragma mark GPUImageInput
 
-//- (void)setInputSize:(CGSize)newSize;
-//{
-//    CGSize croppedSize;
-//    croppedSize.width = newSize.width * _cropRegion.size.width;
-//    croppedSize.height = newSize.height * _cropRegion.size.height;
-//    
-//    inputTextureSize = croppedSize;
-//}
-//
 - (void)newFrameReadyAtTime:(CMTime)frameTime;
 {
     static const GLfloat cropSquareVertices[] = {
