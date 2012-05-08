@@ -37,6 +37,10 @@ struct GPUMatrix3x3 {
 };
 typedef struct GPUMatrix3x3 GPUMatrix3x3;
 
+/** GPUImage's base filter class
+ 
+ Filters and other subsequent elements in the chain conform to the GPUImageInput protocol, which lets them take in the supplied or processed texture from the previous link in the chain and do something with it. Objects one step further down the chain are considered targets, and processing can be branched by adding multiple targets to a single output or filter.
+ */
 @interface GPUImageFilter : GPUImageOutput <GPUImageInput>
 {
     GLuint filterSourceTexture, filterSourceTexture2;
@@ -60,28 +64,52 @@ typedef struct GPUMatrix3x3 GPUMatrix3x3;
 @property(readonly) CVPixelBufferRef renderTarget;
 @property(readwrite, nonatomic) BOOL preventRendering;
 
-// Initialization and teardown
+/// @name Initialization and teardown
+
+/**
+ Initialize with vertex and fragment shaders
+ 
+ You make take advantage of the SHADER_STRING macro to write your shaders in-line.
+ @param vertexShaderString Source code of the vertex shader to use
+ @param fragmentShaderString Source code of the fragment shader to use
+ */
 - (id)initWithVertexShaderFromString:(NSString *)vertexShaderString fragmentShaderFromString:(NSString *)fragmentShaderString;
+
+/**
+ Initialize with a fragment shader
+ 
+ You may take advantage of the SHADER_STRING macro to write your shader in-line.
+ @param fragmentShaderString Source code of fragment shader to use
+ */
 - (id)initWithFragmentShaderFromString:(NSString *)fragmentShaderString;
+/**
+ Initialize with a fragment shader
+ @param fragmentShaderFilename Filename of fragment shader to load
+ */
 - (id)initWithFragmentShaderFromFile:(NSString *)fragmentShaderFilename;
 - (void)initializeAttributes;
 - (void)setupFilterForSize:(CGSize)filterFrameSize;
 
 - (void)recreateFilterFBO;
 
-// Managing the display FBOs
+/// @name Managing the display FBOs
+/** Size of the frame buffer object
+ */
 - (CGSize)sizeOfFBO;
 - (void)createFilterFBOofSize:(CGSize)currentFBOSize;
+
+/** Destroy the current filter frame buffer object
+ */
 - (void)destroyFilterFBO;
 - (void)setFilterFBO;
 - (void)setOutputFBO;
 
-// Rendering
+/// @name Rendering
 - (void)renderToTextureWithVertices:(const GLfloat *)vertices textureCoordinates:(const GLfloat *)textureCoordinates sourceTexture:(GLuint)sourceTexture;
 - (void)informTargetsAboutNewFrameAtTime:(CMTime)frameTime;
 - (CGSize)outputFrameSize;
 
-// Input parameters
+/// @name Input parameters
 - (void)setBackgroundColorRed:(GLfloat)redComponent green:(GLfloat)greenComponent blue:(GLfloat)blueComponent alpha:(GLfloat)alphaComponent;
 - (void)setInteger:(GLint)newInteger forUniform:(NSString *)uniformName;
 - (void)setFloat:(GLfloat)newFloat forUniform:(NSString *)uniformName;

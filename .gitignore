@@ -17,3 +17,7 @@ build/*
 *.pbxuser
 *.xcworkspace
 xcuserdata
+
+# Documentation
+documentation/*
+
