@@ -39,7 +39,7 @@ void report_memory(NSString *tag);
 
 /** Adds a target to receive notifications when new frames are available.
  
- The target will be asked for it's next available texture.
+ The target will be asked for its next available texture.
  
  See [GPUImageInput newFrameReadyAtTime:]
  

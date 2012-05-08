@@ -6,6 +6,20 @@
 	objectVersion = 46;
 	objects = {
 
+/* Begin PBXAggregateTarget section */
+		BC552B361558C6F4001F3FFA /* Documentation */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = BC552B371558C6F4001F3FFA /* Build configuration list for PBXAggregateTarget "Documentation" */;
+			buildPhases = (
+				BC552B3A1558C6FC001F3FFA /* ShellScript */,
+			);
+			dependencies = (
+			);
+			name = Documentation;
+			productName = Documentation;
+		};
+/* End PBXAggregateTarget section */
+
 /* Begin PBXBuildFile section */
 		0DF3FA2B14FA00C9006AF7D9 /* GPUImageVignetteFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = 0DF3FA2914FA00C9006AF7D9 /* GPUImageVignetteFilter.h */; };
 		0DF3FA2C14FA00C9006AF7D9 /* GPUImageVignetteFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DF3FA2A14FA00C9006AF7D9 /* GPUImageVignetteFilter.m */; };
@@ -787,7 +801,6 @@
 				BCF1A33014DDB1EC00852800 /* Sources */,
 				BCF1A33114DDB1EC00852800 /* Frameworks */,
 				BCF1A33214DDB1EC00852800 /* Headers */,
-				3D8916C215579745008A932A /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -840,6 +853,7 @@
 			targets = (
 				BCF1A33314DDB1EC00852800 /* GPUImage */,
 				BCF1A34314DDB1EC00852800 /* GPUImageTests */,
+				BC552B361558C6F4001F3FFA /* Documentation */,
 			);
 		};
 /* End PBXProject section */
@@ -856,7 +870,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		3D8916C215579745008A932A /* ShellScript */ = {
+		BC552B3A1558C6FC001F3FFA /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1001,6 +1015,22 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		BC552B381558C6F4001F3FFA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLEDOC_PATH = /usr/local/bin/appledoc;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		BC552B391558C6F4001F3FFA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLEDOC_PATH = /usr/local/bin/appledoc;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 		BCF1A35614DDB1EC00852800 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1052,7 +1082,6 @@
 		BCF1A35914DDB1EC00852800 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				APPLEDOC_PATH = /usr/local/bin/appledoc;
 				BUILD_DOCUMENTATION = 1;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				DSTROOT = /tmp/GPUImage.dst;
@@ -1068,7 +1097,6 @@
 		BCF1A35A14DDB1EC00852800 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				APPLEDOC_PATH = /usr/local/bin/appledoc;
 				BUILD_DOCUMENTATION = 1;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				DSTROOT = /tmp/GPUImage.dst;
@@ -1116,6 +1144,14 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		BC552B371558C6F4001F3FFA /* Build configuration list for PBXAggregateTarget "Documentation" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BC552B381558C6F4001F3FFA /* Debug */,
+				BC552B391558C6F4001F3FFA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
 		BCF1A32E14DDB1EC00852800 /* Build configuration list for PBXProject "GPUImage" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
