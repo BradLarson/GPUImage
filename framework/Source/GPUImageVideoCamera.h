@@ -28,6 +28,13 @@
 // Use this property to manage camera settings.Focus point, exposure point, etc.
 @property(readonly) AVCaptureDevice *inputCamera;
 
+//typedef enum {
+//    UIInterfaceOrientationPortrait           = UIDeviceOrientationPortrait,
+//    UIInterfaceOrientationPortraitUpsideDown = UIDeviceOrientationPortraitUpsideDown,
+//    UIInterfaceOrientationLandscapeLeft      = UIDeviceOrientationLandscapeRight,
+//    UIInterfaceOrientationLandscapeRight     = UIDeviceOrientationLandscapeLeft
+//} UIInterfaceOrientation;
+
 // Initialization and teardown
 - (id)initWithSessionPreset:(NSString *)sessionPreset cameraPosition:(AVCaptureDevicePosition)cameraPosition; 
 - (void)removeInputsAndOutputs;
@@ -39,7 +46,7 @@
 - (void)resumeCameraCapture;
 - (void)processVideoSampleBuffer:(CMSampleBufferRef)sampleBuffer;
 - (void)processAudioSampleBuffer:(CMSampleBufferRef)sampleBuffer;
-- (AVCaptureDevicePosition)getCameraPosition;
+- (AVCaptureDevicePosition)cameraPosition;
 
 // Rotate the camera
 - (void)rotateCamera;
