@@ -20,8 +20,8 @@ NSString *const kGPUImageTiltShiftFragmentShaderString = SHADER_STRING
      lowp vec4 sharpImageColor = texture2D(inputImageTexture, textureCoordinate);
      lowp vec4 blurredImageColor = texture2D(inputImageTexture2, textureCoordinate2);
      
-     lowp float blurIntensity = 1.0 - smoothstep(topFocusLevel - focusFallOffRate, topFocusLevel, textureCoordinate.y);
-     blurIntensity += smoothstep(bottomFocusLevel, bottomFocusLevel + focusFallOffRate, textureCoordinate.y);
+     lowp float blurIntensity = 1.0 - smoothstep(topFocusLevel - focusFallOffRate, topFocusLevel, textureCoordinate2.y);
+     blurIntensity += smoothstep(bottomFocusLevel, bottomFocusLevel + focusFallOffRate, textureCoordinate2.y);
      
      gl_FragColor = mix(sharpImageColor, blurredImageColor, blurIntensity);
  }

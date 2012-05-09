@@ -53,17 +53,9 @@ NSString *const kGPUImageCropFragmentShaderString =  SHADER_STRING
 - (CGSize)outputFrameSize;
 {
     CGSize adjustedSize;
-    
-    if (GPUImageRotationSwapsWidthAndHeight(inputRotation))
-    {
-        adjustedSize.width = inputTextureSize.height * _cropRegion.size.width;
-        adjustedSize.height = inputTextureSize.width * _cropRegion.size.height;
-    }
-    else
-    {
-        adjustedSize.width = inputTextureSize.width * _cropRegion.size.width;
-        adjustedSize.height = inputTextureSize.height * _cropRegion.size.height;
-    }
+
+    adjustedSize.width = inputTextureSize.width * _cropRegion.size.width;
+    adjustedSize.height = inputTextureSize.height * _cropRegion.size.height;
     
     return adjustedSize;
 }
@@ -80,7 +72,7 @@ NSString *const kGPUImageCropFragmentShaderString =  SHADER_STRING
     
     switch(inputRotation)
     {
-        case kGPUImageNoRotation:
+        case kGPUImageNoRotation: // Works
         {
             cropTextureCoordinates[0] = minX; // 0,0
             cropTextureCoordinates[1] = minY;
@@ -94,7 +86,7 @@ NSString *const kGPUImageCropFragmentShaderString =  SHADER_STRING
             cropTextureCoordinates[4] = maxX; // 1,1
             cropTextureCoordinates[5] = maxY;
         }; break;
-        case kGPUImageRotateLeft:
+        case kGPUImageRotateLeft: // Broken
         {
             cropTextureCoordinates[0] = maxX; // 1,0
             cropTextureCoordinates[1] = minY;
@@ -108,21 +100,21 @@ NSString *const kGPUImageCropFragmentShaderString =  SHADER_STRING
             cropTextureCoordinates[6] = minX; // 0,1
             cropTextureCoordinates[7] = maxY;
         }; break;
-        case kGPUImageRotateRight: 
+        case kGPUImageRotateRight: // Fixed
         {
-            cropTextureCoordinates[0] = minX; // 0,1
-            cropTextureCoordinates[1] = maxY;
+            cropTextureCoordinates[0] = minY; // 0,1
+            cropTextureCoordinates[1] = 1.0 - minX;
 
-            cropTextureCoordinates[2] = minX; // 0,0
-            cropTextureCoordinates[3] = minY;
+            cropTextureCoordinates[2] = minY; // 0,0
+            cropTextureCoordinates[3] = 1.0 - maxX;
             
-            cropTextureCoordinates[4] = maxX; // 1,1
-            cropTextureCoordinates[5] = maxY;
+            cropTextureCoordinates[4] = maxY; // 1,1
+            cropTextureCoordinates[5] = 1.0 - minX;
 
-            cropTextureCoordinates[6] = maxX; // 1,0
-            cropTextureCoordinates[7] = minY;
+            cropTextureCoordinates[6] = maxY; // 1,0
+            cropTextureCoordinates[7] = 1.0 - maxX;
         }; break;
-        case kGPUImageFlipVertical:
+        case kGPUImageFlipVertical: // Broken
         {
             cropTextureCoordinates[0] = minX; // 0,1
             cropTextureCoordinates[1] = maxY;
@@ -136,7 +128,7 @@ NSString *const kGPUImageCropFragmentShaderString =  SHADER_STRING
             cropTextureCoordinates[6] = maxX; // 1,0
             cropTextureCoordinates[7] = minY;
         }; break;
-        case kGPUImageFlipHorizonal:
+        case kGPUImageFlipHorizonal: // Broken
         {
             cropTextureCoordinates[0] = maxX; // 1,0
             cropTextureCoordinates[1] = minY;
@@ -150,19 +142,19 @@ NSString *const kGPUImageCropFragmentShaderString =  SHADER_STRING
             cropTextureCoordinates[6] = minX; // 0,1
             cropTextureCoordinates[7] = maxY;
         }; break;
-        case kGPUImageRotateRightFlipVertical:
+        case kGPUImageRotateRightFlipVertical: // Fixed
         {
-            cropTextureCoordinates[0] = minX; // 0,0
-            cropTextureCoordinates[1] = minY;
+            cropTextureCoordinates[0] = minY; // 0,0
+            cropTextureCoordinates[1] = 1.0 - maxX;
             
-            cropTextureCoordinates[2] = minX; // 0,1
-            cropTextureCoordinates[3] = maxY;
+            cropTextureCoordinates[2] = minY; // 0,1
+            cropTextureCoordinates[3] = 1.0 - minX;
 
-            cropTextureCoordinates[4] = maxX; // 1,0
-            cropTextureCoordinates[5] = minY;
+            cropTextureCoordinates[4] = maxY; // 1,0
+            cropTextureCoordinates[5] = 1.0 - maxX;
             
-            cropTextureCoordinates[6] = maxX; // 1,1
-            cropTextureCoordinates[7] = maxY;
+            cropTextureCoordinates[6] = maxY; // 1,1
+            cropTextureCoordinates[7] = 1.0 - minX;
         }; break;
     }
 }
