@@ -2,12 +2,14 @@
 #import <AVFoundation/AVFoundation.h>
 #import "GPUImageOpenGLESContext.h"
 #import "GPUImageOutput.h"
+#import "GPUImageBlocks.h"
 
 @interface GPUImageMovie : GPUImageOutput
 
 @property(readwrite, retain) NSURL *url;
 @property(readwrite, nonatomic) BOOL runBenchmark;
-
+// Will be executed everytime startProcessing is called.
+@property(readwrite, copy, nonatomic) GPUImageGeneralBlock beginBlock;
 // Initialization and teardown
 - (id)initWithURL:(NSURL *)url;
 

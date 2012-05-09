@@ -79,3 +79,7 @@
 #import "GPUImageHarrisCornerDetectionFilter.h"
 #import "GPUImageAlphaBlendFilter.h"
 #import "GPUImageNonMaximumSuppressionFilter.h"
+#import "GPUImageBlocksFilter.h"
+
+// Utils
+#import "GPUImageBlocks.h"
