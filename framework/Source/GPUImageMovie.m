@@ -15,6 +15,7 @@
 
 @synthesize url = _url;
 @synthesize runBenchmark = _runBenchmark;
+@synthesize beginBlock = _beginBlock;
 
 #pragma mark -
 #pragma mark Initialization and teardown
@@ -92,6 +93,9 @@
             NSLog(@"Error reading from file at URL: %@", self.url);
             return;
         }
+        
+        if ( self.beginBlock != nil )
+            self.beginBlock();
         
         if (synchronizedMovieWriter != nil)
         {
