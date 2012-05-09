@@ -431,13 +431,15 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
     {
         if (currentTarget != self.targetToIgnoreForUpdates)
         {
+            NSInteger indexOfObject = [targets indexOfObject:currentTarget];
+            NSInteger textureIndex = [[targetTextureIndices objectAtIndex:indexOfObject] integerValue];
+            
             if ([GPUImageOpenGLESContext supportsFastTextureUpload] && preparedToCaptureImage)
             {
-                NSInteger indexOfObject = [targets indexOfObject:currentTarget];
-                [self setInputTextureForTarget:currentTarget atIndex:[[targetTextureIndices objectAtIndex:indexOfObject] integerValue]];
+                [self setInputTextureForTarget:currentTarget atIndex:textureIndex];
             }
             
-            [currentTarget setInputSize:[self outputFrameSize]];
+            [currentTarget setInputSize:[self outputFrameSize] atIndex:textureIndex];
             [currentTarget newFrameReadyAtTime:frameTime];
         }
     }
@@ -582,7 +584,20 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
     [self setFilterFBO];
 }
 
-- (void)setInputSize:(CGSize)newSize;
+- (CGSize)rotatedSize:(CGSize)sizeToRotate forIndex:(NSInteger)textureIndex;
+{
+    CGSize rotatedSize = sizeToRotate;
+    
+    if (GPUImageRotationSwapsWidthAndHeight(inputRotation))
+    {
+        rotatedSize.width = sizeToRotate.height;
+        rotatedSize.height = sizeToRotate.width;
+    }
+    
+    return rotatedSize; 
+}
+
+- (void)setInputSize:(CGSize)newSize atIndex:(NSInteger)textureIndex;
 {
     if (self.preventRendering)
     {
@@ -603,13 +618,7 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
         }
     }
     
-    CGSize rotatedSize = newSize;
-    
-    if (GPUImageRotationSwapsWidthAndHeight(inputRotation))
-    {
-        rotatedSize.width = newSize.height;
-        rotatedSize.height = newSize.width;
-    }
+    CGSize rotatedSize = [self rotatedSize:newSize forIndex:textureIndex];
     
     if ( (CGSizeEqualToSize(inputTextureSize, CGSizeZero)) || (CGSizeEqualToSize(rotatedSize, CGSizeZero)) )
     {

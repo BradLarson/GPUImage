@@ -74,9 +74,6 @@
 
     [videoCamera addTarget:filteredVideoView];
     [videoCamera addTarget:videoRawData];
-//    [rotationFilter addTarget:positionFilter];
-//    [positionFilter addTarget:filteredVideoView];
-//    [positionFilter addTarget:videoRawData];
 
     [videoCamera startCameraCapture];
 }
@@ -146,31 +143,31 @@
             trackingDot.opacity = 0.0f;
         }
         
-        [rotationFilter removeAllTargets];
+        [videoCamera removeAllTargets];
         [positionFilter removeAllTargets];
         [thresholdFilter removeAllTargets];
-        [rotationFilter addTarget:videoRawData];
+        [videoCamera addTarget:videoRawData];
         
         switch(displayMode)
         {
             case PASSTHROUGH_VIDEO: 
             {
-                [rotationFilter addTarget:filteredVideoView];
+                [videoCamera addTarget:filteredVideoView];
             }; break;
             case SIMPLE_THRESHOLDING: 
             {
-                [rotationFilter addTarget:thresholdFilter];
+                [videoCamera addTarget:thresholdFilter];
                 [thresholdFilter addTarget:filteredVideoView];
             }; break;
             case POSITION_THRESHOLDING: 
             {
-                [rotationFilter addTarget:positionFilter];
+                [videoCamera addTarget:positionFilter];
                 [positionFilter addTarget:filteredVideoView];
             }; break;
             case OBJECT_TRACKING: 
             {
-                [rotationFilter addTarget:filteredVideoView];
-                [rotationFilter addTarget:positionFilter];
+                [videoCamera addTarget:filteredVideoView];
+                [videoCamera addTarget:positionFilter];
                 [positionFilter addTarget:positionRawData];
             }; break;
         }

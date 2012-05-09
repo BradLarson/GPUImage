@@ -27,7 +27,7 @@
 {
 }
 
-- (void)setInputSize:(CGSize)newSize;
+- (void)setInputSize:(CGSize)newSize atIndex:(NSInteger)textureIndex;
 {
 }
 

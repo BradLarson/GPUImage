@@ -131,6 +131,28 @@ NSString *const kGPUImageTwoInputTextureVertexShaderString = SHADER_STRING
     }
 }
 
+- (CGSize)rotatedSize:(CGSize)sizeToRotate forIndex:(NSInteger)textureIndex;
+{
+    CGSize rotatedSize = sizeToRotate;
+    
+    GPUImageRotationMode rotationToCheck;
+    if (textureIndex == 0)
+    {
+        rotationToCheck = inputRotation;
+    }
+    else
+    {
+        rotationToCheck = inputRotation2;
+    }
+    
+    if (GPUImageRotationSwapsWidthAndHeight(rotationToCheck))
+    {
+        rotatedSize.width = sizeToRotate.height;
+        rotatedSize.height = sizeToRotate.width;
+    }
+    
+    return rotatedSize; 
+}
 
 
 @end

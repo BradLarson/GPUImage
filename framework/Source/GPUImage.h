@@ -17,6 +17,7 @@
 
 // Filters
 #import "GPUImageFilter.h"
+#import "GPUImageTwoInputFilter.h"
 #import "GPUImagePixellateFilter.h"
 #import "GPUImageSepiaFilter.h"
 #import "GPUImageColorInvertFilter.h"

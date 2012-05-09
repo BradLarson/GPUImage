@@ -283,21 +283,22 @@
 
         for (id<GPUImageInput> currentTarget in targets)
         {
+            NSInteger indexOfObject = [targets indexOfObject:currentTarget];
+            NSInteger textureIndexOfTarget = [[targetTextureIndices objectAtIndex:indexOfObject] integerValue];
+
             if (currentTarget != self.targetToIgnoreForUpdates)
             {
-                [currentTarget setInputSize:CGSizeMake(bufferWidth, bufferHeight)];
+                [currentTarget setInputSize:CGSizeMake(bufferWidth, bufferHeight) atIndex:textureIndexOfTarget];
                 
-                NSInteger indexOfObject = [targets indexOfObject:currentTarget];
-                [currentTarget setInputTexture:outputTexture atIndex:[[targetTextureIndices objectAtIndex:indexOfObject] integerValue]];
-                [currentTarget setInputRotation:outputRotation atIndex:[[targetTextureIndices objectAtIndex:indexOfObject] integerValue]];
+                [currentTarget setInputTexture:outputTexture atIndex:textureIndexOfTarget];
+                [currentTarget setInputRotation:outputRotation atIndex:textureIndexOfTarget];
                 
                 [currentTarget newFrameReadyAtTime:currentTime];
             }
             else
             {
-                NSInteger indexOfObject = [targets indexOfObject:currentTarget];
-                [currentTarget setInputTexture:outputTexture atIndex:[[targetTextureIndices objectAtIndex:indexOfObject] integerValue]];
-                [currentTarget setInputRotation:outputRotation atIndex:[[targetTextureIndices objectAtIndex:indexOfObject] integerValue]];
+                [currentTarget setInputTexture:outputTexture atIndex:textureIndexOfTarget];
+                [currentTarget setInputRotation:outputRotation atIndex:textureIndexOfTarget];
             }
         }
         
@@ -338,7 +339,10 @@
         {
             if (currentTarget != self.targetToIgnoreForUpdates)
             {
-                [currentTarget setInputSize:CGSizeMake(bufferWidth, bufferHeight)];
+                NSInteger indexOfObject = [targets indexOfObject:currentTarget];
+                NSInteger textureIndexOfTarget = [[targetTextureIndices objectAtIndex:indexOfObject] integerValue];
+
+                [currentTarget setInputSize:CGSizeMake(bufferWidth, bufferHeight) atIndex:textureIndexOfTarget];
                 [currentTarget newFrameReadyAtTime:currentTime];
             }
         }
