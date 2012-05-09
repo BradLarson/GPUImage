@@ -709,7 +709,7 @@
 			
             sourcePicture = [[GPUImagePicture alloc] initWithImage:inputImage smoothlyScaleOutput:YES];
             [sourcePicture addTarget:filter];
-            [sourcePicture processImage];
+            [sourcePicture processImage];            
         }
 
         GPUImageView *filterView = (GPUImageView *)self.view;

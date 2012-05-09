@@ -3,14 +3,15 @@
 NSString *const kGPUImageOverlayBlendFragmentShaderString = SHADER_STRING
 (
  varying highp vec2 textureCoordinate;
- 
+ varying highp vec2 textureCoordinate2;
+
  uniform sampler2D inputImageTexture;
  uniform sampler2D inputImageTexture2;
  
  void main()
  {
      lowp vec4 base = texture2D(inputImageTexture, textureCoordinate);
-     lowp vec4 overlay = texture2D(inputImageTexture2, textureCoordinate);
+     lowp vec4 overlay = texture2D(inputImageTexture2, textureCoordinate2);
      gl_FragColor = vec4(
                          (base.r < 0.5 ? (2.0 * base.r * overlay.r) : (1.0 - 2.0 * (1.0 - base.r) * (1.0 - overlay.r))), 
                          (base.g < 0.5 ? (2.0 * base.g * overlay.g) : (1.0 - 2.0 * (1.0 - base.g) * (1.0 - overlay.g))), 

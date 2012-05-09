@@ -5,7 +5,6 @@
 #define SHADER_STRING(text) @ STRINGIZE2(text)
 
 extern NSString *const kGPUImageVertexShaderString;
-extern NSString *const kGPUImageTwoInputTextureVertexShaderString;
 extern NSString *const kGPUImagePassthroughFragmentShaderString;
 
 struct GPUVector4 {
@@ -44,13 +43,13 @@ typedef struct GPUMatrix3x3 GPUMatrix3x3;
  */
 @interface GPUImageFilter : GPUImageOutput <GPUImageInput>
 {
-    GLuint filterSourceTexture, filterSourceTexture2;
+    GLuint filterSourceTexture;
 
     GLuint filterFramebuffer;
 
     GLProgram *filterProgram;
-    GLint filterPositionAttribute, filterTextureCoordinateAttribute, filterSecondTextureCoordinateAttribute;
-    GLint filterInputTextureUniform, filterInputTextureUniform2;
+    GLint filterPositionAttribute, filterTextureCoordinateAttribute;
+    GLint filterInputTextureUniform;
     GLfloat backgroundColorRed, backgroundColorGreen, backgroundColorBlue, backgroundColorAlpha;
     
     BOOL preparedToCaptureImage;
@@ -60,7 +59,7 @@ typedef struct GPUMatrix3x3 GPUMatrix3x3;
     CVOpenGLESTextureRef renderTexture;
     
     CGSize currentFilterSize;
-    GPUImageRotationMode inputRotation, inputRotation2;
+    GPUImageRotationMode inputRotation;
 }
 
 @property(readonly) CVPixelBufferRef renderTarget;

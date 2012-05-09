@@ -1,6 +1,6 @@
-#import "GPUImageFilter.h"
+#import "GPUImageTwoInputFilter.h"
 
-@interface GPUImageDissolveBlendFilter : GPUImageFilter
+@interface GPUImageDissolveBlendFilter : GPUImageTwoInputFilter
 {
     GLint mixUniform;
 }

@@ -17,23 +17,6 @@ NSString *const kGPUImageVertexShaderString = SHADER_STRING
  }
 );
 
-NSString *const kGPUImageTwoInputTextureVertexShaderString = SHADER_STRING
-(
- attribute vec4 position;
- attribute vec4 inputTextureCoordinate;
- attribute vec4 inputTextureCoordinate2;
- 
- varying vec2 textureCoordinate;
- varying vec2 textureCoordinate2;
- 
- void main()
- {
-     gl_Position = position;
-     textureCoordinate = inputTextureCoordinate.xy;
-     textureCoordinate2 = inputTextureCoordinate2.xy;
- }
-);
-
 NSString *const kGPUImagePassthroughFragmentShaderString = SHADER_STRING
 (
  varying highp vec2 textureCoordinate;
@@ -67,7 +50,6 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size);
     preparedToCaptureImage = NO;
     _preventRendering = NO;
     inputRotation = kGPUImageNoRotation;
-    inputRotation2 = kGPUImageNoRotation;
     backgroundColorRed = 0.0;
     backgroundColorGreen = 0.0;
     backgroundColorBlue = 0.0;
@@ -92,18 +74,12 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size);
     
     filterPositionAttribute = [filterProgram attributeIndex:@"position"];
     filterTextureCoordinateAttribute = [filterProgram attributeIndex:@"inputTextureCoordinate"];
-    filterSecondTextureCoordinateAttribute = [filterProgram attributeIndex:@"inputTextureCoordinate2"];
     filterInputTextureUniform = [filterProgram uniformIndex:@"inputImageTexture"]; // This does assume a name of "inputImageTexture" for the fragment shader
-    filterInputTextureUniform2 = [filterProgram uniformIndex:@"inputImageTexture2"]; // This does assume a name of "inputImageTexture2" for second input texture in the fragment shader
 
     [filterProgram use];    
     
-    NSLog(@"Attributes: %d, %d, %d", filterPositionAttribute, filterTextureCoordinateAttribute, filterSecondTextureCoordinateAttribute);
 	glEnableVertexAttribArray(filterPositionAttribute);
-	glEnableVertexAttribArray(filterTextureCoordinateAttribute);
-    
-    // TODO: Check for validity f 
-	glEnableVertexAttribArray(filterSecondTextureCoordinateAttribute);
+	glEnableVertexAttribArray(filterTextureCoordinateAttribute);    
     
     return self;
 }
@@ -135,7 +111,6 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size);
 {
     [filterProgram addAttribute:@"position"];
 	[filterProgram addAttribute:@"inputTextureCoordinate"];
-    [filterProgram addAttribute:@"inputTextureCoordinate2"];
 
     // Override this, calling back to this super method, in order to add new attributes to your vertex shader
 }
@@ -444,15 +419,6 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
 	
 	glUniform1i(filterInputTextureUniform, 2);	
 
-    if (filterSourceTexture2 != 0)
-    {
-        glActiveTexture(GL_TEXTURE3);
-        glBindTexture(GL_TEXTURE_2D, filterSourceTexture2);                
-        glUniform1i(filterInputTextureUniform2, 3);	
-        
-        glVertexAttribPointer(filterSecondTextureCoordinateAttribute, 2, GL_FLOAT, 0, 0, [[self class] textureCoordinatesForRotation:inputRotation2]);
-    }
-    
     glVertexAttribPointer(filterPositionAttribute, 2, GL_FLOAT, 0, 0, vertices);
 	glVertexAttribPointer(filterTextureCoordinateAttribute, 2, GL_FLOAT, 0, 0, textureCoordinates);
     
@@ -594,26 +560,12 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
 
 - (NSInteger)nextAvailableTextureIndex;
 {
-    if (filterSourceTexture == 0)
-    {
-        return 0;
-    }
-    else
-    {
-        return 1;
-    }
+    return 0;
 }
 
 - (void)setInputTexture:(GLuint)newInputTexture atIndex:(NSInteger)textureIndex;
 {
-    if (textureIndex == 0)
-    {
-        filterSourceTexture = newInputTexture;
-    }
-    else
-    {
-        filterSourceTexture2 = newInputTexture;
-    }
+    filterSourceTexture = newInputTexture;
 }
 
 - (void)recreateFilterFBO
@@ -672,18 +624,7 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
 
 - (void)setInputRotation:(GPUImageRotationMode)newInputRotation atIndex:(NSInteger)textureIndex;
 {
-    if (textureIndex == 0)
-    {
-        NSLog(@"First input rotation: %d", inputRotation);
-        
-        inputRotation = newInputRotation;
-    }
-    else
-    {
-        NSLog(@"Second input rotation: %d", inputRotation2);
-        
-        inputRotation2 = newInputRotation;
-    }
+    inputRotation = newInputRotation;
 }
 
 - (void)forceProcessingAtSize:(CGSize)frameSize;

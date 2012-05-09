@@ -244,6 +244,8 @@
     return [[videoInput device] position];
 }
 
+#define INITIALFRAMESTOIGNOREFORBENCHMARK 5
+
 - (void)processVideoSampleBuffer:(CMSampleBufferRef)sampleBuffer;
 {
     if (capturePaused)
@@ -308,11 +310,14 @@
         
         if (_runBenchmark)
         {
-            CFAbsoluteTime currentFrameTime = (CFAbsoluteTimeGetCurrent() - startTime);
-            totalFrameTimeDuringCapture += currentFrameTime;
             numberOfFramesCaptured++;
-            NSLog(@"Average frame time : %f ms", 1000.0 * (totalFrameTimeDuringCapture / numberOfFramesCaptured));
-            NSLog(@"Current frame time : %f ms", 1000.0 * currentFrameTime);
+            if (numberOfFramesCaptured > INITIALFRAMESTOIGNOREFORBENCHMARK)
+            {
+                CFAbsoluteTime currentFrameTime = (CFAbsoluteTimeGetCurrent() - startTime);
+                totalFrameTimeDuringCapture += currentFrameTime;
+                NSLog(@"Average frame time : %f ms", [self averageFrameDurationDuringCapture]);
+                NSLog(@"Current frame time : %f ms", 1000.0 * currentFrameTime);
+            }
         }
     }
     else
@@ -342,11 +347,12 @@
         
         if (_runBenchmark)
         {
-            CFAbsoluteTime currentFrameTime = (CFAbsoluteTimeGetCurrent() - startTime);
-            totalFrameTimeDuringCapture += currentFrameTime;
             numberOfFramesCaptured++;
-            //        NSLog(@"Average frame time : %f ms", 1000.0 * (totalFrameTimeDuringCapture / numberOfFramesCaptured));
-            //        NSLog(@"Current frame time : %f ms", 1000.0 * currentFrameTime);
+            if (numberOfFramesCaptured > INITIALFRAMESTOIGNOREFORBENCHMARK)
+            {
+                CFAbsoluteTime currentFrameTime = (CFAbsoluteTimeGetCurrent() - startTime);
+                totalFrameTimeDuringCapture += currentFrameTime;
+            }
         }
     }  
 }
@@ -361,8 +367,7 @@
 
 - (CGFloat)averageFrameDurationDuringCapture;
 {
-    NSLog(@"Number of frames: %d", numberOfFramesCaptured);
-    return (totalFrameTimeDuringCapture / (CGFloat)numberOfFramesCaptured) * 1000.0;
+    return (totalFrameTimeDuringCapture / (CGFloat)(numberOfFramesCaptured - INITIALFRAMESTOIGNOREFORBENCHMARK)) * 1000.0;
 }
 
 #pragma mark -
