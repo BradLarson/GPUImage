@@ -27,6 +27,7 @@
     CVOpenGLESTextureRef renderTexture;
 
     CGSize videoSize;
+    GPUImageRotationMode inputRotation;
 }
 
 @property(readwrite, nonatomic) BOOL hasAudioTrack;

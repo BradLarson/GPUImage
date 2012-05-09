@@ -23,6 +23,7 @@
 @synthesize captureSession = _captureSession;
 @synthesize inputCamera = _inputCamera;
 @synthesize runBenchmark = _runBenchmark;
+@synthesize outputImageOrientation = _outputImageOrientation;
 
 #pragma mark -
 #pragma mark Initialization and teardown
@@ -48,6 +49,7 @@
     
     _runBenchmark = NO;
     capturePaused = NO;
+    outputRotation = kGPUImageNoRotation;
     
     if ([GPUImageOpenGLESContext supportsFastTextureUpload])
     {
@@ -153,6 +155,16 @@
 }
 
 #pragma mark -
+#pragma mark Managing targets
+
+- (void)addTarget:(id<GPUImageInput>)newTarget atTextureLocation:(NSInteger)textureLocation;
+{
+    [super addTarget:newTarget atTextureLocation:textureLocation];
+    
+    [newTarget setInputRotation:outputRotation atIndex:textureLocation];
+}
+
+#pragma mark -
 #pragma mark Manage the camera video stream
 
 - (void)startCameraCapture;
@@ -188,7 +200,7 @@
     AVCaptureDeviceInput *newVideoInput;
     AVCaptureDevicePosition currentCameraPosition = [[videoInput device] position];
     
-    if(currentCameraPosition == AVCaptureDevicePositionBack)
+    if (currentCameraPosition == AVCaptureDevicePositionBack)
     {
         currentCameraPosition = AVCaptureDevicePositionFront;
     }
@@ -275,6 +287,7 @@
                 
                 NSInteger indexOfObject = [targets indexOfObject:currentTarget];
                 [currentTarget setInputTexture:outputTexture atIndex:[[targetTextureIndices objectAtIndex:indexOfObject] integerValue]];
+                [currentTarget setInputRotation:outputRotation atIndex:[[targetTextureIndices objectAtIndex:indexOfObject] integerValue]];
                 
                 [currentTarget newFrameReadyAtTime:currentTime];
             }
@@ -282,6 +295,7 @@
             {
                 NSInteger indexOfObject = [targets indexOfObject:currentTarget];
                 [currentTarget setInputTexture:outputTexture atIndex:[[targetTextureIndices objectAtIndex:indexOfObject] integerValue]];
+                [currentTarget setInputRotation:outputRotation atIndex:[[targetTextureIndices objectAtIndex:indexOfObject] integerValue]];
             }
         }
         
@@ -422,6 +436,41 @@
     [_captureSession commitConfiguration];
     
     [super setAudioEncodingTarget:newValue];
+}
+
+- (void)setOutputImageOrientation:(UIInterfaceOrientation)newValue;
+{
+    _outputImageOrientation = newValue;
+    
+//    From the iOS 5.0 release notes:
+//    In previous iOS versions, the front-facing camera would always deliver buffers in AVCaptureVideoOrientationLandscapeLeft and the back-facing camera would always deliver buffers in AVCaptureVideoOrientationLandscapeRight.
+    
+    if ([self cameraPosition] == AVCaptureDevicePositionBack)
+    {
+        switch(_outputImageOrientation)
+        {
+            case UIInterfaceOrientationPortrait:outputRotation = kGPUImageRotateRight; break;
+            case UIInterfaceOrientationPortraitUpsideDown:outputRotation = kGPUImageRotateRightFlipVertical; break;
+            case UIInterfaceOrientationLandscapeLeft:outputRotation = kGPUImageNoRotation; break;
+            case UIInterfaceOrientationLandscapeRight:outputRotation = kGPUImageFlipVertical; break;
+        }
+    }
+    else
+    {
+        switch(_outputImageOrientation)
+        {
+            case UIInterfaceOrientationPortrait:outputRotation = kGPUImageRotateRightFlipVertical; break;
+            case UIInterfaceOrientationPortraitUpsideDown:outputRotation = kGPUImageRotateRight; break;
+            case UIInterfaceOrientationLandscapeLeft:outputRotation = kGPUImageFlipVertical; break;
+            case UIInterfaceOrientationLandscapeRight:outputRotation = kGPUImageNoRotation; break;
+        }
+    }
+    
+    for (id<GPUImageInput> currentTarget in targets)
+    {
+        NSInteger indexOfObject = [targets indexOfObject:currentTarget];
+        [currentTarget setInputRotation:outputRotation atIndex:[[targetTextureIndices objectAtIndex:indexOfObject] integerValue]];
+    }
 }
 
 @end

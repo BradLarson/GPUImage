@@ -92,8 +92,6 @@ It is generated as a build phase using appledoc. To disable documentation buildi
 
 ### Image processing ###
 
-- **GPUImageRotationFilter**: This lets you rotate an image left or right by 90 degrees, or flip it horizontally or vertically
-
 - **GPUImageTransformFilter**: This applies an arbitrary 2-D or 3-D transformation to an image
   - *affineTransform*: This takes in a CGAffineTransform to adjust an image in 2-D
   - *transform3D*: This takes in a CATransform3D to manipulate an image in 3-D
@@ -268,6 +266,8 @@ Additionally, this is an ARC-enabled framework, so if you want to use this withi
 To filter live video from an iOS device's camera, you can use code like the following:
 
 	GPUImageVideoCamera *videoCamera = [[GPUImageVideoCamera alloc] initWithSessionPreset:AVCaptureSessionPreset640x480 cameraPosition:AVCaptureDevicePositionBack];
+	videoCamera.outputImageOrientation = UIInterfaceOrientationPortrait;
+	
 	GPUImageFilter *customFilter = [[GPUImageFilter alloc] initWithFragmentShaderFromFile:@"CustomShader"];
 	GPUImageView *filteredVideoView = [[GPUImageView alloc] initWithFrame:CGRectMake(0.0, 0.0, viewWidth, viewHeight)];
 
@@ -278,7 +278,7 @@ To filter live video from an iOS device's camera, you can use code like the foll
 
 	[videoCamera startCameraCapture];
 
-This sets up a video source coming from the iOS device's back-facing camera, using a preset that tries to capture at 640x480. A custom filter, using code from the file CustomShader.fsh, is then set as the target for the video frames from the camera. These filtered video frames are finally displayed onscreen with the help of a UIView subclass that can present the filtered OpenGL ES texture that results from this pipeline.
+This sets up a video source coming from the iOS device's back-facing camera, using a preset that tries to capture at 640x480. This video is captured with the interface being in portrait mode, where the landscape-left-mounted camera needs to have its video frames rotated before display. A custom filter, using code from the file CustomShader.fsh, is then set as the target for the video frames from the camera. These filtered video frames are finally displayed onscreen with the help of a UIView subclass that can present the filtered OpenGL ES texture that results from this pipeline.
 
 The fill mode of the GPUImageView can be altered by setting its fillMode property, so that if the aspect ratio of the source video is different from that of the view, the video will either be stretched, centered with black bars, or zoomed to fill.
 
@@ -294,11 +294,10 @@ Also, if you wish to enable microphone audio capture for recording to a movie, y
 To capture and filter still photos, you can use a process similar to the one for filtering video. Instead of a GPUImageVideoCamera, you use a GPUImageStillCamera:
 
 	stillCamera = [[GPUImageStillCamera alloc] init];
+	stillCamera.outputImageOrientation = UIInterfaceOrientationPortrait;
+	
 	filter = [[GPUImageGammaFilter alloc] init];
-	GPUImageRotationFilter *rotationFilter = [[GPUImageRotationFilter alloc] initWithRotation:kGPUImageRotateRight];
-
-	[stillCamera addTarget:rotationFilter];
-	[rotationFilter addTarget:filter];
+	[stillCamera addTarget:filter];
 	GPUImageView *filterView = (GPUImageView *)self.view;
 	[filter addTarget:filterView];
 
@@ -384,14 +383,12 @@ One thing to note when adding fragment shaders to your Xcode project is that Xco
 
 Movies can be loaded into the framework via the GPUImageMovie class, filtered, and then written out using a GPUImageMovieWriter. GPUImageMovieWriter is also fast enough to record video in realtime from an iPhone 4's camera at 640x480, so a direct filtered video source can be fed into it.
 
-The following is an example of how you would load a sample movie, pass it through a pixellation and rotation filter, then record the result to disk as a 480 x 640 h.264 movie:
+The following is an example of how you would load a sample movie, pass it through a pixellation filter, then record the result to disk as a 480 x 640 h.264 movie:
 
 	movieFile = [[GPUImageMovie alloc] initWithURL:sampleURL];
 	pixellateFilter = [[GPUImagePixellateFilter alloc] init];
-	GPUImageRotationFilter *rotationFilter = [[GPUImageRotationFilter alloc] initWithRotation:kGPUImageRotateRight];
 
-	[movieFile addTarget:rotationFilter];
-	[rotationFilter addTarget:pixellateFilter];
+	[movieFile addTarget:pixellateFilter];
 
 	NSString *pathToMovie = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/Movie.m4v"];
 	unlink([pathToMovie UTF8String]);
@@ -431,6 +428,10 @@ A bundled JPEG image is loaded into the application at launch, a filter is appli
 ### SimpleVideoFilter ###
 
 A pixellate filter is applied to a live video stream, with a UISlider control that lets you adjust the pixel size on the live video.
+
+### SimpleVideoFileFilter ###
+
+A movie file is loaded from disk, an unsharp mask filter is applied to it, and the filtered result is re-encoded as another movie.
 
 ### MultiViewFilterExample ###
 

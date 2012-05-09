@@ -25,7 +25,8 @@
 	self.view = primaryView;
 
     videoCamera = [[GPUImageVideoCamera alloc] initWithSessionPreset:AVCaptureSessionPreset640x480 cameraPosition:AVCaptureDevicePositionBack];
-
+    videoCamera.outputImageOrientation = UIInterfaceOrientationPortrait;
+    
     CGFloat halfWidth = round(mainScreenFrame.size.width / 2.0);
     CGFloat halfHeight = round(mainScreenFrame.size.height / 2.0);    
     view1 = [[GPUImageView alloc] initWithFrame:CGRectMake(0.0, 0.0, halfWidth, halfHeight)];
@@ -37,7 +38,6 @@
     [self.view addSubview:view3];
     [self.view addSubview:view4];
     
-    GPUImageRotationFilter *rotationFilter = [[GPUImageRotationFilter alloc] initWithRotation:kGPUImageRotateRight];
     GPUImageFilter *filter1 = [[GPUImageFilter alloc] initWithFragmentShaderFromFile:@"Shader1"];
     GPUImageFilter *filter2 = [[GPUImageFilter alloc] initWithFragmentShaderFromFile:@"Shader2"];
     GPUImageSepiaFilter *filter3 = [[GPUImageSepiaFilter alloc] init];
@@ -46,19 +46,16 @@
     // This is to avoid wasting processing time on larger frames than will be displayed.
     // You'll need to use -forceProcessingAtSize: with a zero size to re-enable full frame processing of video.
     
-    [rotationFilter forceProcessingAtSize:view1.sizeInPixels];
     [filter1 forceProcessingAtSize:view2.sizeInPixels];
     [filter2 forceProcessingAtSize:view3.sizeInPixels];
     [filter3 forceProcessingAtSize:view4.sizeInPixels];
     
-    [videoCamera addTarget:rotationFilter];
-    
-    [rotationFilter addTarget:view1];
-    [rotationFilter addTarget:filter1];
+    [videoCamera addTarget:view1];
+    [videoCamera addTarget:filter1];
     [filter1 addTarget:view2];
-    [rotationFilter addTarget:filter2];
+    [videoCamera addTarget:filter2];
     [filter2 addTarget:view3];
-    [rotationFilter addTarget:filter3];
+    [videoCamera addTarget:filter3];
     [filter3 addTarget:view4];
     
     [videoCamera startCameraCapture];

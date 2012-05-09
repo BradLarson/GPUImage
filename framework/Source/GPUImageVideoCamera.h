@@ -6,11 +6,6 @@
 
 /**
  A GPUImageOutput that provides frames from either camera
- 
- From the iOS 5.0 release notes:
- _In previous iOS versions, the front-facing camera would always deliver buffers in AVCaptureVideoOrientationLandscapeLeft and the back-facing camera would always deliver buffers in AVCaptureVideoOrientationLandscapeRight._
- 
- Currently, rotation is needed to handle each camera
 */
 @interface GPUImageVideoCamera : GPUImageOutput <AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptureAudioDataOutputSampleBufferDelegate>
 {
@@ -24,16 +19,20 @@
     AVCaptureDevice *_microphone;
     
     BOOL capturePaused;
+    GPUImageRotationMode outputRotation;
 }
 
 /// The AVCaptureSession used to capture from the camera
 @property(readonly, retain) AVCaptureSession *captureSession;
 
-/// Whether or not benchmarking should be running
+/// This enables the benchmarking mode, which logs out instantaneous and average frame times to the console
 @property(readwrite, nonatomic) BOOL runBenchmark;
 
 /// Use this property to manage camera settings. Focus point, exposure point, etc.
 @property(readonly) AVCaptureDevice *inputCamera;
+
+/// This determines the rotation applied to the output image, based on the source material
+@property(readwrite, nonatomic) UIInterfaceOrientation outputImageOrientation;
 
 /// @name Initialization and teardown
 
@@ -82,13 +81,13 @@
  */
 - (AVCaptureDevicePosition)cameraPosition;
 
-/** Rotate the camera
+/** This flips between the front and rear cameras
  */
 - (void)rotateCamera;
 
 /// @name Benchmarking
 
-/** Average frame duration
+/** When benchmarking is enabled, this will keep a running average of the time from uploading, processing, and final recording or display
  */
 - (CGFloat)averageFrameDurationDuringCapture;
 

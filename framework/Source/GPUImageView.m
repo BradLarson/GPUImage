@@ -78,6 +78,8 @@
     {
         self.contentScaleFactor = [[UIScreen mainScreen] scale];
     }
+
+    inputRotation = kGPUImageNoRotation;
     
     [self setBackgroundColorRed:0.0 green:0.0 blue:0.0 alpha:1.0];
     self.fillMode = kGPUImageFillModePreserveAspectRatio;
@@ -286,6 +288,11 @@
 - (void)setInputTexture:(GLuint)newInputTexture atIndex:(NSInteger)textureIndex;
 {
     inputTextureForDisplay = newInputTexture;
+}
+
+- (void)setInputRotation:(GPUImageRotationMode)newInputRotation atIndex:(NSInteger)textureIndex;
+{
+    inputRotation = newInputRotation;
 }
 
 - (void)setInputSize:(CGSize)newSize;

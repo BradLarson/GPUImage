@@ -123,20 +123,13 @@ NSString *const kGPUImageTransformVertexShaderString = SHADER_STRING
         1.0f,  1.0f,
     };
 
-    static const GLfloat squareTextureCoordinates[] = {
-        0.0f, 0.0f,
-        1.0f, 0.0f,
-        0.0f,  1.0f,
-        1.0f,  1.0f,
-    };
-
     if (_ignoreAspectRatio)
     {
-        [self renderToTextureWithVertices:squareVertices textureCoordinates:squareTextureCoordinates sourceTexture:filterSourceTexture];    
+        [self renderToTextureWithVertices:squareVertices textureCoordinates:[[self class] textureCoordinatesForRotation:inputRotation] sourceTexture:filterSourceTexture];    
     }
     else
     {
-        [self renderToTextureWithVertices:adjustedVertices textureCoordinates:squareTextureCoordinates sourceTexture:filterSourceTexture];    
+        [self renderToTextureWithVertices:adjustedVertices textureCoordinates:[[self class] textureCoordinatesForRotation:inputRotation] sourceTexture:filterSourceTexture];    
     }
     
     [self informTargetsAboutNewFrameAtTime:frameTime];

@@ -45,6 +45,7 @@
     
     sourcePicture = [[GPUImagePicture alloc] initWithImage:inputImage smoothlyScaleOutput:YES];
     sepiaFilter = [[GPUImageSepiaFilter alloc] init];
+  
     
     GPUImageView *imageView = (GPUImageView *)self.view;
     [sepiaFilter forceProcessingAtSize:imageView.sizeInPixels]; // This is now needed to make the filter run at the smaller output size
@@ -59,14 +60,12 @@
 {
     // Set up a manual image filtering chain
     UIImage *inputImage = [UIImage imageNamed:@"Lambeau.jpg"];
-    
+
     GPUImagePicture *stillImageSource = [[GPUImagePicture alloc] initWithImage:inputImage];
     GPUImageSepiaFilter *stillImageFilter = [[GPUImageSepiaFilter alloc] init];
     GPUImageVignetteFilter *vignetteImageFilter = [[GPUImageVignetteFilter alloc] init];
     vignetteImageFilter.x = 0.6;
     vignetteImageFilter.y = 0.4;
-    
-//    GPUImageSketchFilter *stillImageFilter = [[GPUImageSketchFilter alloc] init];
     
     // There's a problem with the Kuwahara filter where it doesn't finish rendering before the image is extracted from it.
     // It looks like it only gets through certain tiles before glReadPixels() is called. Odd.
@@ -76,18 +75,18 @@
     [stillImageSource addTarget:stillImageFilter];
     [stillImageFilter addTarget:vignetteImageFilter];
     [vignetteImageFilter prepareForImageCapture];
+    
     [stillImageSource processImage];
     
-    UIImage *currentFilteredVideoFrame = [vignetteImageFilter imageFromCurrentlyProcessedOutput];
-    
+    UIImage *currentFilteredImage = [vignetteImageFilter imageFromCurrentlyProcessedOutput];
+        
     // Do a simpler image filtering
-//    GPUImageSepiaFilter *stillImageFilter2 = [[GPUImageSepiaFilter alloc] init];
     GPUImageSketchFilter *stillImageFilter2 = [[GPUImageSketchFilter alloc] init];
     UIImage *quickFilteredImage = [stillImageFilter2 imageByFilteringImage:inputImage];
 
     
     // Write images to disk, as proof
-    NSData *dataForPNGFile = UIImagePNGRepresentation(currentFilteredVideoFrame);
+    NSData *dataForPNGFile = UIImagePNGRepresentation(currentFilteredImage);
     NSData *dataForPNGFile2 = UIImagePNGRepresentation(quickFilteredImage);
     
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);

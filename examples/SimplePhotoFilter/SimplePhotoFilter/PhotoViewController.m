@@ -50,6 +50,7 @@
     [super viewDidLoad];
     
     stillCamera = [[GPUImageStillCamera alloc] init];
+    stillCamera.outputImageOrientation = UIInterfaceOrientationPortrait;
 //    filter = [[GPUImageGammaFilter alloc] init];
     filter = [[GPUImageSketchFilter alloc] init];
     [(GPUImageSketchFilter *)filter setImageHeightFactor:1024.0];
@@ -59,10 +60,7 @@
      	
 	[filter prepareForImageCapture];
     
-    GPUImageRotationFilter *rotationFilter = [[GPUImageRotationFilter alloc] initWithRotation:kGPUImageRotateRight];
-    
-    [stillCamera addTarget:rotationFilter];
-    [rotationFilter addTarget:filter];
+    [stillCamera addTarget:filter];
     GPUImageView *filterView = (GPUImageView *)self.view;
     [filter addTarget:filterView];
     

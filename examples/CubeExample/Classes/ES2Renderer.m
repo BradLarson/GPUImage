@@ -72,13 +72,12 @@ enum {
         
 
         videoCamera = [[GPUImageVideoCamera alloc] initWithSessionPreset:AVCaptureSessionPreset640x480 cameraPosition:AVCaptureDevicePositionBack];
+        videoCamera.outputImageOrientation = UIInterfaceOrientationPortrait;
         inputFilter = [[GPUImageSepiaFilter alloc] init];
-        GPUImageRotationFilter *rotationFilter = [[GPUImageRotationFilter alloc] initWithRotation:kGPUImageRotateRight];
         textureOutput = [[GPUImageTextureOutput alloc] init];
         textureOutput.delegate = self;
         
-        [videoCamera addTarget:rotationFilter];
-        [rotationFilter addTarget:inputFilter];
+        [videoCamera addTarget:inputFilter];
         [inputFilter addTarget:textureOutput];
         
         [videoCamera startCameraCapture];

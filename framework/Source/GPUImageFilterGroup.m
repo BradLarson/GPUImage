@@ -118,6 +118,14 @@
     }
 }
 
+- (void)setInputRotation:(GPUImageRotationMode)newInputRotation atIndex:(NSInteger)textureIndex;
+{
+    for (GPUImageOutput<GPUImageInput> *currentFilter in _initialFilters)
+    {
+        [currentFilter setInputRotation:newInputRotation  atIndex:(NSInteger)textureIndex];
+    }
+}
+
 - (void)forceProcessingAtSize:(CGSize)frameSize;
 {
     for (GPUImageOutput<GPUImageInput> *currentFilter in filters)

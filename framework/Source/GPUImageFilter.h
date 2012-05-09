@@ -5,6 +5,7 @@
 #define SHADER_STRING(text) @ STRINGIZE2(text)
 
 extern NSString *const kGPUImageVertexShaderString;
+extern NSString *const kGPUImageTwoInputTextureVertexShaderString;
 extern NSString *const kGPUImagePassthroughFragmentShaderString;
 
 struct GPUVector4 {
@@ -48,7 +49,7 @@ typedef struct GPUMatrix3x3 GPUMatrix3x3;
     GLuint filterFramebuffer;
 
     GLProgram *filterProgram;
-    GLint filterPositionAttribute, filterTextureCoordinateAttribute;
+    GLint filterPositionAttribute, filterTextureCoordinateAttribute, filterSecondTextureCoordinateAttribute;
     GLint filterInputTextureUniform, filterInputTextureUniform2;
     GLfloat backgroundColorRed, backgroundColorGreen, backgroundColorBlue, backgroundColorAlpha;
     
@@ -59,6 +60,7 @@ typedef struct GPUMatrix3x3 GPUMatrix3x3;
     CVOpenGLESTextureRef renderTexture;
     
     CGSize currentFilterSize;
+    GPUImageRotationMode inputRotation, inputRotation2;
 }
 
 @property(readonly) CVPixelBufferRef renderTarget;
@@ -105,6 +107,7 @@ typedef struct GPUMatrix3x3 GPUMatrix3x3;
 - (void)setOutputFBO;
 
 /// @name Rendering
++ (const GLfloat *)textureCoordinatesForRotation:(GPUImageRotationMode)rotationMode;
 - (void)renderToTextureWithVertices:(const GLfloat *)vertices textureCoordinates:(const GLfloat *)textureCoordinates sourceTexture:(GLuint)sourceTexture;
 - (void)informTargetsAboutNewFrameAtTime:(CMTime)frameTime;
 - (CGSize)outputFrameSize;

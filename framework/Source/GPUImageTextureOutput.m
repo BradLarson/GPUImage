@@ -23,6 +23,10 @@
     _texture = newInputTexture;
 }
 
+- (void)setInputRotation:(GPUImageRotationMode)newInputRotation atIndex:(NSInteger)textureIndex;
+{
+}
+
 - (void)setInputSize:(CGSize)newSize;
 {
 }

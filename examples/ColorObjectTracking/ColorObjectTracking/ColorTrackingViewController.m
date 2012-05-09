@@ -49,6 +49,7 @@
 {
 	CGRect mainScreenFrame = [[UIScreen mainScreen] applicationFrame];	
     videoCamera = [[GPUImageVideoCamera alloc] initWithSessionPreset:AVCaptureSessionPreset640x480 cameraPosition:AVCaptureDevicePositionBack];
+    videoCamera.outputImageOrientation = UIInterfaceOrientationPortrait;
     filteredVideoView = [[GPUImageView alloc] initWithFrame:CGRectMake(0.0, 0.0, mainScreenFrame.size.width, mainScreenFrame.size.height)];
     [self.view addSubview:filteredVideoView];
 
@@ -58,7 +59,6 @@
     positionFilter = [[GPUImageFilter alloc] initWithFragmentShaderFromFile:@"PositionColor"];
     [positionFilter setFloat:thresholdSensitivity forUniform:@"threshold"];
     [positionFilter setFloatVec3:thresholdColor forUniform:@"inputColor"];
-    rotationFilter = [[GPUImageRotationFilter alloc] initWithRotation:kGPUImageRotateRight];
     
 //    CGSize videoPixelSize = filteredVideoView.bounds.size;
 //    videoPixelSize.width *= [filteredVideoView contentScaleFactor];
@@ -72,9 +72,8 @@
     videoRawData = [[GPUImageRawData alloc] initWithImageSize:videoPixelSize];
     videoRawData.delegate = self;
 
-    [videoCamera addTarget:rotationFilter];
-    [rotationFilter addTarget:filteredVideoView];
-    [rotationFilter addTarget:videoRawData];
+    [videoCamera addTarget:filteredVideoView];
+    [videoCamera addTarget:videoRawData];
 //    [rotationFilter addTarget:positionFilter];
 //    [positionFilter addTarget:filteredVideoView];
 //    [positionFilter addTarget:videoRawData];
