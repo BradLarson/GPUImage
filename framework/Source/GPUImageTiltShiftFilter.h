@@ -21,4 +21,7 @@
 /// The rate at which the image gets blurry away from the in-focus region, default 0.2
 @property(readwrite, nonatomic) CGFloat focusFallOffRate; 
 
+/// A multiplier for the underlying blur color, ranging from 0.0 on up, with a default of 1.0
+@property(readwrite, nonatomic) CGFloat blurColor;
+
 @end
