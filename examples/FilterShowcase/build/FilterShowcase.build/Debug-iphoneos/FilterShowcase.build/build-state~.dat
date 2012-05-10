@@ -1,359 +1,0 @@
-TFilterShowcase
-v5
-r1
-cCheck dependencies
-cCpResource /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS5.1.sdk/ResourceRules.plist build/Debug-iphoneos/FilterShowcase.app/ResourceRules.plist
-cProcessInfoPlistFile /opt/local/www/GPUImage/examples/FilterShowcase/build/Debug-iphoneos/FilterShowcase.app/Info.plist FilterShowcase/FilterShowcase-Info.plist
-cProcessPCH /var/folders/fd/1km0337116s3hlk601ldj69h0000gn/C/com.apple.Xcode.501/SharedPrecompiledHeaders/FilterShowcase-Prefix-hbsyvzlnlhvfajfxwqmarbgkxows/FilterShowcase-Prefix.pch.pth FilterShowcase/FilterShowcase-Prefix.pch normal armv7 objective-c com.apple.compilers.llvm.clang.1_0.compiler
-cCompileC build/FilterShowcase.build/Debug-iphoneos/FilterShowcase.build/Objects-normal/armv7/main.o /opt/local/www/GPUImage/examples/FilterShowcase/FilterShowcase/main.m normal armv7 objective-c com.apple.compilers.llvm.clang.1_0.compiler
-cCompileC build/FilterShowcase.build/Debug-iphoneos/FilterShowcase.build/Objects-normal/armv7/ShowcaseAppDelegate.o /opt/local/www/GPUImage/examples/FilterShowcase/FilterShowcase/ShowcaseAppDelegate.m normal armv7 objective-c com.apple.compilers.llvm.clang.1_0.compiler
-cCompileC build/FilterShowcase.build/Debug-iphoneos/FilterShowcase.build/Objects-normal/armv7/ShowcaseFilterViewController.o /opt/local/www/GPUImage/examples/FilterShowcase/FilterShowcase/ShowcaseFilterViewController.m normal armv7 objective-c com.apple.compilers.llvm.clang.1_0.compiler
-
-N/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS5.1.sdk
-c000000004F453DF20000000000000110
-t1329937906
-s272
-
-N/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS5.1.sdk/Entitlements.plist
-c000000004F9F3E6200000000000001A7
-t1335836258
-s423
-
-N/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS5.1.sdk/ResourceRules.plist
-c000000004F9F3E6200000000000001E5
-t1335836258
-s485
-
-N/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS5.1.sdk/System/Library/Frameworks/AVFoundation.framework/AVFoundation
-c000000004F9F3E66000000000015B230
-t1335836262
-s1421872
-
-N/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS5.1.sdk/System/Library/Frameworks/CoreGraphics.framework/CoreGraphics
-c000000004F9F3E6700000000003AE430
-t1335836263
-s3859504
-
-N/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS5.1.sdk/System/Library/Frameworks/CoreMedia.framework/CoreMedia
-c000000004F9F3E670000000000075200
-t1335836263
-s479744
-
-N/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS5.1.sdk/System/Library/Frameworks/CoreVideo.framework/CoreVideo
-c000000004F9F3E67000000000001BD60
-t1335836263
-s114016
-
-N/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS5.1.sdk/System/Library/Frameworks/Foundation.framework/Foundation
-c000000004F9F3E69000000000052C940
-t1335836265
-s5425472
-
-N/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS5.1.sdk/System/Library/Frameworks/OpenGLES.framework/OpenGLES
-c000000004F9F3E690000000000018700
-t1335836265
-s100096
-
-N/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS5.1.sdk/System/Library/Frameworks/QuartzCore.framework/QuartzCore
-c000000004F9F3E690000000000175AA0
-t1335836265
-s1530528
-
-N/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS5.1.sdk/System/Library/Frameworks/UIKit.framework/UIKit
-c000000004F9F3E6B0000000000798EA0
-t1335836267
-s7966368
-
-N/Users/joshholat/Library/MobileDevice/Provisioning Profiles/A04D9FE1-D2B0-4F66-AD0E-53927DF76312.mobileprovision
-c000000004ED00DDE00000000000026DA
-t1322257886
-s9946
-
-N/opt/local/www/GPUImage/build/Debug-iphoneos/libGPUImage.a
-c00000000000000000000000000000000
-t2
-s0
-
-N/opt/local/www/GPUImage/examples/FilterShowcase/FilterShowcase/../../SimpleImageFilter/SimpleImageFilter/WID-small.jpg
-c000000004FABD14B000000000011A0B4
-t1336660299
-s1155252
-
-N/opt/local/www/GPUImage/examples/FilterShowcase/FilterShowcase/CustomFilter.fsh
-c000000004FABD14B0000000000000224
-t1336660299
-s548
-
-N/opt/local/www/GPUImage/examples/FilterShowcase/FilterShowcase/FilterShowcase-Prefix.pch
-c000000004FABD14B000000000000014B
-t1336660299
-s331
-
-N/opt/local/www/GPUImage/examples/FilterShowcase/FilterShowcase/SampleConfiguration.plist
-c000000004FABD14B000000000000025D
-t1336660299
-s605
-
-N/opt/local/www/GPUImage/examples/FilterShowcase/FilterShowcase/ShowcaseAppDelegate.m
-c000000004FABD14B0000000000000351
-t1336660299
-s849
-
-N/opt/local/www/GPUImage/examples/FilterShowcase/FilterShowcase/ShowcaseFilterListController.m
-c000000004FABD20C0000000000001E99
-t1336660492
-s7833
-
-N/opt/local/www/GPUImage/examples/FilterShowcase/FilterShowcase/ShowcaseFilterViewController.m
-c000000004FABD25F0000000000008195
-t1336660575
-s33173
-
-N/opt/local/www/GPUImage/examples/FilterShowcase/FilterShowcase/ShowcaseFilterViewController.xib
-c000000004FABD14B00000000000021C5
-t1336660299
-s8645
-
-N/opt/local/www/GPUImage/examples/FilterShowcase/FilterShowcase/en.lproj/InfoPlist.strings
-c000000004FABD14B000000000000002D
-t1336660299
-s45
-
-N/opt/local/www/GPUImage/examples/FilterShowcase/FilterShowcase/main.m
-c000000004FABD14B00000000000000DF
-t1336660299
-s223
-
-N/opt/local/www/GPUImage/examples/FilterShowcase/FilterShowcase/mask.png
-c000000004FABD14B00000000000ECAAB
-t1336660299
-s969387
-
-N/opt/local/www/GPUImage/examples/FilterShowcase/build/Debug-iphoneos/FilterShowcase.app
-t2
-s0
-
-N/opt/local/www/GPUImage/examples/FilterShowcase/build/Debug-iphoneos/FilterShowcase.app.dSYM
-t2
-s0
-
-N/opt/local/www/GPUImage/examples/FilterShowcase/build/Debug-iphoneos/FilterShowcase.app/CustomFilter.fsh
-t2
-s0
-
-N/opt/local/www/GPUImage/examples/FilterShowcase/build/Debug-iphoneos/FilterShowcase.app/FilterShowcase
-t2
-s0
-
-N/opt/local/www/GPUImage/examples/FilterShowcase/build/Debug-iphoneos/FilterShowcase.app/Info.plist
-t2
-s0
-
-N/opt/local/www/GPUImage/examples/FilterShowcase/build/Debug-iphoneos/FilterShowcase.app/PkgInfo
-t2
-s0
-
-N/opt/local/www/GPUImage/examples/FilterShowcase/build/Debug-iphoneos/FilterShowcase.app/ResourceRules.plist
-t2
-s0
-
-N/opt/local/www/GPUImage/examples/FilterShowcase/build/Debug-iphoneos/FilterShowcase.app/SampleConfiguration.plist
-t2
-s0
-
-N/opt/local/www/GPUImage/examples/FilterShowcase/build/Debug-iphoneos/FilterShowcase.app/ShowcaseFilterViewController.nib
-t2
-s0
-
-N/opt/local/www/GPUImage/examples/FilterShowcase/build/Debug-iphoneos/FilterShowcase.app/WID-small.jpg
-t2
-s0
-
-N/opt/local/www/GPUImage/examples/FilterShowcase/build/Debug-iphoneos/FilterShowcase.app/embedded.mobileprovision
-t2
-s0
-
-N/opt/local/www/GPUImage/examples/FilterShowcase/build/Debug-iphoneos/FilterShowcase.app/en.lproj/InfoPlist.strings
-t2
-s0
-
-N/opt/local/www/GPUImage/examples/FilterShowcase/build/Debug-iphoneos/FilterShowcase.app/mask.png
-t2
-s0
-
-N/opt/local/www/GPUImage/examples/FilterShowcase/build/FilterShowcase.build/Debug-iphoneos/FilterShowcase.build/FilterShowcase.xcent
-t2
-s0
-
-N/opt/local/www/GPUImage/examples/FilterShowcase/build/FilterShowcase.build/Debug-iphoneos/FilterShowcase.build/Objects-normal/armv7/FilterShowcase.LinkFileList
-c000000004FABD261000000000000026B
-t1336660577
-s619
-
-N/opt/local/www/GPUImage/examples/FilterShowcase/build/FilterShowcase.build/Debug-iphoneos/FilterShowcase.build/Objects-normal/armv7/ShowcaseAppDelegate.o
-t2
-s0
-
-N/opt/local/www/GPUImage/examples/FilterShowcase/build/FilterShowcase.build/Debug-iphoneos/FilterShowcase.build/Objects-normal/armv7/ShowcaseFilterListController.o
-t2
-s0
-
-N/opt/local/www/GPUImage/examples/FilterShowcase/build/FilterShowcase.build/Debug-iphoneos/FilterShowcase.build/Objects-normal/armv7/ShowcaseFilterViewController.o
-t2
-s0
-
-N/opt/local/www/GPUImage/examples/FilterShowcase/build/FilterShowcase.build/Debug-iphoneos/FilterShowcase.build/Objects-normal/armv7/main.o
-t2
-s0
-
-N/var/folders/fd/1km0337116s3hlk601ldj69h0000gn/C/com.apple.Xcode.501/SharedPrecompiledHeaders/FilterShowcase-Prefix-hbsyvzlnlhvfajfxwqmarbgkxows/FilterShowcase-Prefix.pch.pth
-t2
-s0
-
-NFilterShowcase/FilterShowcase-Info.plist
-c000000004FABD14B00000000000005BD
-t1336660299
-s1469
-
-CBuild AST from /opt/local/www/GPUImage/examples/FilterShowcase/FilterShowcase/ShowcaseAppDelegate.m
-r0
-
-CBuild AST from /opt/local/www/GPUImage/examples/FilterShowcase/FilterShowcase/ShowcaseFilterListController.m
-r0
-
-CBuild AST from /opt/local/www/GPUImage/examples/FilterShowcase/FilterShowcase/ShowcaseFilterViewController.m
-r0
-
-CBuild AST from /opt/local/www/GPUImage/examples/FilterShowcase/FilterShowcase/main.m
-r0
-
-CCheck dependencies
-r0
-lSLF05#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection18"Check dependenciesbbf2dde0095cb541^5b0c76e1095cb541^---0#1#0#--18"Check dependencies36"4CE14751-1480-41EA-A7AB-C6489532CBBF-
-
-CCodeSign /opt/local/www/GPUImage/examples/FilterShowcase/build/Debug-iphoneos/FilterShowcase.app
-r0
-
-CCompileC build/FilterShowcase.build/Debug-iphoneos/FilterShowcase.build/Objects-normal/armv7/ShowcaseAppDelegate.o /opt/local/www/GPUImage/examples/FilterShowcase/FilterShowcase/ShowcaseAppDelegate.m normal armv7 objective-c com.apple.compilers.llvm.clang.1_0.compiler
-s358353383.975208
-e358353384.488423
-r1
-xCompileC
-xbuild/FilterShowcase.build/Debug-iphoneos/FilterShowcase.build/Objects-normal/armv7/ShowcaseAppDelegate.o
-x/opt/local/www/GPUImage/examples/FilterShowcase/FilterShowcase/ShowcaseAppDelegate.m
-xnormal
-xarmv7
-xobjective-c
-xcom.apple.compilers.llvm.clang.1_0.compiler
-lSLF05#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection92"Compile /opt/local/www/GPUImage/examples/FilterShowcase/FilterShowcase/ShowcaseAppDelegate.m76c4f9e7095cb541^f2097de8095cb541^---0#0#0#-19%DVTDocumentLocation2@100"file://localhost/opt/local/www/GPUImage/examples/FilterShowcase/FilterShowcase/ShowcaseAppDelegate.m0000000000000000^3471"CompileC build/FilterShowcase.build/Debug-iphoneos/FilterShowcase.build/Objects-normal/armv7/ShowcaseAppDelegate.o FilterShowcase/ShowcaseAppDelegate.m normal armv7 objective-c com.apple.compilers.llvm.clang.1_0.compiler    cd /opt/local/www/GPUImage/examples/FilterShowcase    setenv LANG en_US.US-ASCII    setenv PATH "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin"    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -x objective-c -arch armv7 -fmessage-length=0 -std=gnu99 -fobjc-arc -Wno-trigraphs -fpascal-strings -O0 -Wno-missing-field-initializers -Wno-missing-prototypes -Wreturn-type -Wno-implicit-atomic-properties -Wformat -Wno-missing-braces -Wparentheses -Wswitch -Wno-unused-function -Wno-unused-label -Wno-unused-parameter -Wunused-variable -Wunused-value -Wuninitialized -Wno-unknown-pragmas -Wno-shadow -Wno-four-char-constants -Wno-sign-compare -Wno-shorten-64-to-32 -Wpointer-sign -Wno-newline-eof -Wno-selector -Wno-strict-selector-match -Wno-undeclared-selector -Wno-deprecated-implementations -DDEBUG=1 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS5.1.sdk -Wprotocol -Wdeprecated-declarations -g -Wno-conversion -Wno-sign-conversion -mthumb "-DIBOutlet=__attribute__((iboutlet))" "-DIBOutletCollection(ClassName)=__attribute__((iboutletcollection(ClassName)))" "-DIBAction=void)__attribute__((ibaction)" -miphoneos-version-min=4.0 -iquote /opt/local/www/GPUImage/examples/FilterShowcase/build/FilterShowcase.build/Debug-iphoneos/FilterShowcase.build/FilterShowcase-generated-files.hmap -I/opt/local/www/GPUImage/examples/FilterShowcase/build/FilterShowcase.build/Debug-iphoneos/FilterShowcase.build/FilterShowcase-own-target-headers.hmap -I/opt/local/www/GPUImage/examples/FilterShowcase/build/FilterShowcase.build/Debug-iphoneos/FilterShowcase.build/FilterShowcase-all-target-headers.hmap -iquote /opt/local/www/GPUImage/examples/FilterShowcase/build/FilterShowcase.build/Debug-iphoneos/FilterShowcase.build/FilterShowcase-project-headers.hmap -I/opt/local/www/GPUImage/examples/FilterShowcase/build/Debug-iphoneos/include -I../../framework -I../../framework/GPUImageTests -I../../framework/Source -I/opt/local/www/GPUImage/examples/FilterShowcase/build/FilterShowcase.build/Debug-iphoneos/FilterShowcase.build/DerivedSources/armv7 -I/opt/local/www/GPUImage/examples/FilterShowcase/build/FilterShowcase.build/Debug-iphoneos/FilterShowcase.build/DerivedSources -F/opt/local/www/GPUImage/examples/FilterShowcase/build/Debug-iphoneos -include /var/folders/fd/1km0337116s3hlk601ldj69h0000gn/C/com.apple.Xcode.501/SharedPrecompiledHeaders/FilterShowcase-Prefix-hbsyvzlnlhvfajfxwqmarbgkxows/FilterShowcase-Prefix.pch -MMD -MT dependencies -MF /opt/local/www/GPUImage/examples/FilterShowcase/build/FilterShowcase.build/Debug-iphoneos/FilterShowcase.build/Objects-normal/armv7/ShowcaseAppDelegate.d --serialize-diagnostics /opt/local/www/GPUImage/examples/FilterShowcase/build/FilterShowcase.build/Debug-iphoneos/FilterShowcase.build/Objects-normal/armv7/ShowcaseAppDelegate.dia -c /opt/local/www/GPUImage/examples/FilterShowcase/FilterShowcase/ShowcaseAppDelegate.m -o /opt/local/www/GPUImage/examples/FilterShowcase/build/FilterShowcase.build/Debug-iphoneos/FilterShowcase.build/Objects-normal/armv7/ShowcaseAppDelegate.o36"80B6440A-7AC4-475C-9241-5F6C1791B557-
-
-CCompileC build/FilterShowcase.build/Debug-iphoneos/FilterShowcase.build/Objects-normal/armv7/ShowcaseFilterListController.o /opt/local/www/GPUImage/examples/FilterShowcase/FilterShowcase/ShowcaseFilterListController.m normal armv7 objective-c com.apple.compilers.llvm.clang.1_0.compiler
-r0
-
-CCompileC build/FilterShowcase.build/Debug-iphoneos/FilterShowcase.build/Objects-normal/armv7/ShowcaseFilterViewController.o /opt/local/www/GPUImage/examples/FilterShowcase/FilterShowcase/ShowcaseFilterViewController.m normal armv7 objective-c com.apple.compilers.llvm.clang.1_0.compiler
-s358353384.488660
-e358353384.733770
-r0
-xCompileC
-xbuild/FilterShowcase.build/Debug-iphoneos/FilterShowcase.build/Objects-normal/armv7/ShowcaseFilterViewController.o
-x/opt/local/www/GPUImage/examples/FilterShowcase/FilterShowcase/ShowcaseFilterViewController.m
-xnormal
-xarmv7
-xobjective-c
-xcom.apple.compilers.llvm.clang.1_0.compiler
-o/opt/local/www/GPUImage/examples/FilterShowcase/FilterShowcase/ShowcaseFilterViewController.m:157:24: error: unknown receiver 'GPUImageRGBFilter'; did you mean 'GPUImageFilter'?
-o            filter = [[GPUImageRGBFilter alloc] init];
-o                       ^~~~~~~~~~~~~~~~~
-o                       GPUImageFilter
-o../../framework/Source/GPUImageFilter.h:44:12: note: 'GPUImageFilter' declared here
-o@interface GPUImageFilter : GPUImageOutput <GPUImageInput>
-o           ^
-o/opt/local/www/GPUImage/examples/FilterShowcase/FilterShowcase/ShowcaseFilterViewController.m:778:30: error: use of undeclared identifier 'GPUImageRGBFilter'; did you mean 'GPUImageFilter'?
-o        case GPUIMAGE_RGB: [(GPUImageRGBFilter *)filter setGreen:[(UISlider *)sender value]]; break;
-o                             ^
-o/opt/local/www/GPUImage/examples/FilterShowcase/FilterShowcase/ShowcaseFilterViewController.m:778:49: error: expected expression
-o        case GPUIMAGE_RGB: [(GPUImageRGBFilter *)filter setGreen:[(UISlider *)sender value]]; break;
-o                                                ^
-o3 errors generated.
-lSLF05#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection101"Compile /opt/local/www/GPUImage/examples/FilterShowcase/FilterShowcase/ShowcaseFilterViewController.m823a7de8095cb541^f7c7bbe8095cb541^-1090"/opt/local/www/GPUImage/examples/FilterShowcase/FilterShowcase/ShowcaseFilterViewController.m:157:24: error: unknown receiver 'GPUImageRGBFilter'; did you mean 'GPUImageFilter'?            filter = [[GPUImageRGBFilter alloc] init];                       ^~~~~~~~~~~~~~~~~                       GPUImageFilter../../framework/Source/GPUImageFilter.h:44:12: note: 'GPUImageFilter' declared here@interface GPUImageFilter : GPUImageOutput <GPUImageInput>           ^/opt/local/www/GPUImage/examples/FilterShowcase/FilterShowcase/ShowcaseFilterViewController.m:778:30: error: use of undeclared identifier 'GPUImageRGBFilter'; did you mean 'GPUImageFilter'?        case GPUIMAGE_RGB: [(GPUImageRGBFilter *)filter setGreen:[(UISlider *)sender value]]; break;                             ^/opt/local/www/GPUImage/examples/FilterShowcase/FilterShowcase/ShowcaseFilterViewController.m:778:49: error: expected expression        case GPUIMAGE_RGB: [(GPUImageRGBFilter *)filter setGreen:[(UISlider *)sender value]]; break;                                                ^3 errors generated.3(36%IDEClangDiagnosticActivityLogMessage2@68"Unknown receiver 'GPUImageRGBFilter'; did you mean 'GPUImageFilter'?-358353384#18446744073709551615#0#1(2@30"'GPUImageFilter' declared here-358353384#18446744073709551615#0#-0#27"com.apple.dt.IDE.diagnostic23%DVTTextDocumentLocation3@73"file://localhost/opt/local/www/GPUImage/framework/Source/GPUImageFilter.h0000000000000000^43#11#43#11#1195#0#14"Semantic Issue--2#27"com.apple.dt.IDE.diagnostic3@109"file://localhost/opt/local/www/GPUImage/examples/FilterShowcase/FilterShowcase/ShowcaseFilterViewController.m0000000000000000^156#23#156#23#5002#0#14"Semantic Issue1(3@109"file://localhost/opt/local/www/GPUImage/examples/FilterShowcase/FilterShowcase/ShowcaseFilterViewController.m0000000000000000^156#23#156#40#5002#0#-2@80"Use of undeclared identifier 'GPUImageRGBFilter'; did you mean 'GPUImageFilter'?-358353384#18446744073709551615#0#-2#27"com.apple.dt.IDE.diagnostic3@109"file://localhost/opt/local/www/GPUImage/examples/FilterShowcase/FilterShowcase/ShowcaseFilterViewController.m0000000000000000^777#29#777#29#28820#0#14"Semantic Issue--2@19"Expected expression-358353384#18446744073709551615#0#-2#27"com.apple.dt.IDE.diagnostic3@109"file://localhost/opt/local/www/GPUImage/examples/FilterShowcase/FilterShowcase/ShowcaseFilterViewController.m0000000000000000^777#48#777#48#28839#0#11"Parse Issue--0#0#0#-19%DVTDocumentLocation4@109"file://localhost/opt/local/www/GPUImage/examples/FilterShowcase/FilterShowcase/ShowcaseFilterViewController.m0000000000000000^3525"CompileC build/FilterShowcase.build/Debug-iphoneos/FilterShowcase.build/Objects-normal/armv7/ShowcaseFilterViewController.o FilterShowcase/ShowcaseFilterViewController.m normal armv7 objective-c com.apple.compilers.llvm.clang.1_0.compiler    cd /opt/local/www/GPUImage/examples/FilterShowcase    setenv LANG en_US.US-ASCII    setenv PATH "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin"    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -x objective-c -arch armv7 -fmessage-length=0 -std=gnu99 -fobjc-arc -Wno-trigraphs -fpascal-strings -O0 -Wno-missing-field-initializers -Wno-missing-prototypes -Wreturn-type -Wno-implicit-atomic-properties -Wformat -Wno-missing-braces -Wparentheses -Wswitch -Wno-unused-function -Wno-unused-label -Wno-unused-parameter -Wunused-variable -Wunused-value -Wuninitialized -Wno-unknown-pragmas -Wno-shadow -Wno-four-char-constants -Wno-sign-compare -Wno-shorten-64-to-32 -Wpointer-sign -Wno-newline-eof -Wno-selector -Wno-strict-selector-match -Wno-undeclared-selector -Wno-deprecated-implementations -DDEBUG=1 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS5.1.sdk -Wprotocol -Wdeprecated-declarations -g -Wno-conversion -Wno-sign-conversion -mthumb "-DIBOutlet=__attribute__((iboutlet))" "-DIBOutletCollection(ClassName)=__attribute__((iboutletcollection(ClassName)))" "-DIBAction=void)__attribute__((ibaction)" -miphoneos-version-min=4.0 -iquote /opt/local/www/GPUImage/examples/FilterShowcase/build/FilterShowcase.build/Debug-iphoneos/FilterShowcase.build/FilterShowcase-generated-files.hmap -I/opt/local/www/GPUImage/examples/FilterShowcase/build/FilterShowcase.build/Debug-iphoneos/FilterShowcase.build/FilterShowcase-own-target-headers.hmap -I/opt/local/www/GPUImage/examples/FilterShowcase/build/FilterShowcase.build/Debug-iphoneos/FilterShowcase.build/FilterShowcase-all-target-headers.hmap -iquote /opt/local/www/GPUImage/examples/FilterShowcase/build/FilterShowcase.build/Debug-iphoneos/FilterShowcase.build/FilterShowcase-project-headers.hmap -I/opt/local/www/GPUImage/examples/FilterShowcase/build/Debug-iphoneos/include -I../../framework -I../../framework/GPUImageTests -I../../framework/Source -I/opt/local/www/GPUImage/examples/FilterShowcase/build/FilterShowcase.build/Debug-iphoneos/FilterShowcase.build/DerivedSources/armv7 -I/opt/local/www/GPUImage/examples/FilterShowcase/build/FilterShowcase.build/Debug-iphoneos/FilterShowcase.build/DerivedSources -F/opt/local/www/GPUImage/examples/FilterShowcase/build/Debug-iphoneos -include /var/folders/fd/1km0337116s3hlk601ldj69h0000gn/C/com.apple.Xcode.501/SharedPrecompiledHeaders/FilterShowcase-Prefix-hbsyvzlnlhvfajfxwqmarbgkxows/FilterShowcase-Prefix.pch -MMD -MT dependencies -MF /opt/local/www/GPUImage/examples/FilterShowcase/build/FilterShowcase.build/Debug-iphoneos/FilterShowcase.build/Objects-normal/armv7/ShowcaseFilterViewController.d --serialize-diagnostics /opt/local/www/GPUImage/examples/FilterShowcase/build/FilterShowcase.build/Debug-iphoneos/FilterShowcase.build/Objects-normal/armv7/ShowcaseFilterViewController.dia -c /opt/local/www/GPUImage/examples/FilterShowcase/FilterShowcase/ShowcaseFilterViewController.m -o /opt/local/www/GPUImage/examples/FilterShowcase/build/FilterShowcase.build/Debug-iphoneos/FilterShowcase.build/Objects-normal/armv7/ShowcaseFilterViewController.o36"E320BDB8-41E0-46FE-B835-0072D8D2A2B6-
-
-CCompileC build/FilterShowcase.build/Debug-iphoneos/FilterShowcase.build/Objects-normal/armv7/main.o /opt/local/www/GPUImage/examples/FilterShowcase/FilterShowcase/main.m normal armv7 objective-c com.apple.compilers.llvm.clang.1_0.compiler
-s358353383.974678
-e358353384.487504
-r1
-xCompileC
-xbuild/FilterShowcase.build/Debug-iphoneos/FilterShowcase.build/Objects-normal/armv7/main.o
-x/opt/local/www/GPUImage/examples/FilterShowcase/FilterShowcase/main.m
-xnormal
-xarmv7
-xobjective-c
-xcom.apple.compilers.llvm.clang.1_0.compiler
-lSLF05#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection77"Compile /opt/local/www/GPUImage/examples/FilterShowcase/FilterShowcase/main.m73b9f9e7095cb541^cdcc7ce8095cb541^---0#0#0#-19%DVTDocumentLocation2@85"file://localhost/opt/local/www/GPUImage/examples/FilterShowcase/FilterShowcase/main.m0000000000000000^3381"CompileC build/FilterShowcase.build/Debug-iphoneos/FilterShowcase.build/Objects-normal/armv7/main.o FilterShowcase/main.m normal armv7 objective-c com.apple.compilers.llvm.clang.1_0.compiler    cd /opt/local/www/GPUImage/examples/FilterShowcase    setenv LANG en_US.US-ASCII    setenv PATH "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin"    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -x objective-c -arch armv7 -fmessage-length=0 -std=gnu99 -fobjc-arc -Wno-trigraphs -fpascal-strings -O0 -Wno-missing-field-initializers -Wno-missing-prototypes -Wreturn-type -Wno-implicit-atomic-properties -Wformat -Wno-missing-braces -Wparentheses -Wswitch -Wno-unused-function -Wno-unused-label -Wno-unused-parameter -Wunused-variable -Wunused-value -Wuninitialized -Wno-unknown-pragmas -Wno-shadow -Wno-four-char-constants -Wno-sign-compare -Wno-shorten-64-to-32 -Wpointer-sign -Wno-newline-eof -Wno-selector -Wno-strict-selector-match -Wno-undeclared-selector -Wno-deprecated-implementations -DDEBUG=1 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS5.1.sdk -Wprotocol -Wdeprecated-declarations -g -Wno-conversion -Wno-sign-conversion -mthumb "-DIBOutlet=__attribute__((iboutlet))" "-DIBOutletCollection(ClassName)=__attribute__((iboutletcollection(ClassName)))" "-DIBAction=void)__attribute__((ibaction)" -miphoneos-version-min=4.0 -iquote /opt/local/www/GPUImage/examples/FilterShowcase/build/FilterShowcase.build/Debug-iphoneos/FilterShowcase.build/FilterShowcase-generated-files.hmap -I/opt/local/www/GPUImage/examples/FilterShowcase/build/FilterShowcase.build/Debug-iphoneos/FilterShowcase.build/FilterShowcase-own-target-headers.hmap -I/opt/local/www/GPUImage/examples/FilterShowcase/build/FilterShowcase.build/Debug-iphoneos/FilterShowcase.build/FilterShowcase-all-target-headers.hmap -iquote /opt/local/www/GPUImage/examples/FilterShowcase/build/FilterShowcase.build/Debug-iphoneos/FilterShowcase.build/FilterShowcase-project-headers.hmap -I/opt/local/www/GPUImage/examples/FilterShowcase/build/Debug-iphoneos/include -I../../framework -I../../framework/GPUImageTests -I../../framework/Source -I/opt/local/www/GPUImage/examples/FilterShowcase/build/FilterShowcase.build/Debug-iphoneos/FilterShowcase.build/DerivedSources/armv7 -I/opt/local/www/GPUImage/examples/FilterShowcase/build/FilterShowcase.build/Debug-iphoneos/FilterShowcase.build/DerivedSources -F/opt/local/www/GPUImage/examples/FilterShowcase/build/Debug-iphoneos -include /var/folders/fd/1km0337116s3hlk601ldj69h0000gn/C/com.apple.Xcode.501/SharedPrecompiledHeaders/FilterShowcase-Prefix-hbsyvzlnlhvfajfxwqmarbgkxows/FilterShowcase-Prefix.pch -MMD -MT dependencies -MF /opt/local/www/GPUImage/examples/FilterShowcase/build/FilterShowcase.build/Debug-iphoneos/FilterShowcase.build/Objects-normal/armv7/main.d --serialize-diagnostics /opt/local/www/GPUImage/examples/FilterShowcase/build/FilterShowcase.build/Debug-iphoneos/FilterShowcase.build/Objects-normal/armv7/main.dia -c /opt/local/www/GPUImage/examples/FilterShowcase/FilterShowcase/main.m -o /opt/local/www/GPUImage/examples/FilterShowcase/build/FilterShowcase.build/Debug-iphoneos/FilterShowcase.build/Objects-normal/armv7/main.o36"56719BD8-4671-4DB2-8298-CBA0ED3843FA-
-
-CCompileXIB /opt/local/www/GPUImage/examples/FilterShowcase/FilterShowcase/ShowcaseFilterViewController.xib
-r0
-
-CCopyPNGFile /opt/local/www/GPUImage/examples/FilterShowcase/build/Debug-iphoneos/FilterShowcase.app/mask.png FilterShowcase/mask.png
-r0
-
-CCopyPlistFile /opt/local/www/GPUImage/examples/FilterShowcase/build/Debug-iphoneos/FilterShowcase.app/SampleConfiguration.plist FilterShowcase/SampleConfiguration.plist
-r0
-
-CCopyStringsFile /opt/local/www/GPUImage/examples/FilterShowcase/build/Debug-iphoneos/FilterShowcase.app/en.lproj/InfoPlist.strings FilterShowcase/en.lproj/InfoPlist.strings
-r0
-
-CCpResource /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS5.1.sdk/ResourceRules.plist build/Debug-iphoneos/FilterShowcase.app/ResourceRules.plist
-s358353377.466728
-e358353377.617278
-r1
-xCpResource
-x/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS5.1.sdk/ResourceRules.plist
-xbuild/Debug-iphoneos/FilterShowcase.app/ResourceRules.plist
-lSLF05#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection64"Copy build/Debug-iphoneos/FilterShowcase.app/ResourceRules.pliste5b477e1095cb541^753cdae1095cb541^---0#0#0#-19%DVTDocumentLocation2@123"file://localhost/opt/local/www/GPUImage/examples/FilterShowcase/build/Debug-iphoneos/FilterShowcase.app/ResourceRules.plist000000000080d041^863"CpResource /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS5.1.sdk/ResourceRules.plist build/Debug-iphoneos/FilterShowcase.app/ResourceRules.plist    cd /opt/local/www/GPUImage/examples/FilterShowcase    setenv PATH "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin"    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -strip-tool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/strip /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS5.1.sdk/ResourceRules.plist /opt/local/www/GPUImage/examples/FilterShowcase/build/Debug-iphoneos/FilterShowcase.app36"F3590EDA-2A7B-4C6B-86DE-496A321AA51C-
-
-CCpResource FilterShowcase/../../SimpleImageFilter/SimpleImageFilter/WID-small.jpg build/Debug-iphoneos/FilterShowcase.app/WID-small.jpg
-r0
-
-CCpResource FilterShowcase/CustomFilter.fsh build/Debug-iphoneos/FilterShowcase.app/CustomFilter.fsh
-r0
-
-CGenerateDSYMFile /opt/local/www/GPUImage/examples/FilterShowcase/build/Debug-iphoneos/FilterShowcase.app.dSYM /opt/local/www/GPUImage/examples/FilterShowcase/build/Debug-iphoneos/FilterShowcase.app/FilterShowcase
-r0
-
-CLd /opt/local/www/GPUImage/examples/FilterShowcase/build/Debug-iphoneos/FilterShowcase.app/FilterShowcase normal armv7
-r0
-
-CProcessInfoPlistFile /opt/local/www/GPUImage/examples/FilterShowcase/build/Debug-iphoneos/FilterShowcase.app/Info.plist FilterShowcase/FilterShowcase-Info.plist
-s358353377.467336
-e358353377.613451
-r1
-xProcessInfoPlistFile
-x/opt/local/www/GPUImage/examples/FilterShowcase/build/Debug-iphoneos/FilterShowcase.app/Info.plist
-xFilterShowcase/FilterShowcase-Info.plist
-lSLF05#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection48"Process FilterShowcase/FilterShowcase-Info.plistf0c177e1095cb541^821b9de1095cb541^---0#0#0#-19%DVTDocumentLocation2@104"file://localhost/opt/local/www/GPUImage/examples/FilterShowcase/FilterShowcase/FilterShowcase-Info.plist0000000000000000^818"ProcessInfoPlistFile build/Debug-iphoneos/FilterShowcase.app/Info.plist FilterShowcase/FilterShowcase-Info.plist    cd /opt/local/www/GPUImage/examples/FilterShowcase    setenv PATH "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin"    builtin-infoPlistUtility FilterShowcase/FilterShowcase-Info.plist -genpkginfo /opt/local/www/GPUImage/examples/FilterShowcase/build/Debug-iphoneos/FilterShowcase.app/PkgInfo -expandbuildsettings -format binary -platform iphoneos -resourcerulesfile /opt/local/www/GPUImage/examples/FilterShowcase/build/Debug-iphoneos/FilterShowcase.app/ResourceRules.plist -o /opt/local/www/GPUImage/examples/FilterShowcase/build/Debug-iphoneos/FilterShowcase.app/Info.plist36"0F526A05-DC0D-4D20-80CF-4101680418DC-
-
-CProcessPCH /Users/joshholat/Library/Developer/Xcode/DerivedData/FilterShowcase-bzoblmlqdijohfcemawsbqkwxemg/Index/PrecompiledHeaders/FilterShowcase-Prefix-gstgaoufxyyhstbhqthwswltjgkg_ast/FilterShowcase-Prefix.pch.pth FilterShowcase/FilterShowcase-Prefix.pch normal armv7 objective-c com.apple.compilers.llvm.clang.1_0.astbuilder
-r0
-
-CProcessPCH /var/folders/fd/1km0337116s3hlk601ldj69h0000gn/C/com.apple.Xcode.501/SharedPrecompiledHeaders/FilterShowcase-Prefix-hbsyvzlnlhvfajfxwqmarbgkxows/FilterShowcase-Prefix.pch.pth FilterShowcase/FilterShowcase-Prefix.pch normal armv7 objective-c com.apple.compilers.llvm.clang.1_0.compiler
-s358353377.694117
-e358353383.967825
-r1
-xProcessPCH
-x/var/folders/fd/1km0337116s3hlk601ldj69h0000gn/C/com.apple.Xcode.501/SharedPrecompiledHeaders/FilterShowcase-Prefix-hbsyvzlnlhvfajfxwqmarbgkxows/FilterShowcase-Prefix.pch.pth
-xFilterShowcase/FilterShowcase-Prefix.pch
-xnormal
-xarmv7
-xobjective-c
-xcom.apple.compilers.llvm.clang.1_0.compiler
-lSLF05#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection51"Precompile FilterShowcase/FilterShowcase-Prefix.pch77d7b1e1095cb541^4ddbf7e7095cb541^---0#0#0#-19%DVTDocumentLocation2@104"file://localhost/opt/local/www/GPUImage/examples/FilterShowcase/FilterShowcase/FilterShowcase-Prefix.pch0000000000000000^3436"ProcessPCH /var/folders/fd/1km0337116s3hlk601ldj69h0000gn/C/com.apple.Xcode.501/SharedPrecompiledHeaders/FilterShowcase-Prefix-hbsyvzlnlhvfajfxwqmarbgkxows/FilterShowcase-Prefix.pch.pth FilterShowcase/FilterShowcase-Prefix.pch normal armv7 objective-c com.apple.compilers.llvm.clang.1_0.compiler    cd /opt/local/www/GPUImage/examples/FilterShowcase    setenv LANG en_US.US-ASCII    setenv PATH "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin"    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -x objective-c-header -arch armv7 -fmessage-length=0 -std=gnu99 -fobjc-arc -Wno-trigraphs -fpascal-strings -O0 -Wno-missing-field-initializers -Wno-missing-prototypes -Wreturn-type -Wno-implicit-atomic-properties -Wformat -Wno-missing-braces -Wparentheses -Wswitch -Wno-unused-function -Wno-unused-label -Wno-unused-parameter -Wunused-variable -Wunused-value -Wuninitialized -Wno-unknown-pragmas -Wno-shadow -Wno-four-char-constants -Wno-sign-compare -Wno-shorten-64-to-32 -Wpointer-sign -Wno-newline-eof -Wno-selector -Wno-strict-selector-match -Wno-undeclared-selector -Wno-deprecated-implementations -DDEBUG=1 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS5.1.sdk -Wprotocol -Wdeprecated-declarations -g -Wno-conversion -Wno-sign-conversion -mthumb "-DIBOutlet=__attribute__((iboutlet))" "-DIBOutletCollection(ClassName)=__attribute__((iboutletcollection(ClassName)))" "-DIBAction=void)__attribute__((ibaction)" -miphoneos-version-min=4.0 -iquote /opt/local/www/GPUImage/examples/FilterShowcase/build/FilterShowcase.build/Debug-iphoneos/FilterShowcase.build/FilterShowcase-generated-files.hmap -I/opt/local/www/GPUImage/examples/FilterShowcase/build/FilterShowcase.build/Debug-iphoneos/FilterShowcase.build/FilterShowcase-own-target-headers.hmap -I/opt/local/www/GPUImage/examples/FilterShowcase/build/FilterShowcase.build/Debug-iphoneos/FilterShowcase.build/FilterShowcase-all-target-headers.hmap -iquote /opt/local/www/GPUImage/examples/FilterShowcase/build/FilterShowcase.build/Debug-iphoneos/FilterShowcase.build/FilterShowcase-project-headers.hmap -I/opt/local/www/GPUImage/examples/FilterShowcase/build/Debug-iphoneos/include -I../../framework -I../../framework/GPUImageTests -I../../framework/Source -I/opt/local/www/GPUImage/examples/FilterShowcase/build/FilterShowcase.build/Debug-iphoneos/FilterShowcase.build/DerivedSources/armv7 -I/opt/local/www/GPUImage/examples/FilterShowcase/build/FilterShowcase.build/Debug-iphoneos/FilterShowcase.build/DerivedSources -F/opt/local/www/GPUImage/examples/FilterShowcase/build/Debug-iphoneos --serialize-diagnostics /var/folders/fd/1km0337116s3hlk601ldj69h0000gn/C/com.apple.Xcode.501/SharedPrecompiledHeaders/FilterShowcase-Prefix-hbsyvzlnlhvfajfxwqmarbgkxows/FilterShowcase-Prefix.pch.dia -c /opt/local/www/GPUImage/examples/FilterShowcase/FilterShowcase/FilterShowcase-Prefix.pch -o /var/folders/fd/1km0337116s3hlk601ldj69h0000gn/C/com.apple.Xcode.501/SharedPrecompiledHeaders/FilterShowcase-Prefix-hbsyvzlnlhvfajfxwqmarbgkxows/FilterShowcase-Prefix.pch.pth -MMD -MT dependencies -MF /var/folders/fd/1km0337116s3hlk601ldj69h0000gn/C/com.apple.Xcode.501/SharedPrecompiledHeaders/FilterShowcase-Prefix-hbsyvzlnlhvfajfxwqmarbgkxows/FilterShowcase-Prefix.pch.d36"94A2285D-03EC-4A51-8BF9-DF2BF231CD25-
-
-CProcessProductPackaging "/Users/joshholat/Library/MobileDevice/Provisioning Profiles/A04D9FE1-D2B0-4F66-AD0E-53927DF76312.mobileprovision" /opt/local/www/GPUImage/examples/FilterShowcase/build/Debug-iphoneos/FilterShowcase.app/embedded.mobileprovision
-r0
-
-CProcessProductPackaging /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS5.1.sdk/Entitlements.plist /opt/local/www/GPUImage/examples/FilterShowcase/build/FilterShowcase.build/Debug-iphoneos/FilterShowcase.build/FilterShowcase.xcent
-r0
-
-CTouch /opt/local/www/GPUImage/examples/FilterShowcase/build/Debug-iphoneos/FilterShowcase.app
-r0
-
