@@ -91,6 +91,7 @@ typedef struct GPUMatrix3x3 GPUMatrix3x3;
 - (void)initializeAttributes;
 - (void)setupFilterForSize:(CGSize)filterFrameSize;
 - (CGSize)rotatedSize:(CGSize)sizeToRotate forIndex:(NSInteger)textureIndex;
+- (CGPoint)rotatedPoint:(CGPoint)pointToRotate forRotation:(GPUImageRotationMode)rotation;
 
 - (void)recreateFilterFBO;
 

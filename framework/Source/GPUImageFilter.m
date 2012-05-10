@@ -597,6 +597,42 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
     return rotatedSize; 
 }
 
+- (CGPoint)rotatedPoint:(CGPoint)pointToRotate forRotation:(GPUImageRotationMode)rotation;
+{
+    CGPoint rotatedPoint;
+    switch(rotation)
+    {
+        case kGPUImageNoRotation: return pointToRotate; break;
+        case kGPUImageFlipHorizonal:
+        {
+            rotatedPoint.x = 1.0 - pointToRotate.x;
+            rotatedPoint.y = pointToRotate.y;
+        }; break;
+        case kGPUImageFlipVertical:
+        {
+            rotatedPoint.x = pointToRotate.x;
+            rotatedPoint.y = 1.0 - pointToRotate.y;
+        }; break;
+        case kGPUImageRotateLeft:
+        {
+            rotatedPoint.x = 1.0 - pointToRotate.y;
+            rotatedPoint.y = pointToRotate.x;
+        }; break;
+        case kGPUImageRotateRight:
+        {
+            rotatedPoint.x = pointToRotate.y;
+            rotatedPoint.y = 1.0 - pointToRotate.x;
+        }; break;
+        case kGPUImageRotateRightFlipVertical:
+        {
+            rotatedPoint.x = pointToRotate.y;
+            rotatedPoint.y = pointToRotate.x;
+        }; break;
+    }
+    
+    return rotatedPoint;
+}
+
 - (void)setInputSize:(CGSize)newSize atIndex:(NSInteger)textureIndex;
 {
     if (self.preventRendering)
