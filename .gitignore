@@ -1,6 +1,7 @@
 # Exclude the build directory
 build/*
 examples/FilterShowcase/build*
+examples/SimplePhotoFilter/build/*
  
 # Exclude temp nibs and swap files
 *~.nib

@@ -60,6 +60,11 @@ Documentation is generated from header comments using appledoc. To build the doc
 - **GPUImageExposureFilter**: Adjusts the exposure of the image
   - *exposure*: The adjusted exposure (-10.0 - 10.0, with 0.0 as the default)
 
+- **GPUImageRGBFilter**: Adjusts the red, green, and blue values of the image independently
+  - *red*: The adjusted red value
+  - *green*: The adjusted green value
+  - *blue*: The adjusted blue value
+
 - **GPUImageContrastFilter**: Adjusts the contrast of the image
   - *contrast*: The adjusted contrast (0.0 - 4.0, with 1.0 as the default)
 

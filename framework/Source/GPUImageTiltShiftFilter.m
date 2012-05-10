@@ -14,22 +14,25 @@ NSString *const kGPUImageTiltShiftFragmentShaderString = SHADER_STRING
  uniform highp float topFocusLevel;
  uniform highp float bottomFocusLevel;
  uniform highp float focusFallOffRate;
+ uniform highp float blurOpacity;
  
  void main()
  {
      lowp vec4 sharpImageColor = texture2D(inputImageTexture, textureCoordinate);
      lowp vec4 blurredImageColor = texture2D(inputImageTexture2, textureCoordinate2);
+     blurredImageColor = vec4(vec3(blurredImageColor.rgb) * blurOpacity, 1.0);
      
      lowp float blurIntensity = 1.0 - smoothstep(topFocusLevel - focusFallOffRate, topFocusLevel, textureCoordinate2.y);
      blurIntensity += smoothstep(bottomFocusLevel, bottomFocusLevel + focusFallOffRate, textureCoordinate2.y);
      
      gl_FragColor = mix(sharpImageColor, blurredImageColor, blurIntensity);
  }
-);
+ );
 
 @implementation GPUImageTiltShiftFilter
 
 @synthesize blurSize;
+@synthesize blurOpacity = _blurOpacity;
 @synthesize topFocusLevel = _topFocusLevel;
 @synthesize bottomFocusLevel = _bottomFocusLevel;
 @synthesize focusFallOffRate = _focusFallOffRate;
@@ -44,7 +47,7 @@ NSString *const kGPUImageTiltShiftFragmentShaderString = SHADER_STRING
     // First pass: apply a variable Gaussian blur
     blurFilter = [[GPUImageGaussianBlurFilter alloc] init];
     [self addFilter:blurFilter];
-        
+    
     // Second pass: combine the blurred image with the original sharp one
     tiltShiftFilter = [[GPUImageTwoInputFilter alloc] initWithFragmentShaderFromString:kGPUImageTiltShiftFragmentShaderString];
     [self addFilter:tiltShiftFilter];
@@ -62,6 +65,7 @@ NSString *const kGPUImageTiltShiftFragmentShaderString = SHADER_STRING
     self.bottomFocusLevel = 0.6;
     self.focusFallOffRate = 0.2;
     self.blurSize = 2.0;
+    self.blurOpacity = 1.0;
     
     return self;
 }
@@ -77,6 +81,12 @@ NSString *const kGPUImageTiltShiftFragmentShaderString = SHADER_STRING
 - (CGFloat)blurSize;
 {
     return blurFilter.blurSize;
+}
+
+- (void)setBlurOpacity:(CGFloat)newValue;
+{
+    _blurOpacity = newValue;
+    [tiltShiftFilter setFloat:newValue forUniform:@"blurOpacity"];
 }
 
 - (void)setTopFocusLevel:(CGFloat)newValue;

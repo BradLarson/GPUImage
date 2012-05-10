@@ -13,21 +13,23 @@ NSString *const kGPUImageGaussianSelectiveBlurFragmentShaderString = SHADER_STRI
  uniform lowp float excludeCircleRadius;
  uniform lowp vec2 excludeCirclePoint;
  uniform lowp float excludeBlurSize;
+ uniform lowp float blurOpacity;
  
  void main()
  {
      lowp vec4 sharpImageColor = texture2D(inputImageTexture, textureCoordinate);
      lowp vec4 blurredImageColor = texture2D(inputImageTexture2, textureCoordinate2);
+     blurredImageColor = vec4(vec3(blurredImageColor.rgb) * blurOpacity, 1.0);
      
      lowp float d = distance(textureCoordinate, excludeCirclePoint);
      
      gl_FragColor = mix(sharpImageColor, blurredImageColor, smoothstep(excludeCircleRadius - excludeBlurSize, excludeCircleRadius, d));
  }
-);
+ );
 
 @implementation GPUImageGaussianSelectiveBlurFilter
 
-@synthesize excludeCirclePoint = _excludeCirclePoint, excludeCircleRadius = _excludeCircleRadius, excludeBlurSize = _excludeBlurSize;
+@synthesize excludeCirclePoint = _excludeCirclePoint, excludeCircleRadius = _excludeCircleRadius, excludeBlurSize = _excludeBlurSize, blurOpacity = _blurOpacity;
 
 - (id)init;
 {
@@ -54,6 +56,7 @@ NSString *const kGPUImageGaussianSelectiveBlurFragmentShaderString = SHADER_STRI
     self.terminalFilter = selectiveFocusFilter;
     
     self.blurSize = 2.0;
+    self.blurOpacity = 1.0;
     
     self.excludeCircleRadius = 60.0/320.0;
     self.excludeCirclePoint = CGPointMake(0.5f, 0.5f);
@@ -91,6 +94,12 @@ NSString *const kGPUImageGaussianSelectiveBlurFragmentShaderString = SHADER_STRI
 {
     _excludeBlurSize = newValue;
     [selectiveFocusFilter setFloat:newValue forUniform:@"excludeBlurSize"];
+}
+
+- (void)setBlurOpacity:(CGFloat)newValue;
+{
+    _blurOpacity = newValue;
+    [selectiveFocusFilter setFloat:newValue forUniform:@"blurOpacity"];
 }
 
 @end
