@@ -1,27 +1,29 @@
 #import "GPUImageTiltShiftFilter.h"
 #import "GPUImageFilter.h"
+#import "GPUImageTwoInputFilter.h"
 #import "GPUImageGaussianBlurFilter.h"
 
 NSString *const kGPUImageTiltShiftFragmentShaderString = SHADER_STRING
 ( 
  varying highp vec2 textureCoordinate;
+ varying highp vec2 textureCoordinate2;
  
  uniform sampler2D inputImageTexture;
  uniform sampler2D inputImageTexture2; 
  
- uniform highp float blurColor;
  uniform highp float topFocusLevel;
  uniform highp float bottomFocusLevel;
  uniform highp float focusFallOffRate;
+ uniform highp float blurColor;
  
  void main()
  {
      lowp vec4 sharpImageColor = texture2D(inputImageTexture, textureCoordinate);
-     lowp vec4 blurredImageColor = texture2D(inputImageTexture2, textureCoordinate);
+     lowp vec4 blurredImageColor = texture2D(inputImageTexture2, textureCoordinate2);
      blurredImageColor = vec4(vec3(blurredImageColor.rgb) * blurColor, 1.0);
      
-     lowp float blurIntensity = 1.0 - smoothstep(topFocusLevel - focusFallOffRate, topFocusLevel, textureCoordinate.y);
-     blurIntensity += smoothstep(bottomFocusLevel, bottomFocusLevel + focusFallOffRate, textureCoordinate.y);
+     lowp float blurIntensity = 1.0 - smoothstep(topFocusLevel - focusFallOffRate, topFocusLevel, textureCoordinate2.y);
+     blurIntensity += smoothstep(bottomFocusLevel, bottomFocusLevel + focusFallOffRate, textureCoordinate2.y);
      
      gl_FragColor = mix(sharpImageColor, blurredImageColor, blurIntensity);
  }
@@ -47,7 +49,7 @@ NSString *const kGPUImageTiltShiftFragmentShaderString = SHADER_STRING
     [self addFilter:blurFilter];
     
     // Second pass: combine the blurred image with the original sharp one
-    tiltShiftFilter = [[GPUImageFilter alloc] initWithFragmentShaderFromString:kGPUImageTiltShiftFragmentShaderString];
+    tiltShiftFilter = [[GPUImageTwoInputFilter alloc] initWithFragmentShaderFromString:kGPUImageTiltShiftFragmentShaderString];
     [self addFilter:tiltShiftFilter];
     
     // Texture location 0 needs to be the sharp image for both the blur and the second stage processing
