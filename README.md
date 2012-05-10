@@ -48,7 +48,7 @@ For example, an application that takes in live video from the camera, converts t
 
 ## Documentation ##
 
-It is generated as a build phase using appledoc. To disable documentation building, set the User Defined Build Setting "BUILD_DOCUMENTATION" to 0. You should ensure that "APPLEDOC_PATH" points to an appledoc binary, available on <a href="https://github.com/tomaz/appledoc">Github</a> or through <a href="https://github.com/mxcl/homebrew">Homebrew</a>. It will also build and install a .docset file, which you can view with your favorite documentation tool.
+Documentation is generated from header comments using appledoc. To build the documentation, switch to the "Documentation" scheme in Xcode. You should ensure that "APPLEDOC_PATH" (a User-Defined build setting) points to an appledoc binary, available on <a href="https://github.com/tomaz/appledoc">Github</a> or through <a href="https://github.com/mxcl/homebrew">Homebrew</a>. It will also build and install a .docset file, which you can view with your favorite documentation tool.
 
 ## Built-in filters ##
 
