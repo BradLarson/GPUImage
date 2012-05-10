@@ -46,7 +46,7 @@
     GLubyte *imageData = NULL;
     CFDataRef dataFromImageDataProvider;
 
-    CFAbsoluteTime elapsedTime, startTime = CFAbsoluteTimeGetCurrent();
+//    CFAbsoluteTime elapsedTime, startTime = CFAbsoluteTimeGetCurrent();
 
     if (shouldRedrawUsingCoreGraphics)
     {
@@ -67,8 +67,8 @@
         imageData = (GLubyte *)CFDataGetBytePtr(dataFromImageDataProvider);
     }    
     
-    elapsedTime = (CFAbsoluteTimeGetCurrent() - startTime) * 1000.0;
-    NSLog(@"Core Graphics drawing time: %f", elapsedTime);
+//    elapsedTime = (CFAbsoluteTimeGetCurrent() - startTime) * 1000.0;
+//    NSLog(@"Core Graphics drawing time: %f", elapsedTime);
 
     glBindTexture(GL_TEXTURE_2D, outputTexture);
     if (self.shouldSmoothlyScaleOutput)
@@ -105,7 +105,10 @@
     
     for (id<GPUImageInput> currentTarget in targets)
     {
-        [currentTarget setInputSize:pixelSizeOfImage];
+        NSInteger indexOfObject = [targets indexOfObject:currentTarget];
+        NSInteger textureIndexOfTarget = [[targetTextureIndices objectAtIndex:indexOfObject] integerValue];
+
+        [currentTarget setInputSize:pixelSizeOfImage atIndex:textureIndexOfTarget];
         [currentTarget newFrameReadyAtTime:kCMTimeInvalid];
     }    
 }

@@ -78,6 +78,8 @@
     {
         self.contentScaleFactor = [[UIScreen mainScreen] scale];
     }
+
+    inputRotation = kGPUImageNoRotation;
     
     [self setBackgroundColorRed:0.0 green:0.0 blue:0.0 alpha:1.0];
     self.fillMode = kGPUImageFillModePreserveAspectRatio;
@@ -236,6 +238,13 @@
     imageVertices[5] = heightScaling;
     imageVertices[6] = widthScaling;
     imageVertices[7] = heightScaling;
+    
+//    static const GLfloat imageVertices[] = {
+//        -1.0f, -1.0f,
+//        1.0f, -1.0f,
+//        -1.0f,  1.0f,
+//        1.0f,  1.0f,
+//    };
 }
 
 - (void)setBackgroundColorRed:(GLfloat)redComponent green:(GLfloat)greenComponent blue:(GLfloat)blueComponent alpha:(GLfloat)alphaComponent;
@@ -244,6 +253,68 @@
     backgroundColorGreen = greenComponent;
     backgroundColorBlue = blueComponent;
     backgroundColorAlpha = alphaComponent;
+}
+
++ (const GLfloat *)textureCoordinatesForRotation:(GPUImageRotationMode)rotationMode;
+{
+//    static const GLfloat noRotationTextureCoordinates[] = {
+//        0.0f, 0.0f,
+//        1.0f, 0.0f,
+//        0.0f, 1.0f,
+//        1.0f, 1.0f,
+//    };
+    
+    static const GLfloat noRotationTextureCoordinates[] = {
+        0.0f, 1.0f,
+        1.0f, 1.0f,
+        0.0f, 0.0f,
+        1.0f, 0.0f,
+    };
+
+    static const GLfloat rotateRightTextureCoordinates[] = {
+        1.0f, 1.0f,
+        1.0f, 0.0f,
+        0.0f, 1.0f,
+        0.0f, 0.0f,
+    };
+
+    static const GLfloat rotateLeftTextureCoordinates[] = {
+        0.0f, 0.0f,
+        0.0f, 1.0f,
+        1.0f, 0.0f,
+        1.0f, 1.0f,
+    };
+        
+    static const GLfloat verticalFlipTextureCoordinates[] = {
+        0.0f, 0.0f,
+        1.0f, 0.0f,
+        0.0f, 1.0f,
+        1.0f, 1.0f,
+    };
+    
+    static const GLfloat horizontalFlipTextureCoordinates[] = {
+        1.0f, 1.0f,
+        0.0f, 1.0f,
+        1.0f, 0.0f,
+        0.0f, 0.0f,
+    };
+    
+    static const GLfloat rotateRightVerticalFlipTextureCoordinates[] = {
+        1.0f, 0.0f,
+        1.0f, 1.0f,
+        0.0f, 0.0f,
+        0.0f, 1.0f,
+    };
+    
+    switch(rotationMode)
+    {
+        case kGPUImageNoRotation: return noRotationTextureCoordinates;
+        case kGPUImageRotateLeft: return rotateLeftTextureCoordinates;
+        case kGPUImageRotateRight: return rotateRightTextureCoordinates;
+        case kGPUImageFlipVertical: return verticalFlipTextureCoordinates;
+        case kGPUImageFlipHorizonal: return horizontalFlipTextureCoordinates;
+        case kGPUImageRotateRightFlipVertical: return rotateRightVerticalFlipTextureCoordinates;
+    }
 }
 
 #pragma mark -
@@ -259,19 +330,12 @@
     glClearColor(backgroundColorRed, backgroundColorGreen, backgroundColorBlue, backgroundColorAlpha);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
-    static const GLfloat textureCoordinates[] = {
-        0.0f, 1.0f,
-        1.0f, 1.0f,
-        0.0f, 0.0f,
-        1.0f, 0.0f,
-    };
-
 	glActiveTexture(GL_TEXTURE4);
 	glBindTexture(GL_TEXTURE_2D, inputTextureForDisplay);
 	glUniform1i(displayInputTextureUniform, 4);	
     
     glVertexAttribPointer(displayPositionAttribute, 2, GL_FLOAT, 0, 0, imageVertices);
-	glVertexAttribPointer(displayTextureCoordinateAttribute, 2, GL_FLOAT, 0, 0, textureCoordinates);
+	glVertexAttribPointer(displayTextureCoordinateAttribute, 2, GL_FLOAT, 0, 0, [GPUImageView textureCoordinatesForRotation:inputRotation]);
     
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
@@ -288,11 +352,24 @@
     inputTextureForDisplay = newInputTexture;
 }
 
-- (void)setInputSize:(CGSize)newSize;
+- (void)setInputRotation:(GPUImageRotationMode)newInputRotation atIndex:(NSInteger)textureIndex;
 {
-    if (!CGSizeEqualToSize(inputImageSize, newSize))
+    inputRotation = newInputRotation;
+}
+
+- (void)setInputSize:(CGSize)newSize atIndex:(NSInteger)textureIndex;
+{
+    CGSize rotatedSize = newSize;
+    
+    if (GPUImageRotationSwapsWidthAndHeight(inputRotation))
     {
-        inputImageSize = newSize;
+        rotatedSize.width = newSize.height;
+        rotatedSize.height = newSize.width;
+    }
+    
+    if (!CGSizeEqualToSize(inputImageSize, rotatedSize))
+    {
+        inputImageSize = rotatedSize;
         [self recalculateViewGeometry];
     }    
 }

@@ -1,11 +1,11 @@
-#import "GPUImageGaussianBlurFilter.h"
+#import "GPUImageFilterGroup.h"
 
-@interface GPUImageGaussianSelectiveBlurFilter : GPUImageGaussianBlurFilter {
-    GLint verticalExcludeCircleRadiusUniform,
-        verticalExcludeCirclePointUniform,
-        verticalExcludeCircleBlurSizeUniform;
-    
-    GLuint originalInputImageTexture;
+@class GPUImageGaussianBlurFilter;
+
+@interface GPUImageGaussianSelectiveBlurFilter : GPUImageFilterGroup 
+{
+    GPUImageGaussianBlurFilter *blurFilter;
+    GPUImageFilter *selectiveFocusFilter;
 }
 
 @property (readwrite, nonatomic) CGFloat excludeCircleRadius;

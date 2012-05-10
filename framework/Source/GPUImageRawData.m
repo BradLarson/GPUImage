@@ -47,6 +47,7 @@
     imageSize = newImageSize;
     hasReadFromTheCurrentFrame = NO;
     _rawBytesForImage = NULL;
+    inputRotation = kGPUImageNoRotation;
 
     [GPUImageOpenGLESContext useImageProcessingContext];
     dataProgram = [[GLProgram alloc] initWithVertexShaderString:kGPUImageVertexShaderString fragmentShaderString:kGPUImagePassthroughFragmentShaderString];
@@ -290,7 +291,12 @@
     inputTextureForDisplay = newInputTexture;
 }
 
-- (void)setInputSize:(CGSize)newSize;
+- (void)setInputRotation:(GPUImageRotationMode)newInputRotation atIndex:(NSInteger)textureIndex;
+{
+    inputRotation = newInputRotation;
+}
+
+- (void)setInputSize:(CGSize)newSize atIndex:(NSInteger)textureIndex;
 {
 }
 

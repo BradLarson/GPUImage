@@ -49,7 +49,7 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size);
 
     preparedToCaptureImage = NO;
     _preventRendering = NO;
-    
+    inputRotation = kGPUImageNoRotation;
     backgroundColorRed = 0.0;
     backgroundColorGreen = 0.0;
     backgroundColorBlue = 0.0;
@@ -75,11 +75,11 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size);
     filterPositionAttribute = [filterProgram attributeIndex:@"position"];
     filterTextureCoordinateAttribute = [filterProgram attributeIndex:@"inputTextureCoordinate"];
     filterInputTextureUniform = [filterProgram uniformIndex:@"inputImageTexture"]; // This does assume a name of "inputImageTexture" for the fragment shader
-    filterInputTextureUniform2 = [filterProgram uniformIndex:@"inputImageTexture2"]; // This does assume a name of "inputImageTexture2" for second input texture in the fragment shader
 
     [filterProgram use];    
+    
 	glEnableVertexAttribArray(filterPositionAttribute);
-	glEnableVertexAttribArray(filterTextureCoordinateAttribute);
+	glEnableVertexAttribArray(filterTextureCoordinateAttribute);    
     
     return self;
 }
@@ -111,6 +111,7 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size);
 {
     [filterProgram addAttribute:@"position"];
 	[filterProgram addAttribute:@"inputTextureCoordinate"];
+
     // Override this, calling back to this super method, in order to add new attributes to your vertex shader
 }
 
@@ -343,6 +344,61 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
 #pragma mark -
 #pragma mark Rendering
 
++ (const GLfloat *)textureCoordinatesForRotation:(GPUImageRotationMode)rotationMode;
+{
+    static const GLfloat noRotationTextureCoordinates[] = {
+        0.0f, 0.0f,
+        1.0f, 0.0f,
+        0.0f, 1.0f,
+        1.0f, 1.0f,
+    };
+    
+    static const GLfloat rotateLeftTextureCoordinates[] = {
+        1.0f, 0.0f,
+        1.0f, 1.0f,
+        0.0f, 0.0f,
+        0.0f, 1.0f,
+    };
+    
+    static const GLfloat rotateRightTextureCoordinates[] = {
+        0.0f, 1.0f,
+        0.0f, 0.0f,
+        1.0f, 1.0f,
+        1.0f, 0.0f,
+    };
+    
+    static const GLfloat verticalFlipTextureCoordinates[] = {
+        0.0f, 1.0f,
+        1.0f, 1.0f,
+        0.0f,  0.0f,
+        1.0f,  0.0f,
+    };
+    
+    static const GLfloat horizontalFlipTextureCoordinates[] = {
+        1.0f, 0.0f,
+        0.0f, 0.0f,
+        1.0f,  1.0f,
+        0.0f,  1.0f,
+    };
+    
+    static const GLfloat rotateRightVerticalFlipTextureCoordinates[] = {
+        0.0f, 0.0f,
+        0.0f, 1.0f,
+        1.0f, 0.0f,
+        1.0f, 1.0f,
+    };
+
+    switch(rotationMode)
+    {
+        case kGPUImageNoRotation: return noRotationTextureCoordinates;
+        case kGPUImageRotateLeft: return rotateLeftTextureCoordinates;
+        case kGPUImageRotateRight: return rotateRightTextureCoordinates;
+        case kGPUImageFlipVertical: return verticalFlipTextureCoordinates;
+        case kGPUImageFlipHorizonal: return horizontalFlipTextureCoordinates;
+        case kGPUImageRotateRightFlipVertical: return rotateRightVerticalFlipTextureCoordinates;
+    }
+}
+
 - (void)renderToTextureWithVertices:(const GLfloat *)vertices textureCoordinates:(const GLfloat *)textureCoordinates sourceTexture:(GLuint)sourceTexture;
 {
     if (self.preventRendering)
@@ -363,14 +419,6 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
 	
 	glUniform1i(filterInputTextureUniform, 2);	
 
-    if (filterSourceTexture2 != 0)
-    {
-        glActiveTexture(GL_TEXTURE3);
-        glBindTexture(GL_TEXTURE_2D, filterSourceTexture2);
-                
-        glUniform1i(filterInputTextureUniform2, 3);	
-    }
-    
     glVertexAttribPointer(filterPositionAttribute, 2, GL_FLOAT, 0, 0, vertices);
 	glVertexAttribPointer(filterTextureCoordinateAttribute, 2, GL_FLOAT, 0, 0, textureCoordinates);
     
@@ -383,13 +431,15 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
     {
         if (currentTarget != self.targetToIgnoreForUpdates)
         {
+            NSInteger indexOfObject = [targets indexOfObject:currentTarget];
+            NSInteger textureIndex = [[targetTextureIndices objectAtIndex:indexOfObject] integerValue];
+            
             if ([GPUImageOpenGLESContext supportsFastTextureUpload] && preparedToCaptureImage)
             {
-                NSInteger indexOfObject = [targets indexOfObject:currentTarget];
-                [self setInputTextureForTarget:currentTarget atIndex:[[targetTextureIndices objectAtIndex:indexOfObject] integerValue]];
+                [self setInputTextureForTarget:currentTarget atIndex:textureIndex];
             }
             
-            [currentTarget setInputSize:[self outputFrameSize]];
+            [currentTarget setInputSize:[self outputFrameSize] atIndex:textureIndex];
             [currentTarget newFrameReadyAtTime:frameTime];
         }
     }
@@ -498,46 +548,26 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
 
 - (void)newFrameReadyAtTime:(CMTime)frameTime;
 {
-    static const GLfloat squareVertices[] = {
+    static const GLfloat imageVertices[] = {
         -1.0f, -1.0f,
         1.0f, -1.0f,
         -1.0f,  1.0f,
         1.0f,  1.0f,
     };
     
-    static const GLfloat squareTextureCoordinates[] = {
-        0.0f, 0.0f,
-        1.0f, 0.0f,
-        0.0f,  1.0f,
-        1.0f,  1.0f,
-    };
- 
-    [self renderToTextureWithVertices:squareVertices textureCoordinates:squareTextureCoordinates sourceTexture:filterSourceTexture];
+    [self renderToTextureWithVertices:imageVertices textureCoordinates:[[self class] textureCoordinatesForRotation:inputRotation] sourceTexture:filterSourceTexture];
+
     [self informTargetsAboutNewFrameAtTime:frameTime];
 }
 
 - (NSInteger)nextAvailableTextureIndex;
 {
-    if (filterSourceTexture == 0)
-    {
-        return 0;
-    }
-    else
-    {
-        return 1;
-    }
+    return 0;
 }
 
 - (void)setInputTexture:(GLuint)newInputTexture atIndex:(NSInteger)textureIndex;
 {
-    if (textureIndex == 0)
-    {
-        filterSourceTexture = newInputTexture;
-    }
-    else
-    {
-        filterSourceTexture2 = newInputTexture;
-    }
+    filterSourceTexture = newInputTexture;
 }
 
 - (void)recreateFilterFBO
@@ -554,7 +584,20 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
     [self setFilterFBO];
 }
 
-- (void)setInputSize:(CGSize)newSize;
+- (CGSize)rotatedSize:(CGSize)sizeToRotate forIndex:(NSInteger)textureIndex;
+{
+    CGSize rotatedSize = sizeToRotate;
+    
+    if (GPUImageRotationSwapsWidthAndHeight(inputRotation))
+    {
+        rotatedSize.width = sizeToRotate.height;
+        rotatedSize.height = sizeToRotate.width;
+    }
+    
+    return rotatedSize; 
+}
+
+- (void)setInputSize:(CGSize)newSize atIndex:(NSInteger)textureIndex;
 {
     if (self.preventRendering)
     {
@@ -575,15 +618,22 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
         }
     }
     
-    if ( (CGSizeEqualToSize(inputTextureSize, CGSizeZero)) || (CGSizeEqualToSize(newSize, CGSizeZero)) )
+    CGSize rotatedSize = [self rotatedSize:newSize forIndex:textureIndex];
+    
+    if ( (CGSizeEqualToSize(inputTextureSize, CGSizeZero)) || (CGSizeEqualToSize(rotatedSize, CGSizeZero)) )
     {
-        inputTextureSize = newSize;
+        inputTextureSize = rotatedSize;
     }
-    else if (!CGSizeEqualToSize(inputTextureSize, newSize))
+    else if (!CGSizeEqualToSize(inputTextureSize, rotatedSize))
     {
-        inputTextureSize = newSize;
+        inputTextureSize = rotatedSize;
         [self recreateFilterFBO];
     }
+}
+
+- (void)setInputRotation:(GPUImageRotationMode)newInputRotation atIndex:(NSInteger)textureIndex;
+{
+    inputRotation = newInputRotation;
 }
 
 - (void)forceProcessingAtSize:(CGSize)frameSize;

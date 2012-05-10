@@ -112,10 +112,12 @@ void report_memory(NSString *tag)
     }
     
     cachedMaximumOutputSize = CGSizeZero;
-    [targetToRemove setInputSize:CGSizeZero];
     
     NSInteger indexOfObject = [targets indexOfObject:targetToRemove];
-    [targetToRemove setInputTexture:0 atIndex:[[targetTextureIndices objectAtIndex:indexOfObject] integerValue]];
+    NSInteger textureIndexOfTarget = [[targetTextureIndices objectAtIndex:indexOfObject] integerValue];
+    [targetToRemove setInputSize:CGSizeZero atIndex:textureIndexOfTarget];
+    [targetToRemove setInputTexture:0 atIndex:textureIndexOfTarget];
+    
     [targetTextureIndices removeObjectAtIndex:indexOfObject];
     [targets removeObject:targetToRemove];
 }
@@ -125,10 +127,12 @@ void report_memory(NSString *tag)
     cachedMaximumOutputSize = CGSizeZero;
     for (id<GPUImageInput> targetToRemove in targets)
     {
-        [targetToRemove setInputSize:CGSizeZero];
-
         NSInteger indexOfObject = [targets indexOfObject:targetToRemove];
+        NSInteger textureIndexOfTarget = [[targetTextureIndices objectAtIndex:indexOfObject] integerValue];
+        
+        [targetToRemove setInputSize:CGSizeZero atIndex:textureIndexOfTarget];        
         [targetToRemove setInputTexture:0 atIndex:[[targetTextureIndices objectAtIndex:indexOfObject] integerValue]];
+        [targetToRemove setInputRotation:kGPUImageNoRotation atIndex:textureIndexOfTarget];
     }
     [targets removeAllObjects];
     [targetTextureIndices removeAllObjects];

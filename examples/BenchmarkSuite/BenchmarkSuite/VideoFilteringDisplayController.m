@@ -170,12 +170,11 @@
     NSLog(@"Start GPU Image");
     videoCamera = [[GPUImageVideoCamera alloc] initWithSessionPreset:AVCaptureSessionPreset640x480 cameraPosition:AVCaptureDevicePositionBack];
     videoCamera.runBenchmark = YES;
+    videoCamera.outputImageOrientation = UIInterfaceOrientationPortrait;
     
     sepiaFilter = [[GPUImageSepiaFilter alloc] init];
-    GPUImageRotationFilter *rotationFilter = [[GPUImageRotationFilter alloc] initWithRotation:kGPUImageRotateRight];
     
-    [videoCamera addTarget:rotationFilter];
-    [rotationFilter addTarget:sepiaFilter];
+    [videoCamera addTarget:sepiaFilter];
     filterView = [[GPUImageView alloc] initWithFrame:self.view.bounds];
     [self.view addSubview:filterView];
     [sepiaFilter addTarget:filterView];

@@ -110,11 +110,19 @@
     return 0;
 }
 
-- (void)setInputSize:(CGSize)newSize;
+- (void)setInputSize:(CGSize)newSize atIndex:(NSInteger)textureIndex;
 {
     for (GPUImageOutput<GPUImageInput> *currentFilter in _initialFilters)
     {
-        [currentFilter setInputSize:newSize];
+        [currentFilter setInputSize:newSize atIndex:textureIndex];
+    }
+}
+
+- (void)setInputRotation:(GPUImageRotationMode)newInputRotation atIndex:(NSInteger)textureIndex;
+{
+    for (GPUImageOutput<GPUImageInput> *currentFilter in _initialFilters)
+    {
+        [currentFilter setInputRotation:newInputRotation  atIndex:(NSInteger)textureIndex];
     }
 }
 

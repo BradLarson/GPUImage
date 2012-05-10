@@ -43,13 +43,13 @@ typedef struct GPUMatrix3x3 GPUMatrix3x3;
  */
 @interface GPUImageFilter : GPUImageOutput <GPUImageInput>
 {
-    GLuint filterSourceTexture, filterSourceTexture2;
+    GLuint filterSourceTexture;
 
     GLuint filterFramebuffer;
 
     GLProgram *filterProgram;
     GLint filterPositionAttribute, filterTextureCoordinateAttribute;
-    GLint filterInputTextureUniform, filterInputTextureUniform2;
+    GLint filterInputTextureUniform;
     GLfloat backgroundColorRed, backgroundColorGreen, backgroundColorBlue, backgroundColorAlpha;
     
     BOOL preparedToCaptureImage;
@@ -59,6 +59,7 @@ typedef struct GPUMatrix3x3 GPUMatrix3x3;
     CVOpenGLESTextureRef renderTexture;
     
     CGSize currentFilterSize;
+    GPUImageRotationMode inputRotation;
 }
 
 @property(readonly) CVPixelBufferRef renderTarget;
@@ -89,6 +90,7 @@ typedef struct GPUMatrix3x3 GPUMatrix3x3;
 - (id)initWithFragmentShaderFromFile:(NSString *)fragmentShaderFilename;
 - (void)initializeAttributes;
 - (void)setupFilterForSize:(CGSize)filterFrameSize;
+- (CGSize)rotatedSize:(CGSize)sizeToRotate forIndex:(NSInteger)textureIndex;
 
 - (void)recreateFilterFBO;
 
@@ -105,6 +107,7 @@ typedef struct GPUMatrix3x3 GPUMatrix3x3;
 - (void)setOutputFBO;
 
 /// @name Rendering
++ (const GLfloat *)textureCoordinatesForRotation:(GPUImageRotationMode)rotationMode;
 - (void)renderToTextureWithVertices:(const GLfloat *)vertices textureCoordinates:(const GLfloat *)textureCoordinates sourceTexture:(GLuint)sourceTexture;
 - (void)informTargetsAboutNewFrameAtTime:(CMTime)frameTime;
 - (CGSize)outputFrameSize;

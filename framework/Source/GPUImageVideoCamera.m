@@ -23,6 +23,7 @@
 @synthesize captureSession = _captureSession;
 @synthesize inputCamera = _inputCamera;
 @synthesize runBenchmark = _runBenchmark;
+@synthesize outputImageOrientation = _outputImageOrientation;
 
 #pragma mark -
 #pragma mark Initialization and teardown
@@ -48,6 +49,7 @@
     
     _runBenchmark = NO;
     capturePaused = NO;
+    outputRotation = kGPUImageNoRotation;
     
     if ([GPUImageOpenGLESContext supportsFastTextureUpload])
     {
@@ -153,6 +155,16 @@
 }
 
 #pragma mark -
+#pragma mark Managing targets
+
+- (void)addTarget:(id<GPUImageInput>)newTarget atTextureLocation:(NSInteger)textureLocation;
+{
+    [super addTarget:newTarget atTextureLocation:textureLocation];
+    
+    [newTarget setInputRotation:outputRotation atIndex:textureLocation];
+}
+
+#pragma mark -
 #pragma mark Manage the camera video stream
 
 - (void)startCameraCapture;
@@ -188,7 +200,7 @@
     AVCaptureDeviceInput *newVideoInput;
     AVCaptureDevicePosition currentCameraPosition = [[videoInput device] position];
     
-    if(currentCameraPosition == AVCaptureDevicePositionBack)
+    if (currentCameraPosition == AVCaptureDevicePositionBack)
     {
         currentCameraPosition = AVCaptureDevicePositionFront;
     }
@@ -232,6 +244,8 @@
     return [[videoInput device] position];
 }
 
+#define INITIALFRAMESTOIGNOREFORBENCHMARK 5
+
 - (void)processVideoSampleBuffer:(CMSampleBufferRef)sampleBuffer;
 {
     if (capturePaused)
@@ -269,19 +283,22 @@
 
         for (id<GPUImageInput> currentTarget in targets)
         {
+            NSInteger indexOfObject = [targets indexOfObject:currentTarget];
+            NSInteger textureIndexOfTarget = [[targetTextureIndices objectAtIndex:indexOfObject] integerValue];
+
             if (currentTarget != self.targetToIgnoreForUpdates)
             {
-                [currentTarget setInputSize:CGSizeMake(bufferWidth, bufferHeight)];
+                [currentTarget setInputSize:CGSizeMake(bufferWidth, bufferHeight) atIndex:textureIndexOfTarget];
                 
-                NSInteger indexOfObject = [targets indexOfObject:currentTarget];
-                [currentTarget setInputTexture:outputTexture atIndex:[[targetTextureIndices objectAtIndex:indexOfObject] integerValue]];
+                [currentTarget setInputTexture:outputTexture atIndex:textureIndexOfTarget];
+                [currentTarget setInputRotation:outputRotation atIndex:textureIndexOfTarget];
                 
                 [currentTarget newFrameReadyAtTime:currentTime];
             }
             else
             {
-                NSInteger indexOfObject = [targets indexOfObject:currentTarget];
-                [currentTarget setInputTexture:outputTexture atIndex:[[targetTextureIndices objectAtIndex:indexOfObject] integerValue]];
+                [currentTarget setInputTexture:outputTexture atIndex:textureIndexOfTarget];
+                [currentTarget setInputRotation:outputRotation atIndex:textureIndexOfTarget];
             }
         }
         
@@ -294,11 +311,14 @@
         
         if (_runBenchmark)
         {
-            CFAbsoluteTime currentFrameTime = (CFAbsoluteTimeGetCurrent() - startTime);
-            totalFrameTimeDuringCapture += currentFrameTime;
             numberOfFramesCaptured++;
-            NSLog(@"Average frame time : %f ms", 1000.0 * (totalFrameTimeDuringCapture / numberOfFramesCaptured));
-            NSLog(@"Current frame time : %f ms", 1000.0 * currentFrameTime);
+            if (numberOfFramesCaptured > INITIALFRAMESTOIGNOREFORBENCHMARK)
+            {
+                CFAbsoluteTime currentFrameTime = (CFAbsoluteTimeGetCurrent() - startTime);
+                totalFrameTimeDuringCapture += currentFrameTime;
+                NSLog(@"Average frame time : %f ms", [self averageFrameDurationDuringCapture]);
+                NSLog(@"Current frame time : %f ms", 1000.0 * currentFrameTime);
+            }
         }
     }
     else
@@ -319,7 +339,10 @@
         {
             if (currentTarget != self.targetToIgnoreForUpdates)
             {
-                [currentTarget setInputSize:CGSizeMake(bufferWidth, bufferHeight)];
+                NSInteger indexOfObject = [targets indexOfObject:currentTarget];
+                NSInteger textureIndexOfTarget = [[targetTextureIndices objectAtIndex:indexOfObject] integerValue];
+
+                [currentTarget setInputSize:CGSizeMake(bufferWidth, bufferHeight) atIndex:textureIndexOfTarget];
                 [currentTarget newFrameReadyAtTime:currentTime];
             }
         }
@@ -328,11 +351,12 @@
         
         if (_runBenchmark)
         {
-            CFAbsoluteTime currentFrameTime = (CFAbsoluteTimeGetCurrent() - startTime);
-            totalFrameTimeDuringCapture += currentFrameTime;
             numberOfFramesCaptured++;
-            //        NSLog(@"Average frame time : %f ms", 1000.0 * (totalFrameTimeDuringCapture / numberOfFramesCaptured));
-            //        NSLog(@"Current frame time : %f ms", 1000.0 * currentFrameTime);
+            if (numberOfFramesCaptured > INITIALFRAMESTOIGNOREFORBENCHMARK)
+            {
+                CFAbsoluteTime currentFrameTime = (CFAbsoluteTimeGetCurrent() - startTime);
+                totalFrameTimeDuringCapture += currentFrameTime;
+            }
         }
     }  
 }
@@ -347,8 +371,7 @@
 
 - (CGFloat)averageFrameDurationDuringCapture;
 {
-    NSLog(@"Number of frames: %d", numberOfFramesCaptured);
-    return (totalFrameTimeDuringCapture / (CGFloat)numberOfFramesCaptured) * 1000.0;
+    return (totalFrameTimeDuringCapture / (CGFloat)(numberOfFramesCaptured - INITIALFRAMESTOIGNOREFORBENCHMARK)) * 1000.0;
 }
 
 #pragma mark -
@@ -422,6 +445,41 @@
     [_captureSession commitConfiguration];
     
     [super setAudioEncodingTarget:newValue];
+}
+
+- (void)setOutputImageOrientation:(UIInterfaceOrientation)newValue;
+{
+    _outputImageOrientation = newValue;
+    
+//    From the iOS 5.0 release notes:
+//    In previous iOS versions, the front-facing camera would always deliver buffers in AVCaptureVideoOrientationLandscapeLeft and the back-facing camera would always deliver buffers in AVCaptureVideoOrientationLandscapeRight.
+    
+    if ([self cameraPosition] == AVCaptureDevicePositionBack)
+    {
+        switch(_outputImageOrientation)
+        {
+            case UIInterfaceOrientationPortrait:outputRotation = kGPUImageRotateRight; break;
+            case UIInterfaceOrientationPortraitUpsideDown:outputRotation = kGPUImageRotateRightFlipVertical; break;
+            case UIInterfaceOrientationLandscapeLeft:outputRotation = kGPUImageNoRotation; break;
+            case UIInterfaceOrientationLandscapeRight:outputRotation = kGPUImageFlipVertical; break;
+        }
+    }
+    else
+    {
+        switch(_outputImageOrientation)
+        {
+            case UIInterfaceOrientationPortrait:outputRotation = kGPUImageRotateRightFlipVertical; break;
+            case UIInterfaceOrientationPortraitUpsideDown:outputRotation = kGPUImageRotateRight; break;
+            case UIInterfaceOrientationLandscapeLeft:outputRotation = kGPUImageFlipVertical; break;
+            case UIInterfaceOrientationLandscapeRight:outputRotation = kGPUImageNoRotation; break;
+        }
+    }
+    
+    for (id<GPUImageInput> currentTarget in targets)
+    {
+        NSInteger indexOfObject = [targets indexOfObject:currentTarget];
+        [currentTarget setInputRotation:outputRotation atIndex:[[targetTextureIndices objectAtIndex:indexOfObject] integerValue]];
+    }
 }
 
 @end

@@ -27,7 +27,10 @@
 {
     for (id<GPUImageInput> currentTarget in targets)
     {
-        [currentTarget setInputSize:textureSize];
+        NSInteger indexOfObject = [targets indexOfObject:currentTarget];
+        NSInteger targetTextureIndex = [[targetTextureIndices objectAtIndex:indexOfObject] integerValue];
+
+        [currentTarget setInputSize:textureSize atIndex:targetTextureIndex];
         [currentTarget newFrameReadyAtTime:kCMTimeInvalid];
     }
 }

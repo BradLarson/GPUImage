@@ -15,6 +15,7 @@ typedef struct GPUByteColorVector GPUByteColorVector;
     CGSize imageSize;
     CVOpenGLESTextureCacheRef rawDataTextureCache;
     CVPixelBufferRef renderTarget;
+    GPUImageRotationMode inputRotation;
 }
 
 @property(readwrite, unsafe_unretained, nonatomic) id<GPUImageRawDataProcessor> delegate;
