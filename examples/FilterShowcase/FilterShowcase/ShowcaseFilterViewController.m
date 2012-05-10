@@ -1,4 +1,5 @@
 #import "ShowcaseFilterViewController.h"
+#import "GPUImageRGBFilter.h"
 
 @implementation ShowcaseFilterViewController
 
@@ -144,6 +145,17 @@
             [self.filterSettingsSlider setValue:0.0];
             
             filter = [[GPUImageBrightnessFilter alloc] init];
+        }; break;
+        case GPUIMAGE_RGB:
+        {
+            self.title = @"RGB";
+            self.filterSettingsSlider.hidden = NO;
+            
+            [self.filterSettingsSlider setMinimumValue:0.0];
+            [self.filterSettingsSlider setMaximumValue:2.0];
+            [self.filterSettingsSlider setValue:1.0];
+            
+            filter = [[GPUImageRGBFilter alloc] init];
         }; break;
         case GPUIMAGE_EXPOSURE:
         {
@@ -764,6 +776,7 @@
         case GPUIMAGE_CONTRAST: [(GPUImageContrastFilter *)filter setContrast:[(UISlider *)sender value]]; break;
         case GPUIMAGE_BRIGHTNESS: [(GPUImageBrightnessFilter *)filter setBrightness:[(UISlider *)sender value]]; break;
         case GPUIMAGE_EXPOSURE: [(GPUImageExposureFilter *)filter setExposure:[(UISlider *)sender value]]; break;
+        case GPUIMAGE_RGB: [(GPUImageRGBFilter *)filter setGreen:[(UISlider *)sender value]]; break;
         case GPUIMAGE_SHARPEN: [(GPUImageSharpenFilter *)filter setSharpness:[(UISlider *)sender value]]; break;
         case GPUIMAGE_HISTOGRAM: [(GPUImageHistogramFilter *)filter setDownsamplingFactor:round([(UISlider *)sender value])]; break;
         case GPUIMAGE_UNSHARPMASK: [(GPUImageUnsharpMaskFilter *)filter setIntensity:[(UISlider *)sender value]]; break;
