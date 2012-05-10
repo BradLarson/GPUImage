@@ -888,7 +888,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# docsetutil was moved in Xcode 4.3\n# if you're using Xcode 4.2 or earlier, remove --docsetutil-path\n\n# to show missing documentation warnings, add --logformat xcode\nif [ \"${BUILD_DOCUMENTATION}\" -ge 1 ]; then\n${APPLEDOC_PATH} \\\n--project-name \"GPUImage\" \\\n--project-company \"Sunset Lake Software\" \\\n--company-id \"com.sunsetlakesoftware\" \\\n--output \"${SOURCE_ROOT}/../documentation\" \\\n--docsetutil-path \"/Applications/Xcode.app/Contents/Developer/usr/bin/docsetutil\" \\\n--keep-undocumented-objects \\\n--keep-undocumented-members \\\n--create-html \\\n--install-docset \\\n--keep-intermediate-files \\\n--no-repeat-first-par \\\n--exit-threshold 9999 \\\n--clean-output \\\n--ignore .m \\\n${SOURCE_ROOT}\nfi";
+			shellScript = "# docsetutil was moved in Xcode 4.3\n# if you're using Xcode 4.2 or earlier, remove --docsetutil-path\n\n# to show missing documentation warnings, add --logformat xcode\n${APPLEDOC_PATH} \\\n--project-name \"GPUImage\" \\\n--project-company \"Sunset Lake Software\" \\\n--company-id \"com.sunsetlakesoftware\" \\\n--output \"${SOURCE_ROOT}/../documentation\" \\\n--docsetutil-path \"/Applications/Xcode.app/Contents/Developer/usr/bin/docsetutil\" \\\n--keep-undocumented-objects \\\n--keep-undocumented-members \\\n--create-html \\\n--install-docset \\\n--keep-intermediate-files \\\n--no-repeat-first-par \\\n--exit-threshold 9999 \\\n--clean-output \\\n--ignore .m \\\n${SOURCE_ROOT}";
 		};
 		BCF1A34214DDB1EC00852800 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1090,7 +1090,6 @@
 		BCF1A35914DDB1EC00852800 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				BUILD_DOCUMENTATION = 1;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				DSTROOT = /tmp/GPUImage.dst;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -1105,7 +1104,6 @@
 		BCF1A35A14DDB1EC00852800 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				BUILD_DOCUMENTATION = 1;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				DSTROOT = /tmp/GPUImage.dst;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
