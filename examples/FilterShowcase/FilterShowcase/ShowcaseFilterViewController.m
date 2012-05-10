@@ -1,5 +1,4 @@
 #import "ShowcaseFilterViewController.h"
-#import "GPUImageRGBFilter.h"
 
 @implementation ShowcaseFilterViewController
 
