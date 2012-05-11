@@ -176,6 +176,10 @@ Documentation is generated from header comments using appledoc. To build the doc
   - *center*: The center about which to apply the pixellation, defaulting to (0.5, 0.5)
   - *pixelSize*: The fractional pixel size, split into width and height components. The default is (0.05, 0.05)
 
+- **GPUImageCrosshatchFilter**: This converts an image into a black-and-white crosshatch pattern
+  - *crossHatchSpacing*: The fractional width of the image to use as the spacing for the crosshatch. The default is 0.03.
+  - *lineWidth*: A relative width for the crosshatch lines. The default is 0.003.
+
 - **GPUImageSobelEdgeDetectionFilter**: Sobel edge detection, with edges highlighted in white
   - *imageWidthFactor*: 
   - *imageHeightFactor*: These parameters affect the visibility of the detected edges
