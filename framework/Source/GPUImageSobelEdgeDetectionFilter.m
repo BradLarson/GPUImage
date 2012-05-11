@@ -42,8 +42,8 @@ NSString *const kGPUImageSobelEdgeDetectionFragmentShaderString = SHADER_STRING
 
 @implementation GPUImageSobelEdgeDetectionFilter
 
-@synthesize imageWidthFactor = _imageWidthFactor; 
-@synthesize imageHeightFactor = _imageHeightFactor; 
+@synthesize texelWidth = _texelWidth; 
+@synthesize texelHeight = _texelHeight; 
 
 #pragma mark -
 #pragma mark Initialization and teardown
@@ -70,8 +70,8 @@ NSString *const kGPUImageSobelEdgeDetectionFragmentShaderString = SHADER_STRING
     
     hasOverriddenImageSizeFactor = NO;
     
-    imageWidthFactorUniform = [secondFilterProgram uniformIndex:@"imageWidthFactor"];
-    imageHeightFactorUniform = [secondFilterProgram uniformIndex:@"imageHeightFactor"];
+    texelWidthUniform = [secondFilterProgram uniformIndex:@"texelWidth"];
+    texelHeightUniform = [secondFilterProgram uniformIndex:@"texelHeight"];
     
     return self;
 }
@@ -80,37 +80,37 @@ NSString *const kGPUImageSobelEdgeDetectionFragmentShaderString = SHADER_STRING
 {
     if (!hasOverriddenImageSizeFactor)
     {
-        _imageWidthFactor = filterFrameSize.width;
-        _imageHeightFactor = filterFrameSize.height;
+        _texelWidth = 1.0 / filterFrameSize.width;
+        _texelHeight = 1.0 / filterFrameSize.height;
 
         [GPUImageOpenGLESContext useImageProcessingContext];
         [secondFilterProgram use];
-        glUniform1f(imageWidthFactorUniform, 1.0 / _imageWidthFactor);
-        glUniform1f(imageHeightFactorUniform, 1.0 / _imageHeightFactor);
+        glUniform1f(texelWidthUniform, _texelWidth);
+        glUniform1f(texelHeightUniform, _texelHeight);
     }
 }
 
 #pragma mark -
 #pragma mark Accessors
 
-- (void)setImageWidthFactor:(CGFloat)newValue;
+- (void)setTexelWidth:(CGFloat)newValue;
 {
     hasOverriddenImageSizeFactor = YES;
-    _imageWidthFactor = newValue;
+    _texelWidth = newValue;
     
     [GPUImageOpenGLESContext useImageProcessingContext];
     [secondFilterProgram use];
-    glUniform1f(imageWidthFactorUniform, 1.0 / _imageWidthFactor);
+    glUniform1f(texelWidthUniform, _texelWidth);
 }
 
-- (void)setImageHeightFactor:(CGFloat)newValue;
+- (void)setTexelHeight:(CGFloat)newValue;
 {
     hasOverriddenImageSizeFactor = YES;
-    _imageHeightFactor = newValue;
+    _texelHeight = newValue;
     
     [GPUImageOpenGLESContext useImageProcessingContext];
     [secondFilterProgram use];
-    glUniform1f(imageHeightFactorUniform, 1.0 / _imageHeightFactor);
+    glUniform1f(texelHeightUniform, _texelHeight);
 }
 
 @end

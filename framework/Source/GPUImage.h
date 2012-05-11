@@ -80,3 +80,4 @@
 #import "GPUImageAlphaBlendFilter.h"
 #import "GPUImageNonMaximumSuppressionFilter.h"
 #import "GPUImageRGBFilter.h"
+#import "GPUImageMedianFilter.h"

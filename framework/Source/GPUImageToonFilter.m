@@ -49,27 +49,11 @@ NSString *const kGPUImageToonFragmentShaderString = SHADER_STRING
      float thresholdTest = 1.0 - step(threshold, mag);
      
      gl_FragColor = vec4(posterizedImageColor * thresholdTest, textureColor.a);
-
-     /*
-     if (mag > threshold)
-     {
-         gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
-     }
-     else
-     {
-         textureColor *= vec3(quantize);
-         textureColor += vec3(0.5);
-         textureColor = floor(textureColor) / quantize;
-         gl_FragColor = vec4(textureColor, texture2D(inputImageTexture, topTextureCoordinate).w);
-     }
-      */
  }
 );
 
 @implementation GPUImageToonFilter
 
-@synthesize imageWidthFactor = _imageWidthFactor; 
-@synthesize imageHeightFactor = _imageHeightFactor; 
 @synthesize threshold = _threshold; 
 @synthesize quantizationLevels = _quantizationLevels; 
 
@@ -78,15 +62,13 @@ NSString *const kGPUImageToonFragmentShaderString = SHADER_STRING
 
 - (id)init;
 {
-    if (!(self = [super initWithVertexShaderFromString:kGPUImageNearbyTexelSamplingVertexShaderString fragmentShaderFromString:kGPUImageToonFragmentShaderString]))
+    if (!(self = [super initWithFragmentShaderFromString:kGPUImageToonFragmentShaderString]))
     {
 		return nil;
     }
     
     hasOverriddenImageSizeFactor = NO;
     
-    imageWidthFactorUniform = [filterProgram uniformIndex:@"imageWidthFactor"];
-    imageHeightFactorUniform = [filterProgram uniformIndex:@"imageHeightFactor"];
     thresholdUniform = [filterProgram uniformIndex:@"threshold"];
     quantizationLevelsUniform = [filterProgram uniformIndex:@"quantizationLevels"];
     
@@ -96,42 +78,8 @@ NSString *const kGPUImageToonFragmentShaderString = SHADER_STRING
     return self;
 }
 
-- (void)setupFilterForSize:(CGSize)filterFrameSize;
-{
-    if (!hasOverriddenImageSizeFactor)
-    {
-        _imageWidthFactor = filterFrameSize.width;
-        _imageHeightFactor = filterFrameSize.height;
-        
-        [GPUImageOpenGLESContext useImageProcessingContext];
-        [filterProgram use];
-        glUniform1f(imageWidthFactorUniform, 1.0 / _imageWidthFactor);
-        glUniform1f(imageHeightFactorUniform, 1.0 / _imageHeightFactor);
-    }
-}
-
 #pragma mark -
 #pragma mark Accessors
-
-- (void)setImageWidthFactor:(CGFloat)newValue;
-{
-    hasOverriddenImageSizeFactor = YES;
-    _imageWidthFactor = newValue;
-    
-    [GPUImageOpenGLESContext useImageProcessingContext];
-    [filterProgram use];
-    glUniform1f(imageWidthFactorUniform, 1.0 / _imageWidthFactor);
-}
-
-- (void)setImageHeightFactor:(CGFloat)newValue;
-{
-    hasOverriddenImageSizeFactor = YES;
-    _imageHeightFactor = newValue;
-    
-    [GPUImageOpenGLESContext useImageProcessingContext];
-    [filterProgram use];
-    glUniform1f(imageHeightFactorUniform, 1.0 / _imageHeightFactor);
-}
 
 - (void)setThreshold:(CGFloat)newValue;
 {

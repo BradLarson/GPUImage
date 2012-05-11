@@ -657,6 +657,13 @@
             
             filter = [[GPUImageBoxBlurFilter alloc] init];
 		}; break;
+        case GPUIMAGE_MEDIAN:
+        {
+            self.title = @"Median";
+            self.filterSettingsSlider.hidden = YES;
+            
+            filter = [[GPUImageMedianFilter alloc] init];
+		}; break;
         case GPUIMAGE_GAUSSIAN_SELECTIVE:
         {
             self.title = @"Selective Blur";

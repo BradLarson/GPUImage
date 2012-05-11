@@ -12,9 +12,9 @@
 }
 
 /// The image width and height factors tweak the appearance of the edges. By default, they match the filter size in pixels
-@property(readwrite, nonatomic) CGFloat imageWidthFactor; 
+@property(readwrite, nonatomic) CGFloat texelWidth; 
 /// The image width and height factors tweak the appearance of the edges. By default, they match the filter size in pixels
-@property(readwrite, nonatomic) CGFloat imageHeightFactor; 
+@property(readwrite, nonatomic) CGFloat texelHeight; 
 
 /// A multiplier for the blur size, ranging from 0.0 on up, with a default of 0.5
 @property (readwrite, nonatomic) CGFloat blurSize;

@@ -7,8 +7,8 @@
 @synthesize threshold;
 @synthesize blurSize;
 @synthesize quantizationLevels;
-@synthesize imageWidthFactor;
-@synthesize imageHeightFactor;
+@synthesize texelWidth;
+@synthesize texelHeight;
 
 - (id)init;
 {
@@ -51,24 +51,24 @@
     return blurFilter.blurSize;
 }
 
-- (void)setImageWidthFactor:(CGFloat)newValue;
+- (void)setTexelWidth:(CGFloat)newValue;
 {
-    toonFilter.imageWidthFactor = newValue;
+    toonFilter.texelWidth = newValue;
 }
 
-- (CGFloat)imageWidthFactor;
+- (CGFloat)texelWidth;
 {
-    return toonFilter.imageWidthFactor;
+    return toonFilter.texelWidth;
 }
 
-- (void)setImageHeightFactor:(CGFloat)newValue;
+- (void)setTexelHeight:(CGFloat)newValue;
 {
-    toonFilter.imageHeightFactor = newValue;
+    toonFilter.texelHeight = newValue;
 }
 
-- (CGFloat)imageHeightFactor;
+- (CGFloat)texelHeight;
 {
-    return toonFilter.imageHeightFactor;
+    return toonFilter.texelHeight;
 }
 
 - (void)setThreshold:(CGFloat)newValue;

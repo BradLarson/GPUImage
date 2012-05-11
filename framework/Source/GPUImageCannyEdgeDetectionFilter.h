@@ -11,9 +11,9 @@
 //    GPUImageSketchFilter *edgeDetectionFilter;
 }
 
-// The image width and height factors tweak the appearance of the edges. By default, they match the filter size in pixels
-@property(readwrite, nonatomic) CGFloat imageWidthFactor; 
-@property(readwrite, nonatomic) CGFloat imageHeightFactor; 
+// The image width and height factors tweak the appearance of the edges. By default, they match the inverse of the filter size in pixels
+@property(readwrite, nonatomic) CGFloat texelWidth; 
+@property(readwrite, nonatomic) CGFloat texelHeight; 
 
 // A multiplier for the blur size, ranging from 0.0 on up, with a default of 1.0
 @property (readwrite, nonatomic) CGFloat blurSize;
