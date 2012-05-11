@@ -738,14 +738,19 @@
         
         if (filterType == GPUIMAGE_HISTOGRAM)
         {
+            // I'm adding an intermediary filter because glReadPixels() requires something to be rendered for its glReadPixels() operation to work
+            [videoCamera removeTarget:filter];
+            GPUImageGammaFilter *gammaFilter = [[GPUImageGammaFilter alloc] init];
+            [videoCamera addTarget:gammaFilter];
+            [gammaFilter addTarget:filter];
+
             GPUImageHistogramGenerator *histogramGraph = [[GPUImageHistogramGenerator alloc] init];
             
             [histogramGraph forceProcessingAtSize:CGSizeMake(256.0, 330.0)];
+            [filter addTarget:histogramGraph];
             
             GPUImageAlphaBlendFilter *blendFilter = [[GPUImageAlphaBlendFilter alloc] init];
-            blendFilter.mix = 0.75;
-            
-            [filter addTarget:histogramGraph];
+            blendFilter.mix = 0.75;            
             
             [videoCamera addTarget:blendFilter];
             [histogramGraph addTarget:blendFilter];

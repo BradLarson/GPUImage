@@ -222,6 +222,21 @@ NSString *const kGPUImageHistogramAccumulationFragmentShaderString = SHADER_STRI
     return [self sizeOfFBO];
 }
 
+- (void)setInputSize:(CGSize)newSize atIndex:(NSInteger)textureIndex;
+{
+    if (self.preventRendering)
+    {
+        return;
+    }
+    
+    inputTextureSize = newSize;
+}
+
+- (void)setInputRotation:(GPUImageRotationMode)newInputRotation atIndex:(NSInteger)textureIndex;
+{
+    inputRotation = kGPUImageNoRotation;
+}
+
 - (void)renderToTextureWithVertices:(const GLfloat *)vertices textureCoordinates:(const GLfloat *)textureCoordinates sourceTexture:(GLuint)sourceTexture;
 {
     if (self.preventRendering)
