@@ -1,7 +1,7 @@
 #import "GPUImageMedianFilter.h"
 
 /*
- 3x3 Median optimized for GeForce 8800
+ 3x3 Median optimized for GeForce 8800, from "A Fast, Small-Radius GPU Median Filter" by Morgan McGuire in ShaderX6
  
  Morgan McGuire and Kyle Whitson
  Williams College
