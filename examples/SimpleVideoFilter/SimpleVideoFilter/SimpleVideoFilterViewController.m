@@ -99,8 +99,7 @@
 
 - (IBAction)updateSliderValue:(id)sender
 {
-    [(GPUImagePixellateFilter *)filter setFractionalWidthOfAPixel:[(UISlider *)sender value]];
-//    [(GPUImageSketchFilter *)filter setIntensity:1.0];
+    [(GPUImageSepiaFilter *)filter setIntensity:[(UISlider *)sender value]];
 }
 
 @end
