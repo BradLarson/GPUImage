@@ -83,8 +83,8 @@ NSString *const kGPUImageCropFragmentShaderString =  SHADER_STRING
             cropTextureCoordinates[4] = minX; // 0,1
             cropTextureCoordinates[5] = maxY;
 
-            cropTextureCoordinates[4] = maxX; // 1,1
-            cropTextureCoordinates[5] = maxY;
+            cropTextureCoordinates[6] = maxX; // 1,1
+            cropTextureCoordinates[7] = maxY;
         }; break;
         case kGPUImageRotateLeft: // Broken
         {
