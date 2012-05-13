@@ -81,3 +81,4 @@
 #import "GPUImageNonMaximumSuppressionFilter.h"
 #import "GPUImageRGBFilter.h"
 #import "GPUImageMedianFilter.h"
+#import "GPUImageBilateralFilter.h"
