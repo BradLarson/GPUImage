@@ -151,7 +151,7 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
     CGSize currentFBOSize = [self sizeOfFBO];
     NSUInteger totalBytesForImage = (int)currentFBOSize.width * (int)currentFBOSize.height * 4;
     // It appears that the width of a texture must be padded out to be a multiple of 8 (32 bytes) if reading from it using a texture cache
-    NSUInteger paddedWidthOfImage = (NSUInteger)ceil(currentFBOSize.width / 8.0) * 8.0;
+    NSUInteger paddedWidthOfImage = CVPixelBufferGetBytesPerRow(renderTarget) / 4.0;
     NSUInteger paddedBytesForImage = paddedWidthOfImage * (int)currentFBOSize.height * 4;
     
     GLubyte *rawImagePixels;
@@ -180,7 +180,7 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
     CGImageRef cgImageFromBytes;
     if ([GPUImageOpenGLESContext supportsFastTextureUpload] && preparedToCaptureImage) 
     {
-        cgImageFromBytes = CGImageCreate((int)currentFBOSize.width, (int)currentFBOSize.height, 8, 32, 4 * paddedWidthOfImage, defaultRGBColorSpace, kCGBitmapByteOrder32Little | kCGImageAlphaPremultipliedFirst, dataProvider, NULL, NO, kCGRenderingIntentDefault);
+        cgImageFromBytes = CGImageCreate((int)currentFBOSize.width, (int)currentFBOSize.height, 8, 32, CVPixelBufferGetBytesPerRow(renderTarget), defaultRGBColorSpace, kCGBitmapByteOrder32Little | kCGImageAlphaPremultipliedFirst, dataProvider, NULL, NO, kCGRenderingIntentDefault);
     }
     else
     {

@@ -20,6 +20,7 @@ typedef enum { kGPUImageNoRotation, kGPUImageRotateLeft, kGPUImageRotateRight, k
 + (void)useImageProcessingContext;
 + (GLint)maximumTextureSizeForThisDevice;
 + (GLint)maximumTextureUnitsForThisDevice;
++ (CGSize)sizeThatFitsWithinATextureForSize:(CGSize)inputSize;
 
 - (void)presentBufferForDisplay;
 

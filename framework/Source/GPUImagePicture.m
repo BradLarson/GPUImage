@@ -32,6 +32,15 @@
     CGSize pixelSizeOfImage = CGSizeMake(scaleOfImage * pointSizeOfImage.width, scaleOfImage * pointSizeOfImage.height);
 
     BOOL shouldRedrawUsingCoreGraphics = YES;
+    
+    // For now, deal with images larger than the maximum texture size by resizing to be within that limit
+    CGSize scaledImageSizeToFitOnGPU = [GPUImageOpenGLESContext sizeThatFitsWithinATextureForSize:pixelSizeOfImage];
+    if (!CGSizeEqualToSize(scaledImageSizeToFitOnGPU, pixelSizeOfImage))
+    {
+        pixelSizeOfImage = scaledImageSizeToFitOnGPU;
+        shouldRedrawUsingCoreGraphics = YES;
+    }
+    
     if (self.shouldSmoothlyScaleOutput)
     {
         // In order to use mipmaps, you need to provide power-of-two textures, so convert to the next largest power of two and stretch to fill
@@ -102,6 +111,7 @@
     CGSize pointSizeOfImage = [imageSource size];
     CGFloat scaleOfImage = [imageSource scale];
     CGSize pixelSizeOfImage = CGSizeMake(scaleOfImage * pointSizeOfImage.width, scaleOfImage * pointSizeOfImage.height);
+    pixelSizeOfImage = [GPUImageOpenGLESContext sizeThatFitsWithinATextureForSize:pixelSizeOfImage];
     
     for (id<GPUImageInput> currentTarget in targets)
     {
