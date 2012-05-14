@@ -1,10 +1,12 @@
 #import "GPUImageUnsharpMaskFilter.h"
 #import "GPUImageFilter.h"
+#import "GPUImageTwoInputFilter.h"
 #import "GPUImageGaussianBlurFilter.h"
 
 NSString *const kGPUImageUnsharpMaskFragmentShaderString = SHADER_STRING
 ( 
  varying highp vec2 textureCoordinate;
+ varying highp vec2 textureCoordinate2;
  
  uniform sampler2D inputImageTexture;
  uniform sampler2D inputImageTexture2; 
@@ -14,7 +16,7 @@ NSString *const kGPUImageUnsharpMaskFragmentShaderString = SHADER_STRING
  void main()
  {
      lowp vec4 sharpImageColor = texture2D(inputImageTexture, textureCoordinate);
-     lowp vec3 blurredImageColor = texture2D(inputImageTexture2, textureCoordinate).rgb;
+     lowp vec3 blurredImageColor = texture2D(inputImageTexture2, textureCoordinate2).rgb;
      
      gl_FragColor = vec4(sharpImageColor.rgb * intensity + blurredImageColor * (1.0 - intensity), sharpImageColor.a);
 //     gl_FragColor = mix(blurredImageColor, sharpImageColor, intensity);
@@ -39,7 +41,7 @@ NSString *const kGPUImageUnsharpMaskFragmentShaderString = SHADER_STRING
     [self addFilter:blurFilter];
         
     // Second pass: combine the blurred image with the original sharp one
-    unsharpMaskFilter = [[GPUImageFilter alloc] initWithFragmentShaderFromString:kGPUImageUnsharpMaskFragmentShaderString];
+    unsharpMaskFilter = [[GPUImageTwoInputFilter alloc] initWithFragmentShaderFromString:kGPUImageUnsharpMaskFragmentShaderString];
     [self addFilter:unsharpMaskFilter];
     
     // Texture location 0 needs to be the sharp image for both the blur and the second stage processing

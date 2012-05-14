@@ -1,5 +1,6 @@
 #import "GPUImageOutput.h"
 #import "GPUImageMovieWriter.h"
+#import <mach/mach.h>
 
 void runOnMainQueueWithoutDeadlocking(void (^block)(void))
 {
@@ -11,6 +12,29 @@ void runOnMainQueueWithoutDeadlocking(void (^block)(void))
 	{
 		dispatch_sync(dispatch_get_main_queue(), block);
 	}
+}
+
+void report_memory(NSString *tag) 
+{    
+    if (!tag)
+        tag = @"Default";
+    
+    struct task_basic_info info;
+    
+    mach_msg_type_number_t size = sizeof(info);
+    
+    kern_return_t kerr = task_info(mach_task_self(),
+                                   
+                                   TASK_BASIC_INFO,
+                                   
+                                   (task_info_t)&info,
+                                   
+                                   &size);    
+    if( kerr == KERN_SUCCESS ) {        
+        NSLog(@"%@ - Memory used: %u", tag, info.resident_size); //in bytes        
+    } else {        
+        NSLog(@"%@ - Error: %s", tag, mach_error_string(kerr));        
+    }    
 }
 
 @implementation GPUImageOutput
@@ -88,10 +112,12 @@ void runOnMainQueueWithoutDeadlocking(void (^block)(void))
     }
     
     cachedMaximumOutputSize = CGSizeZero;
-    [targetToRemove setInputSize:CGSizeZero];
     
     NSInteger indexOfObject = [targets indexOfObject:targetToRemove];
-    [targetToRemove setInputTexture:0 atIndex:[[targetTextureIndices objectAtIndex:indexOfObject] integerValue]];
+    NSInteger textureIndexOfTarget = [[targetTextureIndices objectAtIndex:indexOfObject] integerValue];
+    [targetToRemove setInputSize:CGSizeZero atIndex:textureIndexOfTarget];
+    [targetToRemove setInputTexture:0 atIndex:textureIndexOfTarget];
+    
     [targetTextureIndices removeObjectAtIndex:indexOfObject];
     [targets removeObject:targetToRemove];
 }
@@ -101,10 +127,12 @@ void runOnMainQueueWithoutDeadlocking(void (^block)(void))
     cachedMaximumOutputSize = CGSizeZero;
     for (id<GPUImageInput> targetToRemove in targets)
     {
-        [targetToRemove setInputSize:CGSizeZero];
-
         NSInteger indexOfObject = [targets indexOfObject:targetToRemove];
+        NSInteger textureIndexOfTarget = [[targetTextureIndices objectAtIndex:indexOfObject] integerValue];
+        
+        [targetToRemove setInputSize:CGSizeZero atIndex:textureIndexOfTarget];        
         [targetToRemove setInputTexture:0 atIndex:[[targetTextureIndices objectAtIndex:indexOfObject] integerValue]];
+        [targetToRemove setInputRotation:kGPUImageNoRotation atIndex:textureIndexOfTarget];
     }
     [targets removeAllObjects];
     [targetTextureIndices removeAllObjects];
@@ -151,6 +179,12 @@ void runOnMainQueueWithoutDeadlocking(void (^block)(void))
 #pragma mark -
 #pragma mark Still image processing
 
+/**
+ Retreive the currently processed output image as an UIImage.
+ 
+ The image's orientation will be the device's current orientation.
+ See also: [GPUImageOutput imageFromCurrentlyProcessedOutputWithOrientation:]
+ */
 - (UIImage *)imageFromCurrentlyProcessedOutput;
 {
 	UIDeviceOrientation deviceOrientation = [[UIDevice currentDevice] orientation];

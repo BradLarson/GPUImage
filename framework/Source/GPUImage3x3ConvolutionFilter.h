@@ -1,13 +1,8 @@
-#import "GPUImageFilter.h"
+#import "GPUImage3x3TextureSamplingFilter.h"
 
-extern NSString *const kGPUImageNearbyTexelSamplingVertexShaderString;
-
-@interface GPUImage3x3ConvolutionFilter : GPUImageFilter
+@interface GPUImage3x3ConvolutionFilter : GPUImage3x3TextureSamplingFilter
 {
     GLint convolutionMatrixUniform;
-    GLint imageWidthFactorUniform, imageHeightFactorUniform;
-    
-    CGFloat imageWidthFactor, imageHeightFactor;
 }
 
 // The convolution kernel is a 3x3 matrix of values to apply to the pixel and its 8 surrounding pixels. The matrix is specified in row-major order, 

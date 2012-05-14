@@ -32,6 +32,15 @@
     CGSize pixelSizeOfImage = CGSizeMake(scaleOfImage * pointSizeOfImage.width, scaleOfImage * pointSizeOfImage.height);
 
     BOOL shouldRedrawUsingCoreGraphics = YES;
+    
+    // For now, deal with images larger than the maximum texture size by resizing to be within that limit
+    CGSize scaledImageSizeToFitOnGPU = [GPUImageOpenGLESContext sizeThatFitsWithinATextureForSize:pixelSizeOfImage];
+    if (!CGSizeEqualToSize(scaledImageSizeToFitOnGPU, pixelSizeOfImage))
+    {
+        pixelSizeOfImage = scaledImageSizeToFitOnGPU;
+        shouldRedrawUsingCoreGraphics = YES;
+    }
+    
     if (self.shouldSmoothlyScaleOutput)
     {
         // In order to use mipmaps, you need to provide power-of-two textures, so convert to the next largest power of two and stretch to fill
@@ -55,14 +64,15 @@
         
         CGColorSpaceRef genericRGBColorspace = CGColorSpaceCreateDeviceRGB();    
         CGContextRef imageContext = CGBitmapContextCreate(imageData, (int)pixelSizeOfImage.width, (int)pixelSizeOfImage.height, 8, (int)pixelSizeOfImage.width * 4, genericRGBColorspace,  kCGBitmapByteOrder32Little | kCGImageAlphaPremultipliedFirst);
-        CGContextDrawImage(imageContext, CGRectMake(0.0, 0.0, pixelSizeOfImage.width, pixelSizeOfImage.height), [newImageSource CGImage]);
+//        CGContextSetBlendMode(imageContext, kCGBlendModeCopy); // From Technical Q&A QA1708: http://developer.apple.com/library/ios/#qa/qa1708/_index.html
+        CGContextDrawImage(imageContext, CGRectMake(0.0, 0.0, pixelSizeOfImage.width, pixelSizeOfImage.height), [imageSource CGImage]);
         CGContextRelease(imageContext);
         CGColorSpaceRelease(genericRGBColorspace);
     }
     else
     {
         // Access the raw image bytes directly
-        dataFromImageDataProvider = CGDataProviderCopyData(CGImageGetDataProvider([newImageSource CGImage]));
+        dataFromImageDataProvider = CGDataProviderCopyData(CGImageGetDataProvider([imageSource CGImage]));
         imageData = (GLubyte *)CFDataGetBytePtr(dataFromImageDataProvider);
     }    
     
@@ -101,10 +111,14 @@
     CGSize pointSizeOfImage = [imageSource size];
     CGFloat scaleOfImage = [imageSource scale];
     CGSize pixelSizeOfImage = CGSizeMake(scaleOfImage * pointSizeOfImage.width, scaleOfImage * pointSizeOfImage.height);
+    pixelSizeOfImage = [GPUImageOpenGLESContext sizeThatFitsWithinATextureForSize:pixelSizeOfImage];
     
     for (id<GPUImageInput> currentTarget in targets)
     {
-        [currentTarget setInputSize:pixelSizeOfImage];
+        NSInteger indexOfObject = [targets indexOfObject:currentTarget];
+        NSInteger textureIndexOfTarget = [[targetTextureIndices objectAtIndex:indexOfObject] integerValue];
+
+        [currentTarget setInputSize:pixelSizeOfImage atIndex:textureIndexOfTarget];
         [currentTarget newFrameReadyAtTime:kCMTimeInvalid];
     }    
 }

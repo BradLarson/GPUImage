@@ -22,6 +22,7 @@
     [super viewDidLoad];
     
     videoCamera = [[GPUImageVideoCamera alloc] initWithSessionPreset:AVCaptureSessionPreset640x480 cameraPosition:AVCaptureDevicePositionBack];
+    videoCamera.outputImageOrientation = UIInterfaceOrientationPortrait;
 //    videoCamera = [[GPUImageVideoCamera alloc] initWithSessionPreset:AVCaptureSessionPreset640x480 cameraPosition:AVCaptureDevicePositionFront];
 //    videoCamera = [[GPUImageVideoCamera alloc] initWithSessionPreset:AVCaptureSessionPreset1280x720 cameraPosition:AVCaptureDevicePositionBack];
 //    videoCamera = [[GPUImageVideoCamera alloc] initWithSessionPreset:AVCaptureSessionPreset1920x1080 cameraPosition:AVCaptureDevicePositionBack];
@@ -35,11 +36,9 @@
     
 //    filter = [[GPUImageSketchFilter alloc] init];
 //    filter = [[GPUImageSmoothToonFilter alloc] init];
-    GPUImageRotationFilter *rotationFilter = [[GPUImageRotationFilter alloc] initWithRotation:kGPUImageRotateRight];
 //    GPUImageRotationFilter *rotationFilter = [[GPUImageRotationFilter alloc] initWithRotation:kGPUImageRotateRightFlipVertical];
     
-    [videoCamera addTarget:rotationFilter];
-    [rotationFilter addTarget:filter];
+    [videoCamera addTarget:filter];
     GPUImageView *filterView = (GPUImageView *)self.view;
     [filter addTarget:filterView];
 //    filterView.fillMode = kGPUImageFillModeStretch;
@@ -100,8 +99,7 @@
 
 - (IBAction)updateSliderValue:(id)sender
 {
-    [(GPUImagePixellateFilter *)filter setFractionalWidthOfAPixel:[(UISlider *)sender value]];
-//    [(GPUImageSketchFilter *)filter setIntensity:1.0];
+    [(GPUImageSepiaFilter *)filter setIntensity:[(UISlider *)sender value]];
 }
 
 @end

@@ -1,5 +1,5 @@
-#import "GPUImageFilter.h"
+#import "GPUImageTwoInputFilter.h"
 
-@interface GPUImageSubtractBlendFilter : GPUImageFilter
+@interface GPUImageSubtractBlendFilter : GPUImageTwoInputFilter
 
 @end

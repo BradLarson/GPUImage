@@ -7,8 +7,8 @@
 
 @synthesize threshold;
 @synthesize blurSize;
-@synthesize imageWidthFactor;
-@synthesize imageHeightFactor;
+@synthesize texelWidth;
+@synthesize texelHeight;
 
 - (id)init;
 {
@@ -51,24 +51,24 @@
     return blurFilter.blurSize;
 }
 
-- (void)setImageWidthFactor:(CGFloat)newValue;
+- (void)setTexelWidth:(CGFloat)newValue;
 {
-    edgeDetectionFilter.imageWidthFactor = newValue;
+    edgeDetectionFilter.texelWidth = newValue;
 }
 
-- (CGFloat)imageWidthFactor;
+- (CGFloat)texelWidth;
 {
-    return edgeDetectionFilter.imageWidthFactor;
+    return edgeDetectionFilter.texelWidth;
 }
 
-- (void)setImageHeightFactor:(CGFloat)newValue;
+- (void)setTexelHeight:(CGFloat)newValue;
 {
-    edgeDetectionFilter.imageHeightFactor = newValue;
+    edgeDetectionFilter.texelHeight = newValue;
 }
 
-- (CGFloat)imageHeightFactor;
+- (CGFloat)texelHeight;
 {
-    return edgeDetectionFilter.imageHeightFactor;
+    return edgeDetectionFilter.texelHeight;
 }
 
 - (void)setThreshold:(CGFloat)newValue;

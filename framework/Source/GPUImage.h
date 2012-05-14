@@ -17,7 +17,7 @@
 
 // Filters
 #import "GPUImageFilter.h"
-#import "GPUImageRotationFilter.h"
+#import "GPUImageTwoInputFilter.h"
 #import "GPUImagePixellateFilter.h"
 #import "GPUImageSepiaFilter.h"
 #import "GPUImageColorInvertFilter.h"
@@ -79,3 +79,6 @@
 #import "GPUImageHarrisCornerDetectionFilter.h"
 #import "GPUImageAlphaBlendFilter.h"
 #import "GPUImageNonMaximumSuppressionFilter.h"
+#import "GPUImageRGBFilter.h"
+#import "GPUImageMedianFilter.h"
+#import "GPUImageBilateralFilter.h"

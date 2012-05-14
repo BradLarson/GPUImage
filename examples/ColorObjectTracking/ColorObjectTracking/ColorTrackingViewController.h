@@ -8,7 +8,7 @@ typedef enum { PASSTHROUGH_VIDEO, SIMPLE_THRESHOLDING, POSITION_THRESHOLDING, OB
     CALayer *trackingDot;
 
     GPUImageVideoCamera *videoCamera;
-    GPUImageFilter *rotationFilter, *thresholdFilter, *positionFilter;
+    GPUImageFilter *thresholdFilter, *positionFilter;
     GPUImageRawData *positionRawData, *videoRawData;
     GPUImageView *filteredVideoView;
     

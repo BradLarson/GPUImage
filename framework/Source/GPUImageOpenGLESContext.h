@@ -5,6 +5,10 @@
 #import <QuartzCore/QuartzCore.h>
 #import <CoreMedia/CoreMedia.h>
 
+#define GPUImageRotationSwapsWidthAndHeight(rotation) ((rotation) == kGPUImageRotateLeft || (rotation) == kGPUImageRotateRight || (rotation) == kGPUImageRotateRightFlipVertical)
+
+typedef enum { kGPUImageNoRotation, kGPUImageRotateLeft, kGPUImageRotateRight, kGPUImageFlipVertical, kGPUImageFlipHorizonal, kGPUImageRotateRightFlipVertical} GPUImageRotationMode;
+
 @interface GPUImageOpenGLESContext : NSObject
 {
     EAGLContext *_context;
@@ -16,6 +20,7 @@
 + (void)useImageProcessingContext;
 + (GLint)maximumTextureSizeForThisDevice;
 + (GLint)maximumTextureUnitsForThisDevice;
++ (CGSize)sizeThatFitsWithinATextureForSize:(CGSize)inputSize;
 
 - (void)presentBufferForDisplay;
 
@@ -28,7 +33,8 @@
 - (void)newFrameReadyAtTime:(CMTime)frameTime;
 - (void)setInputTexture:(GLuint)newInputTexture atIndex:(NSInteger)textureIndex;
 - (NSInteger)nextAvailableTextureIndex;
-- (void)setInputSize:(CGSize)newSize;
+- (void)setInputSize:(CGSize)newSize atIndex:(NSInteger)textureIndex;
+- (void)setInputRotation:(GPUImageRotationMode)newInputRotation atIndex:(NSInteger)textureIndex;
 - (CGSize)maximumOutputSize;
 - (void)endProcessing;
 - (BOOL)shouldIgnoreUpdatesToThisTarget;

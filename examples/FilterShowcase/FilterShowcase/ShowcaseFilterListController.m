@@ -65,6 +65,7 @@
 		case GPUIMAGE_CONTRAST: cell.textLabel.text = @"Contrast"; break;
 		case GPUIMAGE_BRIGHTNESS: cell.textLabel.text = @"Brightness"; break;
 		case GPUIMAGE_EXPOSURE: cell.textLabel.text = @"Exposure"; break;
+        case GPUIMAGE_RGB: cell.textLabel.text = @"RGB"; break;
 		case GPUIMAGE_SHARPEN: cell.textLabel.text = @"Sharpen"; break;
 		case GPUIMAGE_UNSHARPMASK: cell.textLabel.text = @"Unsharp mask"; break;
 		case GPUIMAGE_GAMMA: cell.textLabel.text = @"Gamma"; break;
@@ -115,10 +116,12 @@
 	    case GPUIMAGE_SOFTLIGHTBLEND: cell.textLabel.text = @"Soft light blend"; break;
         case GPUIMAGE_KUWAHARA: cell.textLabel.text = @"Kuwahara"; break;
         case GPUIMAGE_VIGNETTE: cell.textLabel.text = @"Vignette"; break;
-        case GPUIMAGE_GAUSSIAN: cell.textLabel.text = @"Gaussian Blur"; break;
-        case GPUIMAGE_FASTBLUR: cell.textLabel.text = @"Fast Blur"; break;
-        case GPUIMAGE_BOXBLUR: cell.textLabel.text = @"Box Blur"; break;
-        case GPUIMAGE_GAUSSIAN_SELECTIVE: cell.textLabel.text = @"Gaussian Selective Blur"; break;
+        case GPUIMAGE_GAUSSIAN: cell.textLabel.text = @"Gaussian blur"; break;
+        case GPUIMAGE_FASTBLUR: cell.textLabel.text = @"Fast blur"; break;
+        case GPUIMAGE_MEDIAN: cell.textLabel.text = @"Median (3x3)"; break;
+        case GPUIMAGE_BILATERAL: cell.textLabel.text = @"Bilateral blur"; break;
+        case GPUIMAGE_BOXBLUR: cell.textLabel.text = @"Box blur"; break;
+        case GPUIMAGE_GAUSSIAN_SELECTIVE: cell.textLabel.text = @"Gaussian selective blur"; break;
 		case GPUIMAGE_CUSTOM: cell.textLabel.text = @"Custom"; break;
         case GPUIMAGE_FILECONFIG: cell.textLabel.text = @"Filter Chain"; break;
         case GPUIMAGE_FILTERGROUP: cell.textLabel.text = @"Filter Group"; break;

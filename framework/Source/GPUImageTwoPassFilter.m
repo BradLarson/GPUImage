@@ -223,16 +223,8 @@
     
 	glUniform1i(secondFilterInputTextureUniform, 3);	
     
-    if (filterSourceTexture2 != 0)
-    {
-        glActiveTexture(GL_TEXTURE4);
-        glBindTexture(GL_TEXTURE_2D, filterSourceTexture2);
-        
-        glUniform1i(secondFilterInputTextureUniform2, 4);
-    }
-    
     glVertexAttribPointer(secondFilterPositionAttribute, 2, GL_FLOAT, 0, 0, vertices);
-	glVertexAttribPointer(secondFilterTextureCoordinateAttribute, 2, GL_FLOAT, 0, 0, textureCoordinates);
+	glVertexAttribPointer(secondFilterTextureCoordinateAttribute, 2, GL_FLOAT, 0, 0, [[self class] textureCoordinatesForRotation:kGPUImageNoRotation]);
     
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 }

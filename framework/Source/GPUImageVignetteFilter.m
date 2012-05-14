@@ -22,6 +22,9 @@ NSString *const kGPUImageVignetteFragmentShaderString = SHADER_STRING
 
 @synthesize x=_x, y=_y;
 
+#pragma mark -
+#pragma mark Initialization and teardown
+
 - (id)init;
 {
     if (!(self = [super initWithFragmentShaderFromString:kGPUImageVignetteFragmentShaderString]))
@@ -38,20 +41,46 @@ NSString *const kGPUImageVignetteFragmentShaderString = SHADER_STRING
     return self;
 }
 
-- (void) setX:(CGFloat)x {
+#pragma mark -
+#pragma mark Accessors
+
+- (void)setInputRotation:(GPUImageRotationMode)newInputRotation atIndex:(NSInteger)textureIndex;
+{
+    [super setInputRotation:newInputRotation atIndex:textureIndex];
+    [self setX:self.x];
+    [self setY:self.y];
+}
+
+- (void)setX:(CGFloat)x;
+{
     _x = x;
     
     [GPUImageOpenGLESContext useImageProcessingContext];
     [filterProgram use];
-    glUniform1f(xUniform, _x);
+    if (GPUImageRotationSwapsWidthAndHeight(inputRotation))
+    {
+        glUniform1f(yUniform, _x);
+    }
+    else
+    {
+        glUniform1f(xUniform, _x);
+    }
 }
 
-- (void) setY:(CGFloat)y {
+- (void)setY:(CGFloat)y;
+{
     _y = y;
     
     [GPUImageOpenGLESContext useImageProcessingContext];
     [filterProgram use];
-    glUniform1f(yUniform, _y);
+    if (GPUImageRotationSwapsWidthAndHeight(inputRotation))
+    {
+        glUniform1f(xUniform, _y);
+    }
+    else
+    {
+        glUniform1f(yUniform, _y);
+    }
 }
 
 @end

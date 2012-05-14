@@ -50,19 +50,18 @@
     [super viewDidLoad];
     
     stillCamera = [[GPUImageStillCamera alloc] init];
+//    stillCamera = [[GPUImageStillCamera alloc] initWithSessionPreset:AVCaptureSessionPreset640x480 cameraPosition:AVCaptureDevicePositionFront];
+    stillCamera.outputImageOrientation = UIInterfaceOrientationPortrait;
 //    filter = [[GPUImageGammaFilter alloc] init];
     filter = [[GPUImageSketchFilter alloc] init];
-    [(GPUImageSketchFilter *)filter setImageHeightFactor:1024.0];
-    [(GPUImageSketchFilter *)filter setImageWidthFactor:768.0];
+    [(GPUImageSketchFilter *)filter setTexelHeight:(1.0 / 1024.0)];
+    [(GPUImageSketchFilter *)filter setTexelWidth:(1.0 / 768.0)];
 //    filter = [[GPUImageSmoothToonFilter alloc] init];
 //    filter = [[GPUImageSepiaFilter alloc] init];
      	
 	[filter prepareForImageCapture];
     
-    GPUImageRotationFilter *rotationFilter = [[GPUImageRotationFilter alloc] initWithRotation:kGPUImageRotateRight];
-    
-    [stillCamera addTarget:rotationFilter];
-    [rotationFilter addTarget:filter];
+    [stillCamera addTarget:filter];
     GPUImageView *filterView = (GPUImageView *)self.view;
     [filter addTarget:filterView];
     
@@ -94,28 +93,15 @@
 {
     [photoCaptureButton setEnabled:NO];
     
-    [stillCamera capturePhotoProcessedUpToFilter:filter withCompletionHandler:^(UIImage *processedImage, NSError *error){
-
-        // Having both this and the asset library saving uses twice the memory sometimes
-//        NSData *dataForPNGFile = UIImageJPEGRepresentation(processedImage, 0.8);
-//        
-//        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-//        NSString *documentsDirectory = [paths objectAtIndex:0];
-//        
-//        NSError *error2 = nil;
-//        if (![dataForPNGFile writeToFile:[documentsDirectory stringByAppendingPathComponent:@"FilteredPhoto.jpg"] options:NSAtomicWrite error:&error2])
-//        {
-//            return;
-//        }
+    [stillCamera capturePhotoAsJPEGProcessedUpToFilter:filter withCompletionHandler:^(NSData *processedJPEG, NSError *error){
 
         // Save to assets library
         ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
-		
-        CGImageRef imageRef = [processedImage CGImage];
-        CGImageRetain(imageRef);
-		
-        [library writeImageToSavedPhotosAlbum:imageRef metadata:nil completionBlock:^(NSURL *assetURL, NSError *error2)
+//        report_memory(@"After asset library creation");
+        
+        [library writeImageDataToSavedPhotosAlbum:processedJPEG metadata:nil completionBlock:^(NSURL *assetURL, NSError *error2)
          {
+//             report_memory(@"After writing to library");
              if (error2) {
                  NSLog(@"ERROR: the image failed to be written");
              }
@@ -123,9 +109,8 @@
                  NSLog(@"PHOTO SAVED - assetURL: %@", assetURL);
              }
 			 
-   			 CGImageRelease(imageRef);
-
              runOnMainQueueWithoutDeadlocking(^{
+//                 report_memory(@"Operation completed");
                  [photoCaptureButton setEnabled:YES];
              });
          }];

@@ -1,15 +1,9 @@
-#import "GPUImageFilter.h"
+#import "GPUImage3x3TextureSamplingFilter.h"
 
-@interface GPUImageToonFilter : GPUImageFilter
+@interface GPUImageToonFilter : GPUImage3x3TextureSamplingFilter
 {
-    GLint imageWidthFactorUniform, imageHeightFactorUniform;
     GLint thresholdUniform, quantizationLevelsUniform;
-    BOOL hasOverriddenImageSizeFactor;
 }
-
-// The image width and height factors tweak the appearance of the edges. By default, they match the filter size in pixels
-@property(readwrite, nonatomic) CGFloat imageWidthFactor; 
-@property(readwrite, nonatomic) CGFloat imageHeightFactor; 
 
 // The threshold at which to apply the edges, default of 0.2
 @property(readwrite, nonatomic) CGFloat threshold; 

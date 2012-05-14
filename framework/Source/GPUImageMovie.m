@@ -210,11 +210,12 @@
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
         
         for (id<GPUImageInput> currentTarget in targets)
-        {
-            [currentTarget setInputSize:CGSizeMake(bufferWidth, bufferHeight)];
-            
+        {            
             NSInteger indexOfObject = [targets indexOfObject:currentTarget];
-            [currentTarget setInputTexture:outputTexture atIndex:[[targetTextureIndices objectAtIndex:indexOfObject] integerValue]];
+            NSInteger targetTextureIndex = [[targetTextureIndices objectAtIndex:indexOfObject] integerValue];
+            
+            [currentTarget setInputSize:CGSizeMake(bufferWidth, bufferHeight) atIndex:targetTextureIndex];
+            [currentTarget setInputTexture:outputTexture atIndex:targetTextureIndex];
             
             [currentTarget newFrameReadyAtTime:currentSampleTime];
         }
@@ -238,7 +239,10 @@
         CGSize currentSize = CGSizeMake(bufferWidth, bufferHeight);
         for (id<GPUImageInput> currentTarget in targets)
         {
-            [currentTarget setInputSize:currentSize];
+            NSInteger indexOfObject = [targets indexOfObject:currentTarget];
+            NSInteger targetTextureIndex = [[targetTextureIndices objectAtIndex:indexOfObject] integerValue];
+
+            [currentTarget setInputSize:currentSize atIndex:targetTextureIndex];
             [currentTarget newFrameReadyAtTime:currentSampleTime];
         }
         CVPixelBufferUnlockBaseAddress(movieFrame, 0);

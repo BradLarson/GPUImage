@@ -73,7 +73,8 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
     startTime = kCMTimeInvalid;
     _encodingLiveVideo = YES;
     previousFrameTime = kCMTimeNegativeInfinity;
-    
+    inputRotation = kGPUImageNoRotation;
+
     [GPUImageOpenGLESContext useImageProcessingContext];
     
     if ([GPUImageOpenGLESContext supportsFastTextureUpload])
@@ -488,7 +489,12 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
     inputTextureForMovieRendering = newInputTexture;
 }
 
-- (void)setInputSize:(CGSize)newSize;
+- (void)setInputRotation:(GPUImageRotationMode)newInputRotation atIndex:(NSInteger)textureIndex;
+{
+    inputRotation = newInputRotation;
+}
+
+- (void)setInputSize:(CGSize)newSize atIndex:(NSInteger)textureIndex;
 {
 }
 

@@ -93,8 +93,16 @@ NSString *const kGPUImageFastBlurFragmentShaderString = SHADER_STRING
 {
     [GPUImageOpenGLESContext useImageProcessingContext];
     [filterProgram use];
-    glUniform1f(verticalPassTexelWidthOffsetUniform, 0.0);
-    glUniform1f(verticalPassTexelHeightOffsetUniform, 1.0 / filterFrameSize.height);
+    if (GPUImageRotationSwapsWidthAndHeight(inputRotation))
+    {
+        glUniform1f(verticalPassTexelWidthOffsetUniform, 1.0 / filterFrameSize.height);
+        glUniform1f(verticalPassTexelHeightOffsetUniform, 0.0);
+    }
+    else
+    {
+        glUniform1f(verticalPassTexelWidthOffsetUniform, 0.0);
+        glUniform1f(verticalPassTexelHeightOffsetUniform, 1.0 / filterFrameSize.height);
+    }
 
     [secondFilterProgram use];
     glUniform1f(horizontalPassTexelWidthOffsetUniform, 1.0 / filterFrameSize.width);
@@ -110,7 +118,7 @@ NSString *const kGPUImageFastBlurFragmentShaderString = SHADER_STRING
     
     for (NSUInteger currentAdditionalBlurPass = 1; currentAdditionalBlurPass < _blurPasses; currentAdditionalBlurPass++)
     {
-        [super renderToTextureWithVertices:vertices textureCoordinates:textureCoordinates sourceTexture:secondFilterOutputTexture];
+        [super renderToTextureWithVertices:vertices textureCoordinates:[[self class] textureCoordinatesForRotation:kGPUImageNoRotation] sourceTexture:secondFilterOutputTexture];
     }
 }
 

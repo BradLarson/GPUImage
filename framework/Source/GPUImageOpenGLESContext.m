@@ -37,6 +37,29 @@
     return maxTextureUnits;
 }
 
++ (CGSize)sizeThatFitsWithinATextureForSize:(CGSize)inputSize;
+{
+    GLint maxTextureSize = [self maximumTextureSizeForThisDevice]; 
+    if ( (inputSize.width < maxTextureSize) && (inputSize.height < maxTextureSize) )
+    {
+        return inputSize;
+    }
+    
+    CGSize adjustedSize;
+    if (inputSize.width > inputSize.height)
+    {
+        adjustedSize.width = (CGFloat)maxTextureSize;
+        adjustedSize.height = ((CGFloat)maxTextureSize / inputSize.width) * inputSize.height;
+    }
+    else
+    {
+        adjustedSize.height = (CGFloat)maxTextureSize;
+        adjustedSize.width = ((CGFloat)maxTextureSize / inputSize.height) * inputSize.width;
+    }
+
+    return adjustedSize;
+}
+
 - (void)presentBufferForDisplay;
 {
     [_context presentRenderbuffer:GL_RENDERBUFFER];

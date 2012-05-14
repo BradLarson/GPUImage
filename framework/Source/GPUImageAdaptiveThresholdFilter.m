@@ -1,23 +1,26 @@
 #import "GPUImageAdaptiveThresholdFilter.h"
 #import "GPUImageFilter.h"
+#import "GPUImageTwoInputFilter.h"
 #import "GPUImageGrayscaleFilter.h"
 #import "GPUImageBoxBlurFilter.h"
 
 NSString *const kGPUImageAdaptiveThresholdFragmentShaderString = SHADER_STRING
 ( 
  varying highp vec2 textureCoordinate;
+ varying highp vec2 textureCoordinate2;
  
  uniform sampler2D inputImageTexture;
  uniform sampler2D inputImageTexture2; 
  
  void main()
  {
-     highp vec4 textureColor = texture2D(inputImageTexture, textureCoordinate);
-     highp float localLuminance = texture2D(inputImageTexture2, textureCoordinate).r;
-     highp float thresholdResult = step(localLuminance - 0.05, textureColor.r);
+     highp float blurredInput = texture2D(inputImageTexture, textureCoordinate).r;
+     highp float localLuminance = texture2D(inputImageTexture2, textureCoordinate2).r;
+     highp float thresholdResult = step(blurredInput - 0.05, localLuminance);
      
-     gl_FragColor = vec4(vec3(thresholdResult), textureColor.w);
+     gl_FragColor = vec4(vec3(thresholdResult), 1.0);
 //     gl_FragColor = vec4(localLuminance, textureColor.r, 0.0, textureColor.w);
+//     gl_FragColor = vec4(localLuminance, localLuminance, localLuminance, 1.0);
  }
  );
 
@@ -39,7 +42,7 @@ NSString *const kGPUImageAdaptiveThresholdFragmentShaderString = SHADER_STRING
     [self addFilter:boxBlurFilter];
     
     // Third pass: compare the blurred background luminance to the local value
-    GPUImageFilter *adaptiveThresholdFilter = [[GPUImageFilter alloc] initWithFragmentShaderFromString:kGPUImageAdaptiveThresholdFragmentShaderString];
+    GPUImageFilter *adaptiveThresholdFilter = [[GPUImageTwoInputFilter alloc] initWithFragmentShaderFromString:kGPUImageAdaptiveThresholdFragmentShaderString];
     [self addFilter:adaptiveThresholdFilter];
     
     [luminanceFilter addTarget:boxBlurFilter];

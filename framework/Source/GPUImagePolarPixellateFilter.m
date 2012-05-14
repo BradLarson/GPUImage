@@ -67,6 +67,11 @@ NSString *const kGPUImagePolarPixellateFragmentShaderString = SHADER_STRING
 #pragma mark -
 #pragma mark Accessors
 
+- (void)setInputRotation:(GPUImageRotationMode)newInputRotation atIndex:(NSInteger)textureIndex;
+{
+    [super setInputRotation:newInputRotation atIndex:textureIndex];
+    [self setCenter:self.center];
+}
 
 - (void)setPixelSize:(CGSize)pixelSize 
 {
@@ -87,9 +92,11 @@ NSString *const kGPUImagePolarPixellateFragmentShaderString = SHADER_STRING
     [GPUImageOpenGLESContext useImageProcessingContext];
     [filterProgram use];
     
+    CGPoint rotatedPoint = [self rotatedPoint:_center forRotation:inputRotation];
+    
     GLfloat centerPosition[2];
-    centerPosition[0] = _center.x;
-    centerPosition[1] = _center.y;
+    centerPosition[0] = rotatedPoint.x;
+    centerPosition[1] = rotatedPoint.y;
     
     glUniform2fv(centerUniform, 1, centerPosition);
 }

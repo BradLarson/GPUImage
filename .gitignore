@@ -1,5 +1,6 @@
 # Exclude the build directory
 build/*
+examples/FilterShowcase/build*
  
 # Exclude temp nibs and swap files
 *~.nib
@@ -17,3 +18,7 @@ build/*
 *.pbxuser
 *.xcworkspace
 xcuserdata
+
+# Documentation
+documentation/*
+

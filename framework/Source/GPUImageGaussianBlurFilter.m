@@ -75,17 +75,14 @@ NSString *const kGPUImageGaussianBlurFragmentShaderString = SHADER_STRING
     }
     
     horizontalBlurSizeUniform = [filterProgram uniformIndex:@"blurSize"];
-    horizontalGaussianArrayUniform = [filterProgram uniformIndex:@"gaussianValues"];
     horizontalPassTexelWidthOffsetUniform = [filterProgram uniformIndex:@"texelWidthOffset"];
     horizontalPassTexelHeightOffsetUniform = [filterProgram uniformIndex:@"texelHeightOffset"];
 
     verticalBlurSizeUniform = [secondFilterProgram uniformIndex:@"blurSize"];
-    verticalGaussianArrayUniform = [secondFilterProgram uniformIndex:@"gaussianValues"];
     verticalPassTexelWidthOffsetUniform = [secondFilterProgram uniformIndex:@"texelWidthOffset"];
     verticalPassTexelHeightOffsetUniform = [secondFilterProgram uniformIndex:@"texelHeightOffset"];
 
     self.blurSize = 1.0;
-    [self setGaussianValues];
     
     return self;
 }
@@ -102,28 +99,27 @@ NSString *const kGPUImageGaussianBlurFragmentShaderString = SHADER_STRING
 {
     [GPUImageOpenGLESContext useImageProcessingContext];
     [filterProgram use];
-    glUniform1f(horizontalPassTexelWidthOffsetUniform, 1.0 / filterFrameSize.width);
-    glUniform1f(horizontalPassTexelHeightOffsetUniform, 0.0);
+
+    // The first pass through the framebuffer may rotate the inbound image, so need to account for that by changing up the kernel ordering for that pass
+    if (GPUImageRotationSwapsWidthAndHeight(inputRotation))
+    {
+        glUniform1f(horizontalPassTexelWidthOffsetUniform, 0.0);
+        glUniform1f(horizontalPassTexelHeightOffsetUniform, 1.0 / filterFrameSize.width);
+    }
+    else
+    {
+        glUniform1f(horizontalPassTexelWidthOffsetUniform, 1.0 / filterFrameSize.width);
+        glUniform1f(horizontalPassTexelHeightOffsetUniform, 0.0);
+    }
 
     [secondFilterProgram use];
+    
     glUniform1f(verticalPassTexelWidthOffsetUniform, 0.0);
     glUniform1f(verticalPassTexelHeightOffsetUniform, 1.0 / filterFrameSize.height);
 }
 
 
 #pragma mark Getters and Setters
-
-- (void) setGaussianValues {
-    GLsizei gaussianLength = 9;
-    GLfloat gaussians[] = { 0.05, 0.09, 0.12, 0.15, 0.18, 0.15, 0.12, 0.09, 0.05 };
-    
-    [GPUImageOpenGLESContext useImageProcessingContext];
-    [filterProgram use];
-    glUniform1fv(horizontalGaussianArrayUniform, gaussianLength, gaussians);
-    
-    [secondFilterProgram use];
-    glUniform1fv(verticalGaussianArrayUniform, gaussianLength, gaussians);
-}
 
 - (void) setBlurSize:(CGFloat)blurSize {
     _blurSize = blurSize;
