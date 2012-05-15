@@ -430,7 +430,12 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
 }
 
 - (void)informTargetsAboutNewFrameAtTime:(CMTime)frameTime;
-{    
+{
+    if (self.frameProcessingCompletionBlock != NULL)
+    {
+        self.frameProcessingCompletionBlock(self);
+    }
+    
     for (id<GPUImageInput> currentTarget in targets)
     {
         if (currentTarget != self.targetToIgnoreForUpdates)

@@ -43,6 +43,7 @@ void report_memory(NSString *tag)
 @synthesize shouldIgnoreUpdatesToThisTarget = _shouldIgnoreUpdatesToThisTarget;
 @synthesize audioEncodingTarget = _audioEncodingTarget;
 @synthesize targetToIgnoreForUpdates = _targetToIgnoreForUpdates;
+@synthesize frameProcessingCompletionBlock = _frameProcessingCompletionBlock;
 
 #pragma mark -
 #pragma mark Initialization and teardown

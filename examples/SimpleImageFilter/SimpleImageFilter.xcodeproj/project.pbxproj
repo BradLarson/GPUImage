@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		BC7CC64F1560909000468085 /* 71yih.png in Resources */ = {isa = PBXBuildFile; fileRef = BC7CC64E1560909000468085 /* 71yih.png */; };
 		BCB5E7ED14E605A900701302 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCB5E7EC14E605A900701302 /* UIKit.framework */; };
 		BCB5E7EF14E605A900701302 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCB5E7EE14E605A900701302 /* Foundation.framework */; };
 		BCB5E7F114E605A900701302 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCB5E7F014E605A900701302 /* CoreGraphics.framework */; };
@@ -49,6 +50,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		BC7CC64E1560909000468085 /* 71yih.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 71yih.png; sourceTree = "<group>"; };
 		BCB5E7E814E605A900701302 /* SimpleImageFilter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SimpleImageFilter.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BCB5E7EC14E605A900701302 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		BCB5E7EE14E605A900701302 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -139,6 +141,7 @@
 		BCB5E7F314E605A900701302 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				BC7CC64E1560909000468085 /* 71yih.png */,
 				BCB5E86414E6F1D700701302 /* Lambeau.jpg */,
 				BCB5E86214E6F05A00701302 /* WID-small.jpg */,
 				BCB5E7F414E605A900701302 /* SimpleImageFilter-Info.plist */,
@@ -236,6 +239,7 @@
 				BCB5E7F714E605A900701302 /* InfoPlist.strings in Resources */,
 				BCB5E86314E6F05A00701302 /* WID-small.jpg in Resources */,
 				BCB5E86514E6F1D700701302 /* Lambeau.jpg in Resources */,
+				BC7CC64F1560909000468085 /* 71yih.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

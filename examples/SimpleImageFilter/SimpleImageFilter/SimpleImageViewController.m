@@ -59,26 +59,39 @@
 - (void)setupImageFilteringToDisk;
 {
     // Set up a manual image filtering chain
-    UIImage *inputImage = [UIImage imageNamed:@"Lambeau.jpg"];
+//    UIImage *inputImage = [UIImage imageNamed:@"Lambeau.jpg"];
+    UIImage *inputImage = [UIImage imageNamed:@"71yih.png"];
 
     GPUImagePicture *stillImageSource = [[GPUImagePicture alloc] initWithImage:inputImage];
-    GPUImageSepiaFilter *stillImageFilter = [[GPUImageSepiaFilter alloc] init];
-    GPUImageVignetteFilter *vignetteImageFilter = [[GPUImageVignetteFilter alloc] init];
-    vignetteImageFilter.x = 0.6;
-    vignetteImageFilter.y = 0.4;
+//    GPUImageSepiaFilter *stillImageFilter = [[GPUImageSepiaFilter alloc] init];
+//    GPUImageVignetteFilter *vignetteImageFilter = [[GPUImageVignetteFilter alloc] init];
+//    vignetteImageFilter.x = 0.6;
+//    vignetteImageFilter.y = 0.4;
     
     // There's a problem with the Kuwahara filter where it doesn't finish rendering before the image is extracted from it.
     // It looks like it only gets through certain tiles before glReadPixels() is called. Odd.
 //    GPUImageKuwaharaFilter *stillImageFilter = [[GPUImageKuwaharaFilter alloc] init];
 //    stillImageFilter.radius = 9;
     
-    [stillImageSource addTarget:stillImageFilter];
-    [stillImageFilter addTarget:vignetteImageFilter];
-    [vignetteImageFilter prepareForImageCapture];
+//    [stillImageSource addTarget:stillImageFilter];
+//    [stillImageFilter addTarget:vignetteImageFilter];
+//    [vignetteImageFilter prepareForImageCapture];
+
+    GPUImageHarrisCornerDetectionFilter *stillImageFilter = [[GPUImageHarrisCornerDetectionFilter alloc] init];
+    [stillImageFilter setCornersDetectedBlock:^(GLfloat* cornerArray, NSUInteger cornersDetected) {
+        for (unsigned int currentPointIndex = 0; currentPointIndex < cornersDetected; currentPointIndex++)
+        {
+            NSLog(@"Current point: %f, %f", cornerArray[currentPointIndex * 2], cornerArray[(currentPointIndex * 2) + 1]);
+        }
+    }];
     
+    [stillImageFilter prepareForImageCapture];
+    [stillImageSource addTarget:stillImageFilter];
+
     [stillImageSource processImage];
     
-    UIImage *currentFilteredImage = [vignetteImageFilter imageFromCurrentlyProcessedOutput];
+//    UIImage *currentFilteredImage = [vignetteImageFilter imageFromCurrentlyProcessedOutput];
+    UIImage *currentFilteredImage = [stillImageFilter imageFromCurrentlyProcessedOutput];
         
     // Do a simpler image filtering
     GPUImageSketchFilter *stillImageFilter2 = [[GPUImageSketchFilter alloc] init];

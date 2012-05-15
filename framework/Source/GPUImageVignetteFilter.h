@@ -2,11 +2,13 @@
 
 @interface GPUImageVignetteFilter : GPUImageFilter 
 {
-    GLint xUniform, yUniform;
+    GLint vignetteStartUniform, vignetteEndUniform;
 }
 
-// The directional intensity of the vignette effect, with a default of x = 0.75, y = 0.5
-@property (nonatomic, readwrite) CGFloat x;
-@property (nonatomic, readwrite) CGFloat y;
+// The normalized distance from the center where the vignette effect starts. Default of 0.5.
+@property (nonatomic, readwrite) CGFloat vignetteStart;
+
+// The normalized distance from the center where the vignette effect ends. Default of 0.75.
+@property (nonatomic, readwrite) CGFloat vignetteEnd;
 
 @end

@@ -5,22 +5,23 @@ NSString *const kGPUImageVignetteFragmentShaderString = SHADER_STRING
  uniform sampler2D inputImageTexture;
  varying highp vec2 textureCoordinate;
  
- uniform highp float vignetteX;
- uniform highp float vignetteY;
+ uniform highp float vignetteStart;
+ uniform highp float vignetteEnd;
  
  void main()
-{
-    lowp vec3 rgb = texture2D(inputImageTexture, textureCoordinate).xyz;
+ {
+    lowp vec3 rgb = texture2D(inputImageTexture, textureCoordinate).rgb;
     lowp float d = distance(textureCoordinate, vec2(0.5,0.5));
-    rgb *= smoothstep(vignetteX, vignetteY, d);
+    rgb *= smoothstep(vignetteEnd, vignetteStart, d);
     gl_FragColor = vec4(vec3(rgb),1.0);
-}
- );
+ }
+);
 
 
 @implementation GPUImageVignetteFilter
 
-@synthesize x=_x, y=_y;
+@synthesize vignetteStart =_vignetteStart;
+@synthesize vignetteEnd = _vignetteEnd;
 
 #pragma mark -
 #pragma mark Initialization and teardown
@@ -32,11 +33,11 @@ NSString *const kGPUImageVignetteFragmentShaderString = SHADER_STRING
 		return nil;
     }
     
-    xUniform = [filterProgram uniformIndex:@"vignetteX"];
-    yUniform = [filterProgram uniformIndex:@"vignetteY"];
+    vignetteStartUniform = [filterProgram uniformIndex:@"vignetteStart"];
+    vignetteEndUniform = [filterProgram uniformIndex:@"vignetteEnd"];
     
-    self.x = 0.75;
-    self.y = 0.50;
+    self.vignetteStart = 0.3;
+    self.vignetteEnd = 0.75;
     
     return self;
 }
@@ -44,43 +45,22 @@ NSString *const kGPUImageVignetteFragmentShaderString = SHADER_STRING
 #pragma mark -
 #pragma mark Accessors
 
-- (void)setInputRotation:(GPUImageRotationMode)newInputRotation atIndex:(NSInteger)textureIndex;
+- (void)setVignetteStart:(CGFloat)newValue;
 {
-    [super setInputRotation:newInputRotation atIndex:textureIndex];
-    [self setX:self.x];
-    [self setY:self.y];
-}
-
-- (void)setX:(CGFloat)x;
-{
-    _x = x;
+    _vignetteStart = newValue;
     
     [GPUImageOpenGLESContext useImageProcessingContext];
     [filterProgram use];
-    if (GPUImageRotationSwapsWidthAndHeight(inputRotation))
-    {
-        glUniform1f(yUniform, _x);
-    }
-    else
-    {
-        glUniform1f(xUniform, _x);
-    }
+    glUniform1f(vignetteStartUniform, _vignetteStart);
 }
 
-- (void)setY:(CGFloat)y;
+- (void)setVignetteEnd:(CGFloat)newValue;
 {
-    _y = y;
+    _vignetteEnd = newValue;
     
     [GPUImageOpenGLESContext useImageProcessingContext];
     [filterProgram use];
-    if (GPUImageRotationSwapsWidthAndHeight(inputRotation))
-    {
-        glUniform1f(xUniform, _y);
-    }
-    else
-    {
-        glUniform1f(yUniform, _y);
-    }
+    glUniform1f(vignetteEndUniform, _vignetteEnd);
 }
 
 @end
