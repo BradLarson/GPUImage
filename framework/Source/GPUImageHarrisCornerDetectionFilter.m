@@ -133,12 +133,11 @@ NSString *const kGPUImageSimpleThresholdFragmentShaderString = SHADER_STRING
 {
     CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
 
-    GLfloat *cornersArray;
     NSUInteger numberOfCorners = 0;
     CGSize imageSize = simpleThresholdFilter.outputFrameSize;
     
     GLubyte *rawImagePixels = (GLubyte *)malloc(imageSize.width * imageSize.height * 4);
-    cornersArray = calloc(256 * 2, sizeof(GLfloat));
+    GLfloat *cornersArray = calloc(256 * 2, sizeof(GLfloat));
     
     glReadPixels(0, 0, (int)imageSize.width, (int)imageSize.height, GL_RGBA, GL_UNSIGNED_BYTE, rawImagePixels);
 
