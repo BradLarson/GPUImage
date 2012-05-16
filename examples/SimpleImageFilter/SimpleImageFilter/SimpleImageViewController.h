@@ -5,6 +5,8 @@
 {
     GPUImagePicture *sourcePicture;
     GPUImageFilter *sepiaFilter, *sepiaFilter2;
+    GPUImageCrosshairGenerator *crosshairGenerator;
+    GPUImageAlphaBlendFilter *blendFilter;
 }
 
 // Image filtering

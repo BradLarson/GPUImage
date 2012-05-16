@@ -28,16 +28,18 @@ NSString *const kGPUImageNonMaximumSuppressionFragmentShaderString = SHADER_STRI
      lowp float topRightColor = texture2D(inputImageTexture, topRightTextureCoordinate).r;
      lowp float topLeftColor = texture2D(inputImageTexture, topLeftTextureCoordinate).r;
      
-     lowp float maxValue = max(centerColor.r, bottomColor);
-     maxValue = max(maxValue, bottomLeftColor);
-     maxValue = max(maxValue, bottomRightColor);
-     maxValue = max(maxValue, leftColor);
-     maxValue = max(maxValue, rightColor);
-     maxValue = max(maxValue, topColor);
-     maxValue = max(maxValue, topRightColor);
-     maxValue = max(maxValue, topLeftColor);
+     // Use a tiebreaker for pixels to the left and immediately above this one
+     lowp float multiplier = 1.0 - step(centerColor.r, topColor);
+     multiplier = multiplier * 1.0 - step(centerColor.r, topLeftColor);
+     multiplier = multiplier * 1.0 - step(centerColor.r, leftColor);
+     multiplier = multiplier * 1.0 - step(centerColor.r, bottomLeftColor);
      
-     gl_FragColor = vec4((centerColor.rgb * step(maxValue, centerColor.r)), 1.0);
+     lowp float maxValue = max(centerColor.r, bottomColor);
+     maxValue = max(maxValue, bottomRightColor);
+     maxValue = max(maxValue, rightColor);
+     maxValue = max(maxValue, topRightColor);
+     
+     gl_FragColor = vec4((centerColor.rgb * step(maxValue, centerColor.r) * multiplier), 1.0);
  }
 );
 

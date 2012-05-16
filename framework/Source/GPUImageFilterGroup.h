@@ -9,6 +9,7 @@
 
 @property(readwrite, nonatomic, strong) GPUImageOutput<GPUImageInput> *terminalFilter;
 @property(readwrite, nonatomic, strong) NSArray *initialFilters;
+@property(readwrite, nonatomic, strong) GPUImageOutput<GPUImageInput> *inputFilterToIgnoreForUpdates; 
 
 // Filter management
 - (void)addFilter:(GPUImageOutput<GPUImageInput> *)newFilter;

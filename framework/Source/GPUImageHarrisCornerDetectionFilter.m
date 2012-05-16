@@ -56,7 +56,8 @@ NSString *const kGPUImageSimpleThresholdFragmentShaderString = SHADER_STRING
 
      lowp float thresholdValue = step(threshold, intensity);
      
-     gl_FragColor = vec4(thresholdValue, 0.0, 0.0, thresholdValue);
+//     gl_FragColor = vec4(thresholdValue, 0.0, 0.0, thresholdValue);
+     gl_FragColor = vec4(thresholdValue, 0.0, 0.0, 1.0);
 //     gl_FragColor = vec4(intensity, intensity, intensity, 1.0);
 //     gl_FragColor = vec4(intensity, 0.0, 0.0, intensity);
  }
@@ -73,9 +74,6 @@ NSString *const kGPUImageSimpleThresholdFragmentShaderString = SHADER_STRING
     {
 		return nil;
     }
-
-//    preblurFilter = [[GPUImageFastBlurFilter alloc] init];
-//    [self addFilter:preblurFilter];
 
     // First pass: reduce to luminance and take the derivative of the luminance texture
     derivativeFilter = [[GPUImageXYDerivativeFilter alloc] init];
@@ -103,21 +101,18 @@ NSString *const kGPUImageSimpleThresholdFragmentShaderString = SHADER_STRING
     __unsafe_unretained GPUImageHarrisCornerDetectionFilter *weakSelf = self;
     
     [simpleThresholdFilter setFrameProcessingCompletionBlock:^(GPUImageOutput *filter) {
-        NSLog(@"Frame processing completed for filter: %@", filter);
         [weakSelf extractCornerLocationsFromImage];
     }];
     
-//    [preblurFilter addTarget:luminanceFilter];
     [derivativeFilter addTarget:blurFilter];    
     [blurFilter addTarget:harrisCornerDetectionFilter];
     [harrisCornerDetectionFilter addTarget:nonMaximumSuppressionFilter];
     [nonMaximumSuppressionFilter addTarget:simpleThresholdFilter];
-//    [harrisCornerDetectionFilter addTarget:simpleThresholdFilter];
     
 //    self.initialFilters = [NSArray arrayWithObjects:preblurFilter, nil];
     self.initialFilters = [NSArray arrayWithObjects:derivativeFilter, nil];
-//    self.terminalFilter = nonMaximumSuppressionFilter;
 //    self.terminalFilter = harrisCornerDetectionFilter;
+//    self.terminalFilter = nonMaximumSuppressionFilter;
     self.terminalFilter = simpleThresholdFilter;
     
 //    self.intensity = 1.0;
@@ -144,13 +139,17 @@ NSString *const kGPUImageSimpleThresholdFragmentShaderString = SHADER_STRING
     for (unsigned int yCoordinate = 0; yCoordinate < imageSize.height; yCoordinate++)
     {
         for (unsigned int xCoordinate = 0; xCoordinate < imageSize.width; xCoordinate++)
-        {
+        {            
             GLubyte redByte = rawImagePixels[(yCoordinate * (int)imageSize.width + xCoordinate) * 4];
             if (redByte > 100)
             {
                 cornersArray[numberOfCorners * 2] = (CGFloat)xCoordinate / imageSize.width;
-                cornersArray[numberOfCorners * 2 + 1] = (CGFloat)yCoordinate / imageSize.height;
+                cornersArray[numberOfCorners * 2 + 1] = (CGFloat)(yCoordinate + 1) / imageSize.height;
                 numberOfCorners++;
+                if (numberOfCorners > 255)
+                {
+                    numberOfCorners = 255;
+                }
             }
         }
     }

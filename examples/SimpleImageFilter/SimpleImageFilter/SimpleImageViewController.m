@@ -78,20 +78,32 @@
 //    [vignetteImageFilter prepareForImageCapture];
 
     GPUImageHarrisCornerDetectionFilter *stillImageFilter = [[GPUImageHarrisCornerDetectionFilter alloc] init];
+    crosshairGenerator = [[GPUImageCrosshairGenerator alloc] init];
+    [crosshairGenerator forceProcessingAtSize:[stillImageSource outputImageSize]];
+    
     [stillImageFilter setCornersDetectedBlock:^(GLfloat* cornerArray, NSUInteger cornersDetected) {
-        for (unsigned int currentPointIndex = 0; currentPointIndex < cornersDetected; currentPointIndex++)
-        {
-            NSLog(@"Current point: %f, %f", cornerArray[currentPointIndex * 2], cornerArray[(currentPointIndex * 2) + 1]);
-        }
+        [crosshairGenerator renderCrosshairsFromArray:cornerArray count:cornersDetected];
     }];
     
-    [stillImageFilter prepareForImageCapture];
+//    [stillImageFilter prepareForImageCapture];
     [stillImageSource addTarget:stillImageFilter];
+    
+    blendFilter = [[GPUImageAlphaBlendFilter alloc] init];
+    blendFilter.mix = 0.75;            
+    [stillImageSource addTarget:blendFilter];
+//    [stillImageFilter addTarget:blendFilter];
+//    stillImageFilter.targetToIgnoreForUpdates = blendFilter;
+  
+    [crosshairGenerator addTarget:blendFilter];
+    stillImageSource.targetToIgnoreForUpdates = blendFilter; // Avoid double-updating the blend
 
+    [blendFilter prepareForImageCapture];
     [stillImageSource processImage];
     
 //    UIImage *currentFilteredImage = [vignetteImageFilter imageFromCurrentlyProcessedOutput];
-    UIImage *currentFilteredImage = [stillImageFilter imageFromCurrentlyProcessedOutput];
+//    UIImage *currentFilteredImage = [stillImageFilter imageFromCurrentlyProcessedOutput];
+//    UIImage *currentFilteredImage = [crosshairGenerator imageFromCurrentlyProcessedOutput];
+    UIImage *currentFilteredImage = [blendFilter imageFromCurrentlyProcessedOutput];
         
     // Do a simpler image filtering
     GPUImageSketchFilter *stillImageFilter2 = [[GPUImageSketchFilter alloc] init];
