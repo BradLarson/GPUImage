@@ -315,8 +315,12 @@
         case GPUIMAGE_HARRISCORNERDETECTION:
         {
             self.title = @"Harris Corner Detection";
-            self.filterSettingsSlider.hidden = YES;
+            self.filterSettingsSlider.hidden = NO;
             
+            [self.filterSettingsSlider setMinimumValue:0.1];
+            [self.filterSettingsSlider setMaximumValue:0.9];
+            [self.filterSettingsSlider setValue:0.2];
+
             filter = [[GPUImageHarrisCornerDetectionFilter alloc] init];
         }; break;
         case GPUIMAGE_PREWITTEDGEDETECTION:
@@ -771,12 +775,25 @@
         }
         else if (filterType == GPUIMAGE_HARRISCORNERDETECTION)
         {
-            GPUImageAlphaBlendFilter *blendFilter = [[GPUImageAlphaBlendFilter alloc] init];
-
-            [videoCamera addTarget:blendFilter];
-            [filter addTarget:blendFilter];
-            videoCamera.targetToIgnoreForUpdates = blendFilter; // Avoid double-updating the blend
+            GPUImageCrosshairGenerator *crosshairGenerator = [[GPUImageCrosshairGenerator alloc] init];
+            crosshairGenerator.crosshairWidth = 15.0;
+            [crosshairGenerator forceProcessingAtSize:CGSizeMake(480.0, 640.0)];
             
+            [(GPUImageHarrisCornerDetectionFilter *)filter setCornersDetectedBlock:^(GLfloat* cornerArray, NSUInteger cornersDetected) {
+                [crosshairGenerator renderCrosshairsFromArray:cornerArray count:cornersDetected];
+            }];
+
+            GPUImageAlphaBlendFilter *blendFilter = [[GPUImageAlphaBlendFilter alloc] init];
+//            [videoCamera addTarget:blendFilter];
+            GPUImageGammaFilter *gammaFilter = [[GPUImageGammaFilter alloc] init];
+            [videoCamera addTarget:gammaFilter];
+            [gammaFilter addTarget:blendFilter];
+            gammaFilter.targetToIgnoreForUpdates = blendFilter;
+
+            [crosshairGenerator addTarget:blendFilter];
+//            videoCamera.targetToIgnoreForUpdates = blendFilter; // Avoid double-updating the blend
+            
+//            [crosshairGenerator addTarget:filterView];
             [blendFilter addTarget:filterView];
         }
         else
@@ -819,6 +836,7 @@
         case GPUIMAGE_EMBOSS: [(GPUImageEmbossFilter *)filter setIntensity:[(UISlider *)sender value]]; break;
         case GPUIMAGE_CANNYEDGEDETECTION: [(GPUImageCannyEdgeDetectionFilter *)filter setBlurSize:[(UISlider*)sender value]]; break;
 //        case GPUIMAGE_CANNYEDGEDETECTION: [(GPUImageCannyEdgeDetectionFilter *)filter setThreshold:[(UISlider*)sender value]]; break;
+        case GPUIMAGE_HARRISCORNERDETECTION: [(GPUImageHarrisCornerDetectionFilter *)filter setThreshold:[(UISlider*)sender value]]; break;
         case GPUIMAGE_SMOOTHTOON: [(GPUImageSmoothToonFilter *)filter setBlurSize:[(UISlider*)sender value]]; break;
 //        case GPUIMAGE_BULGE: [(GPUImageBulgeDistortionFilter *)filter setRadius:[(UISlider *)sender value]]; break;
         case GPUIMAGE_BULGE: [(GPUImageBulgeDistortionFilter *)filter setScale:[(UISlider *)sender value]]; break;

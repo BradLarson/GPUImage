@@ -59,51 +59,25 @@
 - (void)setupImageFilteringToDisk;
 {
     // Set up a manual image filtering chain
-//    UIImage *inputImage = [UIImage imageNamed:@"Lambeau.jpg"];
-    UIImage *inputImage = [UIImage imageNamed:@"71yih.png"];
+    UIImage *inputImage = [UIImage imageNamed:@"Lambeau.jpg"];
 
     GPUImagePicture *stillImageSource = [[GPUImagePicture alloc] initWithImage:inputImage];
-//    GPUImageSepiaFilter *stillImageFilter = [[GPUImageSepiaFilter alloc] init];
-//    GPUImageVignetteFilter *vignetteImageFilter = [[GPUImageVignetteFilter alloc] init];
-//    vignetteImageFilter.x = 0.6;
-//    vignetteImageFilter.y = 0.4;
+    GPUImageSepiaFilter *stillImageFilter = [[GPUImageSepiaFilter alloc] init];
+    GPUImageVignetteFilter *vignetteImageFilter = [[GPUImageVignetteFilter alloc] init];
+    vignetteImageFilter.vignetteEnd = 0.6;
+    vignetteImageFilter.vignetteStart = 0.4;
     
     // There's a problem with the Kuwahara filter where it doesn't finish rendering before the image is extracted from it.
     // It looks like it only gets through certain tiles before glReadPixels() is called. Odd.
 //    GPUImageKuwaharaFilter *stillImageFilter = [[GPUImageKuwaharaFilter alloc] init];
 //    stillImageFilter.radius = 9;
     
-//    [stillImageSource addTarget:stillImageFilter];
-//    [stillImageFilter addTarget:vignetteImageFilter];
-//    [vignetteImageFilter prepareForImageCapture];
-
-    GPUImageHarrisCornerDetectionFilter *stillImageFilter = [[GPUImageHarrisCornerDetectionFilter alloc] init];
-    crosshairGenerator = [[GPUImageCrosshairGenerator alloc] init];
-    [crosshairGenerator forceProcessingAtSize:[stillImageSource outputImageSize]];
-    
-    [stillImageFilter setCornersDetectedBlock:^(GLfloat* cornerArray, NSUInteger cornersDetected) {
-        [crosshairGenerator renderCrosshairsFromArray:cornerArray count:cornersDetected];
-    }];
-    
-//    [stillImageFilter prepareForImageCapture];
     [stillImageSource addTarget:stillImageFilter];
-    
-    blendFilter = [[GPUImageAlphaBlendFilter alloc] init];
-    blendFilter.mix = 0.75;            
-    [stillImageSource addTarget:blendFilter];
-//    [stillImageFilter addTarget:blendFilter];
-//    stillImageFilter.targetToIgnoreForUpdates = blendFilter;
-  
-    [crosshairGenerator addTarget:blendFilter];
-    stillImageSource.targetToIgnoreForUpdates = blendFilter; // Avoid double-updating the blend
-
-    [blendFilter prepareForImageCapture];
+    [stillImageFilter addTarget:vignetteImageFilter];
+    [vignetteImageFilter prepareForImageCapture];
     [stillImageSource processImage];
     
-//    UIImage *currentFilteredImage = [vignetteImageFilter imageFromCurrentlyProcessedOutput];
-//    UIImage *currentFilteredImage = [stillImageFilter imageFromCurrentlyProcessedOutput];
-//    UIImage *currentFilteredImage = [crosshairGenerator imageFromCurrentlyProcessedOutput];
-    UIImage *currentFilteredImage = [blendFilter imageFromCurrentlyProcessedOutput];
+    UIImage *currentFilteredImage = [vignetteImageFilter imageFromCurrentlyProcessedOutput];
         
     // Do a simpler image filtering
     GPUImageSketchFilter *stillImageFilter2 = [[GPUImageSketchFilter alloc] init];

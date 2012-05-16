@@ -55,7 +55,7 @@ NSString *const kGPUImageCrosshairFragmentShaderString = SHADER_STRING
     crosshairColorUniform = [filterProgram uniformIndex:@"crosshairColor"];
     
     self.crosshairWidth = 5.0;
-    [self setCrosshairColorRed:1.0 green:0.0 blue:0.0];
+    [self setCrosshairColorRed:0.0 green:1.0 blue:0.0];
     
     return self;
 }
