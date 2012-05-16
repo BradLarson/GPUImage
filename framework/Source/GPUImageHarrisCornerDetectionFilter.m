@@ -116,7 +116,7 @@ NSString *const kGPUImageSimpleThresholdFragmentShaderString = SHADER_STRING
     
     self.blurSize = 1.0;
     self.sensitivity = 10.0;
-    self.threshold = 0.2;
+    self.threshold = 0.05;
     
     return self;
 }

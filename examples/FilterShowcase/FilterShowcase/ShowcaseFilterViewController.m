@@ -317,11 +317,12 @@
             self.title = @"Harris Corner Detection";
             self.filterSettingsSlider.hidden = NO;
             
-            [self.filterSettingsSlider setMinimumValue:0.1];
-            [self.filterSettingsSlider setMaximumValue:0.9];
-            [self.filterSettingsSlider setValue:0.2];
+            [self.filterSettingsSlider setMinimumValue:0.01];
+            [self.filterSettingsSlider setMaximumValue:0.20];
+            [self.filterSettingsSlider setValue:0.05];
 
             filter = [[GPUImageHarrisCornerDetectionFilter alloc] init];
+            [(GPUImageHarrisCornerDetectionFilter *)filter setThreshold:0.05];            
         }; break;
         case GPUIMAGE_PREWITTEDGEDETECTION:
         {
@@ -784,16 +785,13 @@
             }];
 
             GPUImageAlphaBlendFilter *blendFilter = [[GPUImageAlphaBlendFilter alloc] init];
-//            [videoCamera addTarget:blendFilter];
             GPUImageGammaFilter *gammaFilter = [[GPUImageGammaFilter alloc] init];
             [videoCamera addTarget:gammaFilter];
             [gammaFilter addTarget:blendFilter];
             gammaFilter.targetToIgnoreForUpdates = blendFilter;
 
             [crosshairGenerator addTarget:blendFilter];
-//            videoCamera.targetToIgnoreForUpdates = blendFilter; // Avoid double-updating the blend
-            
-//            [crosshairGenerator addTarget:filterView];
+
             [blendFilter addTarget:filterView];
         }
         else
@@ -837,6 +835,7 @@
         case GPUIMAGE_CANNYEDGEDETECTION: [(GPUImageCannyEdgeDetectionFilter *)filter setBlurSize:[(UISlider*)sender value]]; break;
 //        case GPUIMAGE_CANNYEDGEDETECTION: [(GPUImageCannyEdgeDetectionFilter *)filter setThreshold:[(UISlider*)sender value]]; break;
         case GPUIMAGE_HARRISCORNERDETECTION: [(GPUImageHarrisCornerDetectionFilter *)filter setThreshold:[(UISlider*)sender value]]; break;
+//        case GPUIMAGE_HARRISCORNERDETECTION: [(GPUImageHarrisCornerDetectionFilter *)filter setSensitivity:[(UISlider*)sender value]]; break;
         case GPUIMAGE_SMOOTHTOON: [(GPUImageSmoothToonFilter *)filter setBlurSize:[(UISlider*)sender value]]; break;
 //        case GPUIMAGE_BULGE: [(GPUImageBulgeDistortionFilter *)filter setRadius:[(UISlider *)sender value]]; break;
         case GPUIMAGE_BULGE: [(GPUImageBulgeDistortionFilter *)filter setScale:[(UISlider *)sender value]]; break;

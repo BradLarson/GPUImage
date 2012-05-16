@@ -21,7 +21,7 @@
 // This changes the dynamic range of the Harris corner detector by amplifying small cornerness values. Default is 10.0.
 @property(readwrite, nonatomic) CGFloat sensitivity;
 
-// A threshold value at which a point is recognized as being a corner after the non-maximum suppression. Default is 0.2.
+// A threshold value at which a point is recognized as being a corner after the non-maximum suppression. Default is 0.05.
 @property(readwrite, nonatomic) CGFloat threshold;
 
 // This block is called on the detection of new corner points, usually on every processed frame. A C array containing normalized coordinates in X, Y pairs is passed in, along with a count of the number of corners detected
