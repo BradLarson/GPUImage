@@ -208,8 +208,8 @@
 		F2D6D0371564E4FD00A1289F /* GPUImagePerlinNoiseFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D6D0311564E4FD00A1289F /* GPUImagePerlinNoiseFilter.m */; };
 		F2D6D0381564E4FD00A1289F /* GPUImageVoroniConsumerFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = F2D6D0321564E4FD00A1289F /* GPUImageVoroniConsumerFilter.h */; };
 		F2D6D0391564E4FD00A1289F /* GPUImageVoroniConsumerFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D6D0331564E4FD00A1289F /* GPUImageVoroniConsumerFilter.m */; };
-		F2F3362315658F3D00B0FBB8 /* GPUImageMosaicFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = F2F3362115658F3D00B0FBB8 /* GPUImageMosaicFilter.h */; };
-		F2F3362415658F3D00B0FBB8 /* GPUImageMosaicFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = F2F3362215658F3D00B0FBB8 /* GPUImageMosaicFilter.m */; };
+		F2F3362E15659DDA00B0FBB8 /* GPUImageMosaicFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = F2F3362C15659DDA00B0FBB8 /* GPUImageMosaicFilter.h */; };
+		F2F3362F15659DDA00B0FBB8 /* GPUImageMosaicFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = F2F3362D15659DDA00B0FBB8 /* GPUImageMosaicFilter.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -413,8 +413,8 @@
 		F2D6D0311564E4FD00A1289F /* GPUImagePerlinNoiseFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GPUImagePerlinNoiseFilter.m; path = Source/GPUImagePerlinNoiseFilter.m; sourceTree = SOURCE_ROOT; };
 		F2D6D0321564E4FD00A1289F /* GPUImageVoroniConsumerFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GPUImageVoroniConsumerFilter.h; path = Source/GPUImageVoroniConsumerFilter.h; sourceTree = SOURCE_ROOT; };
 		F2D6D0331564E4FD00A1289F /* GPUImageVoroniConsumerFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GPUImageVoroniConsumerFilter.m; path = Source/GPUImageVoroniConsumerFilter.m; sourceTree = SOURCE_ROOT; };
-		F2F3362115658F3D00B0FBB8 /* GPUImageMosaicFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GPUImageMosaicFilter.h; sourceTree = SOURCE_ROOT; };
-		F2F3362215658F3D00B0FBB8 /* GPUImageMosaicFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GPUImageMosaicFilter.m; sourceTree = SOURCE_ROOT; };
+		F2F3362C15659DDA00B0FBB8 /* GPUImageMosaicFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GPUImageMosaicFilter.h; path = Source/GPUImageMosaicFilter.h; sourceTree = SOURCE_ROOT; };
+		F2F3362D15659DDA00B0FBB8 /* GPUImageMosaicFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GPUImageMosaicFilter.m; path = Source/GPUImageMosaicFilter.m; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -531,9 +531,9 @@
 		BC1B715F14F4B06600ACA2AB /* Effects */ = {
 			isa = PBXGroup;
 			children = (
-				F2F3362115658F3D00B0FBB8 /* GPUImageMosaicFilter.h */,
-				F2F3362215658F3D00B0FBB8 /* GPUImageMosaicFilter.m */,
 				F2D6D02E1564E4FD00A1289F /* GPUImageJFAVoroniFilter.h */,
+				F2F3362C15659DDA00B0FBB8 /* GPUImageMosaicFilter.h */,
+				F2F3362D15659DDA00B0FBB8 /* GPUImageMosaicFilter.m */,
 				F2D6D02F1564E4FD00A1289F /* GPUImageJFAVoroniFilter.m */,
 				F2D6D0301564E4FD00A1289F /* GPUImagePerlinNoiseFilter.h */,
 				F2D6D0311564E4FD00A1289F /* GPUImagePerlinNoiseFilter.m */,
@@ -850,7 +850,7 @@
 				F2D6D0341564E4FD00A1289F /* GPUImageJFAVoroniFilter.h in Headers */,
 				F2D6D0361564E4FD00A1289F /* GPUImagePerlinNoiseFilter.h in Headers */,
 				F2D6D0381564E4FD00A1289F /* GPUImageVoroniConsumerFilter.h in Headers */,
-				F2F3362315658F3D00B0FBB8 /* GPUImageMosaicFilter.h in Headers */,
+				F2F3362E15659DDA00B0FBB8 /* GPUImageMosaicFilter.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1053,7 +1053,7 @@
 				F2D6D0351564E4FD00A1289F /* GPUImageJFAVoroniFilter.m in Sources */,
 				F2D6D0371564E4FD00A1289F /* GPUImagePerlinNoiseFilter.m in Sources */,
 				F2D6D0391564E4FD00A1289F /* GPUImageVoroniConsumerFilter.m in Sources */,
-				F2F3362415658F3D00B0FBB8 /* GPUImageMosaicFilter.m in Sources */,
+				F2F3362F15659DDA00B0FBB8 /* GPUImageMosaicFilter.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
