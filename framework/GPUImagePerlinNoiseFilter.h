@@ -1,10 +1,7 @@
-//
-//  GPUImagePerlinNoiseFilter.h
-
-
 #import "GPUImageFilter.h"
 
-@interface GPUImagePerlinNoiseFilter : GPUImageFilter {
+@interface GPUImagePerlinNoiseFilter : GPUImageFilter 
+{
     GLint scaleUniform, colorStartUniform, colorFinishUniform;
 }
 
