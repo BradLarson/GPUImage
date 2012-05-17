@@ -26,6 +26,10 @@
 		BC982B4214F06BF70001FF6F /* libGPUImage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BC982B3014F049950001FF6F /* libGPUImage.a */; };
 		BC982BD114F1C0F00001FF6F /* WID-small.jpg in Resources */ = {isa = PBXBuildFile; fileRef = BC982BD014F1C0F00001FF6F /* WID-small.jpg */; };
 		BC982C4114F1F6C80001FF6F /* CustomFilter.fsh in Resources */ = {isa = PBXBuildFile; fileRef = BC982C4014F1F6C80001FF6F /* CustomFilter.fsh */; };
+		F2F3361E156585C400B0FBB8 /* voroni_points2.png in Resources */ = {isa = PBXBuildFile; fileRef = F2F3361D156585C400B0FBB8 /* voroni_points2.png */; };
+		F2F336271565906000B0FBB8 /* dotletterstiles.png in Resources */ = {isa = PBXBuildFile; fileRef = F2F336261565906000B0FBB8 /* dotletterstiles.png */; };
+		F2F33629156591CA00B0FBB8 /* curvies.png in Resources */ = {isa = PBXBuildFile; fileRef = F2F33628156591CA00B0FBB8 /* curvies.png */; };
+		F2F3362B156591DB00B0FBB8 /* squares.png in Resources */ = {isa = PBXBuildFile; fileRef = F2F3362A156591DB00B0FBB8 /* squares.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -78,6 +82,10 @@
 		BC982B3E14F05DC10001FF6F /* ShowcaseFilterListController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ShowcaseFilterListController.m; sourceTree = "<group>"; };
 		BC982BD014F1C0F00001FF6F /* WID-small.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = "WID-small.jpg"; path = "../../SimpleImageFilter/SimpleImageFilter/WID-small.jpg"; sourceTree = "<group>"; };
 		BC982C4014F1F6C80001FF6F /* CustomFilter.fsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = CustomFilter.fsh; sourceTree = "<group>"; };
+		F2F3361D156585C400B0FBB8 /* voroni_points2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = voroni_points2.png; sourceTree = "<group>"; };
+		F2F336261565906000B0FBB8 /* dotletterstiles.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = dotletterstiles.png; sourceTree = "<group>"; };
+		F2F33628156591CA00B0FBB8 /* curvies.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = curvies.png; sourceTree = "<group>"; };
+		F2F3362A156591DB00B0FBB8 /* squares.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = squares.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -152,6 +160,10 @@
 		BC982B0D14F046AC0001FF6F /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				F2F3362A156591DB00B0FBB8 /* squares.png */,
+				F2F33628156591CA00B0FBB8 /* curvies.png */,
+				F2F336261565906000B0FBB8 /* dotletterstiles.png */,
+				F2F3361D156585C400B0FBB8 /* voroni_points2.png */,
 				83AE9FD31540F3CC00F7FC13 /* mask.png */,
 				BC982BD014F1C0F00001FF6F /* WID-small.jpg */,
 				BC982B0E14F046AC0001FF6F /* FilterShowcase-Info.plist */,
@@ -254,6 +266,10 @@
 				BC982BD114F1C0F00001FF6F /* WID-small.jpg in Resources */,
 				0D69488E1501F71900206FF8 /* SampleConfiguration.plist in Resources */,
 				83AE9FD41540F3CC00F7FC13 /* mask.png in Resources */,
+				F2F3361E156585C400B0FBB8 /* voroni_points2.png in Resources */,
+				F2F336271565906000B0FBB8 /* dotletterstiles.png in Resources */,
+				F2F33629156591CA00B0FBB8 /* curvies.png in Resources */,
+				F2F3362B156591DB00B0FBB8 /* squares.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

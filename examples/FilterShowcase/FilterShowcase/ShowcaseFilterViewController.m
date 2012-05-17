@@ -496,6 +496,45 @@
             
             
         }; break;
+        case GPUIMAGE_VORONI: 
+        {
+            self.title = @"Voroni";
+            self.filterSettingsSlider.hidden = YES;
+            
+            GPUImageJFAVoroniFilter *jfa = [[GPUImageJFAVoroniFilter alloc] init];
+            [jfa setSizeInPixels:CGSizeMake(1024.0, 1024.0)];
+            
+            sourcePicture = [[GPUImagePicture alloc] initWithImage:[UIImage imageNamed:@"voroni_points2.png"]];
+
+            [sourcePicture addTarget:jfa];
+            
+            filter = [[GPUImageVoroniConsumerFilter alloc] init];
+            
+            [jfa setSizeInPixels:CGSizeMake(1024.0, 1024.0)];
+            [(GPUImageVoroniConsumerFilter *)filter setSizeInPixels:CGSizeMake(1024.0, 1024.0)];
+            
+            [videoCamera addTarget:filter];
+            [jfa addTarget:filter];
+            [sourcePicture processImage];
+        }; break;
+        case GPUIMAGE_MOSAIC:
+        {
+            self.title = @"Mosaic";
+            self.filterSettingsSlider.hidden = NO;
+            
+            [self.filterSettingsSlider setMinimumValue:0.002];
+            [self.filterSettingsSlider setMaximumValue:0.05];
+            [self.filterSettingsSlider setValue:0.025];
+            
+            filter = [[GPUImageMosaicFilter alloc] init];
+            [(GPUImageMosaicFilter *)filter setTileSet:@"squares.png"];
+            [(GPUImageMosaicFilter *)filter setColorOn:NO];
+            //[(GPUImageMosaicFilter *)filter setTileSet:@"dotletterstiles.png"];
+            //[(GPUImageMosaicFilter *)filter setTileSet:@"curvies.png"]; 
+            
+            [filter setInputRotation:kGPUImageRotateRight atIndex:0];
+            
+        }; break;
         case GPUIMAGE_CHROMAKEY:
         {
             self.title = @"Chroma Key (Green)";
@@ -740,7 +779,11 @@
     } 
     else 
     {
-        [videoCamera addTarget:filter];
+    
+        if (filterType != GPUIMAGE_VORONI) {
+            [videoCamera addTarget:filter];
+        }
+        
         videoCamera.runBenchmark = YES;
         
         if (needsSecondImage)
@@ -751,8 +794,11 @@
 			{
 				inputImage = [UIImage imageNamed:@"mask"];
 			}
-			else
-			{
+            /*
+			else if (filterType == GPUIMAGE_VORONI) {
+                inputImage = [UIImage imageNamed:@"voroni_points.png"];
+            }*/
+            else {
 				// The picture is only used for two-image blend filters
 				inputImage = [UIImage imageNamed:@"WID-small.jpg"];
 			}
@@ -760,7 +806,9 @@
 			
             sourcePicture = [[GPUImagePicture alloc] initWithImage:inputImage smoothlyScaleOutput:YES];
             [sourcePicture addTarget:filter];
+           
             [sourcePicture processImage];            
+            
         }
 
         GPUImageView *filterView = (GPUImageView *)self.view;
@@ -807,9 +855,11 @@
 
             [blendFilter addTarget:filterView];
         }
-        else
+        
+        else 
         {
             [filter addTarget:filterView];
+            
         }
     } 
 
@@ -854,6 +904,7 @@
         case GPUIMAGE_BULGE: [(GPUImageBulgeDistortionFilter *)filter setScale:[(UISlider *)sender value]]; break;
         case GPUIMAGE_PINCH: [(GPUImagePinchDistortionFilter *)filter setScale:[(UISlider *)sender value]]; break;
         case GPUIMAGE_PERLINNOISE:  [(GPUImagePerlinNoiseFilter *)filter setScale:[(UISlider *)sender value]]; break;
+        case GPUIMAGE_MOSAIC:  [(GPUImageMosaicFilter *)filter setDisplayTileSize:CGSizeMake([(UISlider *)sender value], [(UISlider *)sender value])]; break;
         case GPUIMAGE_VIGNETTE: [(GPUImageVignetteFilter *)filter setVignetteEnd:[(UISlider *)sender value]]; break;
         case GPUIMAGE_GAUSSIAN: [(GPUImageGaussianBlurFilter *)filter setBlurSize:[(UISlider*)sender value]]; break;
         case GPUIMAGE_BILATERAL: [(GPUImageBilateralFilter *)filter setBlurSize:[(UISlider*)sender value]]; break;
