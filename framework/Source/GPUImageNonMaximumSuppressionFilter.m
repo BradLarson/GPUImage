@@ -1,60 +1,45 @@
 #import "GPUImageNonMaximumSuppressionFilter.h"
 
-NSString *const kGPUImageNonMaximumSuppressionVertexShaderString = SHADER_STRING
-(
- attribute vec4 position;
- attribute vec2 inputTextureCoordinate;
- 
- uniform highp float texelWidthOffset; 
- uniform highp float texelHeightOffset; 
- uniform highp float blurSize;
- 
- varying highp vec2 centerTextureCoordinate;
- varying highp vec2 oneStepNegativeTextureCoordinate;
- varying highp vec2 twoStepsNegativeTextureCoordinate;
- varying highp vec2 oneStepPositiveTextureCoordinate;
- varying highp vec2 twoStepsPositiveTextureCoordinate;
- 
- void main()
- {
-     gl_Position = position;
-     
-     vec2 firstOffset = vec2(texelWidthOffset, texelHeightOffset) * 1.0;
-     vec2 secondOffset = vec2(texelWidthOffset, texelHeightOffset) * 2.0;
-     
-     centerTextureCoordinate = inputTextureCoordinate;
-     oneStepNegativeTextureCoordinate = inputTextureCoordinate - firstOffset;
-     twoStepsNegativeTextureCoordinate = inputTextureCoordinate - secondOffset;
-     oneStepPositiveTextureCoordinate = inputTextureCoordinate + firstOffset;
-     twoStepsPositiveTextureCoordinate = inputTextureCoordinate + secondOffset;
- }
-);
-
-
 NSString *const kGPUImageNonMaximumSuppressionFragmentShaderString = SHADER_STRING
 (
  uniform sampler2D inputImageTexture;
  
- varying highp vec2 centerTextureCoordinate;
- varying highp vec2 oneStepNegativeTextureCoordinate;
- varying highp vec2 twoStepsNegativeTextureCoordinate;
- varying highp vec2 oneStepPositiveTextureCoordinate;
- varying highp vec2 twoStepsPositiveTextureCoordinate;
+ varying highp vec2 textureCoordinate;
+ varying highp vec2 leftTextureCoordinate;
+ varying highp vec2 rightTextureCoordinate;
+ 
+ varying highp vec2 topTextureCoordinate;
+ varying highp vec2 topLeftTextureCoordinate;
+ varying highp vec2 topRightTextureCoordinate;
+ 
+ varying highp vec2 bottomTextureCoordinate;
+ varying highp vec2 bottomLeftTextureCoordinate;
+ varying highp vec2 bottomRightTextureCoordinate;
  
  void main()
  {
-     lowp float fragmentColor = texture2D(inputImageTexture, centerTextureCoordinate).r;
-     lowp float oneStepNegativeFragmentColor = texture2D(inputImageTexture, oneStepNegativeTextureCoordinate).r;
-     lowp float twoStepsNegativeFragmentColor = texture2D(inputImageTexture, twoStepsNegativeTextureCoordinate).r;
-     lowp float oneStepPositiveFragmentColor = texture2D(inputImageTexture, oneStepPositiveTextureCoordinate).r;
-     lowp float twoStepsPositiveFragmentColor = texture2D(inputImageTexture, twoStepsPositiveTextureCoordinate).r;
+     lowp float bottomColor = texture2D(inputImageTexture, bottomTextureCoordinate).r;
+     lowp float bottomLeftColor = texture2D(inputImageTexture, bottomLeftTextureCoordinate).r;
+     lowp float bottomRightColor = texture2D(inputImageTexture, bottomRightTextureCoordinate).r;
+     lowp vec4 centerColor = texture2D(inputImageTexture, textureCoordinate);
+     lowp float leftColor = texture2D(inputImageTexture, leftTextureCoordinate).r;
+     lowp float rightColor = texture2D(inputImageTexture, rightTextureCoordinate).r;
+     lowp float topColor = texture2D(inputImageTexture, topTextureCoordinate).r;
+     lowp float topRightColor = texture2D(inputImageTexture, topRightTextureCoordinate).r;
+     lowp float topLeftColor = texture2D(inputImageTexture, topLeftTextureCoordinate).r;
      
-     lowp float maxValue = max(fragmentColor, oneStepNegativeFragmentColor);
-     maxValue = max(maxValue, twoStepsNegativeFragmentColor);
-     maxValue = max(maxValue, oneStepPositiveFragmentColor);
-     maxValue = max(maxValue, twoStepsPositiveFragmentColor);
+     // Use a tiebreaker for pixels to the left and immediately above this one
+     lowp float multiplier = 1.0 - step(centerColor.r, topColor);
+     multiplier = multiplier * 1.0 - step(centerColor.r, topLeftColor);
+     multiplier = multiplier * 1.0 - step(centerColor.r, leftColor);
+     multiplier = multiplier * 1.0 - step(centerColor.r, bottomLeftColor);
      
-     gl_FragColor = vec4(fragmentColor * step(maxValue, fragmentColor));
+     lowp float maxValue = max(centerColor.r, bottomColor);
+     maxValue = max(maxValue, bottomRightColor);
+     maxValue = max(maxValue, rightColor);
+     maxValue = max(maxValue, topRightColor);
+     
+     gl_FragColor = vec4((centerColor.rgb * step(maxValue, centerColor.r) * multiplier), 1.0);
  }
 );
 
@@ -65,38 +50,12 @@ NSString *const kGPUImageNonMaximumSuppressionFragmentShaderString = SHADER_STRI
 
 - (id)init;
 {
-    if (!(self = [super initWithFirstStageVertexShaderFromString:kGPUImageNonMaximumSuppressionVertexShaderString firstStageFragmentShaderFromString:kGPUImageNonMaximumSuppressionFragmentShaderString secondStageVertexShaderFromString:kGPUImageNonMaximumSuppressionVertexShaderString secondStageFragmentShaderFromString:kGPUImageNonMaximumSuppressionFragmentShaderString]))
+    if (!(self = [super initWithFragmentShaderFromString:kGPUImageNonMaximumSuppressionFragmentShaderString]))
     {
-		return nil;
+        return nil;
     }
-    
-    verticalPassTexelWidthOffsetUniform = [filterProgram uniformIndex:@"texelWidthOffset"];
-    verticalPassTexelHeightOffsetUniform = [filterProgram uniformIndex:@"texelHeightOffset"];
-    
-    horizontalPassTexelWidthOffsetUniform = [secondFilterProgram uniformIndex:@"texelWidthOffset"];
-    horizontalPassTexelHeightOffsetUniform = [secondFilterProgram uniformIndex:@"texelHeightOffset"];
     
     return self;
-}
-
-- (void)setupFilterForSize:(CGSize)filterFrameSize;
-{
-    [GPUImageOpenGLESContext useImageProcessingContext];
-    [filterProgram use];
-    if (GPUImageRotationSwapsWidthAndHeight(inputRotation))
-    {
-        glUniform1f(verticalPassTexelWidthOffsetUniform, 1.0 / filterFrameSize.height);
-        glUniform1f(verticalPassTexelHeightOffsetUniform, 0.0);
-    }
-    else
-    {
-        glUniform1f(verticalPassTexelWidthOffsetUniform, 0.0);
-        glUniform1f(verticalPassTexelHeightOffsetUniform, 1.0 / filterFrameSize.height);
-    }
-    
-    [secondFilterProgram use];
-    glUniform1f(horizontalPassTexelWidthOffsetUniform, 1.0 / filterFrameSize.width);
-    glUniform1f(horizontalPassTexelHeightOffsetUniform, 0.0);
 }
 
 @end

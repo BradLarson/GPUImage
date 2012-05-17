@@ -1,8 +1,5 @@
-#import "GPUImageTwoPassFilter.h"
+#import "GPUImage3x3TextureSamplingFilter.h"
 
-@interface GPUImageNonMaximumSuppressionFilter : GPUImageTwoPassFilter
-{
-    GLint verticalPassTexelWidthOffsetUniform, verticalPassTexelHeightOffsetUniform, horizontalPassTexelWidthOffsetUniform, horizontalPassTexelHeightOffsetUniform;
-}
+@interface GPUImageNonMaximumSuppressionFilter : GPUImage3x3TextureSamplingFilter
 
 @end

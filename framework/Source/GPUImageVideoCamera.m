@@ -237,6 +237,8 @@
         //captureSession.sessionPreset = oriPreset;
         [_captureSession commitConfiguration];
     }
+    
+    [self setOutputImageOrientation:_outputImageOrientation];
 }
 
 - (AVCaptureDevicePosition)cameraPosition 

@@ -17,49 +17,57 @@ NSString *const kGPUImageBilateralFilterFragmentShaderString = SHADER_STRING
      lowp vec4 sum = centralColor * 0.18;
      
      lowp vec4 sampleColor = texture2D(inputImageTexture, blurCoordinates[0]);
-     mediump float distanceFromCentralColor = distance(centralColor, sampleColor) * distanceNormalizationFactor;
+//     lowp float distanceFromCentralColor = distance(centralColor, sampleColor) * distanceNormalizationFactor;
+     lowp float distanceFromCentralColor = abs(centralColor.g - sampleColor.g);
      lowp float gaussianWeight = 0.05 * (1.0 - distanceFromCentralColor);
      gaussianWeightTotal += gaussianWeight;
      sum += sampleColor * gaussianWeight;
 
      sampleColor = texture2D(inputImageTexture, blurCoordinates[1]);
-     distanceFromCentralColor = distance(centralColor, sampleColor) * distanceNormalizationFactor;
+//     distanceFromCentralColor = distance(centralColor, sampleColor) * distanceNormalizationFactor;
+     distanceFromCentralColor = abs(centralColor.g - sampleColor.g);
      gaussianWeight = 0.09 * (1.0 - distanceFromCentralColor);
      gaussianWeightTotal += gaussianWeight;
      sum += sampleColor * gaussianWeight;
 
      sampleColor = texture2D(inputImageTexture, blurCoordinates[2]);
-     distanceFromCentralColor = distance(centralColor, sampleColor) * distanceNormalizationFactor;
+//     distanceFromCentralColor = distance(centralColor, sampleColor) * distanceNormalizationFactor;
+     distanceFromCentralColor = abs(centralColor.g - sampleColor.g);
      gaussianWeight = 0.12 * (1.0 - distanceFromCentralColor);
      gaussianWeightTotal += gaussianWeight;
      sum += sampleColor * gaussianWeight;
 
      sampleColor = texture2D(inputImageTexture, blurCoordinates[3]);
-     distanceFromCentralColor = distance(centralColor, sampleColor) * distanceNormalizationFactor;
+//     distanceFromCentralColor = distance(centralColor, sampleColor) * distanceNormalizationFactor;
+     distanceFromCentralColor = abs(centralColor.g - sampleColor.g);
      gaussianWeight = 0.15 * (1.0 - distanceFromCentralColor);
      gaussianWeightTotal += gaussianWeight;
      sum += sampleColor * gaussianWeight;
 
      sampleColor = texture2D(inputImageTexture, blurCoordinates[5]);
-     distanceFromCentralColor = distance(centralColor, sampleColor) * distanceNormalizationFactor;
+//     distanceFromCentralColor = distance(centralColor, sampleColor) * distanceNormalizationFactor;
+     distanceFromCentralColor = abs(centralColor.g - sampleColor.g);
      gaussianWeight = 0.15 * (1.0 - distanceFromCentralColor);
      gaussianWeightTotal += gaussianWeight;
      sum += sampleColor * gaussianWeight;
 
      sampleColor = texture2D(inputImageTexture, blurCoordinates[6]);
-     distanceFromCentralColor = distance(centralColor, sampleColor) * distanceNormalizationFactor;
+//     distanceFromCentralColor = distance(centralColor, sampleColor) * distanceNormalizationFactor;
+     distanceFromCentralColor = abs(centralColor.g - sampleColor.g);
      gaussianWeight = 0.12 * (1.0 - distanceFromCentralColor);
      gaussianWeightTotal += gaussianWeight;
      sum += sampleColor * gaussianWeight;
 
      sampleColor = texture2D(inputImageTexture, blurCoordinates[7]);
-     distanceFromCentralColor = distance(centralColor, sampleColor) * distanceNormalizationFactor;
+//     distanceFromCentralColor = distance(centralColor, sampleColor) * distanceNormalizationFactor;
+     distanceFromCentralColor = abs(centralColor.g - sampleColor.g);
      gaussianWeight = 0.09 * (1.0 - distanceFromCentralColor);
      gaussianWeightTotal += gaussianWeight;
      sum += sampleColor * gaussianWeight;
 
      sampleColor = texture2D(inputImageTexture, blurCoordinates[8]);
-     distanceFromCentralColor = distance(centralColor, sampleColor) * distanceNormalizationFactor;
+//     distanceFromCentralColor = distance(centralColor, sampleColor) * distanceNormalizationFactor;
+     distanceFromCentralColor = abs(centralColor.g - sampleColor.g);
      gaussianWeight = 0.05 * (1.0 - distanceFromCentralColor);
      gaussianWeightTotal += gaussianWeight;
      sum += sampleColor * gaussianWeight;

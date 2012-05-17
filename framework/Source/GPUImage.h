@@ -82,3 +82,4 @@
 #import "GPUImageRGBFilter.h"
 #import "GPUImageMedianFilter.h"
 #import "GPUImageBilateralFilter.h"
+#import "GPUImageCrosshairGenerator.h"

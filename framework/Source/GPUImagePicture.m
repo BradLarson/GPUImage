@@ -108,10 +108,7 @@
 
 - (void)processImage;
 {
-    CGSize pointSizeOfImage = [imageSource size];
-    CGFloat scaleOfImage = [imageSource scale];
-    CGSize pixelSizeOfImage = CGSizeMake(scaleOfImage * pointSizeOfImage.width, scaleOfImage * pointSizeOfImage.height);
-    pixelSizeOfImage = [GPUImageOpenGLESContext sizeThatFitsWithinATextureForSize:pixelSizeOfImage];
+    CGSize pixelSizeOfImage = [self outputImageSize];
     
     for (id<GPUImageInput> currentTarget in targets)
     {
@@ -121,6 +118,15 @@
         [currentTarget setInputSize:pixelSizeOfImage atIndex:textureIndexOfTarget];
         [currentTarget newFrameReadyAtTime:kCMTimeInvalid];
     }    
+}
+
+- (CGSize)outputImageSize;
+{
+    CGSize pointSizeOfImage = [imageSource size];
+    CGFloat scaleOfImage = [imageSource scale];
+    CGSize pixelSizeOfImage = CGSizeMake(scaleOfImage * pointSizeOfImage.width, scaleOfImage * pointSizeOfImage.height);
+    pixelSizeOfImage = [GPUImageOpenGLESContext sizeThatFitsWithinATextureForSize:pixelSizeOfImage];
+    return pixelSizeOfImage;
 }
 
 @end

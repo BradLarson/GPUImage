@@ -315,9 +315,14 @@
         case GPUIMAGE_HARRISCORNERDETECTION:
         {
             self.title = @"Harris Corner Detection";
-            self.filterSettingsSlider.hidden = YES;
+            self.filterSettingsSlider.hidden = NO;
             
+            [self.filterSettingsSlider setMinimumValue:0.01];
+            [self.filterSettingsSlider setMaximumValue:0.20];
+            [self.filterSettingsSlider setValue:0.05];
+
             filter = [[GPUImageHarrisCornerDetectionFilter alloc] init];
+            [(GPUImageHarrisCornerDetectionFilter *)filter setThreshold:0.05];            
         }; break;
         case GPUIMAGE_PREWITTEDGEDETECTION:
         {
@@ -623,9 +628,9 @@
              self.title = @"Vignette";
             self.filterSettingsSlider.hidden = NO;
             
-            [self.filterSettingsSlider setMinimumValue:-1.0];
-            [self.filterSettingsSlider setMaximumValue:0.74];
-            [self.filterSettingsSlider setValue:0.5];
+            [self.filterSettingsSlider setMinimumValue:0.5];
+            [self.filterSettingsSlider setMaximumValue:0.9];
+            [self.filterSettingsSlider setValue:0.75];
             
             filter = [[GPUImageVignetteFilter alloc] init];
         }; break;
@@ -771,12 +776,22 @@
         }
         else if (filterType == GPUIMAGE_HARRISCORNERDETECTION)
         {
-            GPUImageAlphaBlendFilter *blendFilter = [[GPUImageAlphaBlendFilter alloc] init];
-
-            [videoCamera addTarget:blendFilter];
-            [filter addTarget:blendFilter];
-            videoCamera.targetToIgnoreForUpdates = blendFilter; // Avoid double-updating the blend
+            GPUImageCrosshairGenerator *crosshairGenerator = [[GPUImageCrosshairGenerator alloc] init];
+            crosshairGenerator.crosshairWidth = 15.0;
+            [crosshairGenerator forceProcessingAtSize:CGSizeMake(480.0, 640.0)];
             
+            [(GPUImageHarrisCornerDetectionFilter *)filter setCornersDetectedBlock:^(GLfloat* cornerArray, NSUInteger cornersDetected) {
+                [crosshairGenerator renderCrosshairsFromArray:cornerArray count:cornersDetected];
+            }];
+
+            GPUImageAlphaBlendFilter *blendFilter = [[GPUImageAlphaBlendFilter alloc] init];
+            GPUImageGammaFilter *gammaFilter = [[GPUImageGammaFilter alloc] init];
+            [videoCamera addTarget:gammaFilter];
+            [gammaFilter addTarget:blendFilter];
+            gammaFilter.targetToIgnoreForUpdates = blendFilter;
+
+            [crosshairGenerator addTarget:blendFilter];
+
             [blendFilter addTarget:filterView];
         }
         else
@@ -819,11 +834,13 @@
         case GPUIMAGE_EMBOSS: [(GPUImageEmbossFilter *)filter setIntensity:[(UISlider *)sender value]]; break;
         case GPUIMAGE_CANNYEDGEDETECTION: [(GPUImageCannyEdgeDetectionFilter *)filter setBlurSize:[(UISlider*)sender value]]; break;
 //        case GPUIMAGE_CANNYEDGEDETECTION: [(GPUImageCannyEdgeDetectionFilter *)filter setThreshold:[(UISlider*)sender value]]; break;
+        case GPUIMAGE_HARRISCORNERDETECTION: [(GPUImageHarrisCornerDetectionFilter *)filter setThreshold:[(UISlider*)sender value]]; break;
+//        case GPUIMAGE_HARRISCORNERDETECTION: [(GPUImageHarrisCornerDetectionFilter *)filter setSensitivity:[(UISlider*)sender value]]; break;
         case GPUIMAGE_SMOOTHTOON: [(GPUImageSmoothToonFilter *)filter setBlurSize:[(UISlider*)sender value]]; break;
 //        case GPUIMAGE_BULGE: [(GPUImageBulgeDistortionFilter *)filter setRadius:[(UISlider *)sender value]]; break;
         case GPUIMAGE_BULGE: [(GPUImageBulgeDistortionFilter *)filter setScale:[(UISlider *)sender value]]; break;
         case GPUIMAGE_PINCH: [(GPUImagePinchDistortionFilter *)filter setScale:[(UISlider *)sender value]]; break;
-        case GPUIMAGE_VIGNETTE: [(GPUImageVignetteFilter *)filter setY:[(UISlider *)sender value]]; break;
+        case GPUIMAGE_VIGNETTE: [(GPUImageVignetteFilter *)filter setVignetteEnd:[(UISlider *)sender value]]; break;
         case GPUIMAGE_GAUSSIAN: [(GPUImageGaussianBlurFilter *)filter setBlurSize:[(UISlider*)sender value]]; break;
         case GPUIMAGE_BILATERAL: [(GPUImageBilateralFilter *)filter setBlurSize:[(UISlider*)sender value]]; break;
         case GPUIMAGE_FASTBLUR: [(GPUImageFastBlurFilter *)filter setBlurPasses:round([(UISlider*)sender value])]; break;
