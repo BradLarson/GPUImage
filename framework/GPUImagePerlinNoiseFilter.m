@@ -1,10 +1,6 @@
 //
 //  GPUImagePerlinNoiseFilter.m
-//  Face Esplode
-//
-//  Created by Jacob Gundersen on 5/15/12.
-//  
-//
+
 
 #import "GPUImagePerlinNoiseFilter.h"
 
