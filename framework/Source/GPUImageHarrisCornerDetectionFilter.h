@@ -14,6 +14,8 @@
     GPUImageFilter *harrisCornerDetectionFilter;
     GPUImageNonMaximumSuppressionFilter *nonMaximumSuppressionFilter;
     GPUImageFilter *simpleThresholdFilter;
+    GLfloat *cornersArray;
+    GLubyte *rawImagePixels;
 }
 // A multiplier for the underlying blur size, ranging from 0.0 on up, with a default of 1.0
 @property(readwrite, nonatomic) CGFloat blurSize;

@@ -1,7 +1,3 @@
-//
-//  GPUImagePerlinNoiseFilter.m
-
-
 #import "GPUImagePerlinNoiseFilter.h"
 
 NSString *const kGPUImagePerlinNoiseFragmentShaderString = SHADER_STRING
@@ -101,6 +97,9 @@ NSString *const kGPUImagePerlinNoiseFragmentShaderString = SHADER_STRING
 
 @synthesize scale = _scale, colorStart = _colorStart, colorFinish = _colorFinish;
 
+#pragma mark -
+#pragma mark Initialization and teardown
+
 - (id)init;
 {
     if (!(self = [super initWithFragmentShaderFromString:kGPUImagePerlinNoiseFragmentShaderString]))
@@ -121,7 +120,11 @@ NSString *const kGPUImagePerlinNoiseFragmentShaderString = SHADER_STRING
     return self;
 }
 
--(void)setScale:(float)scale {
+#pragma mark -
+#pragma mark Accessors
+
+- (void)setScale:(float)scale 
+{
     _scale = scale;
     
     [GPUImageOpenGLESContext useImageProcessingContext];
@@ -129,7 +132,8 @@ NSString *const kGPUImagePerlinNoiseFragmentShaderString = SHADER_STRING
     glUniform1f(scaleUniform, _scale);
 }
 
--(void)setColorStart:(GPUVector4)colorStart {
+- (void)setColorStart:(GPUVector4)colorStart 
+{
     _colorStart = colorStart;
     
     [GPUImageOpenGLESContext useImageProcessingContext];
@@ -137,7 +141,8 @@ NSString *const kGPUImagePerlinNoiseFragmentShaderString = SHADER_STRING
     glUniform4f(colorStartUniform, _colorStart.one, _colorStart.two, _colorStart.three, _colorStart.four);
 }
 
--(void)setColorFinish:(GPUVector4)colorFinish {
+- (void)setColorFinish:(GPUVector4)colorFinish 
+{
     _colorFinish = colorFinish;
     
     [GPUImageOpenGLESContext useImageProcessingContext];

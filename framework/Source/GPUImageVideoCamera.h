@@ -17,7 +17,8 @@
     AVCaptureSession *_captureSession;
     AVCaptureDevice *_inputCamera;
     AVCaptureDevice *_microphone;
-    
+    AVCaptureDeviceInput *videoInput;
+
     BOOL capturePaused;
     GPUImageRotationMode outputRotation;
 }

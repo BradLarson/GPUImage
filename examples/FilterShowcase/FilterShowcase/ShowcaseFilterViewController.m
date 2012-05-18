@@ -493,8 +493,6 @@
             [self.filterSettingsSlider setValue:8.0];
             
             filter = [[GPUImagePerlinNoiseFilter alloc] init];
-            
-            
         }; break;
         case GPUIMAGE_VORONI: 
         {
