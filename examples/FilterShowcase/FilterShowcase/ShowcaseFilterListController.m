@@ -101,6 +101,8 @@
 		case GPUIMAGE_PINCH: cell.textLabel.text = @"Pinch"; break;
 		case GPUIMAGE_STRETCH: cell.textLabel.text = @"Stretch"; break;
         case GPUIMAGE_PERLINNOISE: cell.textLabel.text = @"Perlin noise"; break;
+        case GPUIMAGE_VORONI: cell.textLabel.text = @"Voroni"; break;
+        case GPUIMAGE_MOSAIC: cell.textLabel.text = @"Mosaic"; break;
 		case GPUIMAGE_CHROMAKEY: cell.textLabel.text = @"Chroma key (green)"; break;
 		case GPUIMAGE_DISSOLVE: cell.textLabel.text = @"Dissolve blend"; break;
 		case GPUIMAGE_SCREENBLEND: cell.textLabel.text = @"Screen blend"; break;
