@@ -121,20 +121,30 @@ NSString *const kGPUImageSimpleThresholdFragmentShaderString = SHADER_STRING
     return self;
 }
      
+- (void)dealloc;
+{
+    free(rawImagePixels);    
+}
+
 #pragma mark -
 #pragma mark Corner extraction
 
 - (void)extractCornerLocationsFromImage;
 {
-    CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
 
     NSUInteger numberOfCorners = 0;
     CGSize imageSize = simpleThresholdFilter.outputFrameSize;
     
-    GLubyte *rawImagePixels = (GLubyte *)malloc(imageSize.width * imageSize.height * 4);
-    GLfloat *cornersArray = calloc(512 * 2, sizeof(GLfloat));
+    if (rawImagePixels == NULL)
+    {
+        rawImagePixels = (GLubyte *)malloc(imageSize.width * imageSize.height * 4);
+    }
+    
+    cornersArray = calloc(512 * 2, sizeof(GLfloat));
     
     glReadPixels(0, 0, (int)imageSize.width, (int)imageSize.height, GL_RGBA, GL_UNSIGNED_BYTE, rawImagePixels);
+
+    CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
 
     for (unsigned int yCoordinate = 0; yCoordinate < imageSize.height; yCoordinate++)
     {
@@ -153,8 +163,6 @@ NSString *const kGPUImageSimpleThresholdFragmentShaderString = SHADER_STRING
             }
         }
     }
-    
-    free(rawImagePixels);
     
     CFAbsoluteTime currentFrameTime = (CFAbsoluteTimeGetCurrent() - startTime);
     NSLog(@"Processing time : %f ms", 1000.0 * currentFrameTime);

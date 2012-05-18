@@ -7,7 +7,6 @@
 
 @interface GPUImageVideoCamera () 
 {
-	AVCaptureDeviceInput *videoInput;
 	AVCaptureDeviceInput *audioInput;
 	AVCaptureVideoDataOutput *videoOutput;
 	AVCaptureAudioDataOutput *audioOutput;
