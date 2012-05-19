@@ -1,5 +1,7 @@
 #import "GPUImageFilter.h"
 
+/** Performs a vignetting effect, fading out the image at the edges
+ */
 @interface GPUImageVignetteFilter : GPUImageFilter 
 {
     GLint vignetteStartUniform, vignetteEndUniform;
