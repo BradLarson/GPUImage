@@ -6,6 +6,7 @@
 
 @synthesize terminalFilter = _terminalFilter;
 @synthesize initialFilters = _initialFilters;
+@synthesize inputFilterToIgnoreForUpdates = _inputFilterToIgnoreForUpdates;
 
 - (id)init;
 {
@@ -63,6 +64,11 @@
 #pragma mark -
 #pragma mark GPUImageOutput overrides
 
+- (void)setTargetToIgnoreForUpdates:(id<GPUImageInput>)targetToIgnoreForUpdates;
+{
+    [_terminalFilter setTargetToIgnoreForUpdates:targetToIgnoreForUpdates];
+}
+
 - (void)addTarget:(id<GPUImageInput>)newTarget atTextureLocation:(NSInteger)textureLocation;
 {
     [_terminalFilter addTarget:newTarget atTextureLocation:textureLocation];
@@ -85,7 +91,7 @@
 {
     for (GPUImageOutput<GPUImageInput> *currentFilter in _initialFilters)
     {
-        if (currentFilter != self.targetToIgnoreForUpdates)
+        if (currentFilter != self.inputFilterToIgnoreForUpdates)
         {
             [currentFilter newFrameReadyAtTime:frameTime];
         }

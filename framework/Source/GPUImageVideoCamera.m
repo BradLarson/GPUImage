@@ -7,7 +7,6 @@
 
 @interface GPUImageVideoCamera () 
 {
-	AVCaptureDeviceInput *videoInput;
 	AVCaptureDeviceInput *audioInput;
 	AVCaptureVideoDataOutput *videoOutput;
 	AVCaptureAudioDataOutput *audioOutput;
@@ -237,6 +236,8 @@
         //captureSession.sessionPreset = oriPreset;
         [_captureSession commitConfiguration];
     }
+    
+    [self setOutputImageOrientation:_outputImageOrientation];
 }
 
 - (AVCaptureDevicePosition)cameraPosition 

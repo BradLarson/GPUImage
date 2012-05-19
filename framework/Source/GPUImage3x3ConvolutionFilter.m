@@ -3,6 +3,10 @@
 NSString *const kGPUImage3x3ConvolutionFragmentShaderString = SHADER_STRING
 (
  precision highp float;
+
+ uniform sampler2D inputImageTexture;
+ 
+ uniform mediump mat3 convolutionMatrix;
  
  varying vec2 textureCoordinate;
  varying vec2 leftTextureCoordinate;
@@ -15,10 +19,6 @@ NSString *const kGPUImage3x3ConvolutionFragmentShaderString = SHADER_STRING
  varying vec2 bottomTextureCoordinate;
  varying vec2 bottomLeftTextureCoordinate;
  varying vec2 bottomRightTextureCoordinate;
- 
- uniform sampler2D inputImageTexture;
- 
- uniform mediump mat3 convolutionMatrix;
  
  void main()
  {

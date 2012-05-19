@@ -64,8 +64,8 @@
     GPUImagePicture *stillImageSource = [[GPUImagePicture alloc] initWithImage:inputImage];
     GPUImageSepiaFilter *stillImageFilter = [[GPUImageSepiaFilter alloc] init];
     GPUImageVignetteFilter *vignetteImageFilter = [[GPUImageVignetteFilter alloc] init];
-    vignetteImageFilter.x = 0.6;
-    vignetteImageFilter.y = 0.4;
+    vignetteImageFilter.vignetteEnd = 0.6;
+    vignetteImageFilter.vignetteStart = 0.4;
     
     // There's a problem with the Kuwahara filter where it doesn't finish rendering before the image is extracted from it.
     // It looks like it only gets through certain tiles before glReadPixels() is called. Odd.
@@ -75,7 +75,6 @@
     [stillImageSource addTarget:stillImageFilter];
     [stillImageFilter addTarget:vignetteImageFilter];
     [vignetteImageFilter prepareForImageCapture];
-    
     [stillImageSource processImage];
     
     UIImage *currentFilteredImage = [vignetteImageFilter imageFromCurrentlyProcessedOutput];

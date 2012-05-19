@@ -13,5 +13,6 @@
 
 // Image rendering
 - (void)processImage;
+- (CGSize)outputImageSize;
 
 @end
