@@ -73,6 +73,11 @@ Documentation is generated from header comments using appledoc. To build the doc
   - *colorMatrix*: A 4x4 matrix used to transform each color in an image
   - *intensity*: The degree to which the new transformed color replaces the original color for each pixel
 
+- **GPUImageToneCurveFilter**: Adjusts the colors of an image based on spline curves for each color channel.
+  - *redControlPoints*:
+  - *greenControlPoints*:
+  - *blueControlPoints*: The tone curve takes in a series of control points that define the spline curve for each color component. These are stored as NSValue-wrapped CGPoints in an NSArray, with normalized X and Y coordinates from 0 - 1. The defaults are (0,0), (0.5,0.5), (1,1).
+
 - **GPUImageColorInvertFilter**: Inverts the colors of an image
 
 - **GPUImageGrayscaleFilter**: Converts an image to grayscale (a slightly faster implementation of the saturation filter, without the ability to vary the color contribution)

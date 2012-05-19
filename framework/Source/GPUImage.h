@@ -87,3 +87,5 @@
 #import "GPUImageMedianFilter.h"
 #import "GPUImageBilateralFilter.h"
 #import "GPUImageCrosshairGenerator.h"
+#import "GPUImageToneCurveFilter.h"
+

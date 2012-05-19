@@ -1,10 +1,7 @@
-//
-//  GPUVoroniConsumerFilter.h
-//
-
 #import "GPUImageTwoInputFilter.h"
 
-@interface GPUImageVoroniConsumerFilter : GPUImageTwoInputFilter {
+@interface GPUImageVoroniConsumerFilter : GPUImageTwoInputFilter 
+{
     GLint sizeUniform;
 }
 

@@ -1,7 +1,3 @@
-//
-//  GPUVoroniConsumerFilter.m
-//
-
 #import "GPUImageVoroniConsumerFilter.h"
 
 NSString *const kGPUImageVoroniConsumerFragmentShaderString = SHADER_STRING
