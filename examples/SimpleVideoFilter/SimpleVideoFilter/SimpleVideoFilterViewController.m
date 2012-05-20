@@ -60,7 +60,7 @@
     dispatch_time_t startTime = dispatch_time(DISPATCH_TIME_NOW, delayToStartRecording * NSEC_PER_SEC);
     dispatch_after(startTime, dispatch_get_main_queue(), ^(void){
         NSLog(@"Start recording");
-
+        
         videoCamera.audioEncodingTarget = movieWriter;
         [movieWriter startRecording];
 
@@ -75,6 +75,7 @@
         double delayInSeconds = 10.0;
         dispatch_time_t stopTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
         dispatch_after(stopTime, dispatch_get_main_queue(), ^(void){
+            
             [filter removeTarget:movieWriter];
             videoCamera.audioEncodingTarget = nil;
             [movieWriter finishRecording];

@@ -371,7 +371,7 @@
     {
         inputImageSize = rotatedSize;
         [self recalculateViewGeometry];
-    }    
+    }
 }
 
 - (CGSize)maximumOutputSize;

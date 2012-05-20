@@ -18,6 +18,13 @@ NSString *const kGPUImageCropFragmentShaderString =  SHADER_STRING
 
 @end
 
+@interface GPUImageCropFilter()
+{
+    CGSize originallySuppliedInputSize;
+}
+
+@end
+
 @implementation GPUImageCropFilter
 
 @synthesize cropRegion = _cropRegion;
@@ -50,14 +57,44 @@ NSString *const kGPUImageCropFragmentShaderString =  SHADER_STRING
 #pragma mark -
 #pragma mark Rendering
 
-- (CGSize)outputFrameSize;
+- (void)setInputSize:(CGSize)newSize atIndex:(NSInteger)textureIndex;
 {
-    CGSize adjustedSize;
-
-    adjustedSize.width = inputTextureSize.width * _cropRegion.size.width;
-    adjustedSize.height = inputTextureSize.height * _cropRegion.size.height;
+    if (self.preventRendering)
+    {
+        return;
+    }
     
-    return adjustedSize;
+//    if (overrideInputSize)
+//    {
+//        if (CGSizeEqualToSize(forcedMaximumSize, CGSizeZero))
+//        {
+//            return;
+//        }
+//        else
+//        {
+//            CGRect insetRect = AVMakeRectWithAspectRatioInsideRect(newSize, CGRectMake(0.0, 0.0, forcedMaximumSize.width, forcedMaximumSize.height));
+//            inputTextureSize = insetRect.size;
+//            return;
+//        }
+//    }
+    
+    CGSize rotatedSize = [self rotatedSize:newSize forIndex:textureIndex];
+    originallySuppliedInputSize = rotatedSize;
+
+    CGSize scaledSize;
+    scaledSize.width = rotatedSize.width * _cropRegion.size.width;
+    scaledSize.height = rotatedSize.height * _cropRegion.size.height;
+
+    
+    if ( (CGSizeEqualToSize(inputTextureSize, CGSizeZero)) || (CGSizeEqualToSize(scaledSize, CGSizeZero)) )
+    {
+        inputTextureSize = scaledSize;
+    }
+    else if (!CGSizeEqualToSize(inputTextureSize, scaledSize))
+    {
+        inputTextureSize = scaledSize;
+        [self recreateFilterFBO];
+    }
 }
 
 #pragma mark -

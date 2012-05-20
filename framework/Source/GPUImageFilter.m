@@ -665,7 +665,7 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
     
     CGSize rotatedSize = [self rotatedSize:newSize forIndex:textureIndex];
     
-    if ( (CGSizeEqualToSize(inputTextureSize, CGSizeZero)) || (CGSizeEqualToSize(rotatedSize, CGSizeZero)) )
+    if (CGSizeEqualToSize(rotatedSize, CGSizeZero))
     {
         inputTextureSize = rotatedSize;
     }
