@@ -7,7 +7,8 @@ NSString *const kGPUImageBoxBlurVertexShaderString = SHADER_STRING
 
  uniform float texelWidthOffset; 
  uniform float texelHeightOffset; 
- 
+ uniform highp float blurSize;
+
  varying vec2 centerTextureCoordinate;
  varying vec2 oneStepLeftTextureCoordinate;
  varying vec2 twoStepsLeftTextureCoordinate;
@@ -18,8 +19,8 @@ NSString *const kGPUImageBoxBlurVertexShaderString = SHADER_STRING
  {
      gl_Position = position;
           
-     vec2 firstOffset = vec2(1.5 * texelWidthOffset, 1.5 * texelHeightOffset);
-     vec2 secondOffset = vec2(3.5 * texelWidthOffset, 3.5 * texelHeightOffset);
+     vec2 firstOffset = vec2(1.5 * texelWidthOffset, 1.5 * texelHeightOffset) * blurSize;
+     vec2 secondOffset = vec2(3.5 * texelWidthOffset, 3.5 * texelHeightOffset) * blurSize;
      
      centerTextureCoordinate = inputTextureCoordinate;
      oneStepLeftTextureCoordinate = inputTextureCoordinate - firstOffset;
@@ -56,6 +57,8 @@ NSString *const kGPUImageBoxBlurFragmentShaderString = SHADER_STRING
 
 @implementation GPUImageBoxBlurFilter
 
+@synthesize blurSize = _blurSize;
+
 #pragma mark -
 #pragma mark Initialization and teardown
 
@@ -68,10 +71,14 @@ NSString *const kGPUImageBoxBlurFragmentShaderString = SHADER_STRING
     
     verticalPassTexelWidthOffsetUniform = [filterProgram uniformIndex:@"texelWidthOffset"];
     verticalPassTexelHeightOffsetUniform = [filterProgram uniformIndex:@"texelHeightOffset"];
+    firstBlurSizeUniform = [filterProgram uniformIndex:@"blurSize"];
     
     horizontalPassTexelWidthOffsetUniform = [secondFilterProgram uniformIndex:@"texelWidthOffset"];
     horizontalPassTexelHeightOffsetUniform = [secondFilterProgram uniformIndex:@"texelHeightOffset"];
+    secondBlurSizeUniform = [secondFilterProgram uniformIndex:@"blurSize"];
 
+    self.blurSize = 1.0;
+    
     return self;
 }
 
@@ -93,6 +100,21 @@ NSString *const kGPUImageBoxBlurFragmentShaderString = SHADER_STRING
     [secondFilterProgram use];
     glUniform1f(horizontalPassTexelWidthOffsetUniform, 1.0 / filterFrameSize.width);
     glUniform1f(horizontalPassTexelHeightOffsetUniform, 0.0);
+}
+
+#pragma mark -
+#pragma mark Accessors
+
+- (void)setBlurSize:(CGFloat)newValue;
+{
+    _blurSize = newValue;
+    
+    [GPUImageOpenGLESContext useImageProcessingContext];
+    [filterProgram use];
+    glUniform1f(firstBlurSizeUniform, _blurSize);
+    
+    [secondFilterProgram use];
+    glUniform1f(secondBlurSizeUniform, _blurSize);
 }
 
 @end
