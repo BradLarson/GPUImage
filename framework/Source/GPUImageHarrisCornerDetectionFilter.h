@@ -42,4 +42,7 @@
 // This block is called on the detection of new corner points, usually on every processed frame. A C array containing normalized coordinates in X, Y pairs is passed in, along with a count of the number of corners detected
 @property(nonatomic, copy) void(^cornersDetectedBlock)(GLfloat* cornerArray, NSUInteger cornersDetected);
 
+// Initialization and teardown
+- (id)initWithCornerDetectionFragmentShader:(NSString *)cornerDetectionFragmentShader;
+
 @end

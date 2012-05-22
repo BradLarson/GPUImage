@@ -1,10 +1,10 @@
-#import "GPUImageRawData.h"
+#import "GPUImageRawDataOutput.h"
 
 #import "GPUImageOpenGLESContext.h"
 #import "GLProgram.h"
 #import "GPUImageFilter.h"
 
-@interface GPUImageRawData ()
+@interface GPUImageRawDataOutput ()
 {
     
     BOOL hasReadFromTheCurrentFrame;
@@ -29,10 +29,10 @@
 
 @end
 
-@implementation GPUImageRawData
+@implementation GPUImageRawDataOutput
 
 @synthesize rawBytesForImage = _rawBytesForImage;
-@synthesize delegate = _delegate;
+@synthesize newFrameAvailableBlock = _newFrameAvailableBlock;
 
 #pragma mark -
 #pragma mark Initialization and teardown
@@ -82,7 +82,7 @@
 {
     [self destroyDataFBO];
     
-    if (_rawBytesForImage != NULL)
+    if (_rawBytesForImage != NULL && (![GPUImageOpenGLESContext supportsFastTextureUpload])) 
     {
         free(_rawBytesForImage);
         _rawBytesForImage = NULL;
@@ -218,10 +218,10 @@
     };
     
     static const GLfloat textureCoordinates[] = {
-        0.0f, 1.0f,
-        1.0f, 1.0f,
         0.0f, 0.0f,
         1.0f, 0.0f,
+        0.0f, 1.0f,
+        1.0f, 1.0f,
     };
     
 	glActiveTexture(GL_TEXTURE4);
@@ -278,7 +278,11 @@
 - (void)newFrameReadyAtTime:(CMTime)frameTime;
 {
     hasReadFromTheCurrentFrame = NO;
-    [self.delegate newImageFrameAvailableFromDataSource:self];
+    
+    if (_newFrameAvailableBlock != NULL)
+    {
+        _newFrameAvailableBlock();
+    }
 }
 
 - (NSInteger)nextAvailableTextureIndex;
@@ -344,6 +348,7 @@
         
         if ([GPUImageOpenGLESContext supportsFastTextureUpload]) 
         {
+            glFinish();
             CVPixelBufferLockBaseAddress(renderTarget, 0);
             _rawBytesForImage = (GLubyte *)CVPixelBufferGetBaseAddress(renderTarget);
         } 
@@ -354,7 +359,18 @@
         
         return _rawBytesForImage;
     }
-    
+}
+
+- (NSUInteger)bytesPerRowInOutput;
+{
+    if ([GPUImageOpenGLESContext supportsFastTextureUpload]) 
+    {
+        return CVPixelBufferGetBytesPerRow(renderTarget);
+    }
+    else
+    {
+        return imageSize.width;
+    }
 }
 
 @end

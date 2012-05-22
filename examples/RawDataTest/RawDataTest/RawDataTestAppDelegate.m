@@ -1,11 +1,3 @@
-//
-//  RawDataTestAppDelegate.m
-//  RawDataTest
-//
-//  Created by Brad Larson on 5/20/2012.
-//  Copyright (c) 2012 Cell Phone. All rights reserved.
-//
-
 #import "RawDataTestAppDelegate.h"
 
 @implementation RawDataTestAppDelegate
@@ -18,34 +10,42 @@
     // Override point for customization after application launch.
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
+    
+    GLubyte *rawDataBytes = calloc(10 * 10 * 4, sizeof(GLubyte));
+    for (unsigned int yIndex = 0; yIndex < 10; yIndex++)
+    {
+        for (unsigned int xIndex = 0; xIndex < 10; xIndex++)
+        {
+            rawDataBytes[yIndex * 10 * 4 + xIndex * 4] = xIndex;
+            rawDataBytes[yIndex * 10 * 4 + xIndex * 4 + 1] = yIndex;
+            rawDataBytes[yIndex * 10 * 4 + xIndex * 4 + 2] = 255;
+            rawDataBytes[yIndex * 10 * 4 + xIndex * 4 + 3] = 0;            
+        }
+    }
+    
+    GPUImageRawDataInput *rawDataInput = [[GPUImageRawDataInput alloc] initWithBytes:rawDataBytes size:CGSizeMake(10.0, 10.0)];    
+    GPUImageFilter *customFilter = [[GPUImageFilter alloc] initWithFragmentShaderFromFile:@"CalculationShader"];
+    GPUImageRawDataOutput *rawDataOutput = [[GPUImageRawDataOutput alloc] initWithImageSize:CGSizeMake(10.0, 10.0)];
+    
+    [rawDataInput addTarget:customFilter];
+    [customFilter addTarget:rawDataOutput];
+    
+    [rawDataOutput setNewFrameAvailableBlock:^{
+        GLubyte *outputBytes = [rawDataOutput rawBytesForImage];
+        NSInteger bytesPerRow = [rawDataOutput bytesPerRowInOutput];
+        NSLog(@"Bytes per row: %d", bytesPerRow);
+        for (unsigned int yIndex = 0; yIndex < 10; yIndex++)
+        {
+            for (unsigned int xIndex = 0; xIndex < 10; xIndex++)
+            {
+                NSLog(@"Byte at (%d, %d): %d, %d, %d, %d", xIndex, yIndex, outputBytes[yIndex * bytesPerRow + xIndex * 4], outputBytes[yIndex * bytesPerRow + xIndex * 4 + 1], outputBytes[yIndex * bytesPerRow + xIndex * 4 + 2], outputBytes[yIndex * bytesPerRow + xIndex * 4 + 3]);
+            }
+        }
+    }];
+    
+    [rawDataInput processData];
+
     return YES;
-}
-
-- (void)applicationWillResignActive:(UIApplication *)application
-{
-    // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
-    // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
-}
-
-- (void)applicationDidEnterBackground:(UIApplication *)application
-{
-    // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
-    // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
-}
-
-- (void)applicationWillEnterForeground:(UIApplication *)application
-{
-    // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
-}
-
-- (void)applicationDidBecomeActive:(UIApplication *)application
-{
-    // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
-}
-
-- (void)applicationWillTerminate:(UIApplication *)application
-{
-    // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
 
 @end

@@ -66,11 +66,45 @@
     
     CGSize videoPixelSize = CGSizeMake(480.0, 640.0);
     
-    positionRawData = [[GPUImageRawData alloc] initWithImageSize:videoPixelSize];
-    positionRawData.delegate = self;
+    positionRawData = [[GPUImageRawDataOutput alloc] initWithImageSize:videoPixelSize];
+    __unsafe_unretained ColorTrackingViewController *weakSelf = self;
+    [positionRawData setNewFrameAvailableBlock:^{
+        GLubyte *bytesForPositionData = positionRawData.rawBytesForImage;
+        CGPoint currentTrackingLocation = [weakSelf centroidFromTexture:bytesForPositionData ofSize:[positionRawData maximumOutputSize]];		
+        CGSize currentViewSize = weakSelf.view.bounds.size;
+		trackingDot.position = CGPointMake(currentTrackingLocation.x * currentViewSize.width, currentTrackingLocation.y * currentViewSize.height);        
+    }];
     
-    videoRawData = [[GPUImageRawData alloc] initWithImageSize:videoPixelSize];
-    videoRawData.delegate = self;
+    videoRawData = [[GPUImageRawDataOutput alloc] initWithImageSize:videoPixelSize];
+    [videoRawData setNewFrameAvailableBlock:^{
+        if (shouldReplaceThresholdColor)
+        {
+            CGSize currentViewSize = self.view.bounds.size;
+            CGSize rawPixelsSize = [videoRawData maximumOutputSize];
+            
+            
+            CGPoint scaledTouchPoint;
+            scaledTouchPoint.x = (currentTouchPoint.x / currentViewSize.width) * rawPixelsSize.width;
+            scaledTouchPoint.y = (currentTouchPoint.y / currentViewSize.height) * rawPixelsSize.height;
+            
+            GPUByteColorVector colorAtTouchPoint = [videoRawData colorAtLocation:scaledTouchPoint];
+            
+            thresholdColor[0] = (float)colorAtTouchPoint.red / 255.0;
+            thresholdColor[1] = (float)colorAtTouchPoint.green / 255.0;
+            thresholdColor[2] = (float)colorAtTouchPoint.blue / 255.0;
+            
+            //            NSLog(@"Color at touch point: %d, %d, %d, %d", colorAtTouchPoint.red, colorAtTouchPoint.green, colorAtTouchPoint.blue, colorAtTouchPoint.alpha);
+            
+            [[NSUserDefaults standardUserDefaults] setFloat:thresholdColor[0] forKey:@"thresholdColorR"];
+            [[NSUserDefaults standardUserDefaults] setFloat:thresholdColor[1] forKey:@"thresholdColorG"];
+            [[NSUserDefaults standardUserDefaults] setFloat:thresholdColor[2] forKey:@"thresholdColorB"];
+            
+            [thresholdFilter setFloatVec3:thresholdColor forUniform:@"inputColor"];
+            [positionFilter setFloatVec3:thresholdColor forUniform:@"inputColor"];
+            
+            shouldReplaceThresholdColor = NO;
+        }
+    }];
 
     [videoCamera addTarget:filteredVideoView];
     [videoCamera addTarget:videoRawData];
@@ -200,52 +234,7 @@
         }
     }
 	
-	return CGPointMake(currentXTotal / currentPixelTotal, currentYTotal / currentPixelTotal);
-}
-
-#pragma mark -
-#pragma mark GPUImageRawDataProcessor protocol
-
-- (void)newImageFrameAvailableFromDataSource:(GPUImageRawData *)rawDataSource;
-{
-    if (rawDataSource == positionRawData)
-    {
-        GLubyte *bytesForPositionData = rawDataSource.rawBytesForImage;
-        CGPoint currentTrackingLocation = [self centroidFromTexture:bytesForPositionData ofSize:[rawDataSource maximumOutputSize]];		
-        CGSize currentViewSize = self.view.bounds.size;
-		trackingDot.position = CGPointMake(currentTrackingLocation.x * currentViewSize.width, currentTrackingLocation.y * currentViewSize.height);
-    }
-    else
-    {
-        if (shouldReplaceThresholdColor)
-        {
-            CGSize currentViewSize = self.view.bounds.size;
-            CGSize rawPixelsSize = [rawDataSource maximumOutputSize];
-            
-            
-            CGPoint scaledTouchPoint;
-            scaledTouchPoint.x = (currentTouchPoint.x / currentViewSize.width) * rawPixelsSize.width;
-            scaledTouchPoint.y = (currentTouchPoint.y / currentViewSize.height) * rawPixelsSize.height;
-            
-            GPUByteColorVector colorAtTouchPoint = [rawDataSource colorAtLocation:scaledTouchPoint];
-            
-            thresholdColor[0] = (float)colorAtTouchPoint.red / 255.0;
-            thresholdColor[1] = (float)colorAtTouchPoint.green / 255.0;
-            thresholdColor[2] = (float)colorAtTouchPoint.blue / 255.0;
-
-//            NSLog(@"Color at touch point: %d, %d, %d, %d", colorAtTouchPoint.red, colorAtTouchPoint.green, colorAtTouchPoint.blue, colorAtTouchPoint.alpha);
-
-            [[NSUserDefaults standardUserDefaults] setFloat:thresholdColor[0] forKey:@"thresholdColorR"];
-            [[NSUserDefaults standardUserDefaults] setFloat:thresholdColor[1] forKey:@"thresholdColorG"];
-            [[NSUserDefaults standardUserDefaults] setFloat:thresholdColor[2] forKey:@"thresholdColorB"];
-            
-            [thresholdFilter setFloatVec3:thresholdColor forUniform:@"inputColor"];
-            [positionFilter setFloatVec3:thresholdColor forUniform:@"inputColor"];
-
-            shouldReplaceThresholdColor = NO;
-        }
-    }
-    
+	return CGPointMake((1.0 - currentYTotal / currentPixelTotal), currentXTotal / currentPixelTotal);
 }
 
 #pragma mark -

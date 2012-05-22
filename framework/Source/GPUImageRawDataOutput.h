@@ -11,24 +11,21 @@ typedef struct GPUByteColorVector GPUByteColorVector;
 
 @protocol GPUImageRawDataProcessor;
 
-@interface GPUImageRawData : NSObject <GPUImageInput> {
+@interface GPUImageRawDataOutput : NSObject <GPUImageInput> {
     CGSize imageSize;
     CVOpenGLESTextureCacheRef rawDataTextureCache;
     CVPixelBufferRef renderTarget;
     GPUImageRotationMode inputRotation;
 }
 
-@property(readwrite, unsafe_unretained, nonatomic) id<GPUImageRawDataProcessor> delegate;
 @property(readonly) GLubyte *rawBytesForImage;
+@property(nonatomic, copy) void(^newFrameAvailableBlock)(void);
 
 // Initialization and teardown
 - (id)initWithImageSize:(CGSize)newImageSize;
 
 // Data access
 - (GPUByteColorVector)colorAtLocation:(CGPoint)locationInImage;
+- (NSUInteger)bytesPerRowInOutput;
 
-@end
-
-@protocol GPUImageRawDataProcessor
-- (void)newImageFrameAvailableFromDataSource:(GPUImageRawData *)rawDataSource;
 @end

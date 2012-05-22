@@ -208,7 +208,6 @@ Documentation is generated from header comments using appledoc. To build the doc
   - *threshold*: Any edge above this threshold will be black, and anything below white. Ranges from 0.0 to 1.0, with 0.5 as the default
 
 - **GPUImageSketchFilter**: Converts video to look like a sketch. This is just the Sobel edge detection filter with the colors inverted
-  - *intensity*: The degree to which the original image colors are replaced by the detected edges (0.0 - 1.0, with 1.0 as the default)
   - *texelWidth*: 
   - *texelHeight*: These parameters affect the visibility of the detected edges
 

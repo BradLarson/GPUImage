@@ -36,8 +36,8 @@ NSString *const kGPUImageGradientFragmentShaderString = SHADER_STRING
      
 //     float verticalDerivative = abs(-topLeftIntensity - topIntensity - topRightIntensity + bottomLeftIntensity + bottomIntensity + bottomRightIntensity);
 //     float horizontalDerivative = abs(-bottomLeftIntensity - leftIntensity - topLeftIntensity + bottomRightIntensity + rightIntensity + topRightIntensity);
-     float verticalDerivative = abs(-topIntensity + bottomIntensity);
-     float horizontalDerivative = abs(-leftIntensity + rightIntensity);
+     float verticalDerivative = -topIntensity + bottomIntensity;
+     float horizontalDerivative = -leftIntensity + rightIntensity;
      
      gl_FragColor = vec4(horizontalDerivative * horizontalDerivative, verticalDerivative * verticalDerivative, verticalDerivative * horizontalDerivative, 1.0);
  }

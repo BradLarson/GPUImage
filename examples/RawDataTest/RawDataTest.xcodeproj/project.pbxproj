@@ -7,25 +7,63 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		BC18E03D156B352E00AB8026 /* libGPUImage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BCF1E62F1569D454006B155F /* libGPUImage.a */; };
+		BC18E03F156B354000AB8026 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC18E03E156B354000AB8026 /* CoreMedia.framework */; };
 		BCF1E6071569D372006B155F /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCF1E6061569D372006B155F /* UIKit.framework */; };
 		BCF1E6091569D372006B155F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCF1E6081569D372006B155F /* Foundation.framework */; };
 		BCF1E60B1569D372006B155F /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCF1E60A1569D372006B155F /* CoreGraphics.framework */; };
 		BCF1E6111569D372006B155F /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = BCF1E60F1569D372006B155F /* InfoPlist.strings */; };
 		BCF1E6131569D372006B155F /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = BCF1E6121569D372006B155F /* main.m */; };
 		BCF1E6171569D372006B155F /* RawDataTestAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = BCF1E6161569D372006B155F /* RawDataTestAppDelegate.m */; };
+		BCF1E61E1569D3F8006B155F /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCF1E61D1569D3F8006B155F /* CoreVideo.framework */; };
+		BCF1E6201569D408006B155F /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCF1E61F1569D408006B155F /* AVFoundation.framework */; };
+		BCF1E6231569D42A006B155F /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCF1E6211569D42A006B155F /* OpenGLES.framework */; };
+		BCF1E6241569D42A006B155F /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCF1E6221569D42A006B155F /* QuartzCore.framework */; };
+		BCF1E63F156AAB4E006B155F /* CalculationShader.fsh in Resources */ = {isa = PBXBuildFile; fileRef = BCF1E63E156AAB4E006B155F /* CalculationShader.fsh */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		BCF1E62E1569D454006B155F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BCF1E6251569D453006B155F /* GPUImage.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = BCF1A33414DDB1EC00852800;
+			remoteInfo = GPUImage;
+		};
+		BCF1E6301569D454006B155F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BCF1E6251569D453006B155F /* GPUImage.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = BCF1A34414DDB1EC00852800;
+			remoteInfo = GPUImageTests;
+		};
+		BCF1E6371569D565006B155F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BCF1E6251569D453006B155F /* GPUImage.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = BCF1A33314DDB1EC00852800;
+			remoteInfo = GPUImage;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
+		BC18E03E156B354000AB8026 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		BCF1E6021569D372006B155F /* RawDataTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RawDataTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BCF1E6061569D372006B155F /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		BCF1E6081569D372006B155F /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		BCF1E60A1569D372006B155F /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
-		BCF1E60E1569D372006B155F /* RawDataTest-Info.plist */ = {isa = PBXFileReference; path = "RawDataTest-Info.plist"; sourceTree = "<group>"; };
+		BCF1E60E1569D372006B155F /* RawDataTest-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "RawDataTest-Info.plist"; sourceTree = "<group>"; };
 		BCF1E6101569D372006B155F /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		BCF1E6121569D372006B155F /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		BCF1E6141569D372006B155F /* RawDataTest-Prefix.pch */ = {isa = PBXFileReference; path = "RawDataTest-Prefix.pch"; sourceTree = "<group>"; };
-		BCF1E6151569D372006B155F /* RawDataTestAppDelegate.h */ = {isa = PBXFileReference; path = RawDataTestAppDelegate.h; sourceTree = "<group>"; };
+		BCF1E6141569D372006B155F /* RawDataTest-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RawDataTest-Prefix.pch"; sourceTree = "<group>"; };
+		BCF1E6151569D372006B155F /* RawDataTestAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RawDataTestAppDelegate.h; sourceTree = "<group>"; };
 		BCF1E6161569D372006B155F /* RawDataTestAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RawDataTestAppDelegate.m; sourceTree = "<group>"; };
+		BCF1E61D1569D3F8006B155F /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
+		BCF1E61F1569D408006B155F /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		BCF1E6211569D42A006B155F /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
+		BCF1E6221569D42A006B155F /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		BCF1E6251569D453006B155F /* GPUImage.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = GPUImage.xcodeproj; path = ../../framework/GPUImage.xcodeproj; sourceTree = "<group>"; };
+		BCF1E63E156AAB4E006B155F /* CalculationShader.fsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = CalculationShader.fsh; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -33,6 +71,12 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BC18E03F156B354000AB8026 /* CoreMedia.framework in Frameworks */,
+				BC18E03D156B352E00AB8026 /* libGPUImage.a in Frameworks */,
+				BCF1E6231569D42A006B155F /* OpenGLES.framework in Frameworks */,
+				BCF1E6241569D42A006B155F /* QuartzCore.framework in Frameworks */,
+				BCF1E6201569D408006B155F /* AVFoundation.framework in Frameworks */,
+				BCF1E61E1569D3F8006B155F /* CoreVideo.framework in Frameworks */,
 				BCF1E6071569D372006B155F /* UIKit.framework in Frameworks */,
 				BCF1E6091569D372006B155F /* Foundation.framework in Frameworks */,
 				BCF1E60B1569D372006B155F /* CoreGraphics.framework in Frameworks */,
@@ -45,6 +89,7 @@
 		BCF1E5F71569D372006B155F = {
 			isa = PBXGroup;
 			children = (
+				BC18E03E156B354000AB8026 /* CoreMedia.framework */,
 				BCF1E60C1569D372006B155F /* RawDataTest */,
 				BCF1E6051569D372006B155F /* Frameworks */,
 				BCF1E6031569D372006B155F /* Products */,
@@ -62,6 +107,11 @@
 		BCF1E6051569D372006B155F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				BCF1E6251569D453006B155F /* GPUImage.xcodeproj */,
+				BCF1E6211569D42A006B155F /* OpenGLES.framework */,
+				BCF1E6221569D42A006B155F /* QuartzCore.framework */,
+				BCF1E61F1569D408006B155F /* AVFoundation.framework */,
+				BCF1E61D1569D3F8006B155F /* CoreVideo.framework */,
 				BCF1E6061569D372006B155F /* UIKit.framework */,
 				BCF1E6081569D372006B155F /* Foundation.framework */,
 				BCF1E60A1569D372006B155F /* CoreGraphics.framework */,
@@ -74,6 +124,7 @@
 			children = (
 				BCF1E6151569D372006B155F /* RawDataTestAppDelegate.h */,
 				BCF1E6161569D372006B155F /* RawDataTestAppDelegate.m */,
+				BCF1E63E156AAB4E006B155F /* CalculationShader.fsh */,
 				BCF1E60D1569D372006B155F /* Supporting Files */,
 			);
 			path = RawDataTest;
@@ -90,6 +141,15 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		BCF1E6261569D453006B155F /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				BCF1E62F1569D454006B155F /* libGPUImage.a */,
+				BCF1E6311569D454006B155F /* GPUImageTests.octest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -104,6 +164,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				BCF1E6381569D565006B155F /* PBXTargetDependency */,
 			);
 			name = RawDataTest;
 			productName = RawDataTest;
@@ -130,6 +191,12 @@
 			mainGroup = BCF1E5F71569D372006B155F;
 			productRefGroup = BCF1E6031569D372006B155F /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = BCF1E6261569D453006B155F /* Products */;
+					ProjectRef = BCF1E6251569D453006B155F /* GPUImage.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				BCF1E6011569D372006B155F /* RawDataTest */,
@@ -137,12 +204,30 @@
 		};
 /* End PBXProject section */
 
+/* Begin PBXReferenceProxy section */
+		BCF1E62F1569D454006B155F /* libGPUImage.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libGPUImage.a;
+			remoteRef = BCF1E62E1569D454006B155F /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		BCF1E6311569D454006B155F /* GPUImageTests.octest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = GPUImageTests.octest;
+			remoteRef = BCF1E6301569D454006B155F /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
+
 /* Begin PBXResourcesBuildPhase section */
 		BCF1E6001569D372006B155F /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				BCF1E6111569D372006B155F /* InfoPlist.strings in Resources */,
+				BCF1E63F156AAB4E006B155F /* CalculationShader.fsh in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -159,6 +244,14 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		BCF1E6381569D565006B155F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = GPUImage;
+			targetProxy = BCF1E6371569D565006B155F /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		BCF1E60F1569D372006B155F /* InfoPlist.strings */ = {
@@ -180,6 +273,7 @@
 				CLANG_ENABLE_OBJC_ARC = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = "../../framework/**";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -192,6 +286,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "../../framework/**";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -206,11 +301,13 @@
 				CLANG_ENABLE_OBJC_ARC = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
+				FRAMEWORK_SEARCH_PATHS = "../../framework/**";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "../../framework/**";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				SDKROOT = iphoneos;
@@ -260,6 +357,7 @@
 				BCF1E61C1569D372006B155F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

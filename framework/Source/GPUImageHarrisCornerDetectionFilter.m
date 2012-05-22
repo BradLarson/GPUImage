@@ -33,10 +33,12 @@ NSString *const kGPUImageHarrisCornerDetectionFragmentShaderString = SHADER_STRI
      mediump float derivativeSum = derivativeElements.x + derivativeElements.y;
      
      // This is the Noble variant on the Harris detector, from 
-     // Alison Noble, "Descriptions of Image Surfaces", PhD thesis, Department of Engineering Science, Oxford University 1989, p45.     
+     // Alison Noble, "Descriptions of Image Surfaces", PhD thesis, Department of Engineering Science, Oxford University 1989, p45.  
+     // R = (Ix^2 * Iy^2 - Ixy * Ixy) / (Ix^2 + Iy^2)
      mediump float harrisIntensity = (derivativeElements.x * derivativeElements.y - (derivativeElements.z * derivativeElements.z)) / (derivativeSum);
 
      // Original Harris detector
+     // R = Ix^2 * Iy^2 - Ixy * Ixy - k * (Ix^2 + Iy^2)^2
 //     highp float harrisIntensity = derivativeElements.x * derivativeElements.y - (derivativeElements.z * derivativeElements.z) - harrisConstant * derivativeSum * derivativeSum;
      
 //     gl_FragColor = vec4(vec3(harrisIntensity * 7.0), 1.0);
@@ -66,9 +68,20 @@ NSString *const kGPUImageSimpleThresholdFragmentShaderString = SHADER_STRING
 @synthesize sensitivity = _sensitivity;
 @synthesize threshold = _threshold;
 
-//@synthesize intensity = _intensity;
+#pragma mark -
+#pragma mark Initialization and teardown
 
 - (id)init;
+{
+    if (!(self = [self initWithCornerDetectionFragmentShader:kGPUImageHarrisCornerDetectionFragmentShaderString]))
+    {
+        return nil;
+    }
+    
+    return self;
+}
+
+- (id)initWithCornerDetectionFragmentShader:(NSString *)cornerDetectionFragmentShader;
 {
     if (!(self = [super init]))
     {
@@ -87,7 +100,7 @@ NSString *const kGPUImageSimpleThresholdFragmentShaderString = SHADER_STRING
     [self addFilter:blurFilter];
     
     // Third pass: apply the Harris corner detection calculation
-    harrisCornerDetectionFilter = [[GPUImageFilter alloc] initWithFragmentShaderFromString:kGPUImageHarrisCornerDetectionFragmentShaderString];
+    harrisCornerDetectionFilter = [[GPUImageFilter alloc] initWithFragmentShaderFromString:cornerDetectionFragmentShader];
     [self addFilter:harrisCornerDetectionFilter];
     
     // Fourth pass: apply non-maximum suppression to find the local maxima
