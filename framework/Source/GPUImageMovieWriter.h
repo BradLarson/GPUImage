@@ -2,6 +2,8 @@
 #import <AVFoundation/AVFoundation.h>
 #import "GPUImageOpenGLESContext.h"
 
+extern NSString *const kGPUImageColorSwizzlingFragmentShaderString;
+
 @protocol GPUImageMovieWriterDelegate <NSObject>
 
 @optional

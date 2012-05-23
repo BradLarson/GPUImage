@@ -66,7 +66,7 @@
     
     CGSize videoPixelSize = CGSizeMake(480.0, 640.0);
     
-    positionRawData = [[GPUImageRawDataOutput alloc] initWithImageSize:videoPixelSize];
+    positionRawData = [[GPUImageRawDataOutput alloc] initWithImageSize:videoPixelSize resultsInBGRAFormat:YES];
     __unsafe_unretained ColorTrackingViewController *weakSelf = self;
     [positionRawData setNewFrameAvailableBlock:^{
         GLubyte *bytesForPositionData = positionRawData.rawBytesForImage;
@@ -75,7 +75,7 @@
 		trackingDot.position = CGPointMake(currentTrackingLocation.x * currentViewSize.width, currentTrackingLocation.y * currentViewSize.height);        
     }];
     
-    videoRawData = [[GPUImageRawDataOutput alloc] initWithImageSize:videoPixelSize];
+    videoRawData = [[GPUImageRawDataOutput alloc] initWithImageSize:videoPixelSize resultsInBGRAFormat:YES];
     [videoRawData setNewFrameAvailableBlock:^{
         if (shouldReplaceThresholdColor)
         {

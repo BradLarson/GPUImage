@@ -25,7 +25,7 @@
     
     GPUImageRawDataInput *rawDataInput = [[GPUImageRawDataInput alloc] initWithBytes:rawDataBytes size:CGSizeMake(10.0, 10.0)];    
     GPUImageFilter *customFilter = [[GPUImageFilter alloc] initWithFragmentShaderFromFile:@"CalculationShader"];
-    GPUImageRawDataOutput *rawDataOutput = [[GPUImageRawDataOutput alloc] initWithImageSize:CGSizeMake(10.0, 10.0)];
+    GPUImageRawDataOutput *rawDataOutput = [[GPUImageRawDataOutput alloc] initWithImageSize:CGSizeMake(10.0, 10.0) resultsInBGRAFormat:YES];
     
     [rawDataInput addTarget:customFilter];
     [customFilter addTarget:rawDataOutput];
