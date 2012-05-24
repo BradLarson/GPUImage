@@ -334,11 +334,11 @@
             self.filterSettingsSlider.hidden = NO;
             
             [self.filterSettingsSlider setMinimumValue:0.01];
-            [self.filterSettingsSlider setMaximumValue:0.20];
-            [self.filterSettingsSlider setValue:0.05];
+            [self.filterSettingsSlider setMaximumValue:0.70];
+            [self.filterSettingsSlider setValue:0.20];
 
             filter = [[GPUImageHarrisCornerDetectionFilter alloc] init];
-            [(GPUImageHarrisCornerDetectionFilter *)filter setThreshold:0.05];            
+            [(GPUImageHarrisCornerDetectionFilter *)filter setThreshold:0.20];            
         }; break;
         case GPUIMAGE_PREWITTEDGEDETECTION:
         {

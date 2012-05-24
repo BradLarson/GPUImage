@@ -9,6 +9,6 @@
 
 @property (readwrite, nonatomic) CGFloat red; 
 @property (readwrite, nonatomic) CGFloat green; 
-@property (readwrite, nonatomic) CGFloat blue; 
+@property (readwrite, nonatomic) CGFloat blue;
 
 @end

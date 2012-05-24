@@ -35,7 +35,9 @@ NSString *const kGPUImageHarrisCornerDetectionFragmentShaderString = SHADER_STRI
      // This is the Noble variant on the Harris detector, from 
      // Alison Noble, "Descriptions of Image Surfaces", PhD thesis, Department of Engineering Science, Oxford University 1989, p45.  
      // R = (Ix^2 * Iy^2 - Ixy * Ixy) / (Ix^2 + Iy^2)
-     mediump float harrisIntensity = (derivativeElements.x * derivativeElements.y - (derivativeElements.z * derivativeElements.z)) / (derivativeSum);
+     mediump float zElement = (derivativeElements.z * 2.0) - 1.0;
+//     mediump float harrisIntensity = (derivativeElements.x * derivativeElements.y - (derivativeElements.z * derivativeElements.z)) / (derivativeSum);
+     mediump float harrisIntensity = (derivativeElements.x * derivativeElements.y - (zElement * zElement)) / (derivativeSum);
 
      // Original Harris detector
      // R = Ix^2 * Iy^2 - Ixy * Ixy - k * (Ix^2 + Iy^2)^2
@@ -67,6 +69,7 @@ NSString *const kGPUImageSimpleThresholdFragmentShaderString = SHADER_STRING
 @synthesize cornersDetectedBlock;
 @synthesize sensitivity = _sensitivity;
 @synthesize threshold = _threshold;
+@synthesize intermediateImages = _intermediateImages;
 
 #pragma mark -
 #pragma mark Initialization and teardown
@@ -88,31 +91,75 @@ NSString *const kGPUImageSimpleThresholdFragmentShaderString = SHADER_STRING
 		return nil;
     }
 
+#ifdef DEBUGFEATUREDETECTION
+    _intermediateImages = [[NSMutableArray alloc] init];
+#endif
+    
     // First pass: reduce to luminance and take the derivative of the luminance texture
     derivativeFilter = [[GPUImageXYDerivativeFilter alloc] init];
 //    derivativeFilter.imageWidthFactor = 256.0;
 //    derivativeFilter.imageHeightFactor = 256.0;
     [self addFilter:derivativeFilter];
-    
+
+#ifdef DEBUGFEATUREDETECTION
+    __unsafe_unretained NSMutableArray *weakIntermediateImages = _intermediateImages;
+    __unsafe_unretained GPUImageFilter *weakFilter = derivativeFilter;
+    [derivativeFilter setFrameProcessingCompletionBlock:^(GPUImageOutput *filter){
+        UIImage *intermediateImage = [weakFilter imageFromCurrentlyProcessedOutput];
+        [weakIntermediateImages addObject:intermediateImage];
+    }];
+#endif
+
     // Second pass: blur the derivative
 //    blurFilter = [[GPUImageGaussianBlurFilter alloc] init];
     blurFilter = [[GPUImageFastBlurFilter alloc] init];
     [self addFilter:blurFilter];
     
+#ifdef DEBUGFEATUREDETECTION
+    weakFilter = blurFilter;
+    [blurFilter setFrameProcessingCompletionBlock:^(GPUImageOutput *filter){
+        UIImage *intermediateImage = [weakFilter imageFromCurrentlyProcessedOutput];
+        [weakIntermediateImages addObject:intermediateImage];
+    }];
+#endif
+    
     // Third pass: apply the Harris corner detection calculation
     harrisCornerDetectionFilter = [[GPUImageFilter alloc] initWithFragmentShaderFromString:cornerDetectionFragmentShader];
     [self addFilter:harrisCornerDetectionFilter];
-    
+
+#ifdef DEBUGFEATUREDETECTION
+    weakFilter = harrisCornerDetectionFilter;
+    [harrisCornerDetectionFilter setFrameProcessingCompletionBlock:^(GPUImageOutput *filter){
+        UIImage *intermediateImage = [weakFilter imageFromCurrentlyProcessedOutput];
+        [weakIntermediateImages addObject:intermediateImage];
+    }];
+#endif
+
     // Fourth pass: apply non-maximum suppression to find the local maxima
     nonMaximumSuppressionFilter = [[GPUImageNonMaximumSuppressionFilter alloc] init];
     [self addFilter:nonMaximumSuppressionFilter];
-    
+
+#ifdef DEBUGFEATUREDETECTION
+    weakFilter = nonMaximumSuppressionFilter;
+    [nonMaximumSuppressionFilter setFrameProcessingCompletionBlock:^(GPUImageOutput *filter){
+        UIImage *intermediateImage = [weakFilter imageFromCurrentlyProcessedOutput];
+        [weakIntermediateImages addObject:intermediateImage];
+    }];
+#endif
+
     // Fifth pass: threshold the result
     simpleThresholdFilter = [[GPUImageFilter alloc] initWithFragmentShaderFromString:kGPUImageSimpleThresholdFragmentShaderString];
     [self addFilter:simpleThresholdFilter];
-    
+
+#ifdef DEBUGFEATUREDETECTION
+    weakFilter = simpleThresholdFilter;
+    [simpleThresholdFilter setFrameProcessingCompletionBlock:^(GPUImageOutput *filter){
+        UIImage *intermediateImage = [weakFilter imageFromCurrentlyProcessedOutput];
+        [weakIntermediateImages addObject:intermediateImage];
+    }];
+#endif
+
     __unsafe_unretained GPUImageHarrisCornerDetectionFilter *weakSelf = self;
-    
     [simpleThresholdFilter setFrameProcessingCompletionBlock:^(GPUImageOutput *filter) {
         [weakSelf extractCornerLocationsFromImage];
     }];
@@ -128,8 +175,8 @@ NSString *const kGPUImageSimpleThresholdFragmentShaderString = SHADER_STRING
     self.terminalFilter = simpleThresholdFilter;
     
     self.blurSize = 1.0;
-    self.sensitivity = 10.0;
-    self.threshold = 0.05;
+    self.sensitivity = 5.0;
+    self.threshold = 0.20;
     
     return self;
 }
