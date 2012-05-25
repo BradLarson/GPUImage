@@ -1,5 +1,4 @@
 #import "GPUImageHarrisCornerDetectionFilter.h"
-#import "GPUImageFilter.h"
 #import "GPUImageGaussianBlurFilter.h"
 #import "GPUImageXYDerivativeFilter.h"
 #import "GPUImageGrayscaleFilter.h"
@@ -32,19 +31,12 @@ NSString *const kGPUImageHarrisCornerDetectionFragmentShaderString = SHADER_STRI
      
      mediump float derivativeSum = derivativeElements.x + derivativeElements.y;
      
-     // This is the Noble variant on the Harris detector, from 
-     // Alison Noble, "Descriptions of Image Surfaces", PhD thesis, Department of Engineering Science, Oxford University 1989, p45.  
-     // R = (Ix^2 * Iy^2 - Ixy * Ixy) / (Ix^2 + Iy^2)
      mediump float zElement = (derivativeElements.z * 2.0) - 1.0;
-//     mediump float harrisIntensity = (derivativeElements.x * derivativeElements.y - (derivativeElements.z * derivativeElements.z)) / (derivativeSum);
-     mediump float harrisIntensity = (derivativeElements.x * derivativeElements.y - (zElement * zElement)) / (derivativeSum);
 
-     // Original Harris detector
      // R = Ix^2 * Iy^2 - Ixy * Ixy - k * (Ix^2 + Iy^2)^2
-//     highp float harrisIntensity = derivativeElements.x * derivativeElements.y - (derivativeElements.z * derivativeElements.z) - harrisConstant * derivativeSum * derivativeSum;
+     mediump float cornerness = derivativeElements.x * derivativeElements.y - (zElement * zElement) - harrisConstant * derivativeSum * derivativeSum;
      
-//     gl_FragColor = vec4(vec3(harrisIntensity * 7.0), 1.0);
-     gl_FragColor = vec4(vec3(harrisIntensity * sensitivity), 1.0);
+     gl_FragColor = vec4(vec3(cornerness * sensitivity), 1.0);
  }
 );
 

@@ -89,4 +89,5 @@
 #import "GPUImageBilateralFilter.h"
 #import "GPUImageCrosshairGenerator.h"
 #import "GPUImageToneCurveFilter.h"
-
+#import "GPUImageNobleCornerDetectionFilter.h"
+#import "GPUImageShiTomasiFeatureDetectionFilter.h"

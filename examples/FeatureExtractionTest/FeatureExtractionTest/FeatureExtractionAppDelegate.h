@@ -5,7 +5,10 @@
 
 @property (strong, nonatomic) UIWindow *window;
 
-- (void)testHarrisCornerDetectorAgainstPicture:(GPUImagePicture *)pictureInput;
+- (void)testCornerDetector:(GPUImageHarrisCornerDetectionFilter *)cornerDetector ofName:(NSString *)detectorName againstPicture:(GPUImagePicture *)pictureInput withName:(NSString *)pictureName;
+- (void)testHarrisCornerDetectorAgainstPicture:(GPUImagePicture *)pictureInput withName:(NSString *)pictureName;
+- (void)testNobleCornerDetectorAgainstPicture:(GPUImagePicture *)pictureInput withName:(NSString *)pictureName;
+- (void)testShiTomasiCornerDetectorAgainstPicture:(GPUImagePicture *)pictureInput withName:(NSString *)pictureName;
 - (void)saveImage:(UIImage *)imageToSave fileName:(NSString *)imageName;
 
 @end
