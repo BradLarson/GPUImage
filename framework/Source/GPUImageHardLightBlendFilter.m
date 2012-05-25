@@ -12,29 +12,31 @@ NSString *const kGPUImageHardLightBlendFragmentShaderString = SHADER_STRING
 
  void main()
  {
-     mediump vec4 textureColor = texture2D(inputImageTexture, textureCoordinate);
-     mediump vec4 textureColor2 = texture2D(inputImageTexture2, textureCoordinate2);
-     mediump float luminance = dot(textureColor.rgb, W);
+     mediump vec4 base = texture2D(inputImageTexture, textureCoordinate);
+     mediump vec4 overlay = texture2D(inputImageTexture2, textureCoordinate2);
 
-     mediump vec4 whiteColor = vec4(1.0);
-     
-     mediump vec4 result;
-     if (luminance < 0.45)
-     {
-         result = 2.0 * textureColor * textureColor2;
-     }
-     else if (luminance > 0.55)
-     {
-         result = whiteColor - 2.0 * (whiteColor - textureColor2) * (whiteColor - textureColor);
-     }
-     else
-     {
-         mediump vec4 result1 = 2.0 * textureColor * textureColor2;
-         mediump vec4 result2 = whiteColor - 2.0 * (whiteColor - textureColor2) * (whiteColor - textureColor);
-         result = mix(result1, result2, (luminance - 0.45) * 10.0);
+     highp float ra;
+     if (2.0 * overlay.r < overlay.a) {
+         ra = 2.0 * overlay.r * base.r + overlay.r * (1.0 - base.a) + base.r * (1.0 - overlay.a);
+     } else {
+         ra = overlay.a * base.a - 2.0 * (base.a - base.r) * (overlay.a - overlay.r) + overlay.r * (1.0 - base.a) + base.r * (1.0 - overlay.a);
      }
      
-     gl_FragColor = result;
+     highp float ga;
+     if (2.0 * overlay.g < overlay.a) {
+         ga = 2.0 * overlay.g * base.g + overlay.g * (1.0 - base.a) + base.g * (1.0 - overlay.a);
+     } else {
+         ga = overlay.a * base.a - 2.0 * (base.a - base.g) * (overlay.a - overlay.g) + overlay.g * (1.0 - base.a) + base.g * (1.0 - overlay.a);
+     }
+     
+     highp float ba;
+     if (2.0 * overlay.b < overlay.a) {
+         ba = 2.0 * overlay.b * base.b + overlay.b * (1.0 - base.a) + base.b * (1.0 - overlay.a);
+     } else {
+         ba = overlay.a * base.a - 2.0 * (base.a - base.b) * (overlay.a - overlay.b) + overlay.b * (1.0 - base.a) + base.b * (1.0 - overlay.a);
+     }
+     
+     gl_FragColor = vec4(ra, ga, ba, 1.0);
  }
 );
 
