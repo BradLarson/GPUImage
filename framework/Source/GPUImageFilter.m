@@ -433,7 +433,7 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
 {
     if (self.frameProcessingCompletionBlock != NULL)
     {
-        self.frameProcessingCompletionBlock(self);
+        self.frameProcessingCompletionBlock(self, frameTime);
     }
     
     for (id<GPUImageInput> currentTarget in targets)

@@ -879,8 +879,8 @@
             crosshairGenerator.crosshairWidth = 15.0;
             [crosshairGenerator forceProcessingAtSize:CGSizeMake(480.0, 640.0)];
             
-            [(GPUImageHarrisCornerDetectionFilter *)filter setCornersDetectedBlock:^(GLfloat* cornerArray, NSUInteger cornersDetected) {
-                [crosshairGenerator renderCrosshairsFromArray:cornerArray count:cornersDetected];
+            [(GPUImageHarrisCornerDetectionFilter *)filter setCornersDetectedBlock:^(GLfloat* cornerArray, NSUInteger cornersDetected, CMTime frameTime) {
+                [crosshairGenerator renderCrosshairsFromArray:cornerArray count:cornersDetected frameTime:frameTime];
             }];
 
             GPUImageAlphaBlendFilter *blendFilter = [[GPUImageAlphaBlendFilter alloc] init];

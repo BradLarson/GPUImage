@@ -63,7 +63,7 @@ NSString *const kGPUImageCrosshairFragmentShaderString = SHADER_STRING
 #pragma mark -
 #pragma mark Rendering
 
-- (void)renderCrosshairsFromArray:(GLfloat *)crosshairCoordinates count:(NSUInteger)numberOfCrosshairs;
+- (void)renderCrosshairsFromArray:(GLfloat *)crosshairCoordinates count:(NSUInteger)numberOfCrosshairs frameTime:(CMTime)frameTime;
 {
     if (self.preventRendering)
     {
@@ -83,7 +83,7 @@ NSString *const kGPUImageCrosshairFragmentShaderString = SHADER_STRING
     
     glDrawArrays(GL_POINTS, 0, numberOfCrosshairs);
     
-    [self informTargetsAboutNewFrameAtTime:kCMTimeInvalid];
+    [self informTargetsAboutNewFrameAtTime:frameTime];
 }
 
 - (void)renderToTextureWithVertices:(const GLfloat *)vertices textureCoordinates:(const GLfloat *)textureCoordinates sourceTexture:(GLuint)sourceTexture;

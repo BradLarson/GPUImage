@@ -41,8 +41,8 @@
 // A threshold value at which a point is recognized as being a corner after the non-maximum suppression. Default is 0.20.
 @property(readwrite, nonatomic) CGFloat threshold;
 
-// This block is called on the detection of new corner points, usually on every processed frame. A C array containing normalized coordinates in X, Y pairs is passed in, along with a count of the number of corners detected
-@property(nonatomic, copy) void(^cornersDetectedBlock)(GLfloat* cornerArray, NSUInteger cornersDetected);
+// This block is called on the detection of new corner points, usually on every processed frame. A C array containing normalized coordinates in X, Y pairs is passed in, along with a count of the number of corners detected and the current timestamp of the video frame
+@property(nonatomic, copy) void(^cornersDetectedBlock)(GLfloat* cornerArray, NSUInteger cornersDetected, CMTime frameTime);
 
 // These images are only enabled when built with DEBUGFEATUREDETECTION defined, and are used to examine the intermediate states of the feature detector
 @property(nonatomic, readonly, strong) NSMutableArray *intermediateImages;

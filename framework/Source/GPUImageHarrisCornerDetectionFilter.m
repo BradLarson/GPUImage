@@ -7,7 +7,7 @@
 
 @interface GPUImageHarrisCornerDetectionFilter()
 
-- (void)extractCornerLocationsFromImage;
+- (void)extractCornerLocationsFromImageAtFrameTime:(CMTime)frameTime;
 
 @end
 
@@ -152,8 +152,8 @@ NSString *const kGPUImageSimpleThresholdFragmentShaderString = SHADER_STRING
 #endif
 
     __unsafe_unretained GPUImageHarrisCornerDetectionFilter *weakSelf = self;
-    [simpleThresholdFilter setFrameProcessingCompletionBlock:^(GPUImageOutput *filter) {
-        [weakSelf extractCornerLocationsFromImage];
+    [simpleThresholdFilter setFrameProcessingCompletionBlock:^(GPUImageOutput *filter, CMTime frameTime) {
+        [weakSelf extractCornerLocationsFromImageAtFrameTime:frameTime];
     }];
     
     [derivativeFilter addTarget:blurFilter];    
@@ -181,7 +181,7 @@ NSString *const kGPUImageSimpleThresholdFragmentShaderString = SHADER_STRING
 #pragma mark -
 #pragma mark Corner extraction
 
-- (void)extractCornerLocationsFromImage;
+- (void)extractCornerLocationsFromImageAtFrameTime:(CMTime)frameTime;
 {
 
     NSUInteger numberOfCorners = 0;
@@ -221,7 +221,7 @@ NSString *const kGPUImageSimpleThresholdFragmentShaderString = SHADER_STRING
 
     if (cornersDetectedBlock != NULL)
     {
-        cornersDetectedBlock(cornersArray, numberOfCorners);
+        cornersDetectedBlock(cornersArray, numberOfCorners, frameTime);
     }
     
     free(cornersArray);
