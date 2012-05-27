@@ -6,7 +6,18 @@
 @class GPUImageDirectionalNonMaximumSuppressionFilter;
 @class GPUImageWeakPixelInclusionFilter;
 
-/** This uses a Gaussian blur, followed by applying a Sobel operator, then a thresholding operation, in order to highlight edges
+/** This applies the edge detection process described by John Canny in 
+ 
+ Canny, J., A Computational Approach To Edge Detection, IEEE Trans. Pattern Analysis and Machine Intelligence, 8(6):679–698, 1986.
+ 
+ and implemented in OpenGL ES by 
+
+ A. Ensor, S. Hall. GPU-based Image Analysis on Mobile Devices. Proceedings of Image and Vision Computing New Zealand 2011.
+
+ It starts with a conversion to luminance, followed by an accelerated 9-hit Gaussian blur. A Sobel operator is applied to obtain the overall
+ gradient strength in the blurred image, as well as the direction (in texture sampling steps) of the gradient. A non-maximum suppression filter
+ acts along the direction of the gradient, highlighting strong edges that pass the threshold and completely removing those that fail the lower 
+ threshold. Finally, pixels from in-between these thresholds are either included in edges or rejected based on neighboring pixels.
  */
 @interface GPUImageCannyEdgeDetectionFilter : GPUImageFilterGroup
 {
