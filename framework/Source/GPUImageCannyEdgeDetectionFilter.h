@@ -1,16 +1,20 @@
 #import "GPUImageFilterGroup.h"
 
-@class GPUImageGaussianBlurFilter;
-@class GPUImageThresholdEdgeDetection;
-@class GPUImageSketchFilter;
+@class GPUImageGrayscaleFilter;
+@class GPUImageSingleComponentFastBlurFilter;
+@class GPUimageDirectionalSobelEdgeDetectionFilter;
+@class GPUImageDirectionalNonMaximumSuppressionFilter;
+@class GPUImageWeakPixelInclusionFilter;
 
-/** This uses a Gaussian blur before applying a Sobel operator to highlight edges
+/** This uses a Gaussian blur, followed by applying a Sobel operator, then a thresholding operation, in order to highlight edges
  */
 @interface GPUImageCannyEdgeDetectionFilter : GPUImageFilterGroup
 {
-    GPUImageGaussianBlurFilter *blurFilter;
-    GPUImageThresholdEdgeDetection *edgeDetectionFilter;
-//    GPUImageSketchFilter *edgeDetectionFilter;
+    GPUImageGrayscaleFilter *luminanceFilter;
+    GPUImageSingleComponentFastBlurFilter *blurFilter;
+    GPUimageDirectionalSobelEdgeDetectionFilter *edgeDetectionFilter;
+    GPUImageDirectionalNonMaximumSuppressionFilter *nonMaximumSuppressionFilter;
+    GPUImageWeakPixelInclusionFilter *weakPixelInclusionFilter;
 }
 
 /** The image width and height factors tweak the appearance of the edges.
@@ -32,8 +36,12 @@
  */
 @property (readwrite, nonatomic) CGFloat blurSize;
 
-/** Any edge above this threshold will be black, and anything below white. Ranges from 0.0 to 1.0, with 0.5 as the default
+/** Any edge with a gradient magnitude above this threshold will pass and show up in the final result.
  */
-@property(readwrite, nonatomic) CGFloat threshold; 
+@property(readwrite, nonatomic) CGFloat upperThreshold; 
+
+/** Any edge with a gradient magnitude below this threshold will fail and be removed from the final result.
+ */
+@property(readwrite, nonatomic) CGFloat lowerThreshold; 
 
 @end

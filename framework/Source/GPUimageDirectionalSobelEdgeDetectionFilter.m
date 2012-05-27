@@ -1,9 +1,8 @@
-#import "GPUImageSketchFilter.h"
+#import "GPUimageDirectionalSobelEdgeDetectionFilter.h"
 
-@implementation GPUImageSketchFilter
+@implementation GPUimageDirectionalSobelEdgeDetectionFilter
 
-// Invert the colorspace for a sketch
-NSString *const kGPUImageSketchFragmentShaderString = SHADER_STRING
+NSString *const kGPUImageDirectionalSobelEdgeDetectionFragmentShaderString = SHADER_STRING
 (
  precision mediump float;
  
@@ -31,12 +30,17 @@ NSString *const kGPUImageSketchFragmentShaderString = SHADER_STRING
      float rightIntensity = texture2D(inputImageTexture, rightTextureCoordinate).r;
      float bottomIntensity = texture2D(inputImageTexture, bottomTextureCoordinate).r;
      float topIntensity = texture2D(inputImageTexture, topTextureCoordinate).r;
-     float h = -topLeftIntensity - 2.0 * topIntensity - topRightIntensity + bottomLeftIntensity + 2.0 * bottomIntensity + bottomRightIntensity;
-     float v = -bottomLeftIntensity - 2.0 * leftIntensity - topLeftIntensity + bottomRightIntensity + 2.0 * rightIntensity + topRightIntensity;
      
-     float mag = 1.0 - length(vec2(h, v));
+     vec2 gradientDirection;
+     gradientDirection.x = -bottomLeftIntensity - 2.0 * leftIntensity - topLeftIntensity + bottomRightIntensity + 2.0 * rightIntensity + topRightIntensity;
+     gradientDirection.y = -topLeftIntensity - 2.0 * topIntensity - topRightIntensity + bottomLeftIntensity + 2.0 * bottomIntensity + bottomRightIntensity;
      
-     gl_FragColor = vec4(vec3(mag), 1.0);
+     float gradientMagnitude = length(gradientDirection);
+     vec2 normalizedDirection = normalize(gradientDirection);
+     normalizedDirection = sign(normalizedDirection) * floor(abs(normalizedDirection) + 0.617316); // Offset by 1-sin(pi/8) to set to 0 if near axis, 1 if away
+     normalizedDirection = (normalizedDirection + 1.0) * 0.5; // Place -1.0 - 1.0 within 0 - 1.0
+     
+     gl_FragColor = vec4(gradientMagnitude, normalizedDirection.x, normalizedDirection.y, 1.0);
  }
 );
 
@@ -45,13 +49,13 @@ NSString *const kGPUImageSketchFragmentShaderString = SHADER_STRING
 
 - (id)init;
 {
-    if (!(self = [self initWithFragmentShaderFromString:kGPUImageSketchFragmentShaderString]))
+    if (!(self = [super initWithFragmentShaderFromString:kGPUImageDirectionalSobelEdgeDetectionFragmentShaderString]))
     {
-		return nil;
+        return nil;
     }
-    
+
     return self;
 }
 
-@end
 
+@end

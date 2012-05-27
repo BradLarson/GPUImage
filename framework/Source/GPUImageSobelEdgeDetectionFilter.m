@@ -5,7 +5,7 @@
 //   Code from "Graphics Shaders: Theory and Practice" by M. Bailey and S. Cunningham 
 NSString *const kGPUImageSobelEdgeDetectionFragmentShaderString = SHADER_STRING
 (
- precision highp float;
+ precision mediump float;
 
  varying vec2 textureCoordinate;
  varying vec2 leftTextureCoordinate;

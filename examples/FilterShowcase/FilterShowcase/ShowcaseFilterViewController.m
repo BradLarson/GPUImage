@@ -377,12 +377,12 @@
             self.filterSettingsSlider.hidden = NO;
             
             [self.filterSettingsSlider setMinimumValue:0.0];
-            [self.filterSettingsSlider setMaximumValue:2.0];
+            [self.filterSettingsSlider setMaximumValue:1.0];
             [self.filterSettingsSlider setValue:1.0];
 
 //            [self.filterSettingsSlider setMinimumValue:0.0];
-//            [self.filterSettingsSlider setMaximumValue:1.0];
-//            [self.filterSettingsSlider setValue:0.9];
+//            [self.filterSettingsSlider setMaximumValue:0.5];
+//            [self.filterSettingsSlider setValue:0.1];
 
             filter = [[GPUImageCannyEdgeDetectionFilter alloc] init];
         }; break;
@@ -935,7 +935,7 @@
         case GPUIMAGE_SWIRL: [(GPUImageSwirlFilter *)filter setAngle:[(UISlider *)sender value]]; break;
         case GPUIMAGE_EMBOSS: [(GPUImageEmbossFilter *)filter setIntensity:[(UISlider *)sender value]]; break;
         case GPUIMAGE_CANNYEDGEDETECTION: [(GPUImageCannyEdgeDetectionFilter *)filter setBlurSize:[(UISlider*)sender value]]; break;
-//        case GPUIMAGE_CANNYEDGEDETECTION: [(GPUImageCannyEdgeDetectionFilter *)filter setThreshold:[(UISlider*)sender value]]; break;
+//        case GPUIMAGE_CANNYEDGEDETECTION: [(GPUImageCannyEdgeDetectionFilter *)filter setLowerThreshold:[(UISlider*)sender value]]; break;
         case GPUIMAGE_HARRISCORNERDETECTION: [(GPUImageHarrisCornerDetectionFilter *)filter setThreshold:[(UISlider*)sender value]]; break;
         case GPUIMAGE_NOBLECORNERDETECTION: [(GPUImageNobleCornerDetectionFilter *)filter setThreshold:[(UISlider*)sender value]]; break;
         case GPUIMAGE_SHITOMASIFEATUREDETECTION: [(GPUImageShiTomasiFeatureDetectionFilter *)filter setThreshold:[(UISlider*)sender value]]; break;

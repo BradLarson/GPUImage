@@ -1,11 +1,10 @@
-#import "GPUImageSketchFilter.h"
+#import "GPUImageWeakPixelInclusionFilter.h"
 
-@implementation GPUImageSketchFilter
+@implementation GPUImageWeakPixelInclusionFilter
 
-// Invert the colorspace for a sketch
-NSString *const kGPUImageSketchFragmentShaderString = SHADER_STRING
+NSString *const kGPUImageWeakPixelInclusionFragmentShaderString = SHADER_STRING
 (
- precision mediump float;
+ precision lowp float;
  
  varying vec2 textureCoordinate;
  varying vec2 leftTextureCoordinate;
@@ -31,12 +30,13 @@ NSString *const kGPUImageSketchFragmentShaderString = SHADER_STRING
      float rightIntensity = texture2D(inputImageTexture, rightTextureCoordinate).r;
      float bottomIntensity = texture2D(inputImageTexture, bottomTextureCoordinate).r;
      float topIntensity = texture2D(inputImageTexture, topTextureCoordinate).r;
-     float h = -topLeftIntensity - 2.0 * topIntensity - topRightIntensity + bottomLeftIntensity + 2.0 * bottomIntensity + bottomRightIntensity;
-     float v = -bottomLeftIntensity - 2.0 * leftIntensity - topLeftIntensity + bottomRightIntensity + 2.0 * rightIntensity + topRightIntensity;
+     float centerIntensity = texture2D(inputImageTexture, textureCoordinate).r;
      
-     float mag = 1.0 - length(vec2(h, v));
-     
-     gl_FragColor = vec4(vec3(mag), 1.0);
+     float pixelIntensitySum = bottomLeftIntensity + topRightIntensity + topLeftIntensity + bottomRightIntensity + leftIntensity + rightIntensity + bottomIntensity + topIntensity + centerIntensity;
+     float sumTest = step(1.5, pixelIntensitySum);
+     float pixelTest = step(0.01, centerIntensity);
+          
+     gl_FragColor = vec4(vec3(sumTest * pixelTest), 1.0);
  }
 );
 
@@ -45,7 +45,7 @@ NSString *const kGPUImageSketchFragmentShaderString = SHADER_STRING
 
 - (id)init;
 {
-    if (!(self = [self initWithFragmentShaderFromString:kGPUImageSketchFragmentShaderString]))
+    if (!(self = [self initWithFragmentShaderFromString:kGPUImageWeakPixelInclusionFragmentShaderString]))
     {
 		return nil;
     }
@@ -54,4 +54,3 @@ NSString *const kGPUImageSketchFragmentShaderString = SHADER_STRING
 }
 
 @end
-

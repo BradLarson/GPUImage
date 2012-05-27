@@ -71,7 +71,17 @@ NSString *const kGPUImageFastBlurFragmentShaderString = SHADER_STRING
 
 - (id)init;
 {
-    if (!(self = [super initWithFirstStageVertexShaderFromString:kGPUImageFastBlurVertexShaderString firstStageFragmentShaderFromString:kGPUImageFastBlurFragmentShaderString secondStageVertexShaderFromString:kGPUImageFastBlurVertexShaderString secondStageFragmentShaderFromString:kGPUImageFastBlurFragmentShaderString]))
+    if (!(self = [self initWithFragmentShaderFromString:kGPUImageFastBlurFragmentShaderString]))
+    {
+		return nil;
+    }
+
+    return self;
+}
+
+- (id)initWithFragmentShaderFromString:(NSString *)fragmentShaderString;
+{
+    if (!(self = [super initWithFirstStageVertexShaderFromString:kGPUImageFastBlurVertexShaderString firstStageFragmentShaderFromString:fragmentShaderString secondStageVertexShaderFromString:kGPUImageFastBlurVertexShaderString secondStageFragmentShaderFromString:fragmentShaderString]))
     {
 		return nil;
     }

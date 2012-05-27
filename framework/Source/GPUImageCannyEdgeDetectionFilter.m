@@ -1,11 +1,15 @@
 #import "GPUImageCannyEdgeDetectionFilter.h"
-#import "GPUImageGaussianBlurFilter.h"
-#import "GPUImageThresholdEdgeDetection.h"
-#import "GPUImageSketchFilter.h"
+
+#import "GPUImageGrayscaleFilter.h"
+#import "GPUImageSingleComponentFastBlurFilter.h"
+#import "GPUImageDirectionalSobelEdgeDetectionFilter.h"
+#import "GPUImageDirectionalNonMaximumSuppressionFilter.h"
+#import "GPUImageWeakPixelInclusionFilter.h"
 
 @implementation GPUImageCannyEdgeDetectionFilter
 
-@synthesize threshold;
+@synthesize upperThreshold;
+@synthesize lowerThreshold;
 @synthesize blurSize;
 @synthesize texelWidth;
 @synthesize texelHeight;
@@ -17,23 +21,38 @@
 		return nil;
     }
     
-    // First pass: apply a variable Gaussian blur
-    blurFilter = [[GPUImageGaussianBlurFilter alloc] init];
+    // First pass: convert image to luminance
+    luminanceFilter = [[GPUImageGrayscaleFilter alloc] init];
+    [self addFilter:luminanceFilter];
+    
+    // Second pass: apply a variable Gaussian blur
+    blurFilter = [[GPUImageSingleComponentFastBlurFilter alloc] init];
     [self addFilter:blurFilter];
     
-    // Second pass: run the Sobel edge detection on this blurred image
-    edgeDetectionFilter = [[GPUImageThresholdEdgeDetection alloc] init];
-//    edgeDetectionFilter = [[GPUImageSketchFilter alloc] init];
+    // Third pass: run the Sobel edge detection, with calculated gradient directions, on this blurred image
+    edgeDetectionFilter = [[GPUimageDirectionalSobelEdgeDetectionFilter alloc] init];
     [self addFilter:edgeDetectionFilter];
     
-    // Texture location 0 needs to be the sharp image for both the blur and the second stage processing
+    // Fourth pass: apply non-maximum suppression    
+    nonMaximumSuppressionFilter = [[GPUImageDirectionalNonMaximumSuppressionFilter alloc] init];
+    [self addFilter:nonMaximumSuppressionFilter];
+    
+    // Fifth pass: include weak pixels to complete edges
+    weakPixelInclusionFilter = [[GPUImageWeakPixelInclusionFilter alloc] init];
+    [self addFilter:weakPixelInclusionFilter];
+    
+    [luminanceFilter addTarget:blurFilter];
     [blurFilter addTarget:edgeDetectionFilter];
+    [edgeDetectionFilter addTarget:nonMaximumSuppressionFilter];
+    [nonMaximumSuppressionFilter addTarget:weakPixelInclusionFilter];
     
-    self.initialFilters = [NSArray arrayWithObject:blurFilter];
-    self.terminalFilter = edgeDetectionFilter;
+    self.initialFilters = [NSArray arrayWithObject:luminanceFilter];
+//    self.terminalFilter = nonMaximumSuppressionFilter;
+    self.terminalFilter = weakPixelInclusionFilter;
     
-    self.blurSize = 1.5;
-    self.threshold = 0.9;
+    self.blurSize = 1.0;
+    self.upperThreshold = 0.4;
+    self.lowerThreshold = 0.1;
     
     return self;
 }
@@ -71,15 +90,24 @@
     return edgeDetectionFilter.texelHeight;
 }
 
-- (void)setThreshold:(CGFloat)newValue;
+- (void)setUpperThreshold:(CGFloat)newValue;
 {
-    edgeDetectionFilter.threshold = newValue;
+    nonMaximumSuppressionFilter.upperThreshold = newValue;
 }
 
-- (CGFloat)threshold;
+- (CGFloat)upperThreshold;
 {
-    return edgeDetectionFilter.threshold;
-//    return 0;
+    return nonMaximumSuppressionFilter.upperThreshold;
+}
+
+- (void)setLowerThreshold:(CGFloat)newValue;
+{
+    nonMaximumSuppressionFilter.lowerThreshold = newValue;
+}
+
+- (CGFloat)lowerThreshold;
+{
+    return nonMaximumSuppressionFilter.lowerThreshold;
 }
 
 @end
