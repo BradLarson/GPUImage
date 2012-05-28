@@ -20,7 +20,11 @@
 
 + (void)useImageProcessingContext;
 {
-    [EAGLContext setCurrentContext:[[GPUImageOpenGLESContext sharedImageProcessingOpenGLESContext] context]];
+    EAGLContext *imageProcessingContext = [[GPUImageOpenGLESContext sharedImageProcessingOpenGLESContext] context];
+    if ([EAGLContext currentContext] != imageProcessingContext)
+    {
+        [EAGLContext setCurrentContext:imageProcessingContext];
+    }
 }
 
 + (GLint)maximumTextureSizeForThisDevice;

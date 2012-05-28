@@ -89,8 +89,6 @@ NSString *const kGPUImageSimpleThresholdFragmentShaderString = SHADER_STRING
     
     // First pass: reduce to luminance and take the derivative of the luminance texture
     derivativeFilter = [[GPUImageXYDerivativeFilter alloc] init];
-//    derivativeFilter.imageWidthFactor = 256.0;
-//    derivativeFilter.imageHeightFactor = 256.0;
     [self addFilter:derivativeFilter];
 
 #ifdef DEBUGFEATUREDETECTION
@@ -103,7 +101,6 @@ NSString *const kGPUImageSimpleThresholdFragmentShaderString = SHADER_STRING
 #endif
 
     // Second pass: blur the derivative
-//    blurFilter = [[GPUImageGaussianBlurFilter alloc] init];
     blurFilter = [[GPUImageFastBlurFilter alloc] init];
     [self addFilter:blurFilter];
     
@@ -162,8 +159,6 @@ NSString *const kGPUImageSimpleThresholdFragmentShaderString = SHADER_STRING
     [nonMaximumSuppressionFilter addTarget:simpleThresholdFilter];
     
     self.initialFilters = [NSArray arrayWithObjects:derivativeFilter, nil];
-//    self.terminalFilter = harrisCornerDetectionFilter;
-//    self.terminalFilter = nonMaximumSuppressionFilter;
     self.terminalFilter = simpleThresholdFilter;
     
     self.blurSize = 1.0;
@@ -196,7 +191,7 @@ NSString *const kGPUImageSimpleThresholdFragmentShaderString = SHADER_STRING
     
     glReadPixels(0, 0, (int)imageSize.width, (int)imageSize.height, GL_RGBA, GL_UNSIGNED_BYTE, rawImagePixels);
 
-    CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
+//    CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
 
     for (unsigned int yCoordinate = 0; yCoordinate < imageSize.height; yCoordinate++)
     {
@@ -216,8 +211,8 @@ NSString *const kGPUImageSimpleThresholdFragmentShaderString = SHADER_STRING
         }
     }
     
-    CFAbsoluteTime currentFrameTime = (CFAbsoluteTimeGetCurrent() - startTime);
-    NSLog(@"Processing time : %f ms", 1000.0 * currentFrameTime);
+//    CFAbsoluteTime currentFrameTime = (CFAbsoluteTimeGetCurrent() - startTime);
+//    NSLog(@"Processing time : %f ms", 1000.0 * currentFrameTime);
 
     if (cornersDetectedBlock != NULL)
     {

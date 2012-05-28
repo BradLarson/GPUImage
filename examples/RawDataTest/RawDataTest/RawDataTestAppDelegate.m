@@ -44,6 +44,8 @@
     }];
     
     [rawDataInput processData];
+    
+    free(rawDataBytes);
 
     return YES;
 }

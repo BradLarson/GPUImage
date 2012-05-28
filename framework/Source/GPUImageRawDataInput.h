@@ -15,5 +15,6 @@
 // Image rendering
 - (void)updateDataFromBytes:(GLubyte *)bytesToUpload size:(CGSize)imageSize;
 - (void)processData;
+- (CGSize)outputImageSize;
 
 @end
