@@ -823,6 +823,7 @@
         }
         
         videoCamera.runBenchmark = YES;
+        GPUImageView *filterView = (GPUImageView *)self.view;
         
         if (needsSecondImage)
         {
@@ -841,15 +842,11 @@
 				inputImage = [UIImage imageNamed:@"WID-small.jpg"];
 			}
 			
-			
             sourcePicture = [[GPUImagePicture alloc] initWithImage:inputImage smoothlyScaleOutput:YES];
-            [sourcePicture addTarget:filter];
-           
             [sourcePicture processImage];            
-            
+            [sourcePicture addTarget:filter];
         }
 
-        GPUImageView *filterView = (GPUImageView *)self.view;
         
         if (filterType == GPUIMAGE_HISTOGRAM)
         {
