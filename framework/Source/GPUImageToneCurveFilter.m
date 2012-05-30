@@ -143,6 +143,15 @@ NSString *const kGPUImageToneCurveFragmentShaderString = SHADER_STRING
             double h = next.x-cur.x;
             
             double y= a*cur.y + b*next.y + (h*h/6)*( (a*a*a-a)*sd[i]+ (b*b*b-b)*sd[i+1] );
+                        
+            if (y > 255.0)
+            {
+                y = 255.0;   
+            }
+            else if (y < 0.0)
+            {
+                y = 0.0;   
+            }
             
             [output addObject:[NSValue valueWithCGPoint:CGPointMake(x, y)]];
         }
