@@ -155,10 +155,13 @@ NSString *const kGPUImageToneCurveFragmentShaderString = SHADER_STRING
     return output;
 }
 
-
 - (NSArray *)secondDerivative:(NSArray *)points
 {
     int n = [points count];
+    if ((n <= 0) || (n == 1))
+    {
+        return nil;
+    }
     
     double matrix[n][3];
     double result[n];
@@ -216,7 +219,6 @@ NSString *const kGPUImageToneCurveFragmentShaderString = SHADER_STRING
     
     return output;
 }
-
 
 - (void)updateToneCurveTexture;
 {
