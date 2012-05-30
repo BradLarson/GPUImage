@@ -43,7 +43,9 @@
     [filter addTarget:primaryView];
     
     [renderer setNewFrameAvailableBlock:^{
-        [textureInput processTexture];
+        float currentTimeInMilliseconds = [[NSDate date] timeIntervalSinceDate:startTime] * 1000.0;
+        
+        [textureInput processTextureWithFrameTime:CMTimeMake((int)currentTimeInMilliseconds, 1000)];
     }];
 }
 

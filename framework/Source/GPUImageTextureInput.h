@@ -9,6 +9,6 @@
 - (id)initWithTexture:(GLuint)newInputTexture size:(CGSize)newTextureSize;
 
 // Image rendering
-- (void)processTexture;
+- (void)processTextureWithFrameTime:(CMTime)frameTime;
 
 @end

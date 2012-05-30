@@ -23,7 +23,7 @@
 #pragma mark -
 #pragma mark Image rendering
 
-- (void)processTexture;
+- (void)processTextureWithFrameTime:(CMTime)frameTime;
 {
     for (id<GPUImageInput> currentTarget in targets)
     {
@@ -31,7 +31,7 @@
         NSInteger targetTextureIndex = [[targetTextureIndices objectAtIndex:indexOfObject] integerValue];
 
         [currentTarget setInputSize:textureSize atIndex:targetTextureIndex];
-        [currentTarget newFrameReadyAtTime:kCMTimeInvalid];
+        [currentTarget newFrameReadyAtTime:frameTime];
     }
 }
 

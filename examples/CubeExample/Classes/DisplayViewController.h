@@ -12,6 +12,8 @@
     ES2Renderer *renderer;
     GPUImageTextureInput *textureInput;
     GPUImageFilter *filter;
+    
+    NSDate *startTime;
 }
 
 - (void)drawView:(id)sender;
