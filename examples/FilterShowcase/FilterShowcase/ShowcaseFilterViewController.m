@@ -759,6 +759,13 @@
             
             filter = [[GPUImageMedianFilter alloc] init];
 		}; break;
+        case GPUIMAGE_UIELEMENT:
+        {
+            self.title = @"UI Element";
+            self.filterSettingsSlider.hidden = YES;
+            
+            filter = [[GPUImageSepiaFilter alloc] init];
+		}; break;
         case GPUIMAGE_GAUSSIAN_SELECTIVE:
         {
             self.title = @"Selective Blur";
@@ -818,7 +825,8 @@
     else 
     {
     
-        if (filterType != GPUIMAGE_VORONI) {
+        if (filterType != GPUIMAGE_VORONI) 
+        {
             [videoCamera addTarget:filter];
         }
         
@@ -890,7 +898,36 @@
 
             [blendFilter addTarget:filterView];
         }
-        
+        else if (filterType == GPUIMAGE_UIELEMENT)
+        {
+            GPUImageAlphaBlendFilter *blendFilter = [[GPUImageAlphaBlendFilter alloc] init];
+            blendFilter.mix = 1.0;
+            
+            NSDate *startTime = [NSDate date];
+            
+            UILabel *timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(0.0, 0.0, 240.0f, 320.0f)];
+            timeLabel.font = [UIFont systemFontOfSize:17.0f];
+            timeLabel.text = @"Time: 0.0 s";
+            timeLabel.textAlignment = UITextAlignmentCenter;
+            timeLabel.backgroundColor = [UIColor clearColor];
+            timeLabel.textColor = [UIColor whiteColor];
+
+            uiElementInput = [[GPUImageUIElement alloc] initWithView:timeLabel];
+            
+            [filter addTarget:blendFilter];
+            [uiElementInput addTarget:blendFilter];
+            
+            [blendFilter addTarget:filterView];
+
+            uiElementInput.targetToIgnoreForUpdates = blendFilter;
+            
+            __unsafe_unretained GPUImageUIElement *weakUIElementInput = uiElementInput;
+            
+            [filter setFrameProcessingCompletionBlock:^(GPUImageOutput * filter, CMTime frameTime){
+                timeLabel.text = [NSString stringWithFormat:@"Time: %f s", -[startTime timeIntervalSinceNow]];
+                [weakUIElementInput update];
+            }];
+        }
         else 
         {
             [filter addTarget:filterView];

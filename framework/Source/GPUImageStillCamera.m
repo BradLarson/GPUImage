@@ -150,7 +150,7 @@ void GPUImageCreateResizedSampleBuffer(CVPixelBufferRef cameraFrame, CGSize fina
 
 //        report_memory(@"After filter processing");
         
-        NSData *dataForJPEGFile = nil;
+        __strong NSData *dataForJPEGFile = nil;
         @autoreleasepool {
             UIImage *filteredPhoto = [finalFilterInChain imageFromCurrentlyProcessedOutput];
             

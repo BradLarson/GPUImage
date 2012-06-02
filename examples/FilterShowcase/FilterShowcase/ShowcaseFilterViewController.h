@@ -70,6 +70,7 @@ typedef enum {
     GPUIMAGE_HARDLIGHTBLEND,
     GPUIMAGE_SOFTLIGHTBLEND,
     GPUIMAGE_CUSTOM,
+    GPUIMAGE_UIELEMENT,
     GPUIMAGE_FILECONFIG,
     GPUIMAGE_FILTERGROUP,
     GPUIMAGE_NUMFILTERS
@@ -82,6 +83,7 @@ typedef enum {
     GPUImageOutput<GPUImageInput> *filter;
     GPUImagePicture *sourcePicture;
     GPUImageShowcaseFilterType filterType;
+    GPUImageUIElement *uiElementInput;
     
     GPUImageFilterPipeline *pipeline;
     

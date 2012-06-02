@@ -121,11 +121,14 @@ NSString *const kGPUImageTwoInputTextureVertexShaderString = SHADER_STRING
 
 - (void)setInputSize:(CGSize)newSize atIndex:(NSInteger)textureIndex;
 {
-    [super setInputSize:newSize atIndex:textureIndex];
-    
-    if ((textureIndex == 0) && (CGSizeEqualToSize(newSize, CGSizeZero)))
+    if (textureIndex == 0)
     {
-        hasSetFirstTexture = NO;
+        [super setInputSize:newSize atIndex:textureIndex];
+        
+        if (CGSizeEqualToSize(newSize, CGSizeZero))
+        {
+            hasSetFirstTexture = NO;
+        }
     }
 }
 
