@@ -94,3 +94,5 @@
 #import "GPUImageShiTomasiFeatureDetectionFilter.h"
 #import "GPUImageErosionFilter.h"
 #import "GPUImageDilationFilter.h"
+#import "GPUImageOpeningFilter.h"
+#import "GPUImageClosingFilter.h"

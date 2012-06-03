@@ -33,7 +33,21 @@
     [blackAndWhiteBoxImage processImage];
     UIImage *dilationImage = [dilationFilter imageFromCurrentlyProcessedOutput];
     [self saveImage:dilationImage fileName:@"Dilation4.png"];
-    
+
+    GPUImageOpeningFilter *openingFilter = [[GPUImageOpeningFilter alloc] initWithRadius:4];
+    [blackAndWhiteBoxImage removeAllTargets];
+    [blackAndWhiteBoxImage addTarget:openingFilter];
+    [blackAndWhiteBoxImage processImage];
+    UIImage *openingImage = [openingFilter imageFromCurrentlyProcessedOutput];
+    [self saveImage:openingImage fileName:@"Opening4.png"];
+
+    GPUImageClosingFilter *closingFilter = [[GPUImageClosingFilter alloc] initWithRadius:4];
+    [blackAndWhiteBoxImage removeAllTargets];
+    [blackAndWhiteBoxImage addTarget:closingFilter];
+    [blackAndWhiteBoxImage processImage];
+    UIImage *closingImage = [closingFilter imageFromCurrentlyProcessedOutput];
+    [self saveImage:closingImage fileName:@"Closing4.png"];
+
     return YES;
 }
 
