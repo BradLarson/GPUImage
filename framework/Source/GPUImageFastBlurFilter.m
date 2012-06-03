@@ -112,37 +112,12 @@ NSString *const kGPUImageFastBlurIgnoringAlphaFragmentShaderString = SHADER_STRI
 		return nil;
     }
     
-    verticalPassTexelWidthOffsetUniform = [filterProgram uniformIndex:@"texelWidthOffset"];
-    verticalPassTexelHeightOffsetUniform = [filterProgram uniformIndex:@"texelHeightOffset"];
-    firstBlurSizeUniform = [filterProgram uniformIndex:@"blurSize"];
-    
-    horizontalPassTexelWidthOffsetUniform = [secondFilterProgram uniformIndex:@"texelWidthOffset"];
-    horizontalPassTexelHeightOffsetUniform = [secondFilterProgram uniformIndex:@"texelHeightOffset"];
+    firstBlurSizeUniform = [filterProgram uniformIndex:@"blurSize"];    
     secondBlurSizeUniform = [secondFilterProgram uniformIndex:@"blurSize"];
 
     self.blurSize = 1.0;
 
     return self;
-}
-
-- (void)setupFilterForSize:(CGSize)filterFrameSize;
-{
-    [GPUImageOpenGLESContext useImageProcessingContext];
-    [filterProgram use];
-    if (GPUImageRotationSwapsWidthAndHeight(inputRotation))
-    {
-        glUniform1f(verticalPassTexelWidthOffsetUniform, 1.0 / filterFrameSize.height);
-        glUniform1f(verticalPassTexelHeightOffsetUniform, 0.0);
-    }
-    else
-    {
-        glUniform1f(verticalPassTexelWidthOffsetUniform, 0.0);
-        glUniform1f(verticalPassTexelHeightOffsetUniform, 1.0 / filterFrameSize.height);
-    }
-
-    [secondFilterProgram use];
-    glUniform1f(horizontalPassTexelWidthOffsetUniform, 1.0 / filterFrameSize.width);
-    glUniform1f(horizontalPassTexelHeightOffsetUniform, 0.0);
 }
 
 #pragma mark -

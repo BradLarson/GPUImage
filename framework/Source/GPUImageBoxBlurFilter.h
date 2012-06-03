@@ -1,10 +1,10 @@
-#import "GPUImageTwoPassFilter.h"
+#import "GPUImageTwoPassTextureSamplingFilter.h"
 
 /** A hardware-accelerated 9-hit box blur of an image
  */
-@interface GPUImageBoxBlurFilter : GPUImageTwoPassFilter
+@interface GPUImageBoxBlurFilter : GPUImageTwoPassTextureSamplingFilter
 {
-    GLint verticalPassTexelWidthOffsetUniform, verticalPassTexelHeightOffsetUniform, horizontalPassTexelWidthOffsetUniform, horizontalPassTexelHeightOffsetUniform, firstBlurSizeUniform, secondBlurSizeUniform;
+    GLint firstBlurSizeUniform, secondBlurSizeUniform;
 }
 
 /// A scaling for the size of the applied blur, default of 1.0

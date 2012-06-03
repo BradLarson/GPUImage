@@ -20,19 +20,19 @@
     
     
     // Testing erosion and dilation
-    GPUImageErosionFilter *erosionFilter = [[GPUImageErosionFilter alloc] init];
+    GPUImageErosionFilter *erosionFilter = [[GPUImageErosionFilter alloc] initWithRadius:4];
     [blackAndWhiteBoxImage removeAllTargets];
     [blackAndWhiteBoxImage addTarget:erosionFilter];
     [blackAndWhiteBoxImage processImage];
     UIImage *erosionImage = [erosionFilter imageFromCurrentlyProcessedOutput];
-    [self saveImage:erosionImage fileName:@"Erosion.png"];
+    [self saveImage:erosionImage fileName:@"Erosion4.png"];
     
-    GPUImageDilationFilter *dilationFilter = [[GPUImageDilationFilter alloc] init];
+    GPUImageDilationFilter *dilationFilter = [[GPUImageDilationFilter alloc] initWithRadius:4];
     [blackAndWhiteBoxImage removeAllTargets];
     [blackAndWhiteBoxImage addTarget:dilationFilter];
     [blackAndWhiteBoxImage processImage];
     UIImage *dilationImage = [dilationFilter imageFromCurrentlyProcessedOutput];
-    [self saveImage:dilationImage fileName:@"Dilation.png"];
+    [self saveImage:dilationImage fileName:@"Dilation4.png"];
     
     return YES;
 }
