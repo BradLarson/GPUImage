@@ -61,6 +61,32 @@ NSString *const kGPUImageFastBlurFragmentShaderString = SHADER_STRING
  }
 );
 
+NSString *const kGPUImageFastBlurIgnoringAlphaFragmentShaderString = SHADER_STRING
+(
+ precision highp float;
+ 
+ uniform sampler2D inputImageTexture;
+ 
+ varying highp vec2 centerTextureCoordinate;
+ varying highp vec2 oneStepLeftTextureCoordinate;
+ varying highp vec2 twoStepsLeftTextureCoordinate;
+ varying highp vec2 oneStepRightTextureCoordinate;
+ varying highp vec2 twoStepsRightTextureCoordinate;
+ 
+ // const float weight[3] = float[]( 0.2270270270, 0.3162162162, 0.0702702703 );
+ 
+ void main()
+ {
+     lowp vec3 fragmentColor = texture2D(inputImageTexture, centerTextureCoordinate).rgb * 0.2270270270;
+     fragmentColor += texture2D(inputImageTexture, oneStepLeftTextureCoordinate).rgb * 0.3162162162;
+     fragmentColor += texture2D(inputImageTexture, oneStepRightTextureCoordinate).rgb * 0.3162162162;
+     fragmentColor += texture2D(inputImageTexture, twoStepsLeftTextureCoordinate).rgb * 0.0702702703;
+     fragmentColor += texture2D(inputImageTexture, twoStepsRightTextureCoordinate).rgb * 0.0702702703;
+     
+     gl_FragColor = vec4(fragmentColor, 1.0);
+ }
+);
+
 @implementation GPUImageFastBlurFilter
 
 @synthesize blurPasses = _blurPasses;

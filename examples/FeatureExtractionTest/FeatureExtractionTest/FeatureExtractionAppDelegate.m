@@ -18,6 +18,22 @@
     [self testNobleCornerDetectorAgainstPicture:blackAndWhiteBoxImage withName:@"WhiteBoxes"];
     [self testShiTomasiCornerDetectorAgainstPicture:blackAndWhiteBoxImage withName:@"WhiteBoxes"];
     
+    
+    // Testing erosion and dilation
+    GPUImageErosionFilter *erosionFilter = [[GPUImageErosionFilter alloc] init];
+    [blackAndWhiteBoxImage removeAllTargets];
+    [blackAndWhiteBoxImage addTarget:erosionFilter];
+    [blackAndWhiteBoxImage processImage];
+    UIImage *erosionImage = [erosionFilter imageFromCurrentlyProcessedOutput];
+    [self saveImage:erosionImage fileName:@"Erosion.png"];
+    
+    GPUImageDilationFilter *dilationFilter = [[GPUImageDilationFilter alloc] init];
+    [blackAndWhiteBoxImage removeAllTargets];
+    [blackAndWhiteBoxImage addTarget:dilationFilter];
+    [blackAndWhiteBoxImage processImage];
+    UIImage *dilationImage = [dilationFilter imageFromCurrentlyProcessedOutput];
+    [self saveImage:dilationImage fileName:@"Dilation.png"];
+    
     return YES;
 }
 
@@ -36,6 +52,7 @@
     }];
     
     GPUImageAlphaBlendFilter *blendFilter = [[GPUImageAlphaBlendFilter alloc] init];
+    [blendFilter forceProcessingAtSize:[pictureInput outputImageSize]];
     [pictureInput addTarget:blendFilter];
     pictureInput.targetToIgnoreForUpdates = blendFilter;
     

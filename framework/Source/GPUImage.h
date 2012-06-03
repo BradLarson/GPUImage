@@ -92,3 +92,5 @@
 #import "GPUImageToneCurveFilter.h"
 #import "GPUImageNobleCornerDetectionFilter.h"
 #import "GPUImageShiTomasiFeatureDetectionFilter.h"
+#import "GPUImageErosionFilter.h"
+#import "GPUImageDilationFilter.h"
