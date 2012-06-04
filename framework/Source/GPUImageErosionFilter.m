@@ -1,32 +1,9 @@
 #import "GPUImageErosionFilter.h"
+#import "GPUImageDilationFilter.h"
 
 @implementation GPUImageErosionFilter
 
 // Radius: 1
-NSString *const kGPUImageErosionRadiusOneVertexShaderString = SHADER_STRING
-(
- attribute vec4 position;
- attribute vec2 inputTextureCoordinate;
- 
- uniform float texelWidthOffset; 
- uniform float texelHeightOffset; 
- 
- varying vec2 centerTextureCoordinate;
- varying vec2 oneStepPositiveTextureCoordinate;
- varying vec2 oneStepNegativeTextureCoordinate;
- 
- void main()
- {
-     gl_Position = position;
-     
-     vec2 offset = vec2(texelWidthOffset, texelHeightOffset);
-     
-     centerTextureCoordinate = inputTextureCoordinate;
-     oneStepNegativeTextureCoordinate = inputTextureCoordinate - offset;
-     oneStepPositiveTextureCoordinate = inputTextureCoordinate + offset;
- }
- );
-
 NSString *const kGPUImageErosionRadiusOneFragmentShaderString = SHADER_STRING
 (
  precision lowp float;
@@ -48,37 +25,9 @@ NSString *const kGPUImageErosionRadiusOneFragmentShaderString = SHADER_STRING
      
      gl_FragColor = vec4(vec3(minValue), 1.0);
  }
- );
+);
 
 // Radius: 2
-NSString *const kGPUImageErosionRadiusTwoVertexShaderString = SHADER_STRING
-(
- attribute vec4 position;
- attribute vec2 inputTextureCoordinate;
- 
- uniform float texelWidthOffset; 
- uniform float texelHeightOffset; 
- 
- varying vec2 centerTextureCoordinate;
- varying vec2 oneStepPositiveTextureCoordinate;
- varying vec2 oneStepNegativeTextureCoordinate;
- varying vec2 twoStepsPositiveTextureCoordinate;
- varying vec2 twoStepsNegativeTextureCoordinate;
- 
- void main()
- {
-     gl_Position = position;
-     
-     vec2 offset = vec2(texelWidthOffset, texelHeightOffset);
-     
-     centerTextureCoordinate = inputTextureCoordinate;
-     oneStepNegativeTextureCoordinate = inputTextureCoordinate - offset;
-     oneStepPositiveTextureCoordinate = inputTextureCoordinate + offset;
-     twoStepsNegativeTextureCoordinate = inputTextureCoordinate - (offset * 2.0);
-     twoStepsPositiveTextureCoordinate = inputTextureCoordinate + (offset * 2.0);
- }
- );
-
 NSString *const kGPUImageErosionRadiusTwoFragmentShaderString = SHADER_STRING
 (
  precision lowp float;
@@ -106,41 +55,9 @@ NSString *const kGPUImageErosionRadiusTwoFragmentShaderString = SHADER_STRING
      
      gl_FragColor = vec4(vec3(minValue), 1.0);
  }
- );
+);
 
 // Radius: 3
-NSString *const kGPUImageErosionRadiusThreeVertexShaderString = SHADER_STRING
-(
- attribute vec4 position;
- attribute vec2 inputTextureCoordinate;
- 
- uniform float texelWidthOffset; 
- uniform float texelHeightOffset; 
- 
- varying vec2 centerTextureCoordinate;
- varying vec2 oneStepPositiveTextureCoordinate;
- varying vec2 oneStepNegativeTextureCoordinate;
- varying vec2 twoStepsPositiveTextureCoordinate;
- varying vec2 twoStepsNegativeTextureCoordinate;
- varying vec2 threeStepsPositiveTextureCoordinate;
- varying vec2 threeStepsNegativeTextureCoordinate;
- 
- void main()
- {
-     gl_Position = position;
-     
-     vec2 offset = vec2(texelWidthOffset, texelHeightOffset);
-     
-     centerTextureCoordinate = inputTextureCoordinate;
-     oneStepNegativeTextureCoordinate = inputTextureCoordinate - offset;
-     oneStepPositiveTextureCoordinate = inputTextureCoordinate + offset;
-     twoStepsNegativeTextureCoordinate = inputTextureCoordinate - (offset * 2.0);
-     twoStepsPositiveTextureCoordinate = inputTextureCoordinate + (offset * 2.0);
-     threeStepsNegativeTextureCoordinate = inputTextureCoordinate - (offset * 3.0);
-     threeStepsPositiveTextureCoordinate = inputTextureCoordinate + (offset * 3.0);
- }
- );
-
 NSString *const kGPUImageErosionRadiusThreeFragmentShaderString = SHADER_STRING
 (
  precision lowp float;
@@ -174,45 +91,9 @@ NSString *const kGPUImageErosionRadiusThreeFragmentShaderString = SHADER_STRING
      
      gl_FragColor = vec4(vec3(minValue), 1.0);
  }
- );
+);
 
 // Radius: 4
-NSString *const kGPUImageErosionRadiusFourVertexShaderString = SHADER_STRING
-(
- attribute vec4 position;
- attribute vec2 inputTextureCoordinate;
- 
- uniform float texelWidthOffset; 
- uniform float texelHeightOffset; 
- 
- varying vec2 centerTextureCoordinate;
- varying vec2 oneStepPositiveTextureCoordinate;
- varying vec2 oneStepNegativeTextureCoordinate;
- varying vec2 twoStepsPositiveTextureCoordinate;
- varying vec2 twoStepsNegativeTextureCoordinate;
- varying vec2 threeStepsPositiveTextureCoordinate;
- varying vec2 threeStepsNegativeTextureCoordinate;
- varying vec2 fourStepsPositiveTextureCoordinate;
- varying vec2 fourStepsNegativeTextureCoordinate;
- 
- void main()
- {
-     gl_Position = position;
-     
-     vec2 offset = vec2(texelWidthOffset, texelHeightOffset);
-     
-     centerTextureCoordinate = inputTextureCoordinate;
-     oneStepNegativeTextureCoordinate = inputTextureCoordinate - offset;
-     oneStepPositiveTextureCoordinate = inputTextureCoordinate + offset;
-     twoStepsNegativeTextureCoordinate = inputTextureCoordinate - (offset * 2.0);
-     twoStepsPositiveTextureCoordinate = inputTextureCoordinate + (offset * 2.0);
-     threeStepsNegativeTextureCoordinate = inputTextureCoordinate - (offset * 3.0);
-     threeStepsPositiveTextureCoordinate = inputTextureCoordinate + (offset * 3.0);
-     fourStepsNegativeTextureCoordinate = inputTextureCoordinate - (offset * 4.0);
-     fourStepsPositiveTextureCoordinate = inputTextureCoordinate + (offset * 4.0);
- }
- );
-
 NSString *const kGPUImageErosionRadiusFourFragmentShaderString = SHADER_STRING
 (
  precision lowp float;
@@ -252,51 +133,49 @@ NSString *const kGPUImageErosionRadiusFourFragmentShaderString = SHADER_STRING
      
      gl_FragColor = vec4(vec3(minValue), 1.0);
  }
- );
+);
 
 #pragma mark -
 #pragma mark Initialization and teardown
 
-- (id)initWithRadius:(NSUInteger)erosionRadius;
+- (id)initWithRadius:(NSUInteger)dilationRadius;
 {    
-    switch (erosionRadius)
+    NSString *fragmentShaderForThisRadius = nil;
+    NSString *vertexShaderForThisRadius = nil;
+    
+    switch (dilationRadius)
     {
         case 0:
         case 1:
         {
-            if (!(self = [super initWithFirstStageVertexShaderFromString:kGPUImageErosionRadiusOneVertexShaderString firstStageFragmentShaderFromString:kGPUImageErosionRadiusOneFragmentShaderString secondStageVertexShaderFromString:kGPUImageErosionRadiusOneVertexShaderString secondStageFragmentShaderFromString:kGPUImageErosionRadiusOneFragmentShaderString]))
-            {
-                return nil;
-            }
+            vertexShaderForThisRadius = kGPUImageDilationRadiusOneVertexShaderString;
+            fragmentShaderForThisRadius = kGPUImageErosionRadiusOneFragmentShaderString;
         }; break;
         case 2:
         {
-            if (!(self = [super initWithFirstStageVertexShaderFromString:kGPUImageErosionRadiusTwoVertexShaderString firstStageFragmentShaderFromString:kGPUImageErosionRadiusTwoFragmentShaderString secondStageVertexShaderFromString:kGPUImageErosionRadiusTwoVertexShaderString secondStageFragmentShaderFromString:kGPUImageErosionRadiusTwoFragmentShaderString]))
-            {
-                return nil;
-            }
+            vertexShaderForThisRadius = kGPUImageDilationRadiusTwoVertexShaderString;
+            fragmentShaderForThisRadius = kGPUImageErosionRadiusTwoFragmentShaderString;
         }; break;
         case 3:
         {
-            if (!(self = [super initWithFirstStageVertexShaderFromString:kGPUImageErosionRadiusThreeVertexShaderString firstStageFragmentShaderFromString:kGPUImageErosionRadiusThreeFragmentShaderString secondStageVertexShaderFromString:kGPUImageErosionRadiusThreeVertexShaderString secondStageFragmentShaderFromString:kGPUImageErosionRadiusThreeFragmentShaderString]))
-            {
-                return nil;
-            }
+            vertexShaderForThisRadius = kGPUImageDilationRadiusThreeVertexShaderString;
+            fragmentShaderForThisRadius = kGPUImageErosionRadiusThreeFragmentShaderString;
         }; break;
         case 4:
         {
-            if (!(self = [super initWithFirstStageVertexShaderFromString:kGPUImageErosionRadiusFourVertexShaderString firstStageFragmentShaderFromString:kGPUImageErosionRadiusFourFragmentShaderString secondStageVertexShaderFromString:kGPUImageErosionRadiusFourVertexShaderString secondStageFragmentShaderFromString:kGPUImageErosionRadiusFourFragmentShaderString]))
-            {
-                return nil;
-            }
+            vertexShaderForThisRadius = kGPUImageDilationRadiusFourVertexShaderString;
+            fragmentShaderForThisRadius = kGPUImageErosionRadiusFourFragmentShaderString;
         }; break;
         default:
         {
-            if (!(self = [super initWithFirstStageVertexShaderFromString:kGPUImageErosionRadiusFourVertexShaderString firstStageFragmentShaderFromString:kGPUImageErosionRadiusFourFragmentShaderString secondStageVertexShaderFromString:kGPUImageErosionRadiusFourVertexShaderString secondStageFragmentShaderFromString:kGPUImageErosionRadiusFourFragmentShaderString]))
-            {
-                return nil;
-            }
+            vertexShaderForThisRadius = kGPUImageDilationRadiusFourVertexShaderString;
+            fragmentShaderForThisRadius = kGPUImageErosionRadiusFourFragmentShaderString;
         }; break;
+    }
+    
+    if (!(self = [super initWithFirstStageVertexShaderFromString:vertexShaderForThisRadius firstStageFragmentShaderFromString:fragmentShaderForThisRadius secondStageVertexShaderFromString:vertexShaderForThisRadius secondStageFragmentShaderFromString:fragmentShaderForThisRadius]))
+    {
+        return nil;
     }
     
     return self;

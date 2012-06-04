@@ -523,6 +523,35 @@
             
             filter = [[GPUImageStretchDistortionFilter alloc] init];
         }; break;
+        case GPUIMAGE_DILATION:
+        {
+            self.title = @"Dilation";
+            self.filterSettingsSlider.hidden = YES;
+            
+            filter = [[GPUImageRGBDilationFilter alloc] initWithRadius:4];
+		}; break;
+        case GPUIMAGE_EROSION:
+        {
+            self.title = @"Erosion";
+            self.filterSettingsSlider.hidden = YES;
+            
+            filter = [[GPUImageRGBErosionFilter alloc] initWithRadius:4];
+		}; break;
+        case GPUIMAGE_OPENING:
+        {
+            self.title = @"Opening";
+            self.filterSettingsSlider.hidden = YES;
+            
+            filter = [[GPUImageRGBOpeningFilter alloc] initWithRadius:4];
+		}; break;
+        case GPUIMAGE_CLOSING:
+        {
+            self.title = @"Closing";
+            self.filterSettingsSlider.hidden = YES;
+            
+            filter = [[GPUImageRGBClosingFilter alloc] initWithRadius:4];
+		}; break;
+
         case GPUIMAGE_PERLINNOISE:
         {
             self.title = @"Perlin Noise";

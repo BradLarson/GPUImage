@@ -103,6 +103,10 @@
 		case GPUIMAGE_BULGE: cell.textLabel.text = @"Bulge"; break;
 		case GPUIMAGE_PINCH: cell.textLabel.text = @"Pinch"; break;
 		case GPUIMAGE_STRETCH: cell.textLabel.text = @"Stretch"; break;
+		case GPUIMAGE_DILATION: cell.textLabel.text = @"Dilation"; break;
+		case GPUIMAGE_EROSION: cell.textLabel.text = @"Erosion"; break;
+		case GPUIMAGE_OPENING: cell.textLabel.text = @"Opening"; break;
+		case GPUIMAGE_CLOSING: cell.textLabel.text = @"Closing"; break;
         case GPUIMAGE_PERLINNOISE: cell.textLabel.text = @"Perlin noise"; break;
         case GPUIMAGE_VORONI: cell.textLabel.text = @"Voroni"; break;
         case GPUIMAGE_MOSAIC: cell.textLabel.text = @"Mosaic"; break;

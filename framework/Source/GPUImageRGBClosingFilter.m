@@ -1,8 +1,8 @@
-#import "GPUImageClosingFilter.h"
-#import "GPUImageErosionFilter.h"
-#import "GPUImageDilationFilter.h"
+#import "GPUImageRGBClosingFilter.h"
+#import "GPUImageRGBErosionFilter.h"
+#import "GPUImageRGBDilationFilter.h"
 
-@implementation GPUImageClosingFilter
+@implementation GPUImageRGBClosingFilter
 
 - (id)init;
 {
@@ -22,11 +22,11 @@
     }
     
     // First pass: dilation
-    dilationFilter = [[GPUImageDilationFilter alloc] initWithRadius:radius];
+    dilationFilter = [[GPUImageRGBDilationFilter alloc] initWithRadius:radius];
     [self addFilter:dilationFilter];
     
     // Second pass: erosion
-    erosionFilter = [[GPUImageErosionFilter alloc] initWithRadius:radius];
+    erosionFilter = [[GPUImageRGBErosionFilter alloc] initWithRadius:radius];
     [self addFilter:erosionFilter];
     
     [dilationFilter addTarget:erosionFilter];
@@ -36,5 +36,6 @@
     
     return self;
 }
+
 
 @end

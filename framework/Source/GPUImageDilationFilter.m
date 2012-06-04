@@ -259,44 +259,42 @@ NSString *const kGPUImageDilationRadiusFourFragmentShaderString = SHADER_STRING
 
 - (id)initWithRadius:(NSUInteger)dilationRadius;
 {    
+    NSString *fragmentShaderForThisRadius = nil;
+    NSString *vertexShaderForThisRadius = nil;
+    
     switch (dilationRadius)
     {
         case 0:
         case 1:
         {
-            if (!(self = [super initWithFirstStageVertexShaderFromString:kGPUImageDilationRadiusOneVertexShaderString firstStageFragmentShaderFromString:kGPUImageDilationRadiusOneFragmentShaderString secondStageVertexShaderFromString:kGPUImageDilationRadiusOneVertexShaderString secondStageFragmentShaderFromString:kGPUImageDilationRadiusOneFragmentShaderString]))
-            {
-                return nil;
-            }
+            vertexShaderForThisRadius = kGPUImageDilationRadiusOneVertexShaderString;
+            fragmentShaderForThisRadius = kGPUImageDilationRadiusOneFragmentShaderString;
         }; break;
         case 2:
         {
-            if (!(self = [super initWithFirstStageVertexShaderFromString:kGPUImageDilationRadiusTwoVertexShaderString firstStageFragmentShaderFromString:kGPUImageDilationRadiusTwoFragmentShaderString secondStageVertexShaderFromString:kGPUImageDilationRadiusTwoVertexShaderString secondStageFragmentShaderFromString:kGPUImageDilationRadiusTwoFragmentShaderString]))
-            {
-                return nil;
-            }
+            vertexShaderForThisRadius = kGPUImageDilationRadiusTwoVertexShaderString;
+            fragmentShaderForThisRadius = kGPUImageDilationRadiusTwoFragmentShaderString;
         }; break;
         case 3:
         {
-            if (!(self = [super initWithFirstStageVertexShaderFromString:kGPUImageDilationRadiusThreeVertexShaderString firstStageFragmentShaderFromString:kGPUImageDilationRadiusThreeFragmentShaderString secondStageVertexShaderFromString:kGPUImageDilationRadiusThreeVertexShaderString secondStageFragmentShaderFromString:kGPUImageDilationRadiusThreeFragmentShaderString]))
-            {
-                return nil;
-            }
+            vertexShaderForThisRadius = kGPUImageDilationRadiusThreeVertexShaderString;
+            fragmentShaderForThisRadius = kGPUImageDilationRadiusThreeFragmentShaderString;
         }; break;
         case 4:
         {
-            if (!(self = [super initWithFirstStageVertexShaderFromString:kGPUImageDilationRadiusFourVertexShaderString firstStageFragmentShaderFromString:kGPUImageDilationRadiusFourFragmentShaderString secondStageVertexShaderFromString:kGPUImageDilationRadiusFourVertexShaderString secondStageFragmentShaderFromString:kGPUImageDilationRadiusFourFragmentShaderString]))
-            {
-                return nil;
-            }
+            vertexShaderForThisRadius = kGPUImageDilationRadiusFourVertexShaderString;
+            fragmentShaderForThisRadius = kGPUImageDilationRadiusFourFragmentShaderString;
         }; break;
         default:
         {
-            if (!(self = [super initWithFirstStageVertexShaderFromString:kGPUImageDilationRadiusFourVertexShaderString firstStageFragmentShaderFromString:kGPUImageDilationRadiusFourFragmentShaderString secondStageVertexShaderFromString:kGPUImageDilationRadiusFourVertexShaderString secondStageFragmentShaderFromString:kGPUImageDilationRadiusFourFragmentShaderString]))
-            {
-                return nil;
-            }
+            vertexShaderForThisRadius = kGPUImageDilationRadiusFourVertexShaderString;
+            fragmentShaderForThisRadius = kGPUImageDilationRadiusFourFragmentShaderString;
         }; break;
+    }
+    
+    if (!(self = [super initWithFirstStageVertexShaderFromString:vertexShaderForThisRadius firstStageFragmentShaderFromString:fragmentShaderForThisRadius secondStageVertexShaderFromString:vertexShaderForThisRadius secondStageFragmentShaderFromString:fragmentShaderForThisRadius]))
+    {
+        return nil;
     }
     
     return self;
