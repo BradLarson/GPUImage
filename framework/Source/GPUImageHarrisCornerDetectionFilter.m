@@ -4,6 +4,7 @@
 #import "GPUImageGrayscaleFilter.h"
 #import "GPUImageFastBlurFilter.h"
 #import "GPUImageNonMaximumSuppressionFilter.h"
+#import "GPUImageColorPackingFilter.h"
 
 @interface GPUImageHarrisCornerDetectionFilter()
 
@@ -94,7 +95,7 @@ NSString *const kGPUImageSimpleThresholdFragmentShaderString = SHADER_STRING
 #ifdef DEBUGFEATUREDETECTION
     __unsafe_unretained NSMutableArray *weakIntermediateImages = _intermediateImages;
     __unsafe_unretained GPUImageFilter *weakFilter = derivativeFilter;
-    [derivativeFilter setFrameProcessingCompletionBlock:^(GPUImageOutput *filter){
+    [derivativeFilter setFrameProcessingCompletionBlock:^(GPUImageOutput *filter, CMTime frameTime){
         UIImage *intermediateImage = [weakFilter imageFromCurrentlyProcessedOutput];
         [weakIntermediateImages addObject:intermediateImage];
     }];
@@ -106,7 +107,7 @@ NSString *const kGPUImageSimpleThresholdFragmentShaderString = SHADER_STRING
     
 #ifdef DEBUGFEATUREDETECTION
     weakFilter = blurFilter;
-    [blurFilter setFrameProcessingCompletionBlock:^(GPUImageOutput *filter){
+    [blurFilter setFrameProcessingCompletionBlock:^(GPUImageOutput *filter, CMTime frameTime){
         UIImage *intermediateImage = [weakFilter imageFromCurrentlyProcessedOutput];
         [weakIntermediateImages addObject:intermediateImage];
     }];
@@ -118,7 +119,7 @@ NSString *const kGPUImageSimpleThresholdFragmentShaderString = SHADER_STRING
 
 #ifdef DEBUGFEATUREDETECTION
     weakFilter = harrisCornerDetectionFilter;
-    [harrisCornerDetectionFilter setFrameProcessingCompletionBlock:^(GPUImageOutput *filter){
+    [harrisCornerDetectionFilter setFrameProcessingCompletionBlock:^(GPUImageOutput *filter, CMTime frameTime){
         UIImage *intermediateImage = [weakFilter imageFromCurrentlyProcessedOutput];
         [weakIntermediateImages addObject:intermediateImage];
     }];
@@ -130,7 +131,7 @@ NSString *const kGPUImageSimpleThresholdFragmentShaderString = SHADER_STRING
 
 #ifdef DEBUGFEATUREDETECTION
     weakFilter = nonMaximumSuppressionFilter;
-    [nonMaximumSuppressionFilter setFrameProcessingCompletionBlock:^(GPUImageOutput *filter){
+    [nonMaximumSuppressionFilter setFrameProcessingCompletionBlock:^(GPUImageOutput *filter, CMTime frameTime){
         UIImage *intermediateImage = [weakFilter imageFromCurrentlyProcessedOutput];
         [weakIntermediateImages addObject:intermediateImage];
     }];
@@ -142,24 +143,43 @@ NSString *const kGPUImageSimpleThresholdFragmentShaderString = SHADER_STRING
 
 #ifdef DEBUGFEATUREDETECTION
     weakFilter = simpleThresholdFilter;
-    [simpleThresholdFilter setFrameProcessingCompletionBlock:^(GPUImageOutput *filter){
+    [simpleThresholdFilter setFrameProcessingCompletionBlock:^(GPUImageOutput *filter, CMTime frameTime){
         UIImage *intermediateImage = [weakFilter imageFromCurrentlyProcessedOutput];
         [weakIntermediateImages addObject:intermediateImage];
     }];
 #endif
 
+    // Sixth pass: compress the thresholded points into the RGBA channels
+    colorPackingFilter = [[GPUImageColorPackingFilter alloc] init];
+    [self addFilter:colorPackingFilter];
+
+    
+#ifdef DEBUGFEATUREDETECTION
     __unsafe_unretained GPUImageHarrisCornerDetectionFilter *weakSelf = self;
-    [simpleThresholdFilter setFrameProcessingCompletionBlock:^(GPUImageOutput *filter, CMTime frameTime) {
+    weakFilter = colorPackingFilter;
+    [colorPackingFilter setFrameProcessingCompletionBlock:^(GPUImageOutput *filter, CMTime frameTime){
+        NSLog(@"Triggered response from compaction filter");
+        
+        UIImage *intermediateImage = [weakFilter imageFromCurrentlyProcessedOutput];
+        [weakIntermediateImages addObject:intermediateImage];
+        
         [weakSelf extractCornerLocationsFromImageAtFrameTime:frameTime];
     }];
+#else
+    __unsafe_unretained GPUImageHarrisCornerDetectionFilter *weakSelf = self;
+    [colorPackingFilter setFrameProcessingCompletionBlock:^(GPUImageOutput *filter, CMTime frameTime) {
+        [weakSelf extractCornerLocationsFromImageAtFrameTime:frameTime];
+    }];
+#endif
     
     [derivativeFilter addTarget:blurFilter];    
     [blurFilter addTarget:harrisCornerDetectionFilter];
     [harrisCornerDetectionFilter addTarget:nonMaximumSuppressionFilter];
     [nonMaximumSuppressionFilter addTarget:simpleThresholdFilter];
+    [simpleThresholdFilter addTarget:colorPackingFilter];
     
     self.initialFilters = [NSArray arrayWithObjects:derivativeFilter, nil];
-    self.terminalFilter = simpleThresholdFilter;
+    self.terminalFilter = colorPackingFilter;
     
     self.blurSize = 1.0;
     self.sensitivity = 5.0;
@@ -182,37 +202,46 @@ NSString *const kGPUImageSimpleThresholdFragmentShaderString = SHADER_STRING
     NSUInteger numberOfCorners = 0;
     CGSize imageSize = simpleThresholdFilter.outputFrameSize;
     
+    unsigned int imageByteSize = imageSize.width * imageSize.height * 4;
+    
     if (rawImagePixels == NULL)
     {
-        rawImagePixels = (GLubyte *)malloc(imageSize.width * imageSize.height * 4);
+        rawImagePixels = (GLubyte *)malloc(imageByteSize);
     }
     
     cornersArray = calloc(512 * 2, sizeof(GLfloat));
     
     glReadPixels(0, 0, (int)imageSize.width, (int)imageSize.height, GL_RGBA, GL_UNSIGNED_BYTE, rawImagePixels);
 
-//    CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
+    CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
 
-    for (unsigned int yCoordinate = 0; yCoordinate < imageSize.height; yCoordinate++)
+    unsigned int imageWidth = imageSize.width * 4.0;
+    
+    for (unsigned int currentByte = 0; currentByte < imageByteSize; currentByte++)
     {
-        for (unsigned int xCoordinate = 0; xCoordinate < imageSize.width; xCoordinate++)
-        {            
-            GLubyte redByte = rawImagePixels[(yCoordinate * (int)imageSize.width + xCoordinate) * 4];
-            if (redByte > 100)
-            {
-                cornersArray[numberOfCorners * 2] = (CGFloat)xCoordinate / imageSize.width;
-                cornersArray[numberOfCorners * 2 + 1] = (CGFloat)(yCoordinate + 1) / imageSize.height;
-                numberOfCorners++;
-                if (numberOfCorners > 511)
-                {
-                    numberOfCorners = 511;
-                }
-            }
+        GLubyte colorByte = rawImagePixels[currentByte];
+            
+        // Red:   -, -
+        // Green: +, -
+        // Blue:  -, +
+        // Alpha: +. +
+            
+        if (colorByte > 0)
+        {
+//                NSLog(@"(%d, %d): R: %d", scaledXCoordinate, scaledYCoordinate, redByte);
+            unsigned int xCoordinate = currentByte % imageWidth;
+            unsigned int yCoordinate = currentByte / imageWidth;
+            
+            cornersArray[numberOfCorners * 2] = (CGFloat)(xCoordinate / 2) / imageSize.width;
+            cornersArray[numberOfCorners * 2 + 1] = (CGFloat)(yCoordinate * 2) / imageSize.height;
+            numberOfCorners++;
+            
+            numberOfCorners = MIN(numberOfCorners, 511);
         }
     }
     
-//    CFAbsoluteTime currentFrameTime = (CFAbsoluteTimeGetCurrent() - startTime);
-//    NSLog(@"Processing time : %f ms", 1000.0 * currentFrameTime);
+    CFAbsoluteTime currentFrameTime = (CFAbsoluteTimeGetCurrent() - startTime);
+    NSLog(@"Processing time : %f ms", 1000.0 * currentFrameTime);
 
     if (cornersDetectedBlock != NULL)
     {

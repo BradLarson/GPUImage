@@ -47,6 +47,14 @@
     [blackAndWhiteBoxImage processImage];
     UIImage *closingImage = [closingFilter imageFromCurrentlyProcessedOutput];
     [self saveImage:closingImage fileName:@"Closing4.png"];
+    
+    UIImage *compressionInputImage = [UIImage imageNamed:@"8pixeltest.png"];    
+    GPUImagePicture *compressionImage = [[GPUImagePicture alloc] initWithImage:compressionInputImage];
+    GPUImageColorPackingFilter *packingFilter = [[GPUImageColorPackingFilter alloc] init];
+    [compressionImage addTarget:packingFilter];
+    [compressionImage processImage];
+    UIImage *compressedImage = [packingFilter imageFromCurrentlyProcessedOutput];
+    [self saveImage:compressedImage fileName:@"Compression.png"];
 
     return YES;
 }

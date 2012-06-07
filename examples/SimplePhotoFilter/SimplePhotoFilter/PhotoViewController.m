@@ -50,12 +50,12 @@
     [super viewDidLoad];
     
     stillCamera = [[GPUImageStillCamera alloc] init];
-//    stillCamera = [[GPUImageStillCamera alloc] initWithSessionPreset:AVCaptureSessionPresetPhoto cameraPosition:AVCaptureDevicePositionFront];
+//    stillCamera = [[GPUImageStillCamera alloc] initWithSessionPreset:AVCaptureSessionPreset640x480 cameraPosition:AVCaptureDevicePositionBack];
     stillCamera.outputImageOrientation = UIInterfaceOrientationPortrait;
 //    filter = [[GPUImageGammaFilter alloc] init];
     filter = [[GPUImageSketchFilter alloc] init];
-    [(GPUImageSketchFilter *)filter setTexelHeight:(1.0 / 1024.0)];
-    [(GPUImageSketchFilter *)filter setTexelWidth:(1.0 / 768.0)];
+//    [(GPUImageSketchFilter *)filter setTexelHeight:(1.0 / 1024.0)];
+//    [(GPUImageSketchFilter *)filter setTexelWidth:(1.0 / 768.0)];
 //    filter = [[GPUImageSmoothToonFilter alloc] init];
 //    filter = [[GPUImageSepiaFilter alloc] init];
      	

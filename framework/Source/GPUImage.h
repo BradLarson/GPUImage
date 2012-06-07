@@ -100,3 +100,4 @@
 #import "GPUImageRGBOpeningFilter.h"
 #import "GPUImageClosingFilter.h"
 #import "GPUImageRGBClosingFilter.h"
+#import "GPUImageColorPackingFilter.h"

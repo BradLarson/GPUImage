@@ -5,6 +5,7 @@
 @class GPUImageGrayscaleFilter;
 @class GPUImageFastBlurFilter;
 @class GPUImageNonMaximumSuppressionFilter;
+@class GPUImageColorPackingFilter;
 
 //#define DEBUGFEATUREDETECTION
 
@@ -27,6 +28,7 @@
     GPUImageFilter *harrisCornerDetectionFilter;
     GPUImageNonMaximumSuppressionFilter *nonMaximumSuppressionFilter;
     GPUImageFilter *simpleThresholdFilter;
+    GPUImageColorPackingFilter *colorPackingFilter;
     GLfloat *cornersArray;
     GLubyte *rawImagePixels;
 }
