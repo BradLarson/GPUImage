@@ -462,7 +462,7 @@
             case UIInterfaceOrientationPortrait:outputRotation = kGPUImageRotateRight; break;
             case UIInterfaceOrientationPortraitUpsideDown:outputRotation = kGPUImageRotateLeft; break;
             case UIInterfaceOrientationLandscapeLeft:outputRotation = kGPUImageNoRotation; break;
-            case UIInterfaceOrientationLandscapeRight:outputRotation = kGPUImageFlipVertical; break;
+            case UIInterfaceOrientationLandscapeRight:outputRotation = kGPUImageRotate180; break;
         }
     }
     else
