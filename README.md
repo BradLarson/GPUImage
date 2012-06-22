@@ -82,6 +82,10 @@ Documentation is generated from header comments using appledoc. To build the doc
 
 - **GPUImageGrayscaleFilter**: Converts an image to grayscale (a slightly faster implementation of the saturation filter, without the ability to vary the color contribution)
 
+- **GPUImageMonochromeFilter**: Converts the image to a single-color version, based on the luminance of each pixel
+  - *intensity*: The degree to which the specific color replaces the normal image color (0.0 - 1.0, with 1.0 as the default)
+  - *color*: The color to use as the basis for the effect, with (0.6, 0.45, 0.3, 1.0) as the default.
+
 - **GPUImageSepiaFilter**: Simple sepia tone filter
   - *intensity*: The degree to which the sepia tone replaces the normal image color (0.0 - 1.0, with 1.0 as the default)
 

@@ -102,3 +102,4 @@
 #import "GPUImageRGBClosingFilter.h"
 #import "GPUImageColorPackingFilter.h"
 #import "GPUImageSphereRefractionFilter.h"
+#import "GPUImageMonochromeFilter.h"
