@@ -911,6 +911,7 @@
             
             GPUImageAlphaBlendFilter *blendFilter = [[GPUImageAlphaBlendFilter alloc] init];
             blendFilter.mix = 0.75;            
+            [blendFilter forceProcessingAtSize:CGSizeMake(256.0, 330.0)];
             
             [videoCamera addTarget:blendFilter];
             [histogramGraph addTarget:blendFilter];
