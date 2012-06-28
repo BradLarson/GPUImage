@@ -77,6 +77,10 @@ void report_memory(NSString *tag)
     [target setInputTexture:outputTexture atIndex:inputTextureIndex];
 }
 
+- (NSArray*)targets {
+	return [NSArray arrayWithArray:targets];
+}
+
 - (void)addTarget:(id<GPUImageInput>)newTarget;
 {
     NSInteger nextAvailableTextureIndex = [newTarget nextAvailableTextureIndex];
