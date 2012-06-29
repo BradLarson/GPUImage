@@ -4,7 +4,7 @@
 
 @interface GPUImagePicture : GPUImageOutput
 {
-    UIImage *imageSource;    
+    CGSize pixelSizeOfImage;
 }
 
 // Initialization and teardown

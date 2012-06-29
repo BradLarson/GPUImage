@@ -398,7 +398,13 @@
 
             filter = [[GPUImageCannyEdgeDetectionFilter alloc] init];
         }; break;
-
+        case GPUIMAGE_BUFFER:
+        {
+            self.title = @"Image Buffer";
+            self.filterSettingsSlider.hidden = YES;
+            
+            filter = [[GPUImageBuffer alloc] init];
+        }; break;
         case GPUIMAGE_SKETCH:
         {
             self.title = @"Sketch";
@@ -981,6 +987,25 @@
                 timeLabel.text = [NSString stringWithFormat:@"Time: %f s", -[startTime timeIntervalSinceNow]];
                 [weakUIElementInput update];
             }];
+        }
+        else if (filterType == GPUIMAGE_BUFFER)
+        {
+            
+            GPUImageDifferenceBlendFilter *blendFilter = [[GPUImageDifferenceBlendFilter alloc] init];
+            [blendFilter forceProcessingAtSize:CGSizeMake(480.0, 640.0)];
+
+//            [filter addTarget:filterView];            
+            [videoCamera removeTarget:filter];
+
+            GPUImageGammaFilter *gammaFilter = [[GPUImageGammaFilter alloc] init];
+            [videoCamera addTarget:gammaFilter];
+            [gammaFilter addTarget:blendFilter];
+            gammaFilter.targetToIgnoreForUpdates = blendFilter;
+            [videoCamera addTarget:filter];
+
+            [filter addTarget:blendFilter];
+            
+            [blendFilter addTarget:filterView];
         }
         else 
         {

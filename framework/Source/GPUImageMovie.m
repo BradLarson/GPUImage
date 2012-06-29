@@ -48,6 +48,14 @@
     return self;
 }
 
+- (void)dealloc
+{
+    if ([GPUImageOpenGLESContext supportsFastTextureUpload])
+    {
+        CFRelease(coreVideoTextureCache);
+    }
+}
+
 #pragma mark -
 #pragma mark Movie processing
 
