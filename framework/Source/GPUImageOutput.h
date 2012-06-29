@@ -38,6 +38,10 @@ void report_memory(NSString *tag);
 /// @name Managing targets
 - (void)setInputTextureForTarget:(id<GPUImageInput>)target atIndex:(NSInteger)inputTextureIndex;
 
+/** Returns an array of the current targets.
+ */
+- (NSArray*)targets;
+
 /** Adds a target to receive notifications when new frames are available.
  
  The target will be asked for its next available texture.
