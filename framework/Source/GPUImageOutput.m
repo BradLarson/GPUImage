@@ -77,7 +77,8 @@ void report_memory(NSString *tag)
     [target setInputTexture:outputTexture atIndex:inputTextureIndex];
 }
 
-- (NSArray*)targets {
+- (NSArray*)targets;
+{
 	return [NSArray arrayWithArray:targets];
 }
 

@@ -75,8 +75,17 @@ NSString *const kGPUImageNearbyTexelSamplingVertexShaderString = SHADER_STRING
         
         [GPUImageOpenGLESContext useImageProcessingContext];
         [filterProgram use];
-        glUniform1f(texelWidthUniform, _texelWidth);
-        glUniform1f(texelHeightUniform, _texelHeight);
+        if (GPUImageRotationSwapsWidthAndHeight(inputRotation))
+        {
+            glUniform1f(texelWidthUniform, _texelHeight);
+            glUniform1f(texelHeightUniform, _texelWidth);
+        }
+        else
+        {
+            glUniform1f(texelWidthUniform, _texelWidth);
+            glUniform1f(texelHeightUniform, _texelHeight);
+        }
+
     }
 }
 
