@@ -44,6 +44,7 @@ void report_memory(NSString *tag)
 @synthesize audioEncodingTarget = _audioEncodingTarget;
 @synthesize targetToIgnoreForUpdates = _targetToIgnoreForUpdates;
 @synthesize frameProcessingCompletionBlock = _frameProcessingCompletionBlock;
+@synthesize enabled = _enabled;
 
 #pragma mark -
 #pragma mark Initialization and teardown
@@ -57,6 +58,7 @@ void report_memory(NSString *tag)
 
     targets = [[NSMutableArray alloc] init];
     targetTextureIndices = [[NSMutableArray alloc] init];
+    _enabled = YES;
     
     [self initializeOutputTexture];
 
@@ -67,6 +69,13 @@ void report_memory(NSString *tag)
 {
     [self removeAllTargets];
     [self deleteOutputTexture];
+}
+
+#pragma mark -
+#pragma mark Status
+
+- (BOOL)isEnabled {
+    return _enabled;
 }
 
 #pragma mark -
