@@ -392,7 +392,7 @@
 	@autoreleasepool 
 	{
 		//these need to be on the main thread for proper timing
-        __unsafe_unretained __typeof__(self) weakSelf = self;
+        __unsafe_unretained id weakSelf = self;
 		if (captureOutput == audioOutput)
 		{
 			runOnMainQueueWithoutDeadlocking(^{ 

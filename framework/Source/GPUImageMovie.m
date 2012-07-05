@@ -70,7 +70,7 @@
     NSDictionary *inputOptions = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES] forKey:AVURLAssetPreferPreciseDurationAndTimingKey];
     AVURLAsset *inputAsset = [[AVURLAsset alloc] initWithURL:self.url options:inputOptions];
     
-    __unsafe_unretained __typeof__(self) weakSelf = self;
+    __unsafe_unretained GPUImageMovie *weakSelf = self;
     
     [inputAsset loadValuesAsynchronouslyForKeys:[NSArray arrayWithObject:@"tracks"] completionHandler: ^{
         NSError *error = nil;
@@ -146,7 +146,7 @@
         CMSampleBufferRef sampleBufferRef = [readerVideoTrackOutput copyNextSampleBuffer];
         if (sampleBufferRef) 
         {
-            __unsafe_unretained __typeof__(self) weakSelf = self;
+            __unsafe_unretained GPUImageMovie *weakSelf = self;
             runOnMainQueueWithoutDeadlocking(^{
                 [weakSelf processMovieFrame:sampleBufferRef];
             });
