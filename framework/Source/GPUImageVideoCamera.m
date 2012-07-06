@@ -469,18 +469,18 @@
         switch(_outputImageOrientation)
         {
             case UIInterfaceOrientationPortrait:outputRotation = kGPUImageRotateRight; break;
-            case UIInterfaceOrientationPortraitUpsideDown:outputRotation = kGPUImageRotateRightFlipVertical; break;
+            case UIInterfaceOrientationPortraitUpsideDown:outputRotation = kGPUImageRotateLeft; break;
             case UIInterfaceOrientationLandscapeLeft:outputRotation = kGPUImageNoRotation; break;
-            case UIInterfaceOrientationLandscapeRight:outputRotation = kGPUImageFlipVertical; break;
+            case UIInterfaceOrientationLandscapeRight:outputRotation = kGPUImageRotate180; break;
         }
     }
     else
     {
         switch(_outputImageOrientation)
         {
-            case UIInterfaceOrientationPortrait:outputRotation = kGPUImageRotateRightFlipVertical; break;
-            case UIInterfaceOrientationPortraitUpsideDown:outputRotation = kGPUImageRotateRight; break;
-            case UIInterfaceOrientationLandscapeLeft:outputRotation = kGPUImageFlipVertical; break;
+            case UIInterfaceOrientationPortrait:outputRotation = kGPUImageRotateRight; break;
+            case UIInterfaceOrientationPortraitUpsideDown:outputRotation = kGPUImageRotateLeft; break;
+            case UIInterfaceOrientationLandscapeLeft:outputRotation = kGPUImageRotate180; break;
             case UIInterfaceOrientationLandscapeRight:outputRotation = kGPUImageNoRotation; break;
         }
     }
