@@ -93,9 +93,41 @@
     [super viewDidUnload];
 }
 
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
+{
+    // Map UIDeviceOrientation to UIInterfaceOrientation.
+    UIInterfaceOrientation orient = UIInterfaceOrientationPortrait;
+    switch ([[UIDevice currentDevice] orientation])
+    {
+        case UIDeviceOrientationLandscapeLeft:
+            orient = UIInterfaceOrientationLandscapeLeft;
+            break;
+
+        case UIDeviceOrientationLandscapeRight:
+            orient = UIInterfaceOrientationLandscapeRight;
+            break;
+
+        case UIDeviceOrientationPortrait:
+            orient = UIInterfaceOrientationPortrait;
+            break;
+
+        case UIDeviceOrientationPortraitUpsideDown:
+            orient = UIInterfaceOrientationPortraitUpsideDown;
+            break;
+
+        case UIDeviceOrientationFaceUp:
+        case UIDeviceOrientationFaceDown:
+        case UIDeviceOrientationUnknown:
+            // When in doubt, stay the same.
+            orient = fromInterfaceOrientation;
+            break;
+    }
+    videoCamera.outputImageOrientation = orient;
+}
+
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
-    return (interfaceOrientation == UIInterfaceOrientationPortrait);
+    return YES; // Support all orientations.
 }
 
 - (IBAction)updateSliderValue:(id)sender
