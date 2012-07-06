@@ -89,6 +89,9 @@ Documentation is generated from header comments using appledoc. To build the doc
 - **GPUImageSepiaFilter**: Simple sepia tone filter
   - *intensity*: The degree to which the sepia tone replaces the normal image color (0.0 - 1.0, with 1.0 as the default)
 
+- **GPUImageOpacityFilter**: Adjusts the alpha channel of the incoming image
+  - *opacity*: The value to multiply the incoming alpha channel for each pixel by (0.0 - 1.0, with 1.0 as the default)
+
 - **GPUImageLuminanceThresholdFilter**: Pixels with a luminance above the threshold will appear white, and those below will be black
   - *threshold*: The luminance threshold, from 0.0 to 1.0, with a default of 0.5
 

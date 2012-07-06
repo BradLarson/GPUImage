@@ -104,3 +104,4 @@
 #import "GPUImageColorPackingFilter.h"
 #import "GPUImageSphereRefractionFilter.h"
 #import "GPUImageMonochromeFilter.h"
+#import "GPUImageOpacityFilter.h"

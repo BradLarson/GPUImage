@@ -254,6 +254,8 @@
 		BCF3D723153E0E0C009A1FE5 /* GPUImageThresholdEdgeDetection.m in Sources */ = {isa = PBXBuildFile; fileRef = BCF3D721153E0E0B009A1FE5 /* GPUImageThresholdEdgeDetection.m */; };
 		BCF3D730153F0D6F009A1FE5 /* GPUImageSmoothToonFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = BCF3D72E153F0D6E009A1FE5 /* GPUImageSmoothToonFilter.h */; };
 		BCF3D731153F0D6F009A1FE5 /* GPUImageSmoothToonFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = BCF3D72F153F0D6F009A1FE5 /* GPUImageSmoothToonFilter.m */; };
+		BCF6B41115A7849F00FC6F58 /* GPUImageOpacityFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = BCF6B40F15A7849F00FC6F58 /* GPUImageOpacityFilter.h */; };
+		BCF6B41215A7849F00FC6F58 /* GPUImageOpacityFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = BCF6B41015A7849F00FC6F58 /* GPUImageOpacityFilter.m */; };
 		BEBE83B5155C092A00EEF8C3 /* GPUImageRGBFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = BEBE83B3155C092A00EEF8C3 /* GPUImageRGBFilter.h */; };
 		BEBE83B6155C092A00EEF8C3 /* GPUImageRGBFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = BEBE83B4155C092A00EEF8C3 /* GPUImageRGBFilter.m */; };
 /* End PBXBuildFile section */
@@ -505,6 +507,8 @@
 		BCF3D721153E0E0B009A1FE5 /* GPUImageThresholdEdgeDetection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GPUImageThresholdEdgeDetection.m; path = Source/GPUImageThresholdEdgeDetection.m; sourceTree = SOURCE_ROOT; };
 		BCF3D72E153F0D6E009A1FE5 /* GPUImageSmoothToonFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GPUImageSmoothToonFilter.h; path = Source/GPUImageSmoothToonFilter.h; sourceTree = SOURCE_ROOT; };
 		BCF3D72F153F0D6F009A1FE5 /* GPUImageSmoothToonFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GPUImageSmoothToonFilter.m; path = Source/GPUImageSmoothToonFilter.m; sourceTree = SOURCE_ROOT; };
+		BCF6B40F15A7849F00FC6F58 /* GPUImageOpacityFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GPUImageOpacityFilter.h; path = Source/GPUImageOpacityFilter.h; sourceTree = SOURCE_ROOT; };
+		BCF6B41015A7849F00FC6F58 /* GPUImageOpacityFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GPUImageOpacityFilter.m; path = Source/GPUImageOpacityFilter.m; sourceTree = SOURCE_ROOT; };
 		BEBE83B3155C092A00EEF8C3 /* GPUImageRGBFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GPUImageRGBFilter.h; path = Source/GPUImageRGBFilter.h; sourceTree = SOURCE_ROOT; };
 		BEBE83B4155C092A00EEF8C3 /* GPUImageRGBFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GPUImageRGBFilter.m; path = Source/GPUImageRGBFilter.m; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
@@ -583,6 +587,8 @@
 				BCC11D71154B44DC0044F5A0 /* GPUImageHistogramGenerator.m */,
 				BCF1E57915673599006B155F /* GPUImageToneCurveFilter.h */,
 				BCF1E57A15673599006B155F /* GPUImageToneCurveFilter.m */,
+				BCF6B40F15A7849F00FC6F58 /* GPUImageOpacityFilter.h */,
+				BCF6B41015A7849F00FC6F58 /* GPUImageOpacityFilter.m */,
 			);
 			name = "Color processing";
 			sourceTree = "<group>";
@@ -1012,6 +1018,7 @@
 				BC76CE9B15813818008B45D3 /* GPUImageSphereRefractionFilter.h in Headers */,
 				BCBCE9991595021B00E0ED33 /* GPUImageMonochromeFilter.h in Headers */,
 				BCBCE9D5159944AC00E0ED33 /* GPUImageBuffer.h in Headers */,
+				BCF6B41115A7849F00FC6F58 /* GPUImageOpacityFilter.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1238,6 +1245,7 @@
 				BC76CE9C15813818008B45D3 /* GPUImageSphereRefractionFilter.m in Sources */,
 				BCBCE99A1595021B00E0ED33 /* GPUImageMonochromeFilter.m in Sources */,
 				BCBCE9D6159944AC00E0ED33 /* GPUImageBuffer.m in Sources */,
+				BCF6B41215A7849F00FC6F58 /* GPUImageOpacityFilter.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -752,6 +752,18 @@
             
             filter = [[GPUImageSoftLightBlendFilter alloc] init];
         }; break;
+        case GPUIMAGE_OPACITY:
+        {
+            self.title = @"Opacity Adjustment";
+            self.filterSettingsSlider.hidden = NO;
+            needsSecondImage = YES;	
+            
+            [self.filterSettingsSlider setValue:1.0];
+            [self.filterSettingsSlider setMinimumValue:0.0];
+            [self.filterSettingsSlider setMaximumValue:1.0];
+            
+            filter = [[GPUImageOpacityFilter alloc] init];
+        }; break;
         case GPUIMAGE_CUSTOM:
         {
             self.title = @"Custom";
@@ -1007,6 +1019,20 @@
             
             [blendFilter addTarget:filterView];
         }
+        else if (filterType == GPUIMAGE_OPACITY)
+        {
+            [sourcePicture removeTarget:filter];
+            [videoCamera removeTarget:filter];
+            [videoCamera addTarget:filter];
+            
+            GPUImageAlphaBlendFilter *blendFilter = [[GPUImageAlphaBlendFilter alloc] init];
+            blendFilter.mix = 1.0;
+            [blendFilter forceProcessingAtSize:CGSizeMake(480.0, 640.0)];
+            [sourcePicture addTarget:blendFilter];
+            [filter addTarget:blendFilter];
+            
+            [blendFilter addTarget:filterView];
+        }
         else 
         {
             [filter addTarget:filterView];
@@ -1067,6 +1093,7 @@
         case GPUIMAGE_BILATERAL: [(GPUImageBilateralFilter *)filter setBlurSize:[(UISlider*)sender value]]; break;
         case GPUIMAGE_FASTBLUR: [(GPUImageFastBlurFilter *)filter setBlurPasses:round([(UISlider*)sender value])]; break;
 //        case GPUIMAGE_FASTBLUR: [(GPUImageFastBlurFilter *)filter setBlurSize:[(UISlider*)sender value]]; break;
+        case GPUIMAGE_OPACITY:  [(GPUImageOpacityFilter *)filter setOpacity:[(UISlider *)sender value]]; break;
         case GPUIMAGE_GAUSSIAN_SELECTIVE: [(GPUImageGaussianSelectiveBlurFilter *)filter setExcludeCircleRadius:[(UISlider*)sender value]]; break;
         case GPUIMAGE_FILTERGROUP: [(GPUImagePixellateFilter *)[(GPUImageFilterGroup *)filter filterAtIndex:1] setFractionalWidthOfAPixel:[(UISlider *)sender value]]; break;
         case GPUIMAGE_CROP: [(GPUImageCropFilter *)filter setCropRegion:CGRectMake(0.0, 0.0, 1.0, [(UISlider*)sender value])]; break;
