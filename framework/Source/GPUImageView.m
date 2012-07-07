@@ -79,7 +79,7 @@
         self.contentScaleFactor = [[UIScreen mainScreen] scale];
     }
 
-    inputRotation = kGPUImageNoRotation;
+    self.inputRotation = kGPUImageNoRotation;
     
     [self setBackgroundColorRed:0.0 green:0.0 blue:0.0 alpha:1.0];
     self.fillMode = kGPUImageFillModePreserveAspectRatio;
@@ -343,7 +343,7 @@
 	glUniform1i(displayInputTextureUniform, 4);	
     
     glVertexAttribPointer(displayPositionAttribute, 2, GL_FLOAT, 0, 0, imageVertices);
-	glVertexAttribPointer(displayTextureCoordinateAttribute, 2, GL_FLOAT, 0, 0, [GPUImageView textureCoordinatesForRotation:inputRotation]);
+	glVertexAttribPointer(displayTextureCoordinateAttribute, 2, GL_FLOAT, 0, 0, [GPUImageView textureCoordinatesForRotation:self.inputRotation]);
     
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
@@ -362,14 +362,14 @@
 
 - (void)setInputRotation:(GPUImageRotationMode)newInputRotation atIndex:(NSInteger)textureIndex;
 {
-    inputRotation = newInputRotation;
+    self.inputRotation = newInputRotation;
 }
 
 - (void)setInputSize:(CGSize)newSize atIndex:(NSInteger)textureIndex;
 {
     CGSize rotatedSize = newSize;
     
-    if (GPUImageRotationSwapsWidthAndHeight(inputRotation))
+    if (GPUImageRotationSwapsWidthAndHeight(self.inputRotation))
     {
         rotatedSize.width = newSize.height;
         rotatedSize.height = newSize.width;
