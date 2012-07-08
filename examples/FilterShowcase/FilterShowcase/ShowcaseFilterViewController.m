@@ -530,9 +530,10 @@
             
             [self.filterSettingsSlider setMinimumValue:0.0];
             [self.filterSettingsSlider setMaximumValue:1.0];
-            [self.filterSettingsSlider setValue:0.5];
+            [self.filterSettingsSlider setValue:0.15];
             
             filter = [[GPUImageSphereRefractionFilter alloc] init];
+            [(GPUImageSphereRefractionFilter *)filter setRadius:0.15];
         }; break;
         case GPUIMAGE_PINCH:
         {
@@ -1032,6 +1033,23 @@
             [filter addTarget:blendFilter];
             
             [blendFilter addTarget:filterView];
+        }
+        else if (filterType == GPUIMAGE_SPHEREREFRACTION)
+        {
+            // Provide a blurred image for a cool-looking background
+            GPUImageGaussianBlurFilter *gaussianBlur = [[GPUImageGaussianBlurFilter alloc] init];
+            [videoCamera addTarget:gaussianBlur];
+            gaussianBlur.blurSize = 2.0;
+
+            GPUImageAlphaBlendFilter *blendFilter = [[GPUImageAlphaBlendFilter alloc] init];
+            blendFilter.mix = 1.0;
+            [blendFilter forceProcessingAtSize:CGSizeMake(480.0, 640.0)];
+            [gaussianBlur addTarget:blendFilter];
+            [filter addTarget:blendFilter];
+            gaussianBlur.targetToIgnoreForUpdates = blendFilter;
+            
+            [blendFilter addTarget:filterView];
+
         }
         else 
         {

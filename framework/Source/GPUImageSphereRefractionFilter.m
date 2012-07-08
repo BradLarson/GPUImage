@@ -9,29 +9,39 @@ NSString *const kGPUImageSphereRefractionFragmentShaderString = SHADER_STRING
  uniform highp vec2 center;
  uniform highp float radius;
  uniform highp float scale;
- const highp float eta = 0.2;
+ uniform highp float aspectRatio;
+ uniform highp float refractiveIndex;
  
  void main()
  {
-     highp vec2 textureCoordinateToUse = textureCoordinate;
-     highp float distanceFromCenter = distance(center, textureCoordinate);
+     highp vec2 textureCoordinateToUse = vec2(textureCoordinate.x, (textureCoordinate.y * aspectRatio + 0.5 - 0.5 * aspectRatio));
+     highp float distanceFromCenter = distance(center, textureCoordinateToUse);
      lowp float checkForPresenceWithinSphere = step(distanceFromCenter, radius);
      
-     highp float normalizedDepth = sqrt(1.0 - distanceFromCenter * distanceFromCenter);
-     highp vec3 sphereNormal = normalize(vec3(textureCoordinate - center, normalizedDepth));
+     distanceFromCenter = distanceFromCenter / radius;
      
-     highp vec3 refractedVector = refract(vec3(0.0, 0.0, -1.0), sphereNormal, eta);
+     highp float normalizedDepth = radius * sqrt(1.0 - distanceFromCenter * distanceFromCenter);
+     highp vec3 sphereNormal = normalize(vec3(textureCoordinateToUse - center, normalizedDepth));
      
-//     gl_FragColor = texture2D(inputImageTexture, refractedVector.xy) * checkForPresenceWithinSphere;     
-     gl_FragColor = vec4(sphereNormal * checkForPresenceWithinSphere, 1.0);     
+     highp vec3 refractedVector = refract(vec3(0.0, 0.0, -1.0), sphereNormal, refractiveIndex);
+     
+     gl_FragColor = texture2D(inputImageTexture, (refractedVector.xy + 1.0) * 0.5) * checkForPresenceWithinSphere;     
  }
 );
+
+@interface GPUImageSphereRefractionFilter ()
+
+@property (readwrite, nonatomic) CGFloat aspectRatio;
+
+@end
 
 
 @implementation GPUImageSphereRefractionFilter
 
 @synthesize center = _center;
 @synthesize radius = _radius;
+@synthesize aspectRatio = _aspectRatio;
+@synthesize refractiveIndex = _refractiveIndex;
 
 #pragma mark -
 #pragma mark Initialization and teardown
@@ -45,12 +55,28 @@ NSString *const kGPUImageSphereRefractionFragmentShaderString = SHADER_STRING
     
     radiusUniform = [filterProgram uniformIndex:@"radius"];
     scaleUniform = [filterProgram uniformIndex:@"scale"];
+    aspectRatioUniform = [filterProgram uniformIndex:@"aspectRatio"];
     centerUniform = [filterProgram uniformIndex:@"center"];
+    refractiveIndexUniform = [filterProgram uniformIndex:@"refractiveIndex"];
     
-    self.radius = 0.5;
+    self.radius = 0.25;
     self.center = CGPointMake(0.5, 0.5);
+    self.refractiveIndex = 0.71;
+    
+    [self setBackgroundColorRed:0.0 green:0.0 blue:0.0 alpha:0.0];
     
     return self;
+}
+
+- (void)setInputSize:(CGSize)newSize atIndex:(NSInteger)textureIndex;
+{
+    CGSize oldInputSize = inputTextureSize;
+    [super setInputSize:newSize atIndex:textureIndex];
+
+    if (!CGSizeEqualToSize(oldInputSize, inputTextureSize))
+    {
+        [self setAspectRatio:(inputTextureSize.width / inputTextureSize.height)];
+    }
 }
 
 #pragma mark -
@@ -85,6 +111,24 @@ NSString *const kGPUImageSphereRefractionFragmentShaderString = SHADER_STRING
     centerPosition[1] = rotatedPoint.y;
     
     glUniform2fv(centerUniform, 1, centerPosition);
+}
+
+- (void)setAspectRatio:(CGFloat)newValue;
+{
+    _aspectRatio = newValue;
+    
+    [GPUImageOpenGLESContext useImageProcessingContext];
+    [filterProgram use];
+    glUniform1f(aspectRatioUniform, _aspectRatio);
+}
+
+- (void)setRefractiveIndex:(CGFloat)newValue;
+{
+    _refractiveIndex = newValue;
+    
+    [GPUImageOpenGLESContext useImageProcessingContext];
+    [filterProgram use];
+    glUniform1f(refractiveIndexUniform, _refractiveIndex);
 }
 
 @end
