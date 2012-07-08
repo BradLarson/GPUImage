@@ -74,7 +74,11 @@
 
 + (BOOL)supportsFastTextureUpload;
 {
+#if TARGET_IPHONE_SIMULATOR
+    return NO;
+#else
     return (CVOpenGLESTextureCacheCreate != NULL);
+#endif
 }
 
 #pragma mark -
