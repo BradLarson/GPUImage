@@ -8,7 +8,6 @@ NSString *const kGPUImageSphereRefractionFragmentShaderString = SHADER_STRING
  
  uniform highp vec2 center;
  uniform highp float radius;
- uniform highp float scale;
  uniform highp float aspectRatio;
  uniform highp float refractiveIndex;
  
@@ -54,7 +53,6 @@ NSString *const kGPUImageSphereRefractionFragmentShaderString = SHADER_STRING
     }
     
     radiusUniform = [filterProgram uniformIndex:@"radius"];
-    scaleUniform = [filterProgram uniformIndex:@"scale"];
     aspectRatioUniform = [filterProgram uniformIndex:@"aspectRatio"];
     centerUniform = [filterProgram uniformIndex:@"center"];
     refractiveIndexUniform = [filterProgram uniformIndex:@"refractiveIndex"];

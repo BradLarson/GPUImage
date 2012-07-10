@@ -2,7 +2,7 @@
 
 @interface GPUImageSphereRefractionFilter : GPUImageFilter
 {
-    GLint radiusUniform, centerUniform, scaleUniform, aspectRatioUniform, refractiveIndexUniform;
+    GLint radiusUniform, centerUniform, aspectRatioUniform, refractiveIndexUniform;
 }
 
 /// The center about which to apply the distortion, with a default of (0.5, 0.5)

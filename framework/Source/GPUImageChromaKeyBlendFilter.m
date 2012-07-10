@@ -17,8 +17,8 @@ NSString *const kGPUImageChromaKeyBlendFragmentShaderString = SHADER_STRING
  
  void main()
  {
-     vec3 textureColor = texture2D(inputImageTexture, textureCoordinate).rgb;
-     vec3 textureColor2 = texture2D(inputImageTexture2, textureCoordinate2).rgb;
+     vec4 textureColor = texture2D(inputImageTexture, textureCoordinate);
+     vec4 textureColor2 = texture2D(inputImageTexture2, textureCoordinate2);
      
      float maskY = 0.2989 * colorToReplace.r + 0.5866 * colorToReplace.g + 0.1145 * colorToReplace.b;
      float maskCr = 0.7132 * (colorToReplace.r - maskY);
@@ -30,7 +30,7 @@ NSString *const kGPUImageChromaKeyBlendFragmentShaderString = SHADER_STRING
      
 //     float blendValue = 1.0 - smoothstep(thresholdSensitivity - smoothing, thresholdSensitivity , abs(Cr - maskCr) + abs(Cb - maskCb));
      float blendValue = 1.0 - smoothstep(thresholdSensitivity, thresholdSensitivity + smoothing, distance(vec2(Cr, Cb), vec2(maskCr, maskCb)));
-     gl_FragColor = vec4(mix(textureColor, textureColor2, blendValue), 1.0);
+     gl_FragColor = mix(textureColor, textureColor2, blendValue);
  }
  );
 
