@@ -946,7 +946,6 @@
             
             [videoCamera addTarget:blendFilter];
             [histogramGraph addTarget:blendFilter];
-            videoCamera.targetToIgnoreForUpdates = blendFilter; // Avoid double-updating the blend
 
             [blendFilter addTarget:filterView];
         }
@@ -965,7 +964,6 @@
             GPUImageGammaFilter *gammaFilter = [[GPUImageGammaFilter alloc] init];
             [videoCamera addTarget:gammaFilter];
             [gammaFilter addTarget:blendFilter];
-            gammaFilter.targetToIgnoreForUpdates = blendFilter;
 
             [crosshairGenerator addTarget:blendFilter];
 
@@ -992,8 +990,6 @@
             
             [blendFilter addTarget:filterView];
 
-            uiElementInput.targetToIgnoreForUpdates = blendFilter;
-            
             __unsafe_unretained GPUImageUIElement *weakUIElementInput = uiElementInput;
             
             [filter setFrameProcessingCompletionBlock:^(GPUImageOutput * filter, CMTime frameTime){
@@ -1005,15 +1001,12 @@
         {
             
             GPUImageDifferenceBlendFilter *blendFilter = [[GPUImageDifferenceBlendFilter alloc] init];
-            [blendFilter forceProcessingAtSize:CGSizeMake(480.0, 640.0)];
 
-//            [filter addTarget:filterView];            
             [videoCamera removeTarget:filter];
 
             GPUImageGammaFilter *gammaFilter = [[GPUImageGammaFilter alloc] init];
             [videoCamera addTarget:gammaFilter];
             [gammaFilter addTarget:blendFilter];
-            gammaFilter.targetToIgnoreForUpdates = blendFilter;
             [videoCamera addTarget:filter];
 
             [filter addTarget:blendFilter];
@@ -1028,7 +1021,6 @@
             
             GPUImageAlphaBlendFilter *blendFilter = [[GPUImageAlphaBlendFilter alloc] init];
             blendFilter.mix = 1.0;
-            [blendFilter forceProcessingAtSize:CGSizeMake(480.0, 640.0)];
             [sourcePicture addTarget:blendFilter];
             [filter addTarget:blendFilter];
             
@@ -1043,10 +1035,8 @@
 
             GPUImageAlphaBlendFilter *blendFilter = [[GPUImageAlphaBlendFilter alloc] init];
             blendFilter.mix = 1.0;
-            [blendFilter forceProcessingAtSize:CGSizeMake(480.0, 640.0)];
             [gaussianBlur addTarget:blendFilter];
             [filter addTarget:blendFilter];
-            gaussianBlur.targetToIgnoreForUpdates = blendFilter;
             
             [blendFilter addTarget:filterView];
 

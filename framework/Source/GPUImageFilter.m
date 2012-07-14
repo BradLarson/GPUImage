@@ -463,7 +463,7 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
             }
             
             [currentTarget setInputSize:[self outputFrameSize] atIndex:textureIndex];
-            [currentTarget newFrameReadyAtTime:frameTime];
+            [currentTarget newFrameReadyAtTime:frameTime atIndex:textureIndex];
         }
     }
 }
@@ -569,7 +569,7 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
 #pragma mark -
 #pragma mark GPUImageInput
 
-- (void)newFrameReadyAtTime:(CMTime)frameTime;
+- (void)newFrameReadyAtTime:(CMTime)frameTime atIndex:(NSInteger)textureIndex;
 {
     static const GLfloat imageVertices[] = {
         -1.0f, -1.0f,

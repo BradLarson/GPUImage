@@ -31,7 +31,7 @@
         NSInteger targetTextureIndex = [[targetTextureIndices objectAtIndex:indexOfObject] integerValue];
 
         [currentTarget setInputSize:textureSize atIndex:targetTextureIndex];
-        [currentTarget newFrameReadyAtTime:frameTime];
+        [currentTarget newFrameReadyAtTime:frameTime atIndex:targetTextureIndex];
     }
 }
 

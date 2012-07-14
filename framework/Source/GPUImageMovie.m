@@ -230,7 +230,7 @@
             [currentTarget setInputSize:CGSizeMake(bufferWidth, bufferHeight) atIndex:targetTextureIndex];
             [currentTarget setInputTexture:outputTexture atIndex:targetTextureIndex];
             
-            [currentTarget newFrameReadyAtTime:currentSampleTime];
+            [currentTarget newFrameReadyAtTime:currentSampleTime atIndex:targetTextureIndex];
         }
         
         CVPixelBufferUnlockBaseAddress(movieFrame, 0);
@@ -256,7 +256,7 @@
             NSInteger targetTextureIndex = [[targetTextureIndices objectAtIndex:indexOfObject] integerValue];
 
             [currentTarget setInputSize:currentSize atIndex:targetTextureIndex];
-            [currentTarget newFrameReadyAtTime:currentSampleTime];
+            [currentTarget newFrameReadyAtTime:currentSampleTime atIndex:targetTextureIndex];
         }
         CVPixelBufferUnlockBaseAddress(movieFrame, 0);
     }

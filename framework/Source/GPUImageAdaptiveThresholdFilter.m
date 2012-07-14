@@ -58,7 +58,6 @@ NSString *const kGPUImageAdaptiveThresholdFragmentShaderString = SHADER_STRING
     
     [boxBlurFilter addTarget:adaptiveThresholdFilter];
     // To prevent double updating of this filter, disable updates from the sharp luminance image side
-    adaptiveThresholdFilter.shouldIgnoreUpdatesToThisTarget = YES;
     [luminanceFilter addTarget:adaptiveThresholdFilter];
     
     self.initialFilters = [NSArray arrayWithObject:luminanceFilter];

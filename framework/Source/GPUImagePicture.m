@@ -108,19 +108,32 @@
 
 - (void)processImage;
 {
+    hasProcessedImage = YES;
+    
     for (id<GPUImageInput> currentTarget in targets)
     {
         NSInteger indexOfObject = [targets indexOfObject:currentTarget];
         NSInteger textureIndexOfTarget = [[targetTextureIndices objectAtIndex:indexOfObject] integerValue];
 
         [currentTarget setInputSize:pixelSizeOfImage atIndex:textureIndexOfTarget];
-        [currentTarget newFrameReadyAtTime:kCMTimeInvalid];
+        [currentTarget newFrameReadyAtTime:kCMTimeIndefinite atIndex:textureIndexOfTarget];
     }    
 }
 
 - (CGSize)outputImageSize;
 {
     return pixelSizeOfImage;
+}
+
+- (void)addTarget:(id<GPUImageInput>)newTarget atTextureLocation:(NSInteger)textureLocation;
+{
+    [super addTarget:newTarget atTextureLocation:textureLocation];
+
+    if (hasProcessedImage)
+    {
+        [newTarget setInputSize:pixelSizeOfImage atIndex:textureLocation];
+        [newTarget newFrameReadyAtTime:kCMTimeIndefinite atIndex:textureLocation];
+    }
 }
 
 @end

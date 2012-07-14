@@ -46,6 +46,14 @@ NSString *const kGPUImageTwoInputTextureVertexShaderString = SHADER_STRING
 
     hasSetFirstTexture = NO;
     
+    hasReceivedFirstFrame = NO;
+    hasReceivedSecondFrame = NO;
+    firstFrameWasVideo = NO;
+    secondFrameWasVideo = NO;
+    
+    firstFrameTime = kCMTimeInvalid;
+    secondFrameTime = kCMTimeInvalid;
+    
 	glEnableVertexAttribArray(filterSecondTextureCoordinateAttribute);
 
     return self;
@@ -165,6 +173,46 @@ NSString *const kGPUImageTwoInputTextureVertexShaderString = SHADER_STRING
     }
     
     return rotatedSize; 
+}
+
+- (void)newFrameReadyAtTime:(CMTime)frameTime atIndex:(NSInteger)textureIndex;
+{
+    BOOL updatedMovieFrameOppositeStillImage = NO;
+    
+    if (textureIndex == 0)
+    {
+        hasReceivedFirstFrame = YES;
+        firstFrameTime = frameTime;
+        
+        if (!CMTIME_IS_INDEFINITE(frameTime))
+        {
+            if CMTIME_IS_INDEFINITE(secondFrameTime)
+            {
+                updatedMovieFrameOppositeStillImage = YES;
+            }
+        }
+    }
+    else
+    {
+        hasReceivedSecondFrame = YES;
+        secondFrameTime = frameTime;
+
+        if (!CMTIME_IS_INDEFINITE(frameTime))
+        {
+            if CMTIME_IS_INDEFINITE(firstFrameTime)
+            {
+                updatedMovieFrameOppositeStillImage = YES;
+            }
+        }
+    }
+    
+    if ((hasReceivedFirstFrame && hasReceivedSecondFrame) || updatedMovieFrameOppositeStillImage)
+    {
+        
+        [super newFrameReadyAtTime:frameTime atIndex:0];
+        hasReceivedFirstFrame = NO;
+        hasReceivedSecondFrame = NO;
+    }
 }
 
 

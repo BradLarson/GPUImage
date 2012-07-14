@@ -32,7 +32,7 @@
 #pragma mark -
 #pragma mark GPUImageInput
 
-- (void)newFrameReadyAtTime:(CMTime)frameTime;
+- (void)newFrameReadyAtTime:(CMTime)frameTime atIndex:(NSInteger)textureIndex;
 {
     static const GLfloat imageVertices[] = {
         -1.0f, -1.0f,

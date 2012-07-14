@@ -299,7 +299,7 @@
                     [currentTarget setInputTexture:outputTexture atIndex:textureIndexOfTarget];
                     [currentTarget setInputRotation:outputRotation atIndex:textureIndexOfTarget];
                     
-                    [currentTarget newFrameReadyAtTime:currentTime];
+                    [currentTarget newFrameReadyAtTime:currentTime atIndex:textureIndexOfTarget];
                 }
                 else
                 {
@@ -351,7 +351,7 @@
                     NSInteger textureIndexOfTarget = [[targetTextureIndices objectAtIndex:indexOfObject] integerValue];
                     
                     [currentTarget setInputSize:CGSizeMake(bufferWidth, bufferHeight) atIndex:textureIndexOfTarget];
-                    [currentTarget newFrameReadyAtTime:currentTime];
+                    [currentTarget newFrameReadyAtTime:currentTime atIndex:textureIndexOfTarget];
                 }
             }
         }

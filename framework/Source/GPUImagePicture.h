@@ -5,6 +5,7 @@
 @interface GPUImagePicture : GPUImageOutput
 {
     CGSize pixelSizeOfImage;
+    BOOL hasProcessedImage;
 }
 
 // Initialization and teardown

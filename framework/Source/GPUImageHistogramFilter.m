@@ -204,7 +204,7 @@ NSString *const kGPUImageHistogramAccumulationFragmentShaderString = SHADER_STRI
     return CGSizeMake(256.0, 3.0);
 }
 
-- (void)newFrameReadyAtTime:(CMTime)frameTime;
+- (void)newFrameReadyAtTime:(CMTime)frameTime atIndex:(NSInteger)textureIndex;
 {
     if (vertexSamplingCoordinates == NULL)
     {

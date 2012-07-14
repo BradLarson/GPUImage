@@ -53,7 +53,7 @@ NSString *const kGPUImageTiltShiftFragmentShaderString = SHADER_STRING
     [blurFilter addTarget:tiltShiftFilter atTextureLocation:1];
     
     // To prevent double updating of this filter, disable updates from the sharp image side
-    self.inputFilterToIgnoreForUpdates = tiltShiftFilter;
+//    self.inputFilterToIgnoreForUpdates = tiltShiftFilter;
     
     self.initialFilters = [NSArray arrayWithObjects:blurFilter, tiltShiftFilter, nil];
     self.terminalFilter = tiltShiftFilter;

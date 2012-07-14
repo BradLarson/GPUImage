@@ -328,7 +328,7 @@
 #pragma mark -
 #pragma mark GPUInput protocol
 
-- (void)newFrameReadyAtTime:(CMTime)frameTime;
+- (void)newFrameReadyAtTime:(CMTime)frameTime atIndex:(NSInteger)textureIndex;
 {
     [GPUImageOpenGLESContext useImageProcessingContext];
     [self setDisplayFramebuffer];

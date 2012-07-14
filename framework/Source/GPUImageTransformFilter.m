@@ -105,7 +105,7 @@ NSString *const kGPUImageTransformVertexShaderString = SHADER_STRING
 #pragma mark -
 #pragma mark GPUImageInput
 
-- (void)newFrameReadyAtTime:(CMTime)frameTime;
+- (void)newFrameReadyAtTime:(CMTime)frameTime atIndex:(NSInteger)textureIndex;
 {
     CGSize currentFBOSize = [self sizeOfFBO];
     CGFloat normalizedHeight = currentFBOSize.height / currentFBOSize.width;

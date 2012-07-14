@@ -51,7 +51,7 @@
         NSInteger textureIndexOfTarget = [[targetTextureIndices objectAtIndex:indexOfObject] integerValue];
         
         [currentTarget setInputSize:pixelSizeOfImage atIndex:textureIndexOfTarget];
-        [currentTarget newFrameReadyAtTime:kCMTimeInvalid];
+        [currentTarget newFrameReadyAtTime:kCMTimeInvalid atIndex:textureIndexOfTarget];
     }    
 }
 
