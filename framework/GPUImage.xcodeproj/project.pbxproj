@@ -23,6 +23,7 @@
 /* Begin PBXBuildFile section */
 		0DF3FA2B14FA00C9006AF7D9 /* GPUImageVignetteFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = 0DF3FA2914FA00C9006AF7D9 /* GPUImageVignetteFilter.h */; };
 		0DF3FA2C14FA00C9006AF7D9 /* GPUImageVignetteFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DF3FA2A14FA00C9006AF7D9 /* GPUImageVignetteFilter.m */; };
+		6BF3ED5915B5C2CC002F9E9E /* CoreImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6BF3ED5815B5C2CC002F9E9E /* CoreImage.framework */; };
 		6D13DBE6151AA804000B23BA /* GPUImageHazeFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = 6D13DBE4151AA804000B23BA /* GPUImageHazeFilter.h */; };
 		6D13DBE7151AA804000B23BA /* GPUImageHazeFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D13DBE5151AA804000B23BA /* GPUImageHazeFilter.m */; };
 		6EE27493150E8FC60040DDB6 /* GPUImageGrayscaleFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = 6EE27491150E8FC50040DDB6 /* GPUImageGrayscaleFilter.h */; };
@@ -279,6 +280,7 @@
 		0D9D91AE15011CA200A5BC83 /* GPUImageGaussianSelectiveBlurFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GPUImageGaussianSelectiveBlurFilter.m; path = Source/GPUImageGaussianSelectiveBlurFilter.m; sourceTree = SOURCE_ROOT; };
 		0DF3FA2914FA00C9006AF7D9 /* GPUImageVignetteFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GPUImageVignetteFilter.h; path = Source/GPUImageVignetteFilter.h; sourceTree = SOURCE_ROOT; };
 		0DF3FA2A14FA00C9006AF7D9 /* GPUImageVignetteFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GPUImageVignetteFilter.m; path = Source/GPUImageVignetteFilter.m; sourceTree = SOURCE_ROOT; };
+		6BF3ED5815B5C2CC002F9E9E /* CoreImage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreImage.framework; path = System/Library/Frameworks/CoreImage.framework; sourceTree = SDKROOT; };
 		6D13DBE4151AA804000B23BA /* GPUImageHazeFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GPUImageHazeFilter.h; path = Source/GPUImageHazeFilter.h; sourceTree = SOURCE_ROOT; };
 		6D13DBE5151AA804000B23BA /* GPUImageHazeFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GPUImageHazeFilter.m; path = Source/GPUImageHazeFilter.m; sourceTree = SOURCE_ROOT; };
 		6EE27491150E8FC50040DDB6 /* GPUImageGrayscaleFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GPUImageGrayscaleFilter.h; path = Source/GPUImageGrayscaleFilter.h; sourceTree = SOURCE_ROOT; };
@@ -518,6 +520,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6BF3ED5915B5C2CC002F9E9E /* CoreImage.framework in Frameworks */,
 				BCB5E77914E20BAF00701302 /* CoreMedia.framework in Frameworks */,
 				BCB5E77714E20BA800701302 /* CoreVideo.framework in Frameworks */,
 				BCB5E77514E20B9700701302 /* OpenGLES.framework in Frameworks */,
@@ -822,6 +825,7 @@
 		BCF1A32914DDB1EC00852800 = {
 			isa = PBXGroup;
 			children = (
+				6BF3ED5815B5C2CC002F9E9E /* CoreImage.framework */,
 				BCF1A33914DDB1EC00852800 /* GPUImage */,
 				BCF1A34D14DDB1EC00852800 /* GPUImageTests */,
 				BCF1A33614DDB1EC00852800 /* Frameworks */,

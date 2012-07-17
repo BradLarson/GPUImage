@@ -50,8 +50,8 @@
 
 - (void)setupFilter;
 {
-    videoCamera = [[GPUImageVideoCamera alloc] initWithSessionPreset:AVCaptureSessionPreset640x480 cameraPosition:AVCaptureDevicePositionBack];
-//    videoCamera = [[GPUImageVideoCamera alloc] initWithSessionPreset:AVCaptureSessionPreset640x480 cameraPosition:AVCaptureDevicePositionFront];
+   // videoCamera = [[GPUImageVideoCamera alloc] initWithSessionPreset:AVCaptureSessionPreset640x480 cameraPosition:AVCaptureDevicePositionBack];
+    videoCamera = [[GPUImageVideoCamera alloc] initWithSessionPreset:AVCaptureSessionPreset640x480 cameraPosition:AVCaptureDevicePositionFront];
     videoCamera.outputImageOrientation = UIInterfaceOrientationPortrait;
     
     BOOL needsSecondImage = NO;
@@ -882,6 +882,21 @@
             [(GPUImageFilterGroup *)filter setTerminalFilter:pixellateFilter];
         }; break;
 
+        case GPUIMAGE_FACES:
+        {
+            self.title = @"Face Detection";
+            self.filterSettingsSlider.hidden = YES;
+            
+            [self.filterSettingsSlider setValue:1.0];
+            [self.filterSettingsSlider setMinimumValue:0.0];
+            [self.filterSettingsSlider setMaximumValue:2.0];
+            
+            filter = [[GPUImageSaturationFilter alloc] init];
+            [videoCamera setDelegate:self];
+            [videoCamera setWillOutputFeatures:YES];
+            break;
+        }
+            
         default: filter = [[GPUImageSepiaFilter alloc] init]; break;
     }
     
@@ -1123,6 +1138,80 @@
             [(GPUImageTiltShiftFilter *)filter setBottomFocusLevel:midpoint + 0.1];
         }; break;
         default: break;
+    }
+}
+
+#pragma mark - Face Detection Delegate Callback
+- (void)GPUVCWillOutputFeatures:(NSArray*)featureArray forClap:(CGRect)clap
+                 andOrientation:(UIDeviceOrientation)curDeviceOrientation
+{
+    NSLog(@"Did receive array");
+    
+    CGRect previewBox = self.view.frame;
+	
+    if (featureArray == nil && faceView) {
+        [faceView removeFromSuperview];
+        faceView = nil;
+    }
+        
+
+    for ( CIFaceFeature *faceFeature in featureArray) {
+        
+        // find the correct position for the square layer within the previewLayer
+        // the feature box originates in the bottom left of the video frame.
+        // (Bottom right if mirroring is turned on)
+        NSLog(@"%@", NSStringFromCGRect([faceFeature bounds]));
+
+        //Update face bounds for iOS Coordinate System
+        CGRect faceRect = [faceFeature bounds];
+        
+		// flip preview width and height
+		CGFloat temp = faceRect.size.width;
+		faceRect.size.width = faceRect.size.height;
+		faceRect.size.height = temp;
+		temp = faceRect.origin.x;
+		faceRect.origin.x = faceRect.origin.y;
+		faceRect.origin.y = temp;
+		// scale coordinates so they fit in the preview box, which may be scaled
+		CGFloat widthScaleBy = previewBox.size.width / clap.size.height;
+		CGFloat heightScaleBy = previewBox.size.height / clap.size.width;
+		faceRect.size.width *= widthScaleBy;
+		faceRect.size.height *= heightScaleBy;
+		faceRect.origin.x *= widthScaleBy;
+		faceRect.origin.y *= heightScaleBy;
+        
+        faceRect = CGRectOffset(faceRect, previewBox.origin.x, previewBox.origin.y);
+        
+        if (faceView) {
+            [faceView removeFromSuperview];
+            faceView =  nil;
+        }
+        
+        // create a UIView using the bounds of the face
+        faceView = [[UIView alloc] initWithFrame:faceRect];
+        
+        // add a border around the newly created UIView
+        faceView.layer.borderWidth = 1;
+        faceView.layer.borderColor = [[UIColor redColor] CGColor];
+        
+        // add the new view to create a box around the face
+        [self.view addSubview:faceView];
+        
+    }
+    
+}
+
+-(IBAction)facesSwitched:(UISwitch*)sender{
+    if (![sender isOn]) {
+        [videoCamera setDelegate:nil];
+        [videoCamera setWillOutputFeatures:NO];
+        if (faceView) {
+            [faceView removeFromSuperview];
+            faceView = nil;
+        }
+    }else{
+        [videoCamera setDelegate:self];
+        [videoCamera setWillOutputFeatures:YES];
     }
 }
 
