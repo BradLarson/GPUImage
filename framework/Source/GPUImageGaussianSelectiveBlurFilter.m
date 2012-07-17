@@ -48,9 +48,7 @@ NSString *const kGPUImageGaussianSelectiveBlurFragmentShaderString = SHADER_STRI
     // Texture location 0 needs to be the sharp image for both the blur and the second stage processing
     [blurFilter addTarget:selectiveFocusFilter atTextureLocation:1];
     
-    // To prevent double updating of this filter, disable updates from the sharp image side
-//    self.inputFilterToIgnoreForUpdates = selectiveFocusFilter;
-    
+    // To prevent double updating of this filter, disable updates from the sharp image side    
     self.initialFilters = [NSArray arrayWithObjects:blurFilter, selectiveFocusFilter, nil];
     self.terminalFilter = selectiveFocusFilter;
     

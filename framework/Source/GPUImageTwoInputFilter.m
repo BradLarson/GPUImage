@@ -177,6 +177,12 @@ NSString *const kGPUImageTwoInputTextureVertexShaderString = SHADER_STRING
 
 - (void)newFrameReadyAtTime:(CMTime)frameTime atIndex:(NSInteger)textureIndex;
 {
+    // You can set up infinite update loops, so this helps to short circuit them
+    if (hasReceivedFirstFrame && hasReceivedSecondFrame)
+    {
+        return;
+    }
+    
     BOOL updatedMovieFrameOppositeStillImage = NO;
     
     if (textureIndex == 0)

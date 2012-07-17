@@ -233,7 +233,7 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
     glActiveTexture(GL_TEXTURE1);
     glGenFramebuffers(1, &filterFramebuffer);
     glBindFramebuffer(GL_FRAMEBUFFER, filterFramebuffer);
-
+    
     if ([GPUImageOpenGLESContext supportsFastTextureUpload] && preparedToCaptureImage)
     {
         
@@ -719,6 +719,8 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
     if (CGSizeEqualToSize(frameSize, CGSizeZero))
     {
         overrideInputSize = NO;
+        inputTextureSize = CGSizeZero;
+        forcedMaximumSize = CGSizeZero;
     }
     else
     {
