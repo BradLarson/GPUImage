@@ -9,11 +9,14 @@
     AVAssetReader *reader;
 }
 
+- (void)processAsset;
+
 @end
 
 @implementation GPUImageMovie
 
 @synthesize url = _url;
+@synthesize asset = _asset;
 @synthesize runBenchmark = _runBenchmark;
 
 #pragma mark -
@@ -25,7 +28,7 @@
     {
         return nil;
     }
-    
+
     if ([GPUImageOpenGLESContext supportsFastTextureUpload])
     {
         [GPUImageOpenGLESContext useImageProcessingContext];
@@ -38,13 +41,42 @@
         {
             NSAssert(NO, @"Error at CVOpenGLESTextureCacheCreate %d", err);
         }
-        
+
         // Need to remove the initially created texture
         [self deleteOutputTexture];
     }
 
     self.url = url;
-    
+    self.asset = nil;
+
+    return self;
+}
+
+-(id)initWithAsset:(AVAsset *)asset {
+    if (!(self = [super init])) 
+    {
+      return nil;
+    }
+
+    if ([GPUImageOpenGLESContext supportsFastTextureUpload])
+    {
+        [GPUImageOpenGLESContext useImageProcessingContext];
+#if defined(__IPHONE_6_0)
+        CVReturn err = CVOpenGLESTextureCacheCreate(kCFAllocatorDefault, NULL, [[GPUImageOpenGLESContext sharedImageProcessingOpenGLESContext] context], NULL, &coreVideoTextureCache);
+#else
+        CVReturn err = CVOpenGLESTextureCacheCreate(kCFAllocatorDefault, NULL, (__bridge void *)[[GPUImageOpenGLESContext sharedImageProcessingOpenGLESContext] context], NULL, &coreVideoTextureCache);
+#endif
+        if (err) 
+        {
+            NSAssert(NO, @"Error at CVOpenGLESTextureCacheCreate %d", err);
+        }
+
+        // Need to remove the initially created texture
+        [self deleteOutputTexture];
+    }
+    self.url = nil;
+    self.asset = asset;
+
     return self;
 }
 
@@ -55,7 +87,6 @@
         CFRelease(coreVideoTextureCache);
     }
 }
-
 #pragma mark -
 #pragma mark Movie processing
 
@@ -67,11 +98,13 @@
 
 - (void)startProcessing;
 {
+    if(self.url == nil) {
+      [self processAsset];
+      return;
+    }
+  
     NSDictionary *inputOptions = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES] forKey:AVURLAssetPreferPreciseDurationAndTimingKey];
-    AVURLAsset *inputAsset = [[AVURLAsset alloc] initWithURL:self.url options:inputOptions];
-    
-    __unsafe_unretained GPUImageMovie *weakSelf = self;
-    
+    AVURLAsset *inputAsset = [[AVURLAsset alloc] initWithURL:self.url options:inputOptions];    
     [inputAsset loadValuesAsynchronouslyForKeys:[NSArray arrayWithObject:@"tracks"] completionHandler: ^{
         NSError *error = nil;
         AVKeyValueStatus tracksStatus = [inputAsset statusOfValueForKey:@"tracks" error:&error];
@@ -79,64 +112,72 @@
         {
             return;
         }
-        reader = [AVAssetReader assetReaderWithAsset:inputAsset error:&error];
-        
-        NSMutableDictionary *outputSettings = [NSMutableDictionary dictionary];
-        [outputSettings setObject: [NSNumber numberWithInt:kCVPixelFormatType_32BGRA]  forKey: (NSString*)kCVPixelBufferPixelFormatTypeKey];
-        // Maybe set alwaysCopiesSampleData to NO on iOS 5.0 for faster video decoding
-        AVAssetReaderTrackOutput *readerVideoTrackOutput = [AVAssetReaderTrackOutput assetReaderTrackOutputWithTrack:[[inputAsset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0] outputSettings:outputSettings];
-        [reader addOutput:readerVideoTrackOutput];
-        
-        NSArray *audioTracks = [inputAsset tracksWithMediaType:AVMediaTypeAudio];
-        BOOL shouldRecordAudioTrack = (([audioTracks count] > 0) && (weakSelf.audioEncodingTarget != nil) );
-        AVAssetReaderTrackOutput *readerAudioTrackOutput = nil;
-
-        if (shouldRecordAudioTrack)
-        {            
-            audioEncodingIsFinished = NO;
-            
-            // This might need to be extended to handle movies with more than one audio track
-            AVAssetTrack* audioTrack = [audioTracks objectAtIndex:0];
-            readerAudioTrackOutput = [AVAssetReaderTrackOutput assetReaderTrackOutputWithTrack:audioTrack outputSettings:nil];
-            [reader addOutput:readerAudioTrackOutput];
-        }
-
-        if ([reader startReading] == NO) 
-        {
-            NSLog(@"Error reading from file at URL: %@", weakSelf.url);
-            return;
-        }
-        
-        if (synchronizedMovieWriter != nil)
-        {
-            [synchronizedMovieWriter setVideoInputReadyCallback:^{
-                [weakSelf readNextVideoFrameFromOutput:readerVideoTrackOutput];
-            }];
-
-            [synchronizedMovieWriter setAudioInputReadyCallback:^{
-                [weakSelf readNextAudioSampleFromOutput:readerAudioTrackOutput];
-            }];
-            
-            [synchronizedMovieWriter enableSynchronizationCallbacks];
-        }
-        else
-        {
-            while (reader.status == AVAssetReaderStatusReading) 
-            {
-                [weakSelf readNextVideoFrameFromOutput:readerVideoTrackOutput];
-                
-                if ( (shouldRecordAudioTrack) && (!audioEncodingIsFinished) )
-                {
-                    [weakSelf readNextAudioSampleFromOutput:readerAudioTrackOutput];
-                }
-                
-            }            
-
-            if (reader.status == AVAssetWriterStatusCompleted) {
-                [weakSelf endProcessing];
-            }
-        }
+        self.asset = inputAsset;
+        [self processAsset];
     }];
+}
+
+- (void)processAsset
+{
+    __unsafe_unretained GPUImageMovie *weakSelf = self;
+    NSError *error = nil;
+    reader = [AVAssetReader assetReaderWithAsset:self.asset error:&error];
+
+    NSMutableDictionary *outputSettings = [NSMutableDictionary dictionary];
+    [outputSettings setObject: [NSNumber numberWithInt:kCVPixelFormatType_32BGRA]  forKey: (NSString*)kCVPixelBufferPixelFormatTypeKey];
+    // Maybe set alwaysCopiesSampleData to NO on iOS 5.0 for faster video decoding
+    AVAssetReaderTrackOutput *readerVideoTrackOutput = [AVAssetReaderTrackOutput assetReaderTrackOutputWithTrack:[[self.asset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0] outputSettings:outputSettings];
+    [reader addOutput:readerVideoTrackOutput];
+
+    NSArray *audioTracks = [self.asset tracksWithMediaType:AVMediaTypeAudio];
+    BOOL shouldRecordAudioTrack = (([audioTracks count] > 0) && (weakSelf.audioEncodingTarget != nil) );
+    AVAssetReaderTrackOutput *readerAudioTrackOutput = nil;
+
+    if (shouldRecordAudioTrack)
+    {
+        audioEncodingIsFinished = NO;
+
+        // This might need to be extended to handle movies with more than one audio track
+        AVAssetTrack* audioTrack = [audioTracks objectAtIndex:0];
+        readerAudioTrackOutput = [AVAssetReaderTrackOutput assetReaderTrackOutputWithTrack:audioTrack outputSettings:nil];
+        [reader addOutput:readerAudioTrackOutput];
+    }
+
+    if ([reader startReading] == NO) 
+    {
+            NSLog(@"Error reading from file at URL: %@", weakSelf.url);
+        return;
+    }
+        
+    if (synchronizedMovieWriter != nil)
+    {
+        [synchronizedMovieWriter setVideoInputReadyCallback:^{
+            [weakSelf readNextVideoFrameFromOutput:readerVideoTrackOutput];
+        }];
+
+        [synchronizedMovieWriter setAudioInputReadyCallback:^{
+            [weakSelf readNextAudioSampleFromOutput:readerAudioTrackOutput];
+        }];
+
+        [synchronizedMovieWriter enableSynchronizationCallbacks];
+    }
+    else
+    {
+        while (reader.status == AVAssetReaderStatusReading) 
+        {
+                [weakSelf readNextVideoFrameFromOutput:readerVideoTrackOutput];
+
+            if ( (shouldRecordAudioTrack) && (!audioEncodingIsFinished) )
+            {
+                    [weakSelf readNextAudioSampleFromOutput:readerAudioTrackOutput];
+            }
+
+        }
+
+        if (reader.status == AVAssetWriterStatusCompleted) {
+                [weakSelf endProcessing];
+        }
+    }
 }
 
 - (void)readNextVideoFrameFromOutput:(AVAssetReaderTrackOutput *)readerVideoTrackOutput;
@@ -223,7 +264,7 @@
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
         
         for (id<GPUImageInput> currentTarget in targets)
-        {            
+        {
             NSInteger indexOfObject = [targets indexOfObject:currentTarget];
             NSInteger targetTextureIndex = [[targetTextureIndices objectAtIndex:indexOfObject] integerValue];
             
