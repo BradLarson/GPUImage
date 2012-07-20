@@ -7,6 +7,7 @@
  */
 @interface GPUImageMovie : GPUImageOutput
 
+@property (readwrite, retain) AVAsset *asset;
 @property(readwrite, retain) NSURL *url;
 
 /** This enables the benchmarking mode, which logs out instantaneous and average frame times to the console
@@ -14,6 +15,7 @@
 @property(readwrite, nonatomic) BOOL runBenchmark;
 
 /// @name Initialization and teardown
+- (id)initWithAsset:(AVAsset *)asset;
 - (id)initWithURL:(NSURL *)url;
 
 /// @name Movie processing
