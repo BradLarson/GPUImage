@@ -23,10 +23,12 @@
 @synthesize inputCamera = _inputCamera;
 @synthesize runBenchmark = _runBenchmark;
 @synthesize outputImageOrientation = _outputImageOrientation;
-
+@synthesize processingQueue;
 #pragma mark -
 #pragma mark Initialization and teardown
-
+-(dispatch_queue_t) processingQueue{
+    return audioProcessingQueue;
+}
 - (id)init;
 {
     if (!(self = [self initWithSessionPreset:AVCaptureSessionPreset640x480 cameraPosition:AVCaptureDevicePositionBack]))
@@ -372,7 +374,8 @@
 
 - (void)processAudioSampleBuffer:(CMSampleBufferRef)sampleBuffer;
 {
-    [self.audioEncodingTarget processAudioBuffer:sampleBuffer]; 
+   // [self.audioEncodingTarget processAudioBuffer:sampleBuffer]; 
+    [[self.targets lastObject] processAudioBuffer:sampleBuffer];
 }
 
 #pragma mark -

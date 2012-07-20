@@ -55,7 +55,7 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 @synthesize failureBlock;
 @synthesize videoInputReadyCallback;
 @synthesize audioInputReadyCallback;
-
+@synthesize outputURL;
 @synthesize delegate = _delegate;
 
 #pragma mark -
@@ -126,7 +126,9 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 
 #pragma mark -
 #pragma mark Movie recording
-
+-(NSURL*) outputURL{
+    return movieURL;
+}
 - (void)initializeMovie;
 {
     isRecording = NO;
@@ -159,7 +161,17 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
     [outputSettings setObject:AVVideoCodecH264 forKey:AVVideoCodecKey];
     [outputSettings setObject:[NSNumber numberWithInt:videoSize.width] forKey:AVVideoWidthKey];
     [outputSettings setObject:[NSNumber numberWithInt:videoSize.height] forKey:AVVideoHeightKey];
-
+    
+    NSDictionary *videoCompressionProps = [NSDictionary dictionaryWithObjectsAndKeys:
+                                           [NSNumber numberWithDouble:700.0*1024.0], AVVideoAverageBitRateKey,
+                                           nil ];
+    [outputSettings setObject:videoCompressionProps forKey:AVVideoCompressionPropertiesKey];
+   /* NSDictionary *videoSettings = [NSDictionary dictionaryWithObjectsAndKeys:
+                                   AVVideoCodecH264, AVVideoCodecKey,
+                                   [NSNumber numberWithInt:640], AVVideoWidthKey,
+                                   [NSNumber numberWithInt:480], AVVideoHeightKey,
+                                   videoCompressionProps, AVVideoCompressionPropertiesKey,
+                                   nil];*/
     /*
     NSDictionary *videoCleanApertureSettings = [NSDictionary dictionaryWithObjectsAndKeys:
                                                 [NSNumber numberWithInt:videoSize.width], AVVideoCleanApertureWidthKey,

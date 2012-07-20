@@ -35,6 +35,8 @@
 /// This determines the rotation applied to the output image, based on the source material
 @property(readwrite, nonatomic) UIInterfaceOrientation outputImageOrientation;
 
+
+@property(readonly) dispatch_queue_t processingQueue;
 /// @name Initialization and teardown
 
 /** Begin a capture session
