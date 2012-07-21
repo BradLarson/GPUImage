@@ -179,6 +179,17 @@
             
             filter = [[GPUImageRGBFilter alloc] init];
         }; break;
+        case GPUIMAGE_HUE:
+        {
+            self.title = @"Hue";
+            self.filterSettingsSlider.hidden = NO;
+            
+            [self.filterSettingsSlider setMinimumValue:0.0];
+            [self.filterSettingsSlider setMaximumValue:360.0];
+            [self.filterSettingsSlider setValue:90.0];
+            
+            filter = [[GPUImageHueFilter alloc] init];
+        }; break;
         case GPUIMAGE_EXPOSURE:
         {
             self.title = @"Exposure";
@@ -1085,6 +1096,7 @@
         case GPUIMAGE_EXPOSURE: [(GPUImageExposureFilter *)filter setExposure:[(UISlider *)sender value]]; break;
         case GPUIMAGE_MONOCHROME: [(GPUImageMonochromeFilter *)filter setIntensity:[(UISlider *)sender value]]; break;
         case GPUIMAGE_RGB: [(GPUImageRGBFilter *)filter setGreen:[(UISlider *)sender value]]; break;
+        case GPUIMAGE_HUE: [(GPUImageHueFilter *)filter setHue:90.0]; break;
         case GPUIMAGE_SHARPEN: [(GPUImageSharpenFilter *)filter setSharpness:[(UISlider *)sender value]]; break;
         case GPUIMAGE_HISTOGRAM: [(GPUImageHistogramFilter *)filter setDownsamplingFactor:round([(UISlider *)sender value])]; break;
         case GPUIMAGE_UNSHARPMASK: [(GPUImageUnsharpMaskFilter *)filter setIntensity:[(UISlider *)sender value]]; break;
