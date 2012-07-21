@@ -78,6 +78,10 @@ Documentation is generated from header comments using appledoc. To build the doc
   - *greenControlPoints*:
   - *blueControlPoints*: The tone curve takes in a series of control points that define the spline curve for each color component. These are stored as NSValue-wrapped CGPoints in an NSArray, with normalized X and Y coordinates from 0 - 1. The defaults are (0,0), (0.5,0.5), (1,1).
 
+- **GPUImageHighlightShadowFilter**: Adjusts the shadows and highlights of an image
+  - *shadows*: Increase to lighten shadows, from 0.0 to 1.0, with 0.0 as the default.
+  - *highlights*: Decrease to darken highlights, from 0.0 to 1.0, with 1.0 as the default.
+
 - **GPUImageColorInvertFilter**: Inverts the colors of an image
 
 - **GPUImageGrayscaleFilter**: Converts an image to grayscale (a slightly faster implementation of the saturation filter, without the ability to vary the color contribution)
@@ -85,6 +89,10 @@ Documentation is generated from header comments using appledoc. To build the doc
 - **GPUImageMonochromeFilter**: Converts the image to a single-color version, based on the luminance of each pixel
   - *intensity*: The degree to which the specific color replaces the normal image color (0.0 - 1.0, with 1.0 as the default)
   - *color*: The color to use as the basis for the effect, with (0.6, 0.45, 0.3, 1.0) as the default.
+
+- **GPUImageFalseColorFilter**: Uses the luminance of the image to mix between two user-specified colors
+  - *firstColor*: The first and second colors specify what colors replace the dark and light areas of the image, respectively. The defaults are (0.0, 0.0, 0.5) amd (1.0, 0.0, 0.0).
+  - *secondColor*: 
 
 - **GPUImageSepiaFilter**: Simple sepia tone filter
   - *intensity*: The degree to which the sepia tone replaces the normal image color (0.0 - 1.0, with 1.0 as the default)

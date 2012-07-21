@@ -67,10 +67,12 @@
 		case GPUIMAGE_EXPOSURE: cell.textLabel.text = @"Exposure"; break;
         case GPUIMAGE_RGB: cell.textLabel.text = @"RGB"; break;
         case GPUIMAGE_MONOCHROME: cell.textLabel.text = @"Monochrome"; break;
+        case GPUIMAGE_FALSECOLOR: cell.textLabel.text = @"False color"; break;
 		case GPUIMAGE_SHARPEN: cell.textLabel.text = @"Sharpen"; break;
 		case GPUIMAGE_UNSHARPMASK: cell.textLabel.text = @"Unsharp mask"; break;
 		case GPUIMAGE_GAMMA: cell.textLabel.text = @"Gamma"; break;
 		case GPUIMAGE_TONECURVE: cell.textLabel.text = @"Tone curve"; break;
+		case GPUIMAGE_HIGHLIGHTSHADOW: cell.textLabel.text = @"Highlights and shadows"; break;
 		case GPUIMAGE_HAZE: cell.textLabel.text = @"Haze"; break;
         case GPUIMAGE_HISTOGRAM: cell.textLabel.text = @"Histogram"; break;
 		case GPUIMAGE_THRESHOLD: cell.textLabel.text = @"Threshold"; break;

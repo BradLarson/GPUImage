@@ -1,15 +1,5 @@
 #import "GPUImageFilter.h"
 
-/**
- * This is an attempt to replicate CIHighlightShadowAdjust
- * 
- * 
- * @author Alaric Cole
- * @creationDate 07/10/12
- *
- */
-
-
 @interface GPUImageHighlightShadowFilter : GPUImageFilter
 {
     GLint shadowsUniform, highlightsUniform;
