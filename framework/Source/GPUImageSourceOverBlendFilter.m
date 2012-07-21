@@ -3,6 +3,7 @@
 NSString *const kGPUImageSourceOverBlendFragmentShaderString = SHADER_STRING
 (
  varying highp vec2 textureCoordinate;
+ varying highp vec2 textureCoordinate2;
  
  uniform sampler2D inputImageTexture;
  uniform sampler2D inputImageTexture2;
