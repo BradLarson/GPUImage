@@ -65,7 +65,8 @@ NSString *const kGPUImageHueFragmentShaderString = SHADER_STRING
 }
 
 -(void) setHue:(CGFloat)newHue {
-    hue = fmodf(newHue, 360.0);
+    // Convert degrees to radians for hue rotation
+    hue = fmodf(newHue, 360.0) * M_PI/180 ;
     [GPUImageOpenGLESContext useImageProcessingContext];
     [filterProgram use];
     glUniform1f(hueAdjustUniform, hue);
