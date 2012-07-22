@@ -26,9 +26,17 @@
     movieFile = [[GPUImageMovie alloc] initWithURL:sampleURL];
     movieFile.runBenchmark = YES;
 //    filter = [[GPUImagePixellateFilter alloc] init];
-    filter = [[GPUImageUnsharpMaskFilter alloc] init];
+//    filter = [[GPUImageUnsharpMaskFilter alloc] init];
+    
+    filter = [[GPUImageDissolveBlendFilter alloc] init];
+    [(GPUImageDissolveBlendFilter *)filter setMix:0.5];
+    
+    UIImage *inputImage = [UIImage imageNamed:@"WID-small.jpg"];
+    GPUImagePicture *overlayPicture = [[GPUImagePicture alloc] initWithImage:inputImage];
     
     [movieFile addTarget:filter];
+    [overlayPicture addTarget:filter];
+    [overlayPicture processImage];
 
     // Only rotate the video for display, leave orientation the same for recording
     GPUImageView *filterView = (GPUImageView *)self.view;
