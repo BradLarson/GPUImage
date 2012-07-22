@@ -66,6 +66,7 @@
 		case GPUIMAGE_BRIGHTNESS: cell.textLabel.text = @"Brightness"; break;
 		case GPUIMAGE_EXPOSURE: cell.textLabel.text = @"Exposure"; break;
         case GPUIMAGE_RGB: cell.textLabel.text = @"RGB"; break;
+        case GPUIMAGE_HUE: cell.textLabel.text = @"Hue"; break;
         case GPUIMAGE_MONOCHROME: cell.textLabel.text = @"Monochrome"; break;
         case GPUIMAGE_FALSECOLOR: cell.textLabel.text = @"False color"; break;
 		case GPUIMAGE_SHARPEN: cell.textLabel.text = @"Sharpen"; break;
