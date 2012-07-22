@@ -45,6 +45,7 @@
 #import "GPUImageLightenBlendFilter.h"
 #import "GPUImageSwirlFilter.h"
 #import "GPUImageFastBlurFilter.h"
+#import "GPUImageSourceOverBlendFilter.h"
 #import "GPUImageColorBurnBlendFilter.h"
 #import "GPUImageColorDodgeBlendFilter.h"
 #import "GPUImageScreenBlendFilter.h"
