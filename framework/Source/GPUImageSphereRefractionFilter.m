@@ -52,6 +52,16 @@ NSString *const kGPUImageSphereRefractionFragmentShaderString = SHADER_STRING
 		return nil;
     }
     
+    return self;
+}
+
+- (id)initWithFragmentShaderFromString:(NSString *)fragmentShaderString;
+{
+    if (!(self = [super initWithFragmentShaderFromString:fragmentShaderString]))
+    {
+		return nil;
+    }
+    
     radiusUniform = [filterProgram uniformIndex:@"radius"];
     aspectRatioUniform = [filterProgram uniformIndex:@"aspectRatio"];
     centerUniform = [filterProgram uniformIndex:@"center"];

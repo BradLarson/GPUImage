@@ -107,6 +107,7 @@
 		case GPUIMAGE_SWIRL: cell.textLabel.text = @"Swirl"; break;
 		case GPUIMAGE_BULGE: cell.textLabel.text = @"Bulge"; break;
 		case GPUIMAGE_SPHEREREFRACTION: cell.textLabel.text = @"Sphere refraction"; break;
+		case GPUIMAGE_GLASSSPHERE: cell.textLabel.text = @"Glass sphere"; break;
 		case GPUIMAGE_PINCH: cell.textLabel.text = @"Pinch"; break;
 		case GPUIMAGE_STRETCH: cell.textLabel.text = @"Stretch"; break;
 		case GPUIMAGE_DILATION: cell.textLabel.text = @"Dilation"; break;

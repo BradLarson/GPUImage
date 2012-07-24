@@ -109,3 +109,4 @@
 #import "GPUImageHighlightShadowFilter.h"
 #import "GPUImageFalseColorFilter.h"
 #import "GPUImageHueFilter.h"
+#import "GPUImageGlassSphereFilter.h"
