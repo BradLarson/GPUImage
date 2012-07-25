@@ -113,7 +113,7 @@ typedef enum {
 // Initialization and teardown
 - (id)initWithFilterType:(GPUImageShowcaseFilterType)newFilterType;
 - (void)setupFilter;
-- (void)hookForFaces:(CMSampleBufferRef)sampleBuffer;
+- (void)willOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer;
 // Filter adjustments
 - (IBAction)updateFilterFromSlider:(id)sender;
 - (void)GPUVCWillOutputFeatures:(NSArray*)featureArray forClap:(CGRect)clap

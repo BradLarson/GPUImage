@@ -1189,7 +1189,7 @@
 }
 
 #pragma mark - Face Detection Delegate Callback
--(void) hookForFaces:(CMSampleBufferRef)sampleBuffer{
+-(void) willOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer{
     if (!faceThinking) {
         CFAllocatorRef allocator = CFAllocatorGetDefault();
         CMSampleBufferRef sbufCopyOut;
