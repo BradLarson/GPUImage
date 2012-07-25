@@ -83,7 +83,23 @@ void report_memory(NSString *tag)
 
 - (void)setInputTextureForTarget:(id<GPUImageInput>)target atIndex:(NSInteger)inputTextureIndex;
 {
-    [target setInputTexture:outputTexture atIndex:inputTextureIndex];
+    [target setInputTexture:[self textureForOutput] atIndex:inputTextureIndex];
+}
+
+- (GLuint)textureForOutput;
+{
+    return outputTexture;
+}
+
+- (void)notifyTargetsAboutNewOutputTexture;
+{
+    for (id<GPUImageInput> currentTarget in targets)
+    {
+        NSInteger indexOfObject = [targets indexOfObject:currentTarget];
+        NSInteger textureIndex = [[targetTextureIndices objectAtIndex:indexOfObject] integerValue];
+        
+        [self setInputTextureForTarget:currentTarget atIndex:textureIndex];
+    }
 }
 
 - (NSArray*)targets;

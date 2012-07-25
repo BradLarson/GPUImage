@@ -40,6 +40,8 @@
         -1.0f,  1.0f,
         1.0f,  1.0f,
     };
+    
+    [self notifyTargetsAboutNewOutputTexture];
 
     // Let the downstream video elements see the previous frame from the buffer before rendering a new one into place
     [self informTargetsAboutNewFrameAtTime:frameTime];
@@ -98,11 +100,10 @@
 #pragma mark -
 #pragma mark Managing targets
 
-- (void)setInputTextureForTarget:(id<GPUImageInput>)target atIndex:(NSInteger)inputTextureIndex;
+- (GLuint)textureForOutput;
 {
-    [target setInputTexture:[[bufferedTextures objectAtIndex:0] intValue] atIndex:inputTextureIndex];
+    return [[bufferedTextures objectAtIndex:0] intValue];
 }
-
 
 #pragma mark -
 #pragma mark Texture management
