@@ -97,16 +97,19 @@ typedef enum {
     GPUImageFilterPipeline *pipeline;
     UIView* faceView;
     
+    CIDetector*faceDetector;
+    
     IBOutlet UISwitch *facesSwitch;
     __unsafe_unretained UISlider *_filterSettingsSlider;
+    BOOL faceThinking;
 }
 
 @property(readwrite, unsafe_unretained, nonatomic) IBOutlet UISlider *filterSettingsSlider;
-
+@property(nonatomic,retain) CIDetector*faceDetector;
 // Initialization and teardown
 - (id)initWithFilterType:(GPUImageShowcaseFilterType)newFilterType;
 - (void)setupFilter;
-
+- (void)hookForFaces:(CMSampleBufferRef)sampleBuffer;
 // Filter adjustments
 - (IBAction)updateFilterFromSlider:(id)sender;
 - (void)GPUVCWillOutputFeatures:(NSArray*)featureArray forClap:(CGRect)clap
