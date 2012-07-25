@@ -30,7 +30,7 @@ void GPUImageCreateResizedSampleBuffer(CVPixelBufferRef cameraFrame, CGSize fina
     CMSampleTimingInfo timing = {frameTime, frameTime, kCMTimeInvalid};
     
     CMSampleBufferCreateForImageBuffer(kCFAllocatorDefault, pixel_buffer, YES, NULL, NULL, videoInfo, &timing, sampleBuffer);
-    //            CFRelease(videoInfo);
+    CFRelease(videoInfo);
     CVPixelBufferRelease(pixel_buffer);
 }
 

@@ -233,7 +233,7 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
     glActiveTexture(GL_TEXTURE1);
     glGenFramebuffers(1, &filterFramebuffer);
     glBindFramebuffer(GL_FRAMEBUFFER, filterFramebuffer);
-
+    
     if ([GPUImageOpenGLESContext supportsFastTextureUpload] && preparedToCaptureImage)
     {
         
@@ -287,12 +287,16 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
         
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, CVOpenGLESTextureGetName(renderTexture), 0);
+        
+        [self notifyTargetsAboutNewOutputTexture];
     }
     else
     {                
         glBindTexture(GL_TEXTURE_2D, outputTexture);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (int)currentFBOSize.width, (int)currentFBOSize.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, outputTexture, 0);
+        
+        [self notifyTargetsAboutNewOutputTexture];
     }
     
 //    NSLog(@"Filter size: %f, %f for filter: %@", currentFBOSize.width, currentFBOSize.height, self);
@@ -719,6 +723,8 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
     if (CGSizeEqualToSize(frameSize, CGSizeZero))
     {
         overrideInputSize = NO;
+        inputTextureSize = CGSizeZero;
+        forcedMaximumSize = CGSizeZero;
     }
     else
     {

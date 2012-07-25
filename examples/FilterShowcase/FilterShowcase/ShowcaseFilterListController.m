@@ -66,11 +66,14 @@
 		case GPUIMAGE_BRIGHTNESS: cell.textLabel.text = @"Brightness"; break;
 		case GPUIMAGE_EXPOSURE: cell.textLabel.text = @"Exposure"; break;
         case GPUIMAGE_RGB: cell.textLabel.text = @"RGB"; break;
+        case GPUIMAGE_HUE: cell.textLabel.text = @"Hue"; break;
         case GPUIMAGE_MONOCHROME: cell.textLabel.text = @"Monochrome"; break;
+        case GPUIMAGE_FALSECOLOR: cell.textLabel.text = @"False color"; break;
 		case GPUIMAGE_SHARPEN: cell.textLabel.text = @"Sharpen"; break;
 		case GPUIMAGE_UNSHARPMASK: cell.textLabel.text = @"Unsharp mask"; break;
 		case GPUIMAGE_GAMMA: cell.textLabel.text = @"Gamma"; break;
 		case GPUIMAGE_TONECURVE: cell.textLabel.text = @"Tone curve"; break;
+		case GPUIMAGE_HIGHLIGHTSHADOW: cell.textLabel.text = @"Highlights and shadows"; break;
 		case GPUIMAGE_HAZE: cell.textLabel.text = @"Haze"; break;
         case GPUIMAGE_HISTOGRAM: cell.textLabel.text = @"Histogram"; break;
 		case GPUIMAGE_THRESHOLD: cell.textLabel.text = @"Threshold"; break;
@@ -104,6 +107,7 @@
 		case GPUIMAGE_SWIRL: cell.textLabel.text = @"Swirl"; break;
 		case GPUIMAGE_BULGE: cell.textLabel.text = @"Bulge"; break;
 		case GPUIMAGE_SPHEREREFRACTION: cell.textLabel.text = @"Sphere refraction"; break;
+		case GPUIMAGE_GLASSSPHERE: cell.textLabel.text = @"Glass sphere"; break;
 		case GPUIMAGE_PINCH: cell.textLabel.text = @"Pinch"; break;
 		case GPUIMAGE_STRETCH: cell.textLabel.text = @"Stretch"; break;
 		case GPUIMAGE_DILATION: cell.textLabel.text = @"Dilation"; break;

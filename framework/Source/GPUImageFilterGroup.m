@@ -107,10 +107,10 @@
 
 - (NSInteger)nextAvailableTextureIndex;
 {
-    if ([_initialFilters count] > 0)
-    {
-        return [[_initialFilters objectAtIndex:0] nextAvailableTextureIndex];
-    }
+//    if ([_initialFilters count] > 0)
+//    {
+//        return [[_initialFilters objectAtIndex:0] nextAvailableTextureIndex];
+//    }
     
     return 0;
 }

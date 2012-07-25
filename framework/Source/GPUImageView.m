@@ -137,7 +137,9 @@
 #pragma mark Managing the display FBOs
 
 - (void)createDisplayFramebuffer;
-{
+{    
+    [GPUImageOpenGLESContext useImageProcessingContext];
+    
 	glGenFramebuffers(1, &displayFramebuffer);
 	glBindFramebuffer(GL_FRAMEBUFFER, displayFramebuffer);
 	
@@ -150,6 +152,13 @@
 
 	glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH, &backingWidth);
 	glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &backingHeight);
+    
+    if ( (backingWidth == 0) || (backingHeight == 0) )
+    {
+        [self destroyDisplayFramebuffer];
+        return;
+    }
+    
     _sizeInPixels.width = (CGFloat)backingWidth;
     _sizeInPixels.height = (CGFloat)backingHeight;
 

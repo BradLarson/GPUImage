@@ -86,7 +86,7 @@ NSString *const kGPUImageCropFragmentShaderString =  SHADER_STRING
     scaledSize.height = rotatedSize.height * _cropRegion.size.height;
 
     
-    if ( (CGSizeEqualToSize(inputTextureSize, CGSizeZero)) || (CGSizeEqualToSize(scaledSize, CGSizeZero)) )
+    if (CGSizeEqualToSize(scaledSize, CGSizeZero))
     {
         inputTextureSize = scaledSize;
     }
@@ -207,7 +207,7 @@ NSString *const kGPUImageCropFragmentShaderString =  SHADER_STRING
             cropTextureCoordinates[6] = maxY; // 1,1
             cropTextureCoordinates[7] = 1.0 - minX;
         }; break;
-    }
+    }    
 }
 
 - (void)newFrameReadyAtTime:(CMTime)frameTime atIndex:(NSInteger)textureIndex;

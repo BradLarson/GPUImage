@@ -47,7 +47,17 @@ NSString *const kGPUImageSphereRefractionFragmentShaderString = SHADER_STRING
 
 - (id)init;
 {
-    if (!(self = [super initWithFragmentShaderFromString:kGPUImageSphereRefractionFragmentShaderString]))
+    if (!(self = [self initWithFragmentShaderFromString:kGPUImageSphereRefractionFragmentShaderString]))
+    {
+		return nil;
+    }
+    
+    return self;
+}
+
+- (id)initWithFragmentShaderFromString:(NSString *)fragmentShaderString;
+{
+    if (!(self = [super initWithFragmentShaderFromString:fragmentShaderString]))
     {
 		return nil;
     }

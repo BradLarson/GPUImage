@@ -38,6 +38,8 @@ void report_memory(NSString *tag);
 
 /// @name Managing targets
 - (void)setInputTextureForTarget:(id<GPUImageInput>)target atIndex:(NSInteger)inputTextureIndex;
+- (GLuint)textureForOutput;
+- (void)notifyTargetsAboutNewOutputTexture;
 
 /** Returns an array of the current targets.
  */

@@ -7,7 +7,7 @@
 
 @property(readwrite, nonatomic) CGFloat intensity;
 @property(readwrite, nonatomic) GPUVector4 color;
-//@property(readwrite, nonatomic) CIColor* color;
+
 - (void)setColorRed:(GLfloat)redComponent green:(GLfloat)greenComponent blue:(GLfloat)blueComponent;
 
 @end

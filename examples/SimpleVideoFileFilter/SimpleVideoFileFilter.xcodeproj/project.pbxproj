@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		466AE00B14F2A196004FE0E5 /* sample_iPod.m4v in Resources */ = {isa = PBXBuildFile; fileRef = 466AE00A14F2A196004FE0E5 /* sample_iPod.m4v */; };
+		BC11C28315BCBE2300E5BEC7 /* WID-small.jpg in Resources */ = {isa = PBXBuildFile; fileRef = BC11C28215BCBE2300E5BEC7 /* WID-small.jpg */; };
 		BCB5DDCF14E86899000AF3C2 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCB5DDCE14E86899000AF3C2 /* UIKit.framework */; };
 		BCB5DDD114E86899000AF3C2 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCB5DDD014E86899000AF3C2 /* Foundation.framework */; };
 		BCB5DDD314E86899000AF3C2 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCB5DDD214E86899000AF3C2 /* CoreGraphics.framework */; };
@@ -50,6 +51,7 @@
 
 /* Begin PBXFileReference section */
 		466AE00A14F2A196004FE0E5 /* sample_iPod.m4v */ = {isa = PBXFileReference; lastKnownFileType = file; path = sample_iPod.m4v; sourceTree = "<group>"; };
+		BC11C28215BCBE2300E5BEC7 /* WID-small.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "WID-small.jpg"; sourceTree = "<group>"; };
 		BCB5DDCA14E86899000AF3C2 /* SimpleVideoFileFilter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SimpleVideoFileFilter.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BCB5DDCE14E86899000AF3C2 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		BCB5DDD014E86899000AF3C2 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -140,6 +142,7 @@
 		BCB5DDD514E86899000AF3C2 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				BC11C28215BCBE2300E5BEC7 /* WID-small.jpg */,
 				466AE00A14F2A196004FE0E5 /* sample_iPod.m4v */,
 				BCB5DDD614E86899000AF3C2 /* SimpleVideoFileFilter-Info.plist */,
 				BCB5DDD714E86899000AF3C2 /* InfoPlist.strings */,
@@ -236,6 +239,7 @@
 				BCB5DDD914E86899000AF3C2 /* InfoPlist.strings in Resources */,
 				BCB5DDE914E868C0000AF3C2 /* SimpleVideoFileFilterViewController.xib in Resources */,
 				466AE00B14F2A196004FE0E5 /* sample_iPod.m4v in Resources */,
+				BC11C28315BCBE2300E5BEC7 /* WID-small.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
