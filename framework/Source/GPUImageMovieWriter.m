@@ -36,6 +36,7 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 
 // Movie recording
 - (void)initializeMovie;
+- (void)initializeMovieWithOutputSettings:(NSMutableDictionary *)outputSettings;
 
 // Frame rendering
 - (void)createDataFBO;
@@ -63,6 +64,10 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 
 - (id)initWithMovieURL:(NSURL *)newMovieURL size:(CGSize)newSize;
 {
+    return [self initWithMovieURL:newMovieURL size:newSize fileType:AVFileTypeQuickTimeMovie outputSettings:nil];
+}
+- (id)initWithMovieURL:(NSURL *)newMovieURL size:(CGSize)newSize fileType:(NSString *)newFileType outputSettings:(NSMutableDictionary *)outputSettings;
+{
     if (!(self = [super init]))
     {
 		return nil;
@@ -70,6 +75,7 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 
     videoSize = newSize;
     movieURL = newMovieURL;
+    fileType = newFileType;
     startTime = kCMTimeInvalid;
     _encodingLiveVideo = YES;
     previousFrameTime = kCMTimeNegativeInfinity;
@@ -109,7 +115,7 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 	glEnableVertexAttribArray(colorSwizzlingPositionAttribute);
 	glEnableVertexAttribArray(colorSwizzlingTextureCoordinateAttribute);
     
-    [self initializeMovie];
+    [self initializeMovieWithOutputSettings:outputSettings];
 
     return self;
 }
@@ -129,13 +135,17 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 
 - (void)initializeMovie;
 {
+    [self initializeMovieWithOutputSettings:nil];
+}
+- (void)initializeMovieWithOutputSettings:(NSMutableDictionary *)outputSettings;
+{
     isRecording = NO;
     
     frameData = (GLubyte *) malloc((int)videoSize.width * (int)videoSize.height * 4);
 
 //    frameData = (GLubyte *) calloc(videoSize.width * videoSize.height * 4, sizeof(GLubyte));
     NSError *error = nil;
-    assetWriter = [[AVAssetWriter alloc] initWithURL:movieURL fileType:AVFileTypeQuickTimeMovie error:&error];
+    assetWriter = [[AVAssetWriter alloc] initWithURL:movieURL fileType:fileType error:&error];
     if (error != nil)
     {
         NSLog(@"Error: %@", error);
@@ -155,11 +165,21 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
     // Set this to make sure that a functional movie is produced, even if the recording is cut off mid-stream. Only the last second should be lost in that case.
     assetWriter.movieFragmentInterval = CMTimeMakeWithSeconds(1.0, 1000);
     
-    NSMutableDictionary * outputSettings = [[NSMutableDictionary alloc] init];
-    [outputSettings setObject:AVVideoCodecH264 forKey:AVVideoCodecKey];
-    [outputSettings setObject:[NSNumber numberWithInt:videoSize.width] forKey:AVVideoWidthKey];
-    [outputSettings setObject:[NSNumber numberWithInt:videoSize.height] forKey:AVVideoHeightKey];
-
+    // use default output settings if none specified
+    if (outputSettings == nil) 
+    {
+        outputSettings = [[NSMutableDictionary alloc] init];
+        [outputSettings setObject:AVVideoCodecH264 forKey:AVVideoCodecKey];
+        [outputSettings setObject:[NSNumber numberWithInt:videoSize.width] forKey:AVVideoWidthKey];
+        [outputSettings setObject:[NSNumber numberWithInt:videoSize.height] forKey:AVVideoHeightKey];
+    }
+    // custom output settings specified
+    else 
+    {
+        // TODO: do we need to check if AVVideoCodecKey, AVVideoWidthKey & AVVideoHeightKey are set, & if not set them here?
+        // TODO: or is it ok to either ommit them, or rely on the calling code to set those values?
+    }
+    
     /*
     NSDictionary *videoCleanApertureSettings = [NSDictionary dictionaryWithObjectsAndKeys:
                                                 [NSNumber numberWithInt:videoSize.width], AVVideoCleanApertureWidthKey,
