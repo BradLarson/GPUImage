@@ -18,6 +18,7 @@ extern NSString *const kGPUImageColorSwizzlingFragmentShaderString;
 	CMVideoCodecType videoType;
 
     NSURL *movieURL;
+    NSString *fileType;
 	AVAssetWriter *assetWriter;
 	AVAssetWriterInput *assetWriterAudioInput;
 	AVAssetWriterInput *assetWriterVideoInput;
@@ -43,6 +44,7 @@ extern NSString *const kGPUImageColorSwizzlingFragmentShaderString;
 
 // Initialization and teardown
 - (id)initWithMovieURL:(NSURL *)newMovieURL size:(CGSize)newSize;
+- (id)initWithMovieURL:(NSURL *)newMovieURL size:(CGSize)newSize fileType:(NSString *)newFileType outputSettings:(NSMutableDictionary *)outputSettings;
 
 // Movie recording
 - (void)startRecording;
