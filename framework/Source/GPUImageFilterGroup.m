@@ -34,6 +34,11 @@
     return [filters objectAtIndex:filterIndex];
 }
 
+- (int)filterCount;
+{
+    return [filters count];
+}
+
 #pragma mark -
 #pragma mark Still image processing
 
