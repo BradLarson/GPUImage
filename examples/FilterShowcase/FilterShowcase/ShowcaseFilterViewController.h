@@ -85,11 +85,12 @@ typedef enum {
     GPUIMAGE_UIELEMENT,
     GPUIMAGE_FILECONFIG,
     GPUIMAGE_FILTERGROUP,
+    GPUIMAGE_FACES,
     GPUIMAGE_NUMFILTERS
 } GPUImageShowcaseFilterType; 
 
 
-@interface ShowcaseFilterViewController : UIViewController
+@interface ShowcaseFilterViewController : UIViewController <GPUImageVideoCameraDelegate>
 {
     GPUImageVideoCamera *videoCamera;
     GPUImageOutput<GPUImageInput> *filter;
@@ -98,17 +99,24 @@ typedef enum {
     GPUImageUIElement *uiElementInput;
     
     GPUImageFilterPipeline *pipeline;
+    UIView* faceView;
     
+    CIDetector*faceDetector;
+    
+    IBOutlet UISwitch *facesSwitch;
     __unsafe_unretained UISlider *_filterSettingsSlider;
+    BOOL faceThinking;
 }
 
 @property(readwrite, unsafe_unretained, nonatomic) IBOutlet UISlider *filterSettingsSlider;
-
+@property(nonatomic,retain) CIDetector*faceDetector;
 // Initialization and teardown
 - (id)initWithFilterType:(GPUImageShowcaseFilterType)newFilterType;
 - (void)setupFilter;
-
+- (void)willOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer;
 // Filter adjustments
 - (IBAction)updateFilterFromSlider:(id)sender;
-
+- (void)GPUVCWillOutputFeatures:(NSArray*)featureArray forClap:(CGRect)clap
+                 andOrientation:(UIDeviceOrientation)curDeviceOrientation;
+-(IBAction)facesSwitched:(id)sender;
 @end

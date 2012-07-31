@@ -4,6 +4,14 @@
 #import "GPUImageOpenGLESContext.h"
 #import "GPUImageOutput.h"
 
+//Delegate Protocal for Face Detection.
+@protocol GPUImageVideoCameraDelegate <NSObject>
+
+@optional
+- (void)willOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer;
+@end
+
+
 /**
  A GPUImageOutput that provides frames from either camera
 */
@@ -21,6 +29,8 @@
 
     BOOL capturePaused;
     GPUImageRotationMode outputRotation;
+
+    id<GPUImageVideoCameraDelegate> _delegate;
 }
 
 /// The AVCaptureSession used to capture from the camera
@@ -34,6 +44,8 @@
 
 /// This determines the rotation applied to the output image, based on the source material
 @property(readwrite, nonatomic) UIInterfaceOrientation outputImageOrientation;
+
+@property(nonatomic,retain) id<GPUImageVideoCameraDelegate> delegate;
 
 /// @name Initialization and teardown
 

@@ -144,6 +144,7 @@
 		case GPUIMAGE_CUSTOM: cell.textLabel.text = @"Custom"; break;
         case GPUIMAGE_FILECONFIG: cell.textLabel.text = @"Filter Chain"; break;
         case GPUIMAGE_FILTERGROUP: cell.textLabel.text = @"Filter Group"; break;
+        case GPUIMAGE_FACES: cell.textLabel.text = @"Face Detection"; break;
 	}
     
     return cell;
