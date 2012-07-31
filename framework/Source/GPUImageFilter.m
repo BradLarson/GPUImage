@@ -206,7 +206,7 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
     [stillImageSource addTarget:self];
     [stillImageSource processImage];
     
-    UIImage *processedImage = [self imageFromCurrentlyProcessedOutput];
+    UIImage *processedImage = [self imageFromCurrentlyProcessedOutputWithOrientation:[imageToFilter imageOrientation]];
     
     [stillImageSource removeTarget:self];
     return processedImage;
