@@ -23,6 +23,7 @@
 @synthesize inputCamera = _inputCamera;
 @synthesize runBenchmark = _runBenchmark;
 @synthesize outputImageOrientation = _outputImageOrientation;
+@synthesize delegate = _delegate;
 
 #pragma mark -
 #pragma mark Initialization and teardown
@@ -389,8 +390,8 @@
 - (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection
 {
 	//This may help keep memory footprint low
-	@autoreleasepool 
-	{
+    @autoreleasepool {
+
 		//these need to be on the main thread for proper timing
         __unsafe_unretained id weakSelf = self;
 		if (captureOutput == audioOutput)
@@ -401,11 +402,20 @@
 		}
 		else
 		{
-			runOnMainQueueWithoutDeadlocking(^{ 
+            
+			runOnMainQueueWithoutDeadlocking(^{
+                //Feature Detection Hook.
+                if (self.delegate) {
+                    [self.delegate willOutputSampleBuffer:sampleBuffer];
+                }
+                
                 [weakSelf processVideoSampleBuffer:sampleBuffer];
+                
+                
             });
 		}
-	}
+    }
+	
 }
 
 #pragma mark -
