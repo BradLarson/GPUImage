@@ -13,7 +13,12 @@
 		return nil;
     }
 
-    lookupImageSource1 = [[GPUImagePicture alloc] initWithImage:[UIImage imageNamed:@"lookup_soft_elegance_1.png"]];
+    UIImage *image1 = [UIImage imageNamed:@"lookup_soft_elegance_1.png"];
+    UIImage *image2 = [UIImage imageNamed:@"lookup_soft_elegance_2.png"];
+    NSAssert(image1 && image2,
+             @"To use GPUImageSoftEleganceFilter you need to add lookup_soft_elegance_1.png and lookup_soft_elegance_2.png from GPUImage/framework/Resources to your application bundle.");
+    
+    lookupImageSource1 = [[GPUImagePicture alloc] initWithImage:image1];
     GPUImageLookupFilter *lookupFilter1 = [[GPUImageLookupFilter alloc] init];
 
     [lookupImageSource1 addTarget:lookupFilter1 atTextureLocation:1];
@@ -28,7 +33,7 @@
     [lookupFilter1 addTarget:alphaBlend];
     [gaussianBlur addTarget:alphaBlend];
     
-    lookupImageSource2 = [[GPUImagePicture alloc] initWithImage:[UIImage imageNamed:@"lookup_soft_elegance_2.png"]];
+    lookupImageSource2 = [[GPUImagePicture alloc] initWithImage:image2];
 
     GPUImageLookupFilter *lookupFilter2 = [[GPUImageLookupFilter alloc] init];
     [alphaBlend addTarget:lookupFilter2];

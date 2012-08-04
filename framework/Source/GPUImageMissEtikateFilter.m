@@ -11,7 +11,10 @@
 		return nil;
     }
 
-    lookupImageSource = [[GPUImagePicture alloc] initWithImage:[UIImage imageNamed:@"lookup_miss_etikate.png"]];
+    UIImage *image = [UIImage imageNamed:@"lookup_miss_etikate.png"];
+    NSAssert(image, @"To use GPUImageMissEtikateFilter you need to add lookup_miss_etikate.png from GPUImage/framework/Resources to your application bundle.");
+
+    lookupImageSource = [[GPUImagePicture alloc] initWithImage:image];
     GPUImageLookupFilter *lookupFilter = [[GPUImageLookupFilter alloc] init];
 
     [lookupImageSource addTarget:lookupFilter atTextureLocation:1];

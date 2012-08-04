@@ -3,7 +3,7 @@
 @interface GPUImageLookupFilter : GPUImageTwoInputFilter
 
 // How To Use:
-// 1) Use your favourite photo editing application to apply a filter to lookup.png
+// 1) Use your favourite photo editing application to apply a filter to lookup.png from GPUImage/framework/Resources.
 // For this to work properly each pixel color must not depend on other pixels (e.g. blur will not work).
 // If you need more complex filter you can create as many lookup tables as required.
 // E.g. color_balance_lookup_1.png -> GPUImageGaussianBlurFilter -> color_balance_lookup_2.png
