@@ -44,7 +44,15 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return GPUIMAGE_NUMFILTERS;
+    // Disable the last filter (Core Image face detection) if running on iOS 4.0
+    if ([GPUImageOpenGLESContext supportsFastTextureUpload])
+    {
+        return GPUIMAGE_NUMFILTERS;
+    }
+    else
+    {
+        return (GPUIMAGE_NUMFILTERS - 1);
+    }
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -85,6 +93,9 @@
         case GPUIMAGE_COLORINVERT: cell.textLabel.text = @"Color invert"; break;
         case GPUIMAGE_GRAYSCALE: cell.textLabel.text = @"Grayscale"; break;
 		case GPUIMAGE_SEPIA: cell.textLabel.text = @"Sepia tone"; break;
+		case GPUIMAGE_MISSETIKATE: cell.textLabel.text = @"Miss Etikate (Lookup)"; break;
+		case GPUIMAGE_SOFTELEGANCE: cell.textLabel.text = @"Soft elegance (Lookup)"; break;
+		case GPUIMAGE_AMATORKA: cell.textLabel.text = @"Amatorka (Lookup)"; break;
 		case GPUIMAGE_PIXELLATE: cell.textLabel.text = @"Pixellate"; break;
 		case GPUIMAGE_POLARPIXELLATE: cell.textLabel.text = @"Polar pixellate"; break;
 		case GPUIMAGE_CROSSHATCH: cell.textLabel.text = @"Crosshatch"; break;

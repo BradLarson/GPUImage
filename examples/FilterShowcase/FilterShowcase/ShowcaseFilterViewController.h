@@ -21,6 +21,9 @@ typedef enum {
     GPUIMAGE_HIGHLIGHTSHADOW,
     GPUIMAGE_HAZE,
     GPUIMAGE_SEPIA,
+    GPUIMAGE_AMATORKA,
+    GPUIMAGE_MISSETIKATE,
+    GPUIMAGE_SOFTELEGANCE,
     GPUIMAGE_COLORINVERT,
     GPUIMAGE_GRAYSCALE,
     GPUIMAGE_HISTOGRAM,
@@ -99,11 +102,12 @@ typedef enum {
     GPUImageUIElement *uiElementInput;
     
     GPUImageFilterPipeline *pipeline;
-    UIView* faceView;
+    UIView *faceView;
     
-    CIDetector*faceDetector;
+    CIDetector *faceDetector;
     
     IBOutlet UISwitch *facesSwitch;
+    IBOutlet UILabel *facesLabel;
     __unsafe_unretained UISlider *_filterSettingsSlider;
     BOOL faceThinking;
 }

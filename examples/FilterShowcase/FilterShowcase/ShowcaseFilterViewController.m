@@ -27,9 +27,13 @@
 {
     [super viewDidLoad];
     
-    NSDictionary *detectorOptions = [[NSDictionary alloc] initWithObjectsAndKeys:CIDetectorAccuracyLow, CIDetectorAccuracy, nil];
-	self.faceDetector = [CIDetector detectorOfType:CIDetectorTypeFace context:nil options:detectorOptions];
-    faceThinking = NO;
+    if ([GPUImageOpenGLESContext supportsFastTextureUpload])
+    {
+        NSDictionary *detectorOptions = [[NSDictionary alloc] initWithObjectsAndKeys:CIDetectorAccuracyLow, CIDetectorAccuracy, nil];
+        self.faceDetector = [CIDetector detectorOfType:CIDetectorTypeFace context:nil options:detectorOptions];
+        faceThinking = NO;
+    }
+    
     [self setupFilter];
 }
 
@@ -54,10 +58,11 @@
 
 - (void)setupFilter;
 {
-   // videoCamera = [[GPUImageVideoCamera alloc] initWithSessionPreset:AVCaptureSessionPreset640x480 cameraPosition:AVCaptureDevicePositionBack];
-    videoCamera = [[GPUImageVideoCamera alloc] initWithSessionPreset:AVCaptureSessionPreset640x480 cameraPosition:AVCaptureDevicePositionFront];
+    videoCamera = [[GPUImageVideoCamera alloc] initWithSessionPreset:AVCaptureSessionPreset640x480 cameraPosition:AVCaptureDevicePositionBack];
+//    videoCamera = [[GPUImageVideoCamera alloc] initWithSessionPreset:AVCaptureSessionPreset640x480 cameraPosition:AVCaptureDevicePositionFront];
     videoCamera.outputImageOrientation = UIInterfaceOrientationPortrait;
-    
+    facesSwitch.hidden = YES;
+    facesLabel.hidden = YES;
     BOOL needsSecondImage = NO;
     
     switch (filterType)
@@ -139,6 +144,28 @@
             
             filter = [[GPUImageFalseColorFilter alloc] init];
 		}; break;
+        case GPUIMAGE_SOFTELEGANCE:
+        {
+            self.title = @"Soft Elegance (Lookup)";
+            self.filterSettingsSlider.hidden = YES;
+            
+            filter = [[GPUImageSoftEleganceFilter alloc] init];
+        }; break;
+        case GPUIMAGE_MISSETIKATE:
+        {
+            self.title = @"Miss Etikate (Lookup)";
+            self.filterSettingsSlider.hidden = YES;
+            
+            filter = [[GPUImageMissEtikateFilter alloc] init];
+        }; break;
+        case GPUIMAGE_AMATORKA:
+        {
+            self.title = @"Amatorka (Lookup)";
+            self.filterSettingsSlider.hidden = YES;
+            
+            filter = [[GPUImageAmatorkaFilter alloc] init];
+        }; break;
+
         case GPUIMAGE_SATURATION:
         {
             self.title = @"Saturation";
@@ -929,6 +956,10 @@
 
         case GPUIMAGE_FACES:
         {
+            facesSwitch.hidden = NO;
+            facesLabel.hidden = NO;
+
+            [videoCamera rotateCamera];
             self.title = @"Face Detection";
             self.filterSettingsSlider.hidden = YES;
             
