@@ -96,7 +96,7 @@
     movieWriter.encodingLiveVideo = NO;
 }
 
-- (void)startProcessing;
+- (void)startProcessing
 {
     if(self.url == nil) {
       [self processAsset];

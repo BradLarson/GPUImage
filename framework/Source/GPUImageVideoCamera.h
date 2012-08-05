@@ -36,6 +36,18 @@
 /// The AVCaptureSession used to capture from the camera
 @property(readonly, retain) AVCaptureSession *captureSession;
 
+/// This enables capture session preset to be changed on the fly
+@property (readwrite) NSString *captureSessionPreset;
+
+/// This sets the frame rate of the camera (iOS 5 and above only)
+/**
+ Setting this to 0 or below will set the frame rate back to the default setting for a particular preset.
+ */
+@property (readwrite) NSInteger frameRate;
+
+/// Easy way to tell if front-facing camera is present on device
+@property (readonly, getter = isFrontFacingCameraPresent) BOOL frontFacingCameraPresent;
+
 /// This enables the benchmarking mode, which logs out instantaneous and average frame times to the console
 @property(readwrite, nonatomic) BOOL runBenchmark;
 
