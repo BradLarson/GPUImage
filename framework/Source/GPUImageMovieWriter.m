@@ -35,7 +35,6 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 }
 
 // Movie recording
-- (void)initializeMovie;
 - (void)initializeMovieWithOutputSettings:(NSMutableDictionary *)outputSettings;
 
 // Frame rendering
@@ -136,10 +135,6 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 #pragma mark -
 #pragma mark Movie recording
 
-- (void)initializeMovie;
-{
-    [self initializeMovieWithOutputSettings:nil];
-}
 - (void)initializeMovieWithOutputSettings:(NSMutableDictionary *)outputSettings;
 {
     isRecording = NO;
@@ -180,8 +175,11 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
     // custom output settings specified
     else 
     {
-        // TODO: do we need to check if AVVideoCodecKey, AVVideoWidthKey & AVVideoHeightKey are set, & if not set them here?
-        // TODO: or is it ok to either ommit them, or rely on the calling code to set those values?
+		NSString *videoCodec = [outputSettings objectForKey:AVVideoCodecKey];
+		NSNumber *width = [outputSettings objectForKey:AVVideoWidthKey];
+		NSNumber *height = [outputSettings objectForKey:AVVideoHeightKey];
+		
+		NSAssert(videoCodec && width && height, @"OutputSettings is missing required parameters.");
     }
     
     /*
@@ -225,6 +223,13 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 
 - (void)startRecording;
 {
+	[self startRecordingInOrientation:CGAffineTransformMakeRotation(0)];
+}
+
+- (void)startRecordingInOrientation:(CGAffineTransform)orientationTransform;
+{
+	assetWriterVideoInput.transform = orientationTransform;
+	
     isRecording = YES;
     startTime = kCMTimeInvalid;
 //    [assetWriter startWriting];
@@ -235,8 +240,9 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 - (void)finishRecording;
 {
     isRecording = NO;
-//    [assetWriterVideoInput markAsFinished];
-    [assetWriter finishWriting];    
+	[assetWriterVideoInput markAsFinished];
+	[assetWriterAudioInput markAsFinished];
+	[assetWriter finishWriting];
 }
 
 - (void)processAudioBuffer:(CMSampleBufferRef)audioBuffer;
@@ -557,37 +563,21 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 
 - (void)setHasAudioTrack:(BOOL)newValue
 {
+	[self setHasAudioTrack:newValue audioSettings:nil];
+}
+
+- (void)setHasAudioTrack:(BOOL)newValue audioSettings:(NSDictionary *)audioOutputSettings;
+{
     _hasAudioTrack = newValue;
     
     if (_hasAudioTrack)
     {
-        NSDictionary *audioOutputSettings = nil;
         if (_shouldPassthroughAudio)
         {
-//            float ver = [[[UIDevice currentDevice] systemVersion] floatValue];
-//            if (ver < 4.3) // Older iOS versions complain about using nil settings for passthrough audio, so I need to check for that
-//            {
-//                double preferredHardwareSampleRate = [[AVAudioSession sharedInstance] currentHardwareSampleRate];
-//                
-//                AudioChannelLayout acl;
-//                bzero( &acl, sizeof(acl));
-//                acl.mChannelLayoutTag = kAudioChannelLayoutTag_Mono;
-//                
-//                audioOutputSettings = [NSDictionary dictionaryWithObjectsAndKeys:
-//                                       [ NSNumber numberWithInt: kAudioFormatMPEG4AAC], AVFormatIDKey,
-//                                       [ NSNumber numberWithInt: 1 ], AVNumberOfChannelsKey,
-//                                       [ NSNumber numberWithFloat: preferredHardwareSampleRate ], AVSampleRateKey,
-//                                       [ NSData dataWithBytes: &acl length: sizeof( acl ) ], AVChannelLayoutKey,
-//                                       //[ NSNumber numberWithInt:AVAudioQualityLow], AVEncoderAudioQualityKey,
-//                                       [ NSNumber numberWithInt: 64000 ], AVEncoderBitRateKey,
-//                                       nil];
-//            }
-//            else
-//            {
-                audioOutputSettings = nil;                
-//            }
+			// Do not set any settings so audio will be the same as passthrough
+			audioOutputSettings = nil;
         }
-        else
+        else if (audioOutputSettings == nil)
         {
             double preferredHardwareSampleRate = [[AVAudioSession sharedInstance] currentHardwareSampleRate];
             
