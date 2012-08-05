@@ -258,7 +258,7 @@
     return [[videoInput device] position];
 }
 
-- (BOOL)isFrontFacingCameraPresent
+- (BOOL)isFrontFacingCameraPresent;
 {
 	NSArray *devices = [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];
 	
@@ -271,7 +271,7 @@
 	return NO;
 }
 
-- (void)setCaptureSessionPreset:(NSString *)captureSessionPreset
+- (void)setCaptureSessionPreset:(NSString *)captureSessionPreset;
 {
 	[_captureSession beginConfiguration];
 	
@@ -281,12 +281,12 @@
 	[_captureSession commitConfiguration];
 }
 
-- (NSString *)captureSessionPreset
+- (NSString *)captureSessionPreset;
 {
 	return _capturSessionPreset;
 }
 
-- (void)setFrameRate:(NSInteger)frameRate
+- (void)setFrameRate:(NSInteger)frameRate;
 {
 	_frameRate = frameRate;
 	
@@ -314,7 +314,7 @@
 	}
 }
 
-- (NSInteger)frameRate
+- (NSInteger)frameRate;
 {
 	return _frameRate;
 }
@@ -358,7 +358,8 @@
 
         for (id<GPUImageInput> currentTarget in targets)
         {
-            if ([(GPUImageOutput *)currentTarget respondsToSelector:@selector(enabled)] && [(GPUImageOutput *)currentTarget isEnabled]) {
+            if ([currentTarget enabled])
+            {
                 NSInteger indexOfObject = [targets indexOfObject:currentTarget];
                 NSInteger textureIndexOfTarget = [[targetTextureIndices objectAtIndex:indexOfObject] integerValue];
                 
@@ -414,7 +415,8 @@
         
         for (id<GPUImageInput> currentTarget in targets)
         {
-            if ([(GPUImageOutput *)currentTarget respondsToSelector:@selector(enabled)] && [(GPUImageOutput *)currentTarget isEnabled]) {
+            if ([currentTarget enabled])
+            {
                 if (currentTarget != self.targetToIgnoreForUpdates)
                 {
                     NSInteger indexOfObject = [targets indexOfObject:currentTarget];

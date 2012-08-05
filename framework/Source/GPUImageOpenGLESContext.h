@@ -38,4 +38,5 @@ typedef enum { kGPUImageNoRotation, kGPUImageRotateLeft, kGPUImageRotateRight, k
 - (CGSize)maximumOutputSize;
 - (void)endProcessing;
 - (BOOL)shouldIgnoreUpdatesToThisTarget;
+- (BOOL)enabled;
 @end

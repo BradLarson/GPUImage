@@ -55,6 +55,7 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 @synthesize failureBlock;
 @synthesize videoInputReadyCallback;
 @synthesize audioInputReadyCallback;
+@synthesize enabled;
 
 @synthesize delegate = _delegate;
 
@@ -72,6 +73,8 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 		return nil;
     }
 
+    self.enabled = YES;
+    
     videoSize = newSize;
     movieURL = newMovieURL;
     fileType = newFileType;
@@ -132,10 +135,11 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 #pragma mark -
 #pragma mark Movie recording
 
-- (void)initializeMovieWithOutputSettings:(NSMutableDictionary *)outputSettings
+- (void)initializeMovieWithOutputSettings:(NSMutableDictionary *)outputSettings;
 {
     isRecording = NO;
     
+    self.enabled = YES;
     frameData = (GLubyte *) malloc((int)videoSize.width * (int)videoSize.height * 4);
 
 //    frameData = (GLubyte *) calloc(videoSize.width * videoSize.height * 4, sizeof(GLubyte));
@@ -217,12 +221,12 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
     [assetWriter addInput:assetWriterVideoInput];
 }
 
-- (void)startRecording
+- (void)startRecording;
 {
 	[self startRecordingInOrientation:CGAffineTransformMakeRotation(0)];
 }
 
-- (void)startRecordingInOrientation:(CGAffineTransform)orientationTransform
+- (void)startRecordingInOrientation:(CGAffineTransform)orientationTransform;
 {
 	assetWriterVideoInput.transform = orientationTransform;
 	
@@ -562,7 +566,7 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 	[self setHasAudioTrack:newValue audioSettings:nil];
 }
 
-- (void)setHasAudioTrack:(BOOL)newValue audioSettings:(NSDictionary *)audioOutputSettings
+- (void)setHasAudioTrack:(BOOL)newValue audioSettings:(NSDictionary *)audioOutputSettings;
 {
     _hasAudioTrack = newValue;
     

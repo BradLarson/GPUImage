@@ -72,13 +72,6 @@ void report_memory(NSString *tag)
 }
 
 #pragma mark -
-#pragma mark Status
-
-- (BOOL)isEnabled {
-    return _enabled;
-}
-
-#pragma mark -
 #pragma mark Managing targets
 
 - (void)setInputTextureForTarget:(id<GPUImageInput>)target atIndex:(NSInteger)inputTextureIndex;

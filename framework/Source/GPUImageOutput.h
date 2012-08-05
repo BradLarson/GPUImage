@@ -73,12 +73,6 @@ void report_memory(NSString *tag);
  */
 - (void)removeAllTargets;
 
-/// @name The state of the GPUImageOutput
-
-/** Returns a BOOL indicating whether the GPUImageOutput is enabled or not. Default is YES.
- */
-- (BOOL)isEnabled;
-
 /// @name Manage the output texture
 
 - (void)initializeOutputTexture;
