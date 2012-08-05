@@ -11,6 +11,9 @@
 	AVCaptureVideoDataOutput *videoOutput;
 	AVCaptureAudioDataOutput *audioOutput;
     NSDate *startingCaptureTime;
+	
+	NSString *_capturSessionPreset;
+	NSInteger _frameRate;
     
     dispatch_queue_t audioProcessingQueue;
 }
@@ -47,6 +50,7 @@
     
 	audioProcessingQueue = dispatch_queue_create("com.sunsetlakesoftware.GPUImage.processingQueue", NULL);
     
+	_frameRate = 0; // This will not set frame rate unless this value gets set to 1 or above
     _runBenchmark = NO;
     capturePaused = NO;
     outputRotation = kGPUImageNoRotation;
@@ -112,7 +116,8 @@
 		NSLog(@"Couldn't add video output");
 	}
     
-    [_captureSession setSessionPreset:sessionPreset];
+	_capturSessionPreset = sessionPreset;
+    [_captureSession setSessionPreset:_capturSessionPreset];
 
 // This will let you get 60 FPS video from the 720p preset on an iPhone 4S, but only that device and that preset
 //    AVCaptureConnection *conn = [videoOutput connectionWithMediaType:AVMediaTypeVideo];
@@ -200,6 +205,9 @@
 
 - (void)rotateCamera
 {
+	if (self.frontFacingCameraPresent == NO)
+		return;
+	
     NSError *error;
     AVCaptureDeviceInput *newVideoInput;
     AVCaptureDevicePosition currentCameraPosition = [[videoInput device] position];
@@ -248,6 +256,67 @@
 - (AVCaptureDevicePosition)cameraPosition 
 {
     return [[videoInput device] position];
+}
+
+- (BOOL)isFrontFacingCameraPresent
+{
+	NSArray *devices = [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];
+	
+	for (AVCaptureDevice *device in devices)
+	{
+		if ([device position] == AVCaptureDevicePositionFront)
+			return YES;
+	}
+	
+	return NO;
+}
+
+- (void)setCaptureSessionPreset:(NSString *)captureSessionPreset
+{
+	[_captureSession beginConfiguration];
+	
+	_capturSessionPreset = captureSessionPreset;
+	[_captureSession setSessionPreset:_capturSessionPreset];
+	
+	[_captureSession commitConfiguration];
+}
+
+- (NSString *)captureSessionPreset
+{
+	return _capturSessionPreset;
+}
+
+- (void)setFrameRate:(NSInteger)frameRate
+{
+	_frameRate = frameRate;
+	
+	if (_frameRate > 0)
+	{
+		for (AVCaptureConnection *connection in videoOutput.connections)
+		{
+			if ([connection respondsToSelector:@selector(setVideoMinFrameDuration:)])
+				connection.videoMinFrameDuration = CMTimeMake(1, _frameRate);
+			
+			if ([connection respondsToSelector:@selector(setVideoMaxFrameDuration:)])
+				connection.videoMaxFrameDuration = CMTimeMake(1, _frameRate);
+		}
+	}
+	else
+	{
+		for (AVCaptureConnection *connection in videoOutput.connections)
+		{
+			if ([connection respondsToSelector:@selector(setVideoMinFrameDuration:)])
+				connection.videoMinFrameDuration = kCMTimeInvalid;
+			
+			if ([connection respondsToSelector:@selector(setVideoMaxFrameDuration:)])
+				connection.videoMaxFrameDuration = kCMTimeInvalid;
+		}
+	}
+}
+
+- (NSInteger)frameRate
+{
+	return _frameRate;
 }
 
 #define INITIALFRAMESTOIGNOREFORBENCHMARK 5
