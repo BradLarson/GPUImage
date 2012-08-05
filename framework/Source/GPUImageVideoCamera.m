@@ -306,10 +306,10 @@
 		for (AVCaptureConnection *connection in videoOutput.connections)
 		{
 			if ([connection respondsToSelector:@selector(setVideoMinFrameDuration:)])
-				connection.videoMinFrameDuration = kCMTimeInvalid;
+				connection.videoMinFrameDuration = kCMTimeInvalid; // This sets videoMinFrameDuration back to default
 			
 			if ([connection respondsToSelector:@selector(setVideoMaxFrameDuration:)])
-				connection.videoMaxFrameDuration = kCMTimeInvalid;
+				connection.videoMaxFrameDuration = kCMTimeInvalid; // This sets videoMaxFrameDuration back to default
 		}
 	}
 }
