@@ -86,8 +86,22 @@ NSString *const kGPUImageToneCurveFragmentShaderString = SHADER_STRING
             [convertedPoints addObject:[NSValue valueWithCGPoint:point]];
         }
         
-        NSArray *splinePoints = [self splineCurve:convertedPoints];
-                
+        
+        NSMutableArray *splinePoints = [self splineCurve:convertedPoints];
+        
+        // If we have a first point like (0.3, 0) we'll be missing some points at the beginning
+        // that should be 0.
+        CGPoint firstSplinePoint = [[splinePoints objectAtIndex:0] CGPointValue];
+        
+        if (firstSplinePoint.x > 0) {
+            for (int i=0; i <=firstSplinePoint.x; i++) {
+                CGPoint newCGPoint = CGPointMake(0, 0);
+                [splinePoints insertObject:[NSValue valueWithCGPoint:newCGPoint] atIndex:0];
+            }
+        }
+        
+        
+        // Prepare the spline points.
         NSMutableArray *preparedSplinePoints = [NSMutableArray arrayWithCapacity:[splinePoints count]];
         for (int i=0; i<[splinePoints count]; i++) 
         {
@@ -111,9 +125,9 @@ NSString *const kGPUImageToneCurveFragmentShaderString = SHADER_STRING
 }
 
 
-- (NSArray *)splineCurve:(NSArray *)points
+- (NSMutableArray *)splineCurve:(NSArray *)points
 {
-    NSArray *sdA = [self secondDerivative:points];
+    NSMutableArray *sdA = [self secondDerivative:points];
     
     // Is [points count] equal to [sdA count]?
 //    int n = [points count];
@@ -164,7 +178,7 @@ NSString *const kGPUImageToneCurveFragmentShaderString = SHADER_STRING
     return output;
 }
 
-- (NSArray *)secondDerivative:(NSArray *)points
+- (NSMutableArray *)secondDerivative:(NSArray *)points
 {
     int n = [points count];
     if ((n <= 0) || (n == 1))

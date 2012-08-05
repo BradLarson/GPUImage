@@ -133,6 +133,8 @@
 		case GPUIMAGE_SCREENBLEND: cell.textLabel.text = @"Screen blend"; break;
 		case GPUIMAGE_COLORBURN: cell.textLabel.text = @"Color burn blend"; break;
 		case GPUIMAGE_COLORDODGE: cell.textLabel.text = @"Color dodge blend"; break;
+		case GPUIMAGE_ADD: cell.textLabel.text = @"Add blend"; break;
+		case GPUIMAGE_DIVIDE: cell.textLabel.text = @"Divide blend"; break;
 		case GPUIMAGE_MULTIPLY: cell.textLabel.text = @"Multiply blend"; break;
 	    case GPUIMAGE_OVERLAY: cell.textLabel.text = @"Overlay blend"; break;
 	    case GPUIMAGE_LIGHTEN: cell.textLabel.text = @"Lighten blend"; break;
