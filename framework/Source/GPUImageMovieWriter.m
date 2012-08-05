@@ -4,8 +4,6 @@
 #import "GLProgram.h"
 #import "GPUImageFilter.h"
 
-#define degreesToRadian(x) (M_PI * (x) / 180.0)
-
 NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 (
  varying highp vec2 textureCoordinate;
@@ -37,7 +35,7 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 }
 
 // Movie recording
-- (void)initializeMovieWithOutputSettings:(NSMutableDictionary *)outputSettings orientation:(CGAffineTransform)orientationTransform;
+- (void)initializeMovieWithOutputSettings:(NSMutableDictionary *)outputSettings;
 
 // Frame rendering
 - (void)createDataFBO;
@@ -68,11 +66,6 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
     return [self initWithMovieURL:newMovieURL size:newSize fileType:AVFileTypeQuickTimeMovie outputSettings:nil];
 }
 - (id)initWithMovieURL:(NSURL *)newMovieURL size:(CGSize)newSize fileType:(NSString *)newFileType outputSettings:(NSMutableDictionary *)outputSettings;
-{
-	return [self initWithMovieURL:newMovieURL size:newSize fileType:newFileType outputSettings:outputSettings orientation:CGAffineTransformMakeRotation(degreesToRadian(0))];
-}
-
-- (id)initWithMovieURL:(NSURL *)newMovieURL size:(CGSize)newSize fileType:(NSString *)newFileType outputSettings:(NSMutableDictionary *)outputSettings orientation:(CGAffineTransform)orientationTransform;
 {
     if (!(self = [super init]))
     {
@@ -121,7 +114,7 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 	glEnableVertexAttribArray(colorSwizzlingPositionAttribute);
 	glEnableVertexAttribArray(colorSwizzlingTextureCoordinateAttribute);
     
-    [self initializeMovieWithOutputSettings:outputSettings orientation:orientationTransform];
+    [self initializeMovieWithOutputSettings:outputSettings];
 
     return self;
 }
@@ -139,7 +132,7 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 #pragma mark -
 #pragma mark Movie recording
 
-- (void)initializeMovieWithOutputSettings:(NSMutableDictionary *)outputSettings orientation:(CGAffineTransform)orientationTransform
+- (void)initializeMovieWithOutputSettings:(NSMutableDictionary *)outputSettings
 {
     isRecording = NO;
     
@@ -210,7 +203,6 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
      
     assetWriterVideoInput = [AVAssetWriterInput assetWriterInputWithMediaType:AVMediaTypeVideo outputSettings:outputSettings];
     assetWriterVideoInput.expectsMediaDataInRealTime = _encodingLiveVideo;
-	assetWriterVideoInput.transform = orientationTransform;
     
     // You need to use BGRA for the video in order to get realtime encoding. I use a color-swizzling shader to line up glReadPixels' normal RGBA output with the movie input's BGRA.
     NSDictionary *sourcePixelBufferAttributesDictionary = [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt:kCVPixelFormatType_32BGRA], kCVPixelBufferPixelFormatTypeKey,
@@ -227,6 +219,13 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 
 - (void)startRecording
 {
+	[self startRecordingInOrientation:CGAffineTransformMakeRotation(0)];
+}
+
+- (void)startRecordingInOrientation:(CGAffineTransform)orientationTransform
+{
+	assetWriterVideoInput.transform = orientationTransform;
+	
     isRecording = YES;
     startTime = kCMTimeInvalid;
 //    [assetWriter startWriting];

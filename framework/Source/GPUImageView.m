@@ -350,7 +350,7 @@
 	glActiveTexture(GL_TEXTURE4);
 	glBindTexture(GL_TEXTURE_2D, inputTextureForDisplay);
 	glUniform1i(displayInputTextureUniform, 4);
-    NSLog(@"input texture: %d", inputTextureForDisplay);
+    //NSLog(@"input texture: %d", inputTextureForDisplay);
     
     glVertexAttribPointer(displayPositionAttribute, 2, GL_FLOAT, 0, 0, imageVertices);
 	glVertexAttribPointer(displayTextureCoordinateAttribute, 2, GL_FLOAT, 0, 0, [GPUImageView textureCoordinatesForRotation:inputRotation]);
