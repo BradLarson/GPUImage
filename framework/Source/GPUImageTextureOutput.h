@@ -7,6 +7,7 @@
 
 @property(readwrite, unsafe_unretained, nonatomic) id<GPUImageTextureOutputDelegate> delegate;
 @property(readonly) GLint texture;
+@property(nonatomic) BOOL enabled;
 
 @end
 

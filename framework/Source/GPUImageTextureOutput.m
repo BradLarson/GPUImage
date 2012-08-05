@@ -4,6 +4,22 @@
 
 @synthesize delegate = _delegate;
 @synthesize texture = _texture;
+@synthesize enabled;
+
+#pragma mark -
+#pragma mark Initialization and teardown
+
+- (id)init;
+{
+    if (!(self = [super init]))
+    {
+		return nil;
+    }
+    
+    self.enabled = YES;
+    
+    return self;
+}
 
 #pragma mark -
 #pragma mark GPUImageInput protocol

@@ -2,9 +2,9 @@
 
 @interface GPUImageToneCurveFilter : GPUImageFilter
 
-@property(readwrite, nonatomic) NSArray *redControlPoints;
-@property(readwrite, nonatomic) NSArray *greenControlPoints;
-@property(readwrite, nonatomic) NSArray *blueControlPoints;
+@property(readwrite, nonatomic, copy) NSArray *redControlPoints;
+@property(readwrite, nonatomic, copy) NSArray *greenControlPoints;
+@property(readwrite, nonatomic, copy) NSArray *blueControlPoints;
 
 
 - (void)setRGBControlPoints:(NSArray *)points;

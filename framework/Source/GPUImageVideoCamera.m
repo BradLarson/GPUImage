@@ -289,7 +289,8 @@
 
         for (id<GPUImageInput> currentTarget in targets)
         {
-            if ([(GPUImageOutput *)currentTarget respondsToSelector:@selector(enabled)] && [(GPUImageOutput *)currentTarget isEnabled]) {
+            if ([currentTarget enabled])
+            {
                 NSInteger indexOfObject = [targets indexOfObject:currentTarget];
                 NSInteger textureIndexOfTarget = [[targetTextureIndices objectAtIndex:indexOfObject] integerValue];
                 
@@ -345,7 +346,8 @@
         
         for (id<GPUImageInput> currentTarget in targets)
         {
-            if ([(GPUImageOutput *)currentTarget respondsToSelector:@selector(enabled)] && [(GPUImageOutput *)currentTarget isEnabled]) {
+            if ([currentTarget enabled])
+            {
                 if (currentTarget != self.targetToIgnoreForUpdates)
                 {
                     NSInteger indexOfObject = [targets indexOfObject:currentTarget];

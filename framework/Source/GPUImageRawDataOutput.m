@@ -34,6 +34,7 @@
 
 @synthesize rawBytesForImage = _rawBytesForImage;
 @synthesize newFrameAvailableBlock = _newFrameAvailableBlock;
+@synthesize enabled;
 
 #pragma mark -
 #pragma mark Initialization and teardown
@@ -45,6 +46,7 @@
 		return nil;
     }
 
+    self.enabled = YES;
     outputBGRA = resultsInBGRAFormat;
     imageSize = newImageSize;
     hasReadFromTheCurrentFrame = NO;

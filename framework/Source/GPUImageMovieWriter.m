@@ -56,6 +56,7 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 @synthesize failureBlock;
 @synthesize videoInputReadyCallback;
 @synthesize audioInputReadyCallback;
+@synthesize enabled;
 
 @synthesize delegate = _delegate;
 
@@ -73,6 +74,8 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 		return nil;
     }
 
+    self.enabled = YES;
+    
     videoSize = newSize;
     movieURL = newMovieURL;
     fileType = newFileType;
@@ -141,6 +144,7 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 {
     isRecording = NO;
     
+    self.enabled = YES;
     frameData = (GLubyte *) malloc((int)videoSize.width * (int)videoSize.height * 4);
 
 //    frameData = (GLubyte *) calloc(videoSize.width * videoSize.height * 4, sizeof(GLubyte));

@@ -21,6 +21,7 @@ typedef struct GPUByteColorVector GPUByteColorVector;
 
 @property(readonly) GLubyte *rawBytesForImage;
 @property(nonatomic, copy) void(^newFrameAvailableBlock)(void);
+@property(nonatomic) BOOL enabled;
 
 // Initialization and teardown
 - (id)initWithImageSize:(CGSize)newImageSize resultsInBGRAFormat:(BOOL)resultsInBGRAFormat;
