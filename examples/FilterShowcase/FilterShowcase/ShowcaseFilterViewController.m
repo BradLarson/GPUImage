@@ -717,6 +717,22 @@
             filter = [[GPUImageChromaKeyBlendFilter alloc] init];
             [(GPUImageChromaKeyBlendFilter *)filter setColorToReplaceRed:0.0 green:1.0 blue:0.0];
         }; break;
+        case GPUIMAGE_ADD:
+        {
+            self.title = @"Add Blend";
+            self.filterSettingsSlider.hidden = YES;
+            needsSecondImage = YES;
+            
+            filter = [[GPUImageAddBlendFilter alloc] init];
+        }; break;
+        case GPUIMAGE_DIVIDE:
+        {
+            self.title = @"Divide Blend";
+            self.filterSettingsSlider.hidden = YES;
+            needsSecondImage = YES;
+            
+            filter = [[GPUImageDivideBlendFilter alloc] init];
+        }; break;
         case GPUIMAGE_MULTIPLY:
         {
             self.title = @"Multiply Blend";
