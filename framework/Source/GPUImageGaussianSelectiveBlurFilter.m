@@ -13,15 +13,17 @@ NSString *const kGPUImageGaussianSelectiveBlurFragmentShaderString = SHADER_STRI
  uniform lowp float excludeCircleRadius;
  uniform lowp vec2 excludeCirclePoint;
  uniform lowp float excludeBlurSize;
- 
+ uniform highp float aspectRatio;
+
  void main()
  {
      lowp vec4 sharpImageColor = texture2D(inputImageTexture, textureCoordinate);
      lowp vec4 blurredImageColor = texture2D(inputImageTexture2, textureCoordinate2);
      
-     lowp float d = distance(textureCoordinate2, excludeCirclePoint);
+     highp vec2 textureCoordinateToUse = vec2(textureCoordinate2.x, (textureCoordinate2.y * aspectRatio + 0.5 - 0.5 * aspectRatio));
+     highp float distanceFromCenter = distance(excludeCirclePoint, textureCoordinateToUse);
      
-     gl_FragColor = mix(sharpImageColor, blurredImageColor, smoothstep(excludeCircleRadius - excludeBlurSize, excludeCircleRadius, d));
+     gl_FragColor = mix(sharpImageColor, blurredImageColor, smoothstep(excludeCircleRadius - excludeBlurSize, excludeCircleRadius, distanceFromCenter));
  }
 );
 
@@ -36,6 +38,8 @@ NSString *const kGPUImageGaussianSelectiveBlurFragmentShaderString = SHADER_STRI
     {
 		return nil;
     }
+    
+    hasOverriddenAspectRatio = NO;
     
     // First pass: apply a variable Gaussian blur
     blurFilter = [[GPUImageGaussianBlurFilter alloc] init];
@@ -59,6 +63,19 @@ NSString *const kGPUImageGaussianSelectiveBlurFragmentShaderString = SHADER_STRI
     self.excludeBlurSize = 30.0/320.0;
     
     return self;
+}
+
+- (void)setInputSize:(CGSize)newSize atIndex:(NSInteger)textureIndex;
+{
+    CGSize oldInputSize = inputTextureSize;
+    [super setInputSize:newSize atIndex:textureIndex];
+    inputTextureSize = newSize;
+    
+    if ( (!CGSizeEqualToSize(oldInputSize, inputTextureSize)) && (!hasOverriddenAspectRatio) )
+    {
+        _aspectRatio = (inputTextureSize.width / inputTextureSize.height);
+        [selectiveFocusFilter setFloat:_aspectRatio forUniform:@"aspectRatio"];
+    }
 }
 
 #pragma mark -
@@ -90,6 +107,13 @@ NSString *const kGPUImageGaussianSelectiveBlurFragmentShaderString = SHADER_STRI
 {
     _excludeBlurSize = newValue;
     [selectiveFocusFilter setFloat:newValue forUniform:@"excludeBlurSize"];
+}
+
+- (void)setAspectRatio:(CGFloat)newValue;
+{
+    hasOverriddenAspectRatio = YES;
+    _aspectRatio = newValue;    
+    [selectiveFocusFilter setFloat:_aspectRatio forUniform:@"aspectRatio"];
 }
 
 @end
