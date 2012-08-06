@@ -143,11 +143,10 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
     filter.preventRendering = NO;
 }
 
-- (UIImage *)imageFromCurrentlyProcessedOutputWithOrientation:(UIImageOrientation)imageOrientation;
-{
+- (CGImageRef)newCGImageFromCurrentlyProcessedOutputWithOrientation:(UIImageOrientation)imageOrientation {
     [GPUImageOpenGLESContext useImageProcessingContext];
     [self setOutputFBO];
-
+    
     CGSize currentFBOSize = [self sizeOfFBO];
     NSUInteger totalBytesForImage = (int)currentFBOSize.width * (int)currentFBOSize.height * 4;
     // It appears that the width of a texture must be padded out to be a multiple of 8 (32 bytes) if reading from it using a texture cache
@@ -159,7 +158,7 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
     CGDataProviderRef dataProvider;
     if ([GPUImageOpenGLESContext supportsFastTextureUpload] && preparedToCaptureImage) 
     {
-//        glFlush();
+        //        glFlush();
         glFinish();
         CFRetain(renderTarget); // I need to retain the pixel buffer here and release in the data source callback to prevent its bytes from being prematurely deallocated during a photo write operation
         CVPixelBufferLockBaseAddress(renderTarget, 0);
@@ -176,7 +175,7 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
 	
     
     CGColorSpaceRef defaultRGBColorSpace = CGColorSpaceCreateDeviceRGB();
-
+    
     CGImageRef cgImageFromBytes;
     if ([GPUImageOpenGLESContext supportsFastTextureUpload] && preparedToCaptureImage) 
     {
@@ -188,12 +187,18 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
     }
     
     // Capture image with current device orientation
-    UIImage *finalImage = [UIImage imageWithCGImage:cgImageFromBytes scale:1.0 orientation:imageOrientation];
-
-    CGImageRelease(cgImageFromBytes);
     CGDataProviderRelease(dataProvider);
     CGColorSpaceRelease(defaultRGBColorSpace);
-    
+
+    return cgImageFromBytes;
+}
+
+- (UIImage *)imageFromCurrentlyProcessedOutputWithOrientation:(UIImageOrientation)imageOrientation;
+{
+    CGImageRef cgImageFromBytes = [self newCGImageFromCurrentlyProcessedOutputWithOrientation:imageOrientation];
+    UIImage *finalImage = [UIImage imageWithCGImage:cgImageFromBytes scale:1.0 orientation:imageOrientation];
+    CGImageRelease(cgImageFromBytes);
+
     return finalImage;
 }
 
