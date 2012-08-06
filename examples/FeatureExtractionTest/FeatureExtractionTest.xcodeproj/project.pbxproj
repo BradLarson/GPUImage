@@ -20,6 +20,7 @@
 		BC18E0C8156C835E00AB8026 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC18E0C7156C835E00AB8026 /* OpenGLES.framework */; };
 		BC18E0CA156C836400AB8026 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC18E0C9156C836400AB8026 /* AVFoundation.framework */; };
 		BC18E0CC156C881700AB8026 /* 71yih.png in Resources */ = {isa = PBXBuildFile; fileRef = BC18E0CB156C881700AB8026 /* 71yih.png */; };
+		BC46D52415D03D9C00CC63CA /* LBPTest.png in Resources */ = {isa = PBXBuildFile; fileRef = BC46D52315D03D9C00CC63CA /* LBPTest.png */; };
 		BCD9A356157EC35E00C41504 /* 8pixeltest.png in Resources */ = {isa = PBXBuildFile; fileRef = BCD9A355157EC35E00C41504 /* 8pixeltest.png */; };
 /* End PBXBuildFile section */
 
@@ -65,6 +66,7 @@
 		BC18E0C7156C835E00AB8026 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		BC18E0C9156C836400AB8026 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		BC18E0CB156C881700AB8026 /* 71yih.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 71yih.png; sourceTree = "<group>"; };
+		BC46D52315D03D9C00CC63CA /* LBPTest.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = LBPTest.png; sourceTree = "<group>"; };
 		BCD9A355157EC35E00C41504 /* 8pixeltest.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 8pixeltest.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -134,6 +136,7 @@
 		BC18E0A1156C822E00AB8026 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				BC46D52315D03D9C00CC63CA /* LBPTest.png */,
 				BCD9A355157EC35E00C41504 /* 8pixeltest.png */,
 				BC18E0CB156C881700AB8026 /* 71yih.png */,
 				BC18E0A2156C822E00AB8026 /* FeatureExtractionTest-Info.plist */,
@@ -232,6 +235,7 @@
 				BC18E0A5156C822E00AB8026 /* InfoPlist.strings in Resources */,
 				BC18E0CC156C881700AB8026 /* 71yih.png in Resources */,
 				BCD9A356157EC35E00C41504 /* 8pixeltest.png in Resources */,
+				BC46D52415D03D9C00CC63CA /* LBPTest.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

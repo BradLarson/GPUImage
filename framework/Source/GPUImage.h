@@ -117,3 +117,4 @@
 #import "GPUImageAddBlendFilter.h"
 #import "GPUImageDivideBlendFilter.h"
 #import "GPUImagePolkaDotFilter.h"
+#import "GPUImageLocalBinaryPatternFilter.h"

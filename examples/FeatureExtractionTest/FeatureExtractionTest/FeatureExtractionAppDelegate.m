@@ -56,6 +56,17 @@
     UIImage *compressedImage = [packingFilter imageFromCurrentlyProcessedOutput];
     [self saveImage:compressedImage fileName:@"Compression.png"];
 
+    // Testing local binary patterns
+    UIImage *inputLBPImage = [UIImage imageNamed:@"LBPTest.png"];
+    GPUImagePicture *lbpImage = [[GPUImagePicture alloc] initWithImage:inputLBPImage];
+
+    GPUImageLocalBinaryPatternFilter *lbpFilter = [[GPUImageLocalBinaryPatternFilter alloc] init];
+    [lbpImage removeAllTargets];
+    [lbpImage addTarget:lbpFilter];
+    [lbpImage processImage];
+    UIImage *lbpOutput = [lbpFilter imageFromCurrentlyProcessedOutput];
+    [self saveImage:lbpOutput fileName:@"LocalBinaryPatterns.png"];
+
     return YES;
 }
 

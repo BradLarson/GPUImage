@@ -469,6 +469,17 @@
 
             filter = [[GPUImageCannyEdgeDetectionFilter alloc] init];
         }; break;
+        case GPUIMAGE_LOCALBINARYPATTERN:
+        {
+            self.title = @"Local Binary Pattern";
+            self.filterSettingsSlider.hidden = NO;
+            
+            [self.filterSettingsSlider setMinimumValue:1.0];
+            [self.filterSettingsSlider setMaximumValue:5.0];
+            [self.filterSettingsSlider setValue:1.0];
+            
+            filter = [[GPUImageLocalBinaryPatternFilter alloc] init];
+        }; break;
         case GPUIMAGE_BUFFER:
         {
             self.title = @"Image Buffer";
@@ -1242,6 +1253,12 @@
             CGFloat midpoint = [(UISlider *)sender value];
             [(GPUImageTiltShiftFilter *)filter setTopFocusLevel:midpoint - 0.1];
             [(GPUImageTiltShiftFilter *)filter setBottomFocusLevel:midpoint + 0.1];
+        }; break;
+        case GPUIMAGE_LOCALBINARYPATTERN:
+        {
+            CGFloat multiplier = [(UISlider *)sender value];
+            [(GPUImageLocalBinaryPatternFilter *)filter setTexelWidth:(multiplier / self.view.bounds.size.width)];
+            [(GPUImageLocalBinaryPatternFilter *)filter setTexelHeight:(multiplier / self.view.bounds.size.height)];
         }; break;
         default: break;
     }
