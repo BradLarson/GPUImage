@@ -47,14 +47,32 @@
     return [self.terminalFilter imageFromCurrentlyProcessedOutputWithOrientation:imageOrientation];
 }
 
+- (CGImageRef)newCGImageFromCurrentlyProcessedOutputWithOrientation:(UIImageOrientation)imageOrientation;
+{
+    return [self.terminalFilter newCGImageFromCurrentlyProcessedOutputWithOrientation:imageOrientation];
+}
+
 - (UIImage *)imageByFilteringImage:(UIImage *)imageToFilter;
 {
-    GPUImagePicture *stillImageSource = [[GPUImagePicture alloc] initWithImage:imageToFilter];
+    CGImageRef image = [self newCGImageByFilteringCGImage:[imageToFilter CGImage]];
+    UIImage *processedImage = [UIImage imageWithCGImage:image];
+    CGImageRelease(image);
+    return processedImage;
+}
+
+- (CGImageRef)newCGImageByFilteringImage:(UIImage *)imageToFilter;
+{
+    return [self newCGImageByFilteringCGImage:[imageToFilter CGImage]];
+}
+
+- (CGImageRef)newCGImageByFilteringCGImage:(CGImageRef)imageToFilter;
+{
+    GPUImagePicture *stillImageSource = [[GPUImagePicture alloc] initWithCGImage:imageToFilter];
     
     [stillImageSource addTarget:self];
     [stillImageSource processImage];
     
-    UIImage *processedImage = [self.terminalFilter imageFromCurrentlyProcessedOutput];
+    CGImageRef processedImage = [self.terminalFilter newCGImageFromCurrentlyProcessedOutput];
     
     [stillImageSource removeTarget:self];
     return processedImage;

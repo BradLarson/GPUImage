@@ -15,7 +15,21 @@
     return self;
 }
 
+- (id)initWithCGImage:(CGImageRef)newImageSource;
+{
+    if (!(self = [self initWithCGImage:newImageSource smoothlyScaleOutput:NO]))
+    {
+		return nil;
+    }
+    return self;
+}
+
 - (id)initWithImage:(UIImage *)newImageSource smoothlyScaleOutput:(BOOL)smoothlyScaleOutput;
+{
+    return [self initWithCGImage:[newImageSource CGImage] smoothlyScaleOutput:smoothlyScaleOutput];
+}
+
+- (id)initWithCGImage:(CGImageRef)newImageSource smoothlyScaleOutput:(BOOL)smoothlyScaleOutput;
 {
     if (!(self = [super init]))
     {
@@ -24,10 +38,10 @@
     self.shouldSmoothlyScaleOutput = smoothlyScaleOutput;
 
     [GPUImageOpenGLESContext useImageProcessingContext];
-
-    CGSize pointSizeOfImage = [newImageSource size];
-    CGFloat scaleOfImage = [newImageSource scale];
-    pixelSizeOfImage = CGSizeMake(scaleOfImage * pointSizeOfImage.width, scaleOfImage * pointSizeOfImage.height);
+    
+    CGFloat widthOfImage = CGImageGetWidth(newImageSource);
+    CGFloat heightOfImage = CGImageGetHeight(newImageSource);
+    pixelSizeOfImage = CGSizeMake(widthOfImage, heightOfImage);
     CGSize pixelSizeToUseForTexture = pixelSizeOfImage;
 
     BOOL shouldRedrawUsingCoreGraphics = YES;
@@ -65,14 +79,14 @@
         CGColorSpaceRef genericRGBColorspace = CGColorSpaceCreateDeviceRGB();    
         CGContextRef imageContext = CGBitmapContextCreate(imageData, (int)pixelSizeToUseForTexture.width, (int)pixelSizeToUseForTexture.height, 8, (int)pixelSizeToUseForTexture.width * 4, genericRGBColorspace,  kCGBitmapByteOrder32Little | kCGImageAlphaPremultipliedFirst);
 //        CGContextSetBlendMode(imageContext, kCGBlendModeCopy); // From Technical Q&A QA1708: http://developer.apple.com/library/ios/#qa/qa1708/_index.html
-        CGContextDrawImage(imageContext, CGRectMake(0.0, 0.0, pixelSizeToUseForTexture.width, pixelSizeToUseForTexture.height), [newImageSource CGImage]);
+        CGContextDrawImage(imageContext, CGRectMake(0.0, 0.0, pixelSizeToUseForTexture.width, pixelSizeToUseForTexture.height), newImageSource);
         CGContextRelease(imageContext);
         CGColorSpaceRelease(genericRGBColorspace);
     }
     else
     {
         // Access the raw image bytes directly
-        dataFromImageDataProvider = CGDataProviderCopyData(CGImageGetDataProvider([newImageSource CGImage]));
+        dataFromImageDataProvider = CGDataProviderCopyData(CGImageGetDataProvider(newImageSource));
         imageData = (GLubyte *)CFDataGetBytePtr(dataFromImageDataProvider);
     }    
     

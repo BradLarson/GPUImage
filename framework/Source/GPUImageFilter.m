@@ -197,18 +197,34 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
     return finalImage;
 }
 
-- (UIImage *)imageByFilteringImage:(UIImage *)imageToFilter;
+- (CGImageRef)newCGImageByFilteringCGImage:(CGImageRef)imageToFilter {
+    return [self newCGImageByFilteringCGImage:imageToFilter orientation:UIImageOrientationUp];
+}
+
+- (CGImageRef)newCGImageByFilteringCGImage:(CGImageRef)imageToFilter orientation:(UIImageOrientation)orientation;
 {
-    GPUImagePicture *stillImageSource = [[GPUImagePicture alloc] initWithImage:imageToFilter];
+    GPUImagePicture *stillImageSource = [[GPUImagePicture alloc] initWithCGImage:imageToFilter];
     
     [self prepareForImageCapture];
     
     [stillImageSource addTarget:self];
     [stillImageSource processImage];
     
-    UIImage *processedImage = [self imageFromCurrentlyProcessedOutputWithOrientation:[imageToFilter imageOrientation]];
+    CGImageRef processedImage = [self newCGImageFromCurrentlyProcessedOutputWithOrientation:orientation];
     
     [stillImageSource removeTarget:self];
+    return processedImage;
+}
+
+- (CGImageRef)newCGImageByFilteringImage:(UIImage *)imageToFilter {
+    return [self newCGImageByFilteringCGImage:[imageToFilter CGImage] orientation:[imageToFilter imageOrientation]];
+}
+
+- (UIImage *)imageByFilteringImage:(UIImage *)imageToFilter;
+{
+    CGImageRef image = [self newCGImageByFilteringCGImage:[imageToFilter CGImage] orientation:[imageToFilter imageOrientation]];
+    UIImage *processedImage = [UIImage imageWithCGImage:image scale:[imageToFilter scale] orientation:[imageToFilter imageOrientation]];
+    CGImageRelease(image);
     return processedImage;
 }
 

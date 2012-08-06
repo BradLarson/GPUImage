@@ -235,12 +235,58 @@ void report_memory(NSString *tag)
     return [self imageFromCurrentlyProcessedOutputWithOrientation:imageOrientation];
 }
 
+- (CGImageRef)newCGImageFromCurrentlyProcessedOutput;
+{
+	UIDeviceOrientation deviceOrientation = [[UIDevice currentDevice] orientation];
+    UIImageOrientation imageOrientation = UIImageOrientationLeft;
+	switch (deviceOrientation)
+    {
+		case UIDeviceOrientationPortrait:
+			imageOrientation = UIImageOrientationUp;
+			break;
+		case UIDeviceOrientationPortraitUpsideDown:
+			imageOrientation = UIImageOrientationDown;
+			break;
+		case UIDeviceOrientationLandscapeLeft:
+			imageOrientation = UIImageOrientationLeft;
+			break;
+		case UIDeviceOrientationLandscapeRight:
+			imageOrientation = UIImageOrientationRight;
+			break;
+		default:
+			imageOrientation = UIImageOrientationUp;
+			break;
+	}
+    
+    return [self newCGImageFromCurrentlyProcessedOutputWithOrientation:imageOrientation];
+}
+
 - (UIImage *)imageFromCurrentlyProcessedOutputWithOrientation:(UIImageOrientation)imageOrientation;
 {
     return nil;
 }
 
 - (UIImage *)imageByFilteringImage:(UIImage *)imageToFilter;
+{
+    return nil;
+}
+
+- (CGImageRef)newCGImageFromCurrentlyProcessedOutputWithOrientation:(UIImageOrientation)imageOrientation;
+{
+    return nil;
+}
+
+- (CGImageRef)newCGImageByFilteringImage:(UIImage *)imageToFilter;
+{
+    return nil;
+}
+
+- (CGImageRef)newCGImageByFilteringCGImage:(CGImageRef)imageToFilter;
+{
+    return nil;
+}
+
+- (CGImageRef)newCGImageByFilteringCGImage:(CGImageRef)imageToFilter orientation:(UIImageOrientation)orientation;
 {
     return nil;
 }
