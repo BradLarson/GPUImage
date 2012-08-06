@@ -13,10 +13,10 @@ NSString *const kGPUImagePixellationFragmentShaderString = SHADER_STRING
  {
      highp vec2 sampleDivisor = vec2(fractionalWidthOfPixel, fractionalWidthOfPixel / aspectRatio);
      
-     highp vec2 samplePos = textureCoordinate - mod(textureCoordinate, sampleDivisor);
+     highp vec2 samplePos = textureCoordinate - mod(textureCoordinate, sampleDivisor) + 0.5 * sampleDivisor;
      gl_FragColor = texture2D(inputImageTexture, samplePos );
  }
- );
+);
 
 @interface GPUImagePixellateFilter ()
 
@@ -34,7 +34,17 @@ NSString *const kGPUImagePixellationFragmentShaderString = SHADER_STRING
 
 - (id)init;
 {
-    if (!(self = [super initWithFragmentShaderFromString:kGPUImagePixellationFragmentShaderString]))
+    if (!(self = [self initWithFragmentShaderFromString:kGPUImagePixellationFragmentShaderString]))
+    {
+		return nil;
+    }
+    
+    return self;
+}
+
+- (id)initWithFragmentShaderFromString:(NSString *)fragmentShaderString;
+{
+    if (!(self = [super initWithFragmentShaderFromString:fragmentShaderString]))
     {
 		return nil;
     }

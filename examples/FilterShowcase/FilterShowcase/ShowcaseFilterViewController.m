@@ -100,6 +100,17 @@
             
             filter = [[GPUImagePolarPixellateFilter alloc] init];
         }; break;
+        case GPUIMAGE_POLKADOT:
+        {
+            self.title = @"Polka Dot";
+            self.filterSettingsSlider.hidden = NO;
+            
+            [self.filterSettingsSlider setValue:0.05];
+            [self.filterSettingsSlider setMinimumValue:0.0];
+            [self.filterSettingsSlider setMaximumValue:0.3];
+            
+            filter = [[GPUImagePolkaDotFilter alloc] init];
+        }; break;
         case GPUIMAGE_CROSSHATCH:
         {
             self.title = @"Crosshatch";
@@ -1167,6 +1178,7 @@
         case GPUIMAGE_SEPIA: [(GPUImageSepiaFilter *)filter setIntensity:[(UISlider *)sender value]]; break;
         case GPUIMAGE_PIXELLATE: [(GPUImagePixellateFilter *)filter setFractionalWidthOfAPixel:[(UISlider *)sender value]]; break;
         case GPUIMAGE_POLARPIXELLATE: [(GPUImagePolarPixellateFilter *)filter setPixelSize:CGSizeMake([(UISlider *)sender value], [(UISlider *)sender value])]; break;
+        case GPUIMAGE_POLKADOT: [(GPUImagePolkaDotFilter *)filter setFractionalWidthOfAPixel:[(UISlider *)sender value]]; break;
         case GPUIMAGE_SATURATION: [(GPUImageSaturationFilter *)filter setSaturation:[(UISlider *)sender value]]; break;
         case GPUIMAGE_CONTRAST: [(GPUImageContrastFilter *)filter setContrast:[(UISlider *)sender value]]; break;
         case GPUIMAGE_BRIGHTNESS: [(GPUImageBrightnessFilter *)filter setBrightness:[(UISlider *)sender value]]; break;

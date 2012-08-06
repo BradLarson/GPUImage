@@ -255,6 +255,10 @@ Documentation is generated from header comments using appledoc. To build the doc
   - *center*: The center about which to apply the pixellation, defaulting to (0.5, 0.5)
   - *pixelSize*: The fractional pixel size, split into width and height components. The default is (0.05, 0.05)
 
+- **GPUImagePolkaDotFilter**: Breaks an image up into colored dots within a regular grid
+  - *fractionalWidthOfAPixel*: How large the dots are, as a fraction of the width and height of the image (0.0 - 1.0, default 0.05)
+  - *dotScaling*: What fraction of each grid space is taken up by a dot, from 0.0 to 1.0 with a default of 0.9.
+
 - **GPUImageCrosshatchFilter**: This converts an image into a black-and-white crosshatch pattern
   - *crossHatchSpacing*: The fractional width of the image to use as the spacing for the crosshatch. The default is 0.03.
   - *lineWidth*: A relative width for the crosshatch lines. The default is 0.003.

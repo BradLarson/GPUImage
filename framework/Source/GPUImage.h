@@ -116,3 +116,4 @@
 #import "GPUImageSoftEleganceFilter.h"
 #import "GPUImageAddBlendFilter.h"
 #import "GPUImageDivideBlendFilter.h"
+#import "GPUImagePolkaDotFilter.h"

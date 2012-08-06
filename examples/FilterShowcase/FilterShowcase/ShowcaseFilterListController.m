@@ -98,6 +98,7 @@
 		case GPUIMAGE_AMATORKA: cell.textLabel.text = @"Amatorka (Lookup)"; break;
 		case GPUIMAGE_PIXELLATE: cell.textLabel.text = @"Pixellate"; break;
 		case GPUIMAGE_POLARPIXELLATE: cell.textLabel.text = @"Polar pixellate"; break;
+		case GPUIMAGE_POLKADOT: cell.textLabel.text = @"Polka dot"; break;
 		case GPUIMAGE_CROSSHATCH: cell.textLabel.text = @"Crosshatch"; break;
 		case GPUIMAGE_SOBELEDGEDETECTION: cell.textLabel.text = @"Sobel edge detection"; break;
 		case GPUIMAGE_PREWITTEDGEDETECTION: cell.textLabel.text = @"Prewitt edge detection"; break;
