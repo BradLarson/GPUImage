@@ -151,4 +151,8 @@
     return [(GPUImageFilter*)[_filters lastObject] imageFromCurrentlyProcessedOutput];
 }
 
+- (CGImageRef) newCGImageFromCurrentFilteredFrame {
+    return [(GPUImageFilter*)[_filters lastObject] newCGImageFromCurrentlyProcessedOutput];
+}
+
 @end
