@@ -4,10 +4,6 @@
 #pragma mark GPUImageACVFile Helper
 
 //  GPUImageACVFile
-//  Snapp
-//
-//  Created by Omer Duzyol on 7/15/12.
-//  Copyright (c) 2012 Creaworks Interactive. All rights reserved.
 //
 //  ACV File format Parser
 //  Please refer to http://www.adobe.com/devnet-apps/photoshop/fileformatashtml/PhotoshopFileFormats.htm#50577411_pgfId-1056330
@@ -157,6 +153,7 @@ NSString *const kGPUImageToneCurveFragmentShaderString = SHADER_STRING
     return self;
 }
 
+// This pulls in Adobe ACV curve files to specify the tone curve
 - (id)initWithACV:(NSString*)curveFile
 {
     if (!(self = [super initWithFragmentShaderFromString:kGPUImageToneCurveFragmentShaderString]))
