@@ -223,18 +223,18 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 
 - (void)startRecording;
 {
-	[self startRecordingInOrientation:CGAffineTransformMakeRotation(0)];
+    isRecording = YES;
+    startTime = kCMTimeInvalid;
+	//    [assetWriter startWriting];
+    
+	//    [assetWriter startSessionAtSourceTime:kCMTimeZero];
 }
 
 - (void)startRecordingInOrientation:(CGAffineTransform)orientationTransform;
 {
 	assetWriterVideoInput.transform = orientationTransform;
-	
-    isRecording = YES;
-    startTime = kCMTimeInvalid;
-//    [assetWriter startWriting];
-    
-//    [assetWriter startSessionAtSourceTime:kCMTimeZero];
+
+	[self startRecording];
 }
 
 - (void)finishRecording;
