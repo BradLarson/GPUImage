@@ -20,5 +20,6 @@
 - (void) removeAllFilters;
 
 - (UIImage *) currentFilteredFrame;
+- (CGImageRef) newCGImageFromCurrentFilteredFrame;
 
 @end
