@@ -141,9 +141,10 @@ void report_memory(NSString *tag)
     NSInteger textureIndexOfTarget = [[targetTextureIndices objectAtIndex:indexOfObject] integerValue];
     [targetToRemove setInputSize:CGSizeZero atIndex:textureIndexOfTarget];
     [targetToRemove setInputTexture:0 atIndex:textureIndexOfTarget];
-    
+
     [targetTextureIndices removeObjectAtIndex:indexOfObject];
     [targets removeObject:targetToRemove];
+    [targetToRemove endProcessing];
 }
 
 - (void)removeAllTargets;
