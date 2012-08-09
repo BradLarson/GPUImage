@@ -31,6 +31,7 @@ NSString *const kGPUImageGaussianSelectiveBlurFragmentShaderString = SHADER_STRI
 
 @synthesize excludeCirclePoint = _excludeCirclePoint, excludeCircleRadius = _excludeCircleRadius, excludeBlurSize = _excludeBlurSize;
 @synthesize blurSize = _blurSize;
+@synthesize aspectRatio = _aspectRatio;
 
 - (id)init;
 {
