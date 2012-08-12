@@ -49,9 +49,7 @@ NSString *const kGPUImagePolkaDotFragmentShaderString = SHADER_STRING
 {
     _dotScaling = newValue;
     
-    [GPUImageOpenGLESContext useImageProcessingContext];
-    [filterProgram use];
-    glUniform1f(dotScalingUniform, _dotScaling);
+    [self setFloat:_dotScaling forUniform:dotScalingUniform program:filterProgram];
 }
 
 @end

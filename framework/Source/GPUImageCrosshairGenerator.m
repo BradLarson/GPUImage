@@ -70,11 +70,9 @@ NSString *const kGPUImageCrosshairFragmentShaderString = SHADER_STRING
         return;
     }
     
-    [GPUImageOpenGLESContext useImageProcessingContext];
+    [GPUImageOpenGLESContext setActiveShaderProgram:filterProgram];
     
     [self setFilterFBO];
-    
-    [filterProgram use];
     
     glClearColor(0.0, 0.0, 0.0, 0.0);
     glClear(GL_COLOR_BUFFER_BIT);
@@ -98,9 +96,7 @@ NSString *const kGPUImageCrosshairFragmentShaderString = SHADER_STRING
 {
     _crosshairWidth = newValue;
     
-    [GPUImageOpenGLESContext useImageProcessingContext];
-    [filterProgram use];
-    glUniform1f(crosshairWidthUniform, _crosshairWidth);
+    [self setFloat:_crosshairWidth forUniform:crosshairWidthUniform program:filterProgram];
 }
 
 - (void)setCrosshairColorRed:(GLfloat)redComponent green:(GLfloat)greenComponent blue:(GLfloat)blueComponent;
@@ -110,9 +106,7 @@ NSString *const kGPUImageCrosshairFragmentShaderString = SHADER_STRING
     colorToReplace[1] = greenComponent;    
     colorToReplace[2] = blueComponent;
     
-    [GPUImageOpenGLESContext useImageProcessingContext];
-    [filterProgram use];
-    glUniform3fv(crosshairColorUniform, 1, colorToReplace);    
+    [self setVec3:colorToReplace forUniform:crosshairColorUniform program:filterProgram];
 }
 
 @end

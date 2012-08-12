@@ -113,7 +113,8 @@
     displayTextureCoordinateAttribute = [displayProgram attributeIndex:@"inputTextureCoordinate"];
     displayInputTextureUniform = [displayProgram uniformIndex:@"inputImageTexture"]; // This does assume a name of "inputTexture" for the fragment shader
 
-    [displayProgram use];    
+    // REFACTOR: Wrap this in a block on the image processing queue
+    [GPUImageOpenGLESContext setActiveShaderProgram:displayProgram];
 	glEnableVertexAttribArray(displayPositionAttribute);
 	glEnableVertexAttribArray(displayTextureCoordinateAttribute);
 
@@ -342,10 +343,8 @@
 
 - (void)newFrameReadyAtTime:(CMTime)frameTime atIndex:(NSInteger)textureIndex;
 {
-    [GPUImageOpenGLESContext useImageProcessingContext];
+    [GPUImageOpenGLESContext setActiveShaderProgram:displayProgram];
     [self setDisplayFramebuffer];
-    
-    [displayProgram use];
     
     glClearColor(backgroundColorRed, backgroundColorGreen, backgroundColorBlue, backgroundColorAlpha);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

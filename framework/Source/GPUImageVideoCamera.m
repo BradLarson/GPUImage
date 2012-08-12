@@ -12,16 +12,16 @@
 	AVCaptureAudioDataOutput *audioOutput;
     NSDate *startingCaptureTime;
 	
-	NSString *_capturSessionPreset;
 	NSInteger _frameRate;
     
-    dispatch_queue_t audioProcessingQueue;
+    dispatch_queue_t cameraProcessingQueue, audioProcessingQueue;
 }
 
 @end
 
 @implementation GPUImageVideoCamera
 
+@synthesize captureSessionPreset = _captureSessionPreset;
 @synthesize captureSession = _captureSession;
 @synthesize inputCamera = _inputCamera;
 @synthesize runBenchmark = _runBenchmark;
@@ -48,7 +48,8 @@
 		return nil;
     }
     
-	audioProcessingQueue = dispatch_queue_create("com.sunsetlakesoftware.GPUImage.processingQueue", NULL);
+	cameraProcessingQueue = dispatch_queue_create("com.sunsetlakesoftware.GPUImage.cameraProcessingQueue", NULL);
+	audioProcessingQueue = dispatch_queue_create("com.sunsetlakesoftware.GPUImage.audioProcessingQueue", NULL);
     
 	_frameRate = 0; // This will not set frame rate unless this value gets set to 1 or above
     _runBenchmark = NO;
@@ -104,9 +105,7 @@
     //	dispatch_queue_t videoQueue = dispatch_queue_create("com.sunsetlakesoftware.colortracking.videoqueue", NULL);
     //	[videoOutput setSampleBufferDelegate:self queue:videoQueue];
     
-	//[videoOutput setSampleBufferDelegate:self queue:dispatch_get_main_queue()];
-	//this should be on the same queue as the audio
-    [videoOutput setSampleBufferDelegate:self queue:audioProcessingQueue];
+    [videoOutput setSampleBufferDelegate:self queue:cameraProcessingQueue];
 	if ([_captureSession canAddOutput:videoOutput])
 	{
 		[_captureSession addOutput:videoOutput];
@@ -116,8 +115,8 @@
 		NSLog(@"Couldn't add video output");
 	}
     
-	_capturSessionPreset = sessionPreset;
-    [_captureSession setSessionPreset:_capturSessionPreset];
+	_captureSessionPreset = sessionPreset;
+    [_captureSession setSessionPreset:_captureSessionPreset];
 
 // This will let you get 60 FPS video from the 720p preset on an iPhone 4S, but only that device and that preset
 //    AVCaptureConnection *conn = [videoOutput connectionWithMediaType:AVMediaTypeVideo];
@@ -137,7 +136,8 @@
 - (void)dealloc 
 {
     [self stopCameraCapture];
-    //    [videoOutput setSampleBufferDelegate:nil queue:dispatch_get_main_queue()];    
+    [videoOutput setSampleBufferDelegate:nil queue:dispatch_get_main_queue()];
+    [audioOutput setSampleBufferDelegate:nil queue:dispatch_get_main_queue()];
     
     [self removeInputsAndOutputs];
     
@@ -145,7 +145,12 @@
     {
         CFRelease(coreVideoTextureCache);
     }
-    
+
+    if (cameraProcessingQueue != NULL)
+    {
+        dispatch_release(cameraProcessingQueue);
+    }
+
     if (audioProcessingQueue != NULL)
     {
         dispatch_release(audioProcessingQueue);
@@ -275,15 +280,10 @@
 {
 	[_captureSession beginConfiguration];
 	
-	_capturSessionPreset = captureSessionPreset;
-	[_captureSession setSessionPreset:_capturSessionPreset];
+	_captureSessionPreset = captureSessionPreset;
+	[_captureSession setSessionPreset:_captureSessionPreset];
 	
 	[_captureSession commitConfiguration];
-}
-
-- (NSString *)captureSessionPreset;
-{
-	return _capturSessionPreset;
 }
 
 - (void)setFrameRate:(NSInteger)frameRate;
@@ -519,9 +519,6 @@
         }
         audioOutput = [[AVCaptureAudioDataOutput alloc] init];
         
-        audioProcessingQueue = dispatch_queue_create("com.sunsetlakesoftware.GPUImage.audioProcessingQueue", NULL);
-        
-        //    [audioOutput setSampleBufferDelegate:self queue:dispatch_get_main_queue()];
         if ([_captureSession canAddOutput:audioOutput])
         {
             [_captureSession addOutput:audioOutput];

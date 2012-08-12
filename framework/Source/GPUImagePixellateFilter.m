@@ -92,18 +92,14 @@ NSString *const kGPUImagePixellationFragmentShaderString = SHADER_STRING
         _fractionalWidthOfAPixel = newValue;
     }
     
-    [GPUImageOpenGLESContext useImageProcessingContext];
-    [filterProgram use];
-    glUniform1f(fractionalWidthOfAPixelUniform, _fractionalWidthOfAPixel);
+    [self setFloat:_fractionalWidthOfAPixel forUniform:fractionalWidthOfAPixelUniform program:filterProgram];
 }
 
 - (void)setAspectRatio:(CGFloat)newValue;
 {
     _aspectRatio = newValue;
-    
-    [GPUImageOpenGLESContext useImageProcessingContext];
-    [filterProgram use];
-    glUniform1f(aspectRatioUniform, _aspectRatio);
+
+    [self setFloat:_aspectRatio forUniform:aspectRatioUniform program:filterProgram];
 }
 
 @end

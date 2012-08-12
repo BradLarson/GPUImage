@@ -88,8 +88,8 @@ NSString *const kGPUImageSharpenFragmentShaderString = SHADER_STRING
 
 - (void)setupFilterForSize:(CGSize)filterFrameSize;
 {
-    [GPUImageOpenGLESContext useImageProcessingContext];
-    [filterProgram use];
+    // REFACTOR: Wrap this in block on image processing queue
+    [GPUImageOpenGLESContext setActiveShaderProgram:filterProgram];
 
     if (GPUImageRotationSwapsWidthAndHeight(inputRotation))
     {
@@ -110,9 +110,7 @@ NSString *const kGPUImageSharpenFragmentShaderString = SHADER_STRING
 {
     _sharpness = newValue;
     
-    [GPUImageOpenGLESContext useImageProcessingContext];
-    [filterProgram use];
-    glUniform1f(sharpnessUniform, _sharpness);
+    [self setFloat:_sharpness forUniform:sharpnessUniform program:filterProgram];
 }
 
 @end

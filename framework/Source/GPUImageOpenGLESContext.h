@@ -4,20 +4,22 @@
 #import <OpenGLES/ES2/glext.h>
 #import <QuartzCore/QuartzCore.h>
 #import <CoreMedia/CoreMedia.h>
+#import "GLProgram.h"
 
 #define GPUImageRotationSwapsWidthAndHeight(rotation) ((rotation) == kGPUImageRotateLeft || (rotation) == kGPUImageRotateRight || (rotation) == kGPUImageRotateRightFlipVertical)
 
 typedef enum { kGPUImageNoRotation, kGPUImageRotateLeft, kGPUImageRotateRight, kGPUImageFlipVertical, kGPUImageFlipHorizonal, kGPUImageRotateRightFlipVertical, kGPUImageRotate180 } GPUImageRotationMode;
 
 @interface GPUImageOpenGLESContext : NSObject
-{
-    EAGLContext *_context;
-}
 
-@property(readonly, retain) EAGLContext *context;
+@property(readonly, retain, nonatomic) EAGLContext *context;
+@property(readonly, nonatomic) dispatch_queue_t contextQueue;
+@property(readwrite, retain, nonatomic) GLProgram *currentShaderProgram;
 
 + (GPUImageOpenGLESContext *)sharedImageProcessingOpenGLESContext;
++ (dispatch_queue_t)sharedOpenGLESQueue;
 + (void)useImageProcessingContext;
++ (void)setActiveShaderProgram:(GLProgram *)shaderProgram;
 + (GLint)maximumTextureSizeForThisDevice;
 + (GLint)maximumTextureUnitsForThisDevice;
 + (CGSize)sizeThatFitsWithinATextureForSize:(CGSize)inputSize;

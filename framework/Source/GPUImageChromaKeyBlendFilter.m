@@ -67,28 +67,21 @@ NSString *const kGPUImageChromaKeyBlendFragmentShaderString = SHADER_STRING
     colorToReplace[1] = greenComponent;    
     colorToReplace[2] = blueComponent;
     
-    [GPUImageOpenGLESContext useImageProcessingContext];
-    [filterProgram use];
-    glUniform3fv(colorToReplaceUniform, 1, colorToReplace);    
+    [self setVec3:colorToReplace forUniform:colorToReplaceUniform program:filterProgram];
 }
 
 - (void)setThresholdSensitivity:(CGFloat)newValue;
 {
     _thresholdSensitivity = newValue;
-    
-    [GPUImageOpenGLESContext useImageProcessingContext];
-    [filterProgram use];
-    glUniform1f(thresholdSensitivityUniform, _thresholdSensitivity);
-}
 
+    [self setFloat:_thresholdSensitivity forUniform:thresholdSensitivityUniform program:filterProgram];
+}
 
 - (void)setSmoothing:(CGFloat)newValue;
 {
     _smoothing = newValue;
     
-    [GPUImageOpenGLESContext useImageProcessingContext];
-    [filterProgram use];
-    glUniform1f(smoothingUniform, _smoothing);
+    [self setFloat:_smoothing forUniform:smoothingUniform program:filterProgram];
 }
 
 @end

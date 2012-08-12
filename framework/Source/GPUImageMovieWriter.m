@@ -113,7 +113,9 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
     colorSwizzlingTextureCoordinateAttribute = [colorSwizzlingProgram attributeIndex:@"inputTextureCoordinate"];
     colorSwizzlingInputTextureUniform = [colorSwizzlingProgram uniformIndex:@"inputImageTexture"];
     
-    [colorSwizzlingProgram use];    
+    // REFACTOR: Wrap this in a block for the image processing queue
+    [GPUImageOpenGLESContext setActiveShaderProgram:colorSwizzlingProgram];
+    
 	glEnableVertexAttribArray(colorSwizzlingPositionAttribute);
 	glEnableVertexAttribArray(colorSwizzlingTextureCoordinateAttribute);
     
@@ -402,7 +404,7 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
     [GPUImageOpenGLESContext useImageProcessingContext];
     [self setFilterFBO];
     
-    [colorSwizzlingProgram use];
+    [GPUImageOpenGLESContext setActiveShaderProgram:colorSwizzlingProgram];
     
     glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

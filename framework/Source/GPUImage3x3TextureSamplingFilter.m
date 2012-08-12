@@ -73,8 +73,8 @@ NSString *const kGPUImageNearbyTexelSamplingVertexShaderString = SHADER_STRING
         _texelWidth = 1.0 / filterFrameSize.width;
         _texelHeight = 1.0 / filterFrameSize.height;
         
-        [GPUImageOpenGLESContext useImageProcessingContext];
-        [filterProgram use];
+        // REFACTOR: Enclose this in block on image processing queue
+        [GPUImageOpenGLESContext setActiveShaderProgram:filterProgram];
         if (GPUImageRotationSwapsWidthAndHeight(inputRotation))
         {
             glUniform1f(texelWidthUniform, _texelHeight);
@@ -97,20 +97,15 @@ NSString *const kGPUImageNearbyTexelSamplingVertexShaderString = SHADER_STRING
     hasOverriddenImageSizeFactor = YES;
     _texelWidth = newValue;
     
-    [GPUImageOpenGLESContext useImageProcessingContext];
-    [filterProgram use];
-    glUniform1f(texelWidthUniform, _texelWidth);
+    [self setFloat:_texelWidth forUniform:texelWidthUniform program:filterProgram];
 }
 
 - (void)setTexelHeight:(CGFloat)newValue;
 {
     hasOverriddenImageSizeFactor = YES;
     _texelHeight = newValue;
-    
-    [GPUImageOpenGLESContext useImageProcessingContext];
-    [filterProgram use];
-    glUniform1f(texelHeightUniform, _texelHeight);
-}
 
+    [self setFloat:_texelHeight forUniform:texelHeightUniform program:filterProgram];
+}
 
 @end

@@ -76,10 +76,8 @@ NSString *const kGPUImageTwoInputTextureVertexShaderString = SHADER_STRING
         return;
     }
     
-    [GPUImageOpenGLESContext useImageProcessingContext];
+    [GPUImageOpenGLESContext setActiveShaderProgram:filterProgram];
     [self setFilterFBO];
-    
-    [filterProgram use];
     
     glClearColor(backgroundColorRed, backgroundColorGreen, backgroundColorBlue, backgroundColorAlpha);
     glClear(GL_COLOR_BUFFER_BIT);

@@ -5,6 +5,7 @@
 @implementation GPUImageOpenGLESContext
 
 @synthesize context = _context;
+@synthesize currentShaderProgram = _currentShaderProgram;
 
 // Based on Colin Wheeler's example here: http://cocoasamurai.blogspot.com/2011/04/singletons-your-doing-them-wrong.html
 + (GPUImageOpenGLESContext *)sharedImageProcessingOpenGLESContext;
@@ -18,12 +19,33 @@
     return sharedImageProcessingOpenGLESContext;
 }
 
++ (dispatch_queue_t)sharedOpenGLESQueue;
+{
+    return [[self sharedImageProcessingOpenGLESContext] contextQueue];
+}
+
 + (void)useImageProcessingContext;
 {
     EAGLContext *imageProcessingContext = [[GPUImageOpenGLESContext sharedImageProcessingOpenGLESContext] context];
     if ([EAGLContext currentContext] != imageProcessingContext)
     {
         [EAGLContext setCurrentContext:imageProcessingContext];
+    }
+}
+
++ (void)setActiveShaderProgram:(GLProgram *)shaderProgram;
+{
+    GPUImageOpenGLESContext *sharedContext = [GPUImageOpenGLESContext sharedImageProcessingOpenGLESContext];
+    EAGLContext *imageProcessingContext = [sharedContext context];
+    if ([EAGLContext currentContext] != imageProcessingContext)
+    {
+        [EAGLContext setCurrentContext:imageProcessingContext];
+    }
+    
+    if (sharedContext.currentShaderProgram != shaderProgram)
+    {
+        sharedContext.currentShaderProgram = shaderProgram;
+        [shaderProgram use];
     }
 }
 
@@ -94,10 +116,11 @@
         
         // Set up a few global settings for the image processing pipeline
         glDisable(GL_DEPTH_TEST);
+        
+        _contextQueue = dispatch_queue_create("com.sunsetlakesoftware.GPUImage.openGLESContextQueue", NULL);
     }
     
     return _context;
 }
-
 
 @end

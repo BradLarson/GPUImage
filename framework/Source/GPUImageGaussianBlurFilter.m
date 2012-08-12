@@ -95,12 +95,8 @@ NSString *const kGPUImageGaussianBlurFragmentShaderString = SHADER_STRING
 - (void) setBlurSize:(CGFloat)blurSize {
     _blurSize = blurSize;
 
-    [GPUImageOpenGLESContext useImageProcessingContext];
-    [filterProgram use];
-    glUniform1f(horizontalBlurSizeUniform, _blurSize);
-    
-    [secondFilterProgram use];
-    glUniform1f(verticalBlurSizeUniform, _blurSize);
+    [self setFloat:_blurSize forUniform:horizontalBlurSizeUniform program:filterProgram];
+    [self setFloat:_blurSize forUniform:verticalBlurSizeUniform program:secondFilterProgram];
 }
 
 @end

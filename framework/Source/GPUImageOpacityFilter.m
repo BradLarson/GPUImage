@@ -42,10 +42,7 @@ NSString *const kGPUImageOpacityFragmentShaderString = SHADER_STRING
 {
     _opacity = newValue;
     
-    [GPUImageOpenGLESContext useImageProcessingContext];
-    [filterProgram use];
-    glUniform1f(opacityUniform, _opacity);
+    [self setFloat:_opacity forUniform:opacityUniform program:filterProgram];
 }
-
 
 @end

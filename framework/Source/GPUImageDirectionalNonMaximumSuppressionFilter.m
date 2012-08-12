@@ -66,8 +66,8 @@ NSString *const kGPUImageDirectionalNonmaximumSuppressionFragmentShaderString = 
         _texelWidth = 1.0 / filterFrameSize.width;
         _texelHeight = 1.0 / filterFrameSize.height;
         
-        [GPUImageOpenGLESContext useImageProcessingContext];
-        [filterProgram use];
+        // REFACTOR: Wrap this appropriately
+        [GPUImageOpenGLESContext setActiveShaderProgram:filterProgram];
         glUniform1f(texelWidthUniform, _texelWidth);
         glUniform1f(texelHeightUniform, _texelHeight);
     }
@@ -81,9 +81,7 @@ NSString *const kGPUImageDirectionalNonmaximumSuppressionFragmentShaderString = 
     hasOverriddenImageSizeFactor = YES;
     _texelWidth = newValue;
     
-    [GPUImageOpenGLESContext useImageProcessingContext];
-    [filterProgram use];
-    glUniform1f(texelWidthUniform, _texelWidth);
+    [self setFloat:_texelWidth forUniform:texelWidthUniform program:filterProgram];
 }
 
 - (void)setTexelHeight:(CGFloat)newValue;
@@ -91,27 +89,21 @@ NSString *const kGPUImageDirectionalNonmaximumSuppressionFragmentShaderString = 
     hasOverriddenImageSizeFactor = YES;
     _texelHeight = newValue;
     
-    [GPUImageOpenGLESContext useImageProcessingContext];
-    [filterProgram use];
-    glUniform1f(texelHeightUniform, _texelHeight);
+    [self setFloat:_texelHeight forUniform:texelHeightUniform program:filterProgram];
 }
 
 - (void)setLowerThreshold:(CGFloat)newValue;
 {
     _lowerThreshold = newValue;
     
-    [GPUImageOpenGLESContext useImageProcessingContext];
-    [filterProgram use];
-    glUniform1f(lowerThresholdUniform, _lowerThreshold);
+    [self setFloat:_lowerThreshold forUniform:lowerThresholdUniform program:filterProgram];
 }
 
 - (void)setUpperThreshold:(CGFloat)newValue;
 {
     _upperThreshold = newValue;
-    
-    [GPUImageOpenGLESContext useImageProcessingContext];
-    [filterProgram use];
-    glUniform1f(upperThresholdUniform, _upperThreshold);
+
+    [self setFloat:_upperThreshold forUniform:upperThresholdUniform program:filterProgram];
 }
 
 

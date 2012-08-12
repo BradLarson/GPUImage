@@ -33,7 +33,9 @@
     secondFilterInputTextureUniform = [secondFilterProgram uniformIndex:@"inputImageTexture"]; // This does assume a name of "inputImageTexture" for the fragment shader
     secondFilterInputTextureUniform2 = [secondFilterProgram uniformIndex:@"inputImageTexture2"]; // This does assume a name of "inputImageTexture2" for second input texture in the fragment shader
     
-    [secondFilterProgram use];    
+    // REFACTOR: Wrap this in a block on the image processing queue
+    [GPUImageOpenGLESContext setActiveShaderProgram:secondFilterProgram];
+
 	glEnableVertexAttribArray(secondFilterPositionAttribute);
 	glEnableVertexAttribArray(secondFilterTextureCoordinateAttribute);
 
@@ -222,7 +224,7 @@
     // Run the second stage of the two-pass filter
     [self setSecondFilterFBO];
     
-    [secondFilterProgram use];
+    [GPUImageOpenGLESContext setActiveShaderProgram:secondFilterProgram];
     
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);

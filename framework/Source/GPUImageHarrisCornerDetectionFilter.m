@@ -267,13 +267,13 @@ NSString *const kGPUImageSimpleThresholdFragmentShaderString = SHADER_STRING
 - (void)setSensitivity:(CGFloat)newValue;
 {
     _sensitivity = newValue;
-    [harrisCornerDetectionFilter setFloat:newValue forUniform:@"sensitivity"];
+    [harrisCornerDetectionFilter setFloat:newValue forUniformName:@"sensitivity"];
 }
 
 - (void)setThreshold:(CGFloat)newValue;
 {
     _threshold = newValue;
-    [simpleThresholdFilter setFloat:newValue forUniform:@"threshold"];
+    [simpleThresholdFilter setFloat:newValue forUniformName:@"threshold"];
 }
 
 @end

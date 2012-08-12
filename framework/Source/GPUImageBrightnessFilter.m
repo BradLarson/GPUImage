@@ -42,9 +42,7 @@ NSString *const kGPUImageBrightnessFragmentShaderString = SHADER_STRING
 {
     _brightness = newValue;
     
-    [GPUImageOpenGLESContext useImageProcessingContext];
-    [filterProgram use];
-    glUniform1f(brightnessUniform, _brightness);
+    [self setFloat:_brightness forUniform:brightnessUniform program:filterProgram];
 }
 
 @end

@@ -53,19 +53,15 @@ void main()
 - (void)setShadows:(CGFloat)newValue;
 {
     _shadows = newValue;
-    
-    [GPUImageOpenGLESContext useImageProcessingContext];
-    [filterProgram use];
-    glUniform1f(shadowsUniform, _shadows);
+
+    [self setFloat:_shadows forUniform:shadowsUniform program:filterProgram];
 }
 
 - (void)setHighlights:(CGFloat)newValue;
 {
 	_highlights = newValue;
-	
-	[GPUImageOpenGLESContext useImageProcessingContext];
-    [filterProgram use];
-	glUniform1f(highlightsUniform, _highlights);
+
+    [self setFloat:_highlights forUniform:highlightsUniform program:filterProgram];
 }
 
 @end

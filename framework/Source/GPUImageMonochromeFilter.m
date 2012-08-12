@@ -72,18 +72,14 @@ NSString *const kGPUMonochromeFragmentShaderString = SHADER_STRING
     filterColor[1] = greenComponent;    
     filterColor[2] = blueComponent;
     
-    [GPUImageOpenGLESContext useImageProcessingContext];
-    [filterProgram use];
-    glUniform3fv(filterColorUniform, 1, filterColor);
+    [self setVec3:filterColor forUniform:filterColorUniform program:filterProgram];
 }
 
 - (void)setIntensity:(CGFloat)newValue;
 {
     _intensity = newValue;
     
-    [GPUImageOpenGLESContext useImageProcessingContext];
-    [filterProgram use];
-    glUniform1f(intensityUniform, _intensity);
+    [self setFloat:_intensity forUniform:intensityUniform program:filterProgram];
 }
 
 @end

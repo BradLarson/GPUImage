@@ -141,11 +141,8 @@ NSString *const kGPUImageTransformVertexShaderString = SHADER_STRING
     {
         [self loadOrthoMatrix:orthographicMatrix left:-1.0 right:1.0 bottom:(-1.0 * filterFrameSize.height / filterFrameSize.width) top:(1.0 * filterFrameSize.height / filterFrameSize.width) near:-1.0 far:1.0];
         //     [self loadOrthoMatrix:orthographicMatrix left:-1.0 right:1.0 bottom:(-1.0 * (GLfloat)backingHeight / (GLfloat)backingWidth) top:(1.0 * (GLfloat)backingHeight / (GLfloat)backingWidth) near:-2.0 far:2.0];
-        
-        [GPUImageOpenGLESContext useImageProcessingContext];
-        [filterProgram use];
-        
-        glUniformMatrix4fv(orthographicMatrixUniform, 1, GL_FALSE, orthographicMatrix);
+                
+        [self setMatrix4f:orthographicMatrix forUniform:orthographicMatrixUniform program:filterProgram];
     }
 }
 
@@ -165,15 +162,11 @@ NSString *const kGPUImageTransformVertexShaderString = SHADER_STRING
 - (void)setTransform3D:(CATransform3D)newValue;
 {
     _transform3D = newValue;
-    
-    [GPUImageOpenGLESContext useImageProcessingContext];
-    [filterProgram use];
-    
+        
     GLfloat temporaryMatrix[16];
     
     [self convert3DTransform:&_transform3D toMatrix:temporaryMatrix];
-    
-    glUniformMatrix4fv(transformMatrixUniform, 1, GL_FALSE, temporaryMatrix);
+    [self setMatrix4f:temporaryMatrix forUniform:transformMatrixUniform program:filterProgram];
 }
 
 - (void)setIgnoreAspectRatio:(BOOL)newValue;
@@ -184,10 +177,7 @@ NSString *const kGPUImageTransformVertexShaderString = SHADER_STRING
     {
         [self loadOrthoMatrix:orthographicMatrix left:-1.0 right:1.0 bottom:-1.0 top:1.0 near:-1.0 far:1.0];
         
-        [GPUImageOpenGLESContext useImageProcessingContext];
-        [filterProgram use];
-        
-        glUniformMatrix4fv(orthographicMatrixUniform, 1, GL_FALSE, orthographicMatrix);
+        [self setMatrix4f:orthographicMatrix forUniform:orthographicMatrixUniform program:filterProgram];
     }
     else
     {

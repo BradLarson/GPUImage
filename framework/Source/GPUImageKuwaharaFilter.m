@@ -104,9 +104,7 @@ NSString *const kGPUImageKuwaharaFragmentShaderString = SHADER_STRING
 {
     _radius = newValue;
     
-    [GPUImageOpenGLESContext useImageProcessingContext];
-    [filterProgram use];
-    glUniform1i(radiusUniform, _radius);
+    [self setFloat:_radius forUniform:radiusUniform program:filterProgram];
 }
 
 @end

@@ -68,34 +68,22 @@ NSString *const kGPUImagePinchDistortionFragmentShaderString = SHADER_STRING
 {
     _radius = newValue;
     
-    [GPUImageOpenGLESContext useImageProcessingContext];
-    [filterProgram use];
-    glUniform1f(radiusUniform, _radius);
+    [self setFloat:_radius forUniform:radiusUniform program:filterProgram];
 }
 
 - (void)setScale:(CGFloat)newValue;
 {
     _scale = newValue;
-    
-    [GPUImageOpenGLESContext useImageProcessingContext];
-    [filterProgram use];
-    glUniform1f(scaleUniform, _scale);
+
+    [self setFloat:_scale forUniform:scaleUniform program:filterProgram];
 }
 
 - (void)setCenter:(CGPoint)newValue;
 {
     _center = newValue;
     
-    [GPUImageOpenGLESContext useImageProcessingContext];
-    [filterProgram use];
-    
     CGPoint rotatedPoint = [self rotatedPoint:_center forRotation:inputRotation];
-    
-    GLfloat centerPosition[2];
-    centerPosition[0] = rotatedPoint.x;
-    centerPosition[1] = rotatedPoint.y;
-    
-    glUniform2fv(centerUniform, 1, centerPosition);
+    [self setPoint:rotatedPoint forUniform:centerUniform program:filterProgram];
 }
 
 @end

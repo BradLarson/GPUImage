@@ -72,13 +72,11 @@ NSString *const kGPUImageColorPackingFragmentShaderString = SHADER_STRING
 {
     texelWidth = 0.5 / inputTextureSize.width;
     texelHeight = 0.5 / inputTextureSize.height;
-        
-    [GPUImageOpenGLESContext useImageProcessingContext];
-    [filterProgram use];
+
+    // REFACTOR: Wrap this in a block on the image processing queue
+    [GPUImageOpenGLESContext setActiveShaderProgram:filterProgram];
     glUniform1f(texelWidthUniform, texelWidth);
     glUniform1f(texelHeightUniform, texelHeight);
-    
-    NSLog(@"Texel width: %f, height: %f", texelWidth, texelHeight);
 }
 
 #pragma mark -

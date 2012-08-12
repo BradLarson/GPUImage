@@ -140,12 +140,8 @@ NSString *const kGPUImageFastBlurIgnoringAlphaFragmentShaderString = SHADER_STRI
 {
     _blurSize = newValue;
     
-    [GPUImageOpenGLESContext useImageProcessingContext];
-    [filterProgram use];
-    glUniform1f(firstBlurSizeUniform, _blurSize);
-
-    [secondFilterProgram use];
-    glUniform1f(secondBlurSizeUniform, _blurSize);
+    [self setFloat:_blurSize forUniform:firstBlurSizeUniform program:filterProgram];
+    [self setFloat:_blurSize forUniform:secondBlurSizeUniform program:secondFilterProgram];
 }
 
 @end
