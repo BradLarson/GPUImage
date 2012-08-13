@@ -158,6 +158,8 @@
             [self removeTexture:[lastTextureName intValue]];
         }
     }
+
+  _bufferSize = newValue;
 }
 
 @end
