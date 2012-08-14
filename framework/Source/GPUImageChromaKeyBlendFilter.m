@@ -62,10 +62,7 @@ NSString *const kGPUImageChromaKeyBlendFragmentShaderString = SHADER_STRING
 
 - (void)setColorToReplaceRed:(GLfloat)redComponent green:(GLfloat)greenComponent blue:(GLfloat)blueComponent;
 {
-    GLfloat colorToReplace[3];
-    colorToReplace[0] = redComponent;
-    colorToReplace[1] = greenComponent;    
-    colorToReplace[2] = blueComponent;
+    GPUVector3 colorToReplace = {redComponent, greenComponent, blueComponent};
     
     [self setVec3:colorToReplace forUniform:colorToReplaceUniform program:filterProgram];
 }

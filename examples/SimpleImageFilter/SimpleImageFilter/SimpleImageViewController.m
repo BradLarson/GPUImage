@@ -81,6 +81,8 @@
         
     // Do a simpler image filtering
     GPUImageSketchFilter *stillImageFilter2 = [[GPUImageSketchFilter alloc] init];
+//    GPUImageUnsharpMaskFilter *stillImageFilter2 = [[GPUImageUnsharpMaskFilter alloc] init];
+//    GPUImageSepiaFilter *stillImageFilter2 = [[GPUImageSepiaFilter alloc] init];
     UIImage *quickFilteredImage = [stillImageFilter2 imageByFilteringImage:inputImage];
 
     
@@ -99,7 +101,7 @@
     if (![dataForPNGFile2 writeToFile:[documentsDirectory stringByAppendingPathComponent:@"Lambeau-filtered2.png"] options:NSAtomicWrite error:&error])
     {
         return;
-    }    
+    }
 }
 
 @end

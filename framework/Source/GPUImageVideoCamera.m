@@ -50,28 +50,31 @@
     
 	cameraProcessingQueue = dispatch_queue_create("com.sunsetlakesoftware.GPUImage.cameraProcessingQueue", NULL);
 	audioProcessingQueue = dispatch_queue_create("com.sunsetlakesoftware.GPUImage.audioProcessingQueue", NULL);
-    
+    frameRenderingSemaphore = dispatch_semaphore_create(1);
+
 	_frameRate = 0; // This will not set frame rate unless this value gets set to 1 or above
     _runBenchmark = NO;
     capturePaused = NO;
     outputRotation = kGPUImageNoRotation;
-    
-    if ([GPUImageOpenGLESContext supportsFastTextureUpload])
-    {
-        [GPUImageOpenGLESContext useImageProcessingContext];
-#if defined(__IPHONE_6_0)
-        CVReturn err = CVOpenGLESTextureCacheCreate(kCFAllocatorDefault, NULL, [[GPUImageOpenGLESContext sharedImageProcessingOpenGLESContext] context], NULL, &coreVideoTextureCache);
-#else
-        CVReturn err = CVOpenGLESTextureCacheCreate(kCFAllocatorDefault, NULL, (__bridge void *)[[GPUImageOpenGLESContext sharedImageProcessingOpenGLESContext] context], NULL, &coreVideoTextureCache);
-#endif
-        if (err) 
+
+    runSynchronouslyOnVideoProcessingQueue(^{
+        if ([GPUImageOpenGLESContext supportsFastTextureUpload])
         {
-            NSAssert(NO, @"Error at CVOpenGLESTextureCacheCreate %d", err);
+            [GPUImageOpenGLESContext useImageProcessingContext];
+#if defined(__IPHONE_6_0)
+            CVReturn err = CVOpenGLESTextureCacheCreate(kCFAllocatorDefault, NULL, [[GPUImageOpenGLESContext sharedImageProcessingOpenGLESContext] context], NULL, &coreVideoTextureCache);
+#else
+            CVReturn err = CVOpenGLESTextureCacheCreate(kCFAllocatorDefault, NULL, (__bridge void *)[[GPUImageOpenGLESContext sharedImageProcessingOpenGLESContext] context], NULL, &coreVideoTextureCache);
+#endif
+            if (err)
+            {
+                NSAssert(NO, @"Error at CVOpenGLESTextureCacheCreate %d", err);
+            }
+            
+            // Need to remove the initially created texture
+            [self deleteOutputTexture];
         }
-        
-        // Need to remove the initially created texture
-        [self deleteOutputTexture];
-    }
+    });
     
 	// Grab the back-facing or front-facing camera
     _inputCamera = nil;
@@ -99,13 +102,12 @@
 	
 	// Add the video frame output	
 	videoOutput = [[AVCaptureVideoDataOutput alloc] init];
-	[videoOutput setAlwaysDiscardsLateVideoFrames:YES];
+	[videoOutput setAlwaysDiscardsLateVideoFrames:NO];
     
 	[videoOutput setVideoSettings:[NSDictionary dictionaryWithObject:[NSNumber numberWithInt:kCVPixelFormatType_32BGRA] forKey:(id)kCVPixelBufferPixelFormatTypeKey]];
-    //	dispatch_queue_t videoQueue = dispatch_queue_create("com.sunsetlakesoftware.colortracking.videoqueue", NULL);
-    //	[videoOutput setSampleBufferDelegate:self queue:videoQueue];
     
     [videoOutput setSampleBufferDelegate:self queue:cameraProcessingQueue];
+//    [videoOutput setSampleBufferDelegate:self queue:[GPUImageOpenGLESContext sharedOpenGLESQueue]];
 	if ([_captureSession canAddOutput:videoOutput])
 	{
 		[_captureSession addOutput:videoOutput];
@@ -127,8 +129,6 @@
 //        conn.videoMaxFrameDuration = CMTimeMake(1,60);
     
     [_captureSession commitConfiguration];
-    
-    //    inputTextureSize
     
 	return self;
 }
@@ -334,20 +334,22 @@
     int bufferHeight = CVPixelBufferGetHeight(cameraFrame);
     
 	CMTime currentTime = CMSampleBufferGetPresentationTimeStamp(sampleBuffer);
-    
+
+    [GPUImageOpenGLESContext useImageProcessingContext];
+
     if ([GPUImageOpenGLESContext supportsFastTextureUpload])
     {
         CVPixelBufferLockBaseAddress(cameraFrame, 0);
         
-        [GPUImageOpenGLESContext useImageProcessingContext];
         CVOpenGLESTextureRef texture = NULL;
         CVReturn err = CVOpenGLESTextureCacheCreateTextureFromImage(kCFAllocatorDefault, coreVideoTextureCache, cameraFrame, NULL, GL_TEXTURE_2D, GL_RGBA, bufferWidth, bufferHeight, GL_BGRA, GL_UNSIGNED_BYTE, 0, &texture);
-        
+
         if (!texture || err) {
             NSLog(@"Camera CVOpenGLESTextureCacheCreateTextureFromImage failed (error: %d)", err);
+            NSAssert(NO, @"Camera failure");
             return;
         }
-        
+
         outputTexture = CVOpenGLESTextureGetName(texture);
         //        glBindTexture(CVOpenGLESTextureGetTarget(texture), outputTexture);
         glBindTexture(GL_TEXTURE_2D, outputTexture);
@@ -460,79 +462,90 @@
 
 - (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection
 {
-	//This may help keep memory footprint low
-    @autoreleasepool {
+    __unsafe_unretained id weakSelf = self;
+    if (captureOutput == audioOutput)
+    {
+//        if (dispatch_semaphore_wait(frameRenderingSemaphore, DISPATCH_TIME_NOW) != 0)
+//        {
+//            return;
+//        }
 
-		//these need to be on the main thread for proper timing
-        __unsafe_unretained id weakSelf = self;
-		if (captureOutput == audioOutput)
-		{
-			runOnMainQueueWithoutDeadlocking(^{ 
-                [weakSelf processAudioSampleBuffer:sampleBuffer];
-            });
-		}
-		else
-		{
-            
-			runOnMainQueueWithoutDeadlocking(^{
-                //Feature Detection Hook.
-                if (self.delegate) {
-                    [self.delegate willOutputSampleBuffer:sampleBuffer];
-                }
-                
-                [weakSelf processVideoSampleBuffer:sampleBuffer];
-                
-                
-            });
-		}
+        CFRetain(sampleBuffer);
+        dispatch_async([GPUImageOpenGLESContext sharedOpenGLESQueue], ^{
+            [weakSelf processAudioSampleBuffer:sampleBuffer];
+            CFRelease(sampleBuffer);
+//            dispatch_semaphore_signal(frameRenderingSemaphore);
+        });
     }
-	
+    else
+    {
+        if (dispatch_semaphore_wait(frameRenderingSemaphore, DISPATCH_TIME_NOW) != 0)
+        {
+            return;
+        }
+
+        CFRetain(sampleBuffer);
+        dispatch_async([GPUImageOpenGLESContext sharedOpenGLESQueue], ^{
+            //Feature Detection Hook.
+            if (self.delegate)
+            {
+                [self.delegate willOutputSampleBuffer:sampleBuffer];
+            }
+            
+            [weakSelf processVideoSampleBuffer:sampleBuffer];
+            
+            CFRelease(sampleBuffer);
+            dispatch_semaphore_signal(frameRenderingSemaphore);
+        });
+    }
 }
 
 #pragma mark -
 #pragma mark Accessors
 
 - (void)setAudioEncodingTarget:(GPUImageMovieWriter *)newValue;
-{    
-    [_captureSession beginConfiguration];
-
-    if (newValue == nil)
-    {
-        if (audioOutput)
-        {
-            [_captureSession removeInput:audioInput];
-            [_captureSession removeOutput:audioOutput];
-            audioInput = nil;
-            audioOutput = nil;
-            _microphone = nil;
-            dispatch_release(audioProcessingQueue);
-            audioProcessingQueue = NULL;
-        }        
-    }
-    else
-    {        
-        _microphone = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeAudio];
-        audioInput = [AVCaptureDeviceInput deviceInputWithDevice:_microphone error:nil];
-        if ([_captureSession canAddInput:audioInput]) 
-        {
-            [_captureSession addInput:audioInput];
-        }
-        audioOutput = [[AVCaptureAudioDataOutput alloc] init];
+{
+    runSynchronouslyOnVideoProcessingQueue(^{
+        [_captureSession beginConfiguration];
         
-        if ([_captureSession canAddOutput:audioOutput])
+        if (newValue == nil)
         {
-            [_captureSession addOutput:audioOutput];
+            if (audioOutput)
+            {
+                [_captureSession removeInput:audioInput];
+                [_captureSession removeOutput:audioOutput];
+                audioInput = nil;
+                audioOutput = nil;
+                _microphone = nil;
+                dispatch_release(audioProcessingQueue);
+                audioProcessingQueue = NULL;
+            }
         }
         else
         {
-            NSLog(@"Couldn't add audio output");
+            _microphone = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeAudio];
+            audioInput = [AVCaptureDeviceInput deviceInputWithDevice:_microphone error:nil];
+            if ([_captureSession canAddInput:audioInput])
+            {
+                [_captureSession addInput:audioInput];
+            }
+            audioOutput = [[AVCaptureAudioDataOutput alloc] init];
+            
+            if ([_captureSession canAddOutput:audioOutput])
+            {
+                [_captureSession addOutput:audioOutput];
+            }
+            else
+            {
+                NSLog(@"Couldn't add audio output");
+            }
+            [audioOutput setSampleBufferDelegate:self queue:audioProcessingQueue];
         }
-        [audioOutput setSampleBufferDelegate:self queue:audioProcessingQueue];        
-    }
-    
-    [_captureSession commitConfiguration];
-    
-    [super setAudioEncodingTarget:newValue];
+        
+        [_captureSession commitConfiguration];
+        
+        [super setAudioEncodingTarget:newValue];
+    });
 }
 
 - (void)setOutputImageOrientation:(UIInterfaceOrientation)newValue;

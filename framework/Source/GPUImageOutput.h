@@ -3,6 +3,7 @@
 #import "GPUImageOpenGLESContext.h"
 
 void runOnMainQueueWithoutDeadlocking(void (^block)(void));
+void runSynchronouslyOnVideoProcessingQueue(void (^block)(void));
 void report_memory(NSString *tag);
 
 @class GPUImageMovieWriter;

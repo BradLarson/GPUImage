@@ -36,9 +36,8 @@
 		return nil;
     }
     self.shouldSmoothlyScaleOutput = smoothlyScaleOutput;
-
-    [GPUImageOpenGLESContext useImageProcessingContext];
-    
+        
+    // TODO: Dispatch this whole thing asynchronously to move image loading off main thread
     CGFloat widthOfImage = CGImageGetWidth(newImageSource);
     CGFloat heightOfImage = CGImageGetHeight(newImageSource);
     pixelSizeOfImage = CGSizeMake(widthOfImage, heightOfImage);
@@ -93,17 +92,21 @@
 //    elapsedTime = (CFAbsoluteTimeGetCurrent() - startTime) * 1000.0;
 //    NSLog(@"Core Graphics drawing time: %f", elapsedTime);
 
-    glBindTexture(GL_TEXTURE_2D, outputTexture);
-    if (self.shouldSmoothlyScaleOutput)
-    {
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    }
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (int)pixelSizeToUseForTexture.width, (int)pixelSizeToUseForTexture.height, 0, GL_BGRA, GL_UNSIGNED_BYTE, imageData);
-    
-    if (self.shouldSmoothlyScaleOutput)
-    {
-        glGenerateMipmap(GL_TEXTURE_2D);
-    }
+    runSynchronouslyOnVideoProcessingQueue(^{
+        [GPUImageOpenGLESContext useImageProcessingContext];
+        
+        glBindTexture(GL_TEXTURE_2D, outputTexture);
+        if (self.shouldSmoothlyScaleOutput)
+        {
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+        }
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (int)pixelSizeToUseForTexture.width, (int)pixelSizeToUseForTexture.height, 0, GL_BGRA, GL_UNSIGNED_BYTE, imageData);
+        
+        if (self.shouldSmoothlyScaleOutput)
+        {
+            glGenerateMipmap(GL_TEXTURE_2D);
+        }        
+    });
 
     if (shouldRedrawUsingCoreGraphics)
     {
@@ -123,15 +126,17 @@
 - (void)processImage;
 {
     hasProcessedImage = YES;
-    
-    for (id<GPUImageInput> currentTarget in targets)
-    {
-        NSInteger indexOfObject = [targets indexOfObject:currentTarget];
-        NSInteger textureIndexOfTarget = [[targetTextureIndices objectAtIndex:indexOfObject] integerValue];
-
-        [currentTarget setInputSize:pixelSizeOfImage atIndex:textureIndexOfTarget];
-        [currentTarget newFrameReadyAtTime:kCMTimeIndefinite atIndex:textureIndexOfTarget];
-    }    
+  
+    dispatch_async([GPUImageOpenGLESContext sharedOpenGLESQueue], ^{
+        for (id<GPUImageInput> currentTarget in targets)
+        {
+            NSInteger indexOfObject = [targets indexOfObject:currentTarget];
+            NSInteger textureIndexOfTarget = [[targetTextureIndices objectAtIndex:indexOfObject] integerValue];
+            
+            [currentTarget setInputSize:pixelSizeOfImage atIndex:textureIndexOfTarget];
+            [currentTarget newFrameReadyAtTime:kCMTimeIndefinite atIndex:textureIndexOfTarget];
+        }    
+    });    
 }
 
 - (CGSize)outputImageSize;

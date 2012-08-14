@@ -341,36 +341,38 @@
         _rawBytesForImage = (GLubyte *) calloc(imageSize.width * imageSize.height * 4, sizeof(GLubyte));
         hasReadFromTheCurrentFrame = NO;
     }
- 
+        
     if (hasReadFromTheCurrentFrame)
     {
         return _rawBytesForImage;
     }
     else
     {
-        // Note: the fast texture caches speed up 640x480 frame reads from 9.6 ms to 3.1 ms on iPhone 4S
-        
-        [GPUImageOpenGLESContext useImageProcessingContext];
-        if ([GPUImageOpenGLESContext supportsFastTextureUpload]) 
-        {
-            CVPixelBufferUnlockBaseAddress(renderTarget, 0);
-//            CVOpenGLESTextureCacheFlush(rawDataTextureCache, 0);
-        }
-        
-        [self renderAtInternalSize];
-        
-        if ([GPUImageOpenGLESContext supportsFastTextureUpload]) 
-        {
-            glFinish();
-            CVPixelBufferLockBaseAddress(renderTarget, 0);
-            _rawBytesForImage = (GLubyte *)CVPixelBufferGetBaseAddress(renderTarget);
-        } 
-        else 
-        {
-            glReadPixels(0, 0, imageSize.width, imageSize.height, GL_RGBA, GL_UNSIGNED_BYTE, _rawBytesForImage);
-            // GL_EXT_read_format_bgra
-//            glReadPixels(0, 0, imageSize.width, imageSize.height, GL_BGRA_EXT, GL_UNSIGNED_BYTE, _rawBytesForImage);
-        }
+        runSynchronouslyOnVideoProcessingQueue(^{
+            // Note: the fast texture caches speed up 640x480 frame reads from 9.6 ms to 3.1 ms on iPhone 4S
+            
+            [GPUImageOpenGLESContext useImageProcessingContext];
+            if ([GPUImageOpenGLESContext supportsFastTextureUpload])
+            {
+                CVPixelBufferUnlockBaseAddress(renderTarget, 0);
+                //            CVOpenGLESTextureCacheFlush(rawDataTextureCache, 0);
+            }
+            
+            [self renderAtInternalSize];
+            
+            if ([GPUImageOpenGLESContext supportsFastTextureUpload])
+            {
+                glFinish();
+                CVPixelBufferLockBaseAddress(renderTarget, 0);
+                _rawBytesForImage = (GLubyte *)CVPixelBufferGetBaseAddress(renderTarget);
+            }
+            else
+            {
+                glReadPixels(0, 0, imageSize.width, imageSize.height, GL_RGBA, GL_UNSIGNED_BYTE, _rawBytesForImage);
+                // GL_EXT_read_format_bgra
+                //            glReadPixels(0, 0, imageSize.width, imageSize.height, GL_BGRA_EXT, GL_UNSIGNED_BYTE, _rawBytesForImage);
+            }
+        });
         
         return _rawBytesForImage;
     }

@@ -1,6 +1,7 @@
 #import "GPUImageVideoCamera.h"
 
-void GPUImageCreateResizedSampleBuffer(CVPixelBufferRef cameraFrame, CGSize finalSize, CMSampleBufferRef *sampleBuffer, GLubyte **imageData);
+void stillImageDataReleaseCallback(void *releaseRefCon, const void *baseAddress);
+void GPUImageCreateResizedSampleBuffer(CVPixelBufferRef cameraFrame, CGSize finalSize, CMSampleBufferRef *sampleBuffer);
 
 @interface GPUImageStillCamera : GPUImageVideoCamera
 

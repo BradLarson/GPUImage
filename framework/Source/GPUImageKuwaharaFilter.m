@@ -104,7 +104,7 @@ NSString *const kGPUImageKuwaharaFragmentShaderString = SHADER_STRING
 {
     _radius = newValue;
     
-    [self setFloat:_radius forUniform:radiusUniform program:filterProgram];
+    [self setInteger:_radius forUniform:radiusUniform program:filterProgram];
 }
 
 @end

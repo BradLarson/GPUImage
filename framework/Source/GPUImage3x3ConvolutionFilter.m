@@ -72,7 +72,7 @@ NSString *const kGPUImage3x3ConvolutionFragmentShaderString = SHADER_STRING
 {
     _convolutionKernel = newValue;
     
-    [self setMatrix3f:(GLfloat *)&_convolutionKernel forUniform:convolutionMatrixUniform program:filterProgram];
+    [self setMatrix3f:_convolutionKernel forUniform:convolutionMatrixUniform program:filterProgram];
 }
 
 @end

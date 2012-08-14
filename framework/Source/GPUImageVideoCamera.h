@@ -29,6 +29,7 @@
 
     BOOL capturePaused;
     GPUImageRotationMode outputRotation;
+    dispatch_semaphore_t frameRenderingSemaphore;
 
     id<GPUImageVideoCameraDelegate> _delegate;
 }
@@ -37,7 +38,7 @@
 @property(readonly, retain, nonatomic) AVCaptureSession *captureSession;
 
 /// This enables the capture session preset to be changed on the fly
-@property (readwrite, nonatomic) NSString *captureSessionPreset;
+@property (readwrite, nonatomic, copy) NSString *captureSessionPreset;
 
 /// This sets the frame rate of the camera (iOS 5 and above only)
 /**

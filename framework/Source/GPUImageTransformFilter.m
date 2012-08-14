@@ -74,7 +74,35 @@ NSString *const kGPUImageTransformVertexShaderString = SHADER_STRING
     matrix[15] = 1.0f;
 }
 
-- (void)convert3DTransform:(CATransform3D *)transform3D toMatrix:(GLfloat *)matrix;
+//- (void)convert3DTransform:(CATransform3D *)transform3D toMatrix:(GLfloat *)matrix;
+//{
+//	//	struct CATransform3D
+//	//	{
+//	//		CGFloat m11, m12, m13, m14;
+//	//		CGFloat m21, m22, m23, m24;
+//	//		CGFloat m31, m32, m33, m34;
+//	//		CGFloat m41, m42, m43, m44;
+//	//	};
+//	
+//	matrix[0] = (GLfloat)transform3D->m11;
+//	matrix[1] = (GLfloat)transform3D->m12;
+//	matrix[2] = (GLfloat)transform3D->m13;
+//	matrix[3] = (GLfloat)transform3D->m14;
+//	matrix[4] = (GLfloat)transform3D->m21;
+//	matrix[5] = (GLfloat)transform3D->m22;
+//	matrix[6] = (GLfloat)transform3D->m23;
+//	matrix[7] = (GLfloat)transform3D->m24;
+//	matrix[8] = (GLfloat)transform3D->m31;
+//	matrix[9] = (GLfloat)transform3D->m32;
+//	matrix[10] = (GLfloat)transform3D->m33;
+//	matrix[11] = (GLfloat)transform3D->m34;
+//	matrix[12] = (GLfloat)transform3D->m41;
+//	matrix[13] = (GLfloat)transform3D->m42;
+//	matrix[14] = (GLfloat)transform3D->m43;
+//	matrix[15] = (GLfloat)transform3D->m44;
+//}
+
+- (void)convert3DTransform:(CATransform3D *)transform3D toMatrix:(GPUMatrix4x4 *)matrix;
 {
 	//	struct CATransform3D
 	//	{
@@ -83,23 +111,25 @@ NSString *const kGPUImageTransformVertexShaderString = SHADER_STRING
 	//		CGFloat m31, m32, m33, m34;
 	//		CGFloat m41, m42, m43, m44;
 	//	};
+    
+    GLfloat *mappedMatrix = (GLfloat *)matrix;
 	
-	matrix[0] = (GLfloat)transform3D->m11;
-	matrix[1] = (GLfloat)transform3D->m12;
-	matrix[2] = (GLfloat)transform3D->m13;
-	matrix[3] = (GLfloat)transform3D->m14;
-	matrix[4] = (GLfloat)transform3D->m21;
-	matrix[5] = (GLfloat)transform3D->m22;
-	matrix[6] = (GLfloat)transform3D->m23;
-	matrix[7] = (GLfloat)transform3D->m24;
-	matrix[8] = (GLfloat)transform3D->m31;
-	matrix[9] = (GLfloat)transform3D->m32;
-	matrix[10] = (GLfloat)transform3D->m33;
-	matrix[11] = (GLfloat)transform3D->m34;
-	matrix[12] = (GLfloat)transform3D->m41;
-	matrix[13] = (GLfloat)transform3D->m42;
-	matrix[14] = (GLfloat)transform3D->m43;
-	matrix[15] = (GLfloat)transform3D->m44;
+	mappedMatrix[0] = (GLfloat)transform3D->m11;
+	mappedMatrix[1] = (GLfloat)transform3D->m12;
+	mappedMatrix[2] = (GLfloat)transform3D->m13;
+	mappedMatrix[3] = (GLfloat)transform3D->m14;
+	mappedMatrix[4] = (GLfloat)transform3D->m21;
+	mappedMatrix[5] = (GLfloat)transform3D->m22;
+	mappedMatrix[6] = (GLfloat)transform3D->m23;
+	mappedMatrix[7] = (GLfloat)transform3D->m24;
+	mappedMatrix[8] = (GLfloat)transform3D->m31;
+	mappedMatrix[9] = (GLfloat)transform3D->m32;
+	mappedMatrix[10] = (GLfloat)transform3D->m33;
+	mappedMatrix[11] = (GLfloat)transform3D->m34;
+	mappedMatrix[12] = (GLfloat)transform3D->m41;
+	mappedMatrix[13] = (GLfloat)transform3D->m42;
+	mappedMatrix[14] = (GLfloat)transform3D->m43;
+	mappedMatrix[15] = (GLfloat)transform3D->m44;
 }
 
 #pragma mark -
@@ -139,9 +169,9 @@ NSString *const kGPUImageTransformVertexShaderString = SHADER_STRING
 {
     if (!_ignoreAspectRatio)
     {
-        [self loadOrthoMatrix:orthographicMatrix left:-1.0 right:1.0 bottom:(-1.0 * filterFrameSize.height / filterFrameSize.width) top:(1.0 * filterFrameSize.height / filterFrameSize.width) near:-1.0 far:1.0];
+        [self loadOrthoMatrix:(GLfloat *)&orthographicMatrix left:-1.0 right:1.0 bottom:(-1.0 * filterFrameSize.height / filterFrameSize.width) top:(1.0 * filterFrameSize.height / filterFrameSize.width) near:-1.0 far:1.0];
         //     [self loadOrthoMatrix:orthographicMatrix left:-1.0 right:1.0 bottom:(-1.0 * (GLfloat)backingHeight / (GLfloat)backingWidth) top:(1.0 * (GLfloat)backingHeight / (GLfloat)backingWidth) near:-2.0 far:2.0];
-                
+
         [self setMatrix4f:orthographicMatrix forUniform:orthographicMatrixUniform program:filterProgram];
     }
 }
@@ -163,9 +193,9 @@ NSString *const kGPUImageTransformVertexShaderString = SHADER_STRING
 {
     _transform3D = newValue;
         
-    GLfloat temporaryMatrix[16];
+    GPUMatrix4x4 temporaryMatrix;
     
-    [self convert3DTransform:&_transform3D toMatrix:temporaryMatrix];
+    [self convert3DTransform:&_transform3D toMatrix:&temporaryMatrix];
     [self setMatrix4f:temporaryMatrix forUniform:transformMatrixUniform program:filterProgram];
 }
 
@@ -175,8 +205,7 @@ NSString *const kGPUImageTransformVertexShaderString = SHADER_STRING
     
     if (_ignoreAspectRatio)
     {
-        [self loadOrthoMatrix:orthographicMatrix left:-1.0 right:1.0 bottom:-1.0 top:1.0 near:-1.0 far:1.0];
-        
+        [self loadOrthoMatrix:(GLfloat *)&orthographicMatrix left:-1.0 right:1.0 bottom:-1.0 top:1.0 near:-1.0 far:1.0];
         [self setMatrix4f:orthographicMatrix forUniform:orthographicMatrixUniform program:filterProgram];
     }
     else

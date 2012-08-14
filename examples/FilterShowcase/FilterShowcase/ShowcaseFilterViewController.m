@@ -1265,7 +1265,7 @@
 }
 
 #pragma mark - Face Detection Delegate Callback
--(void) willOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer{
+- (void)willOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer{
     if (!faceThinking) {
         CFAllocatorRef allocator = CFAllocatorGetDefault();
         CMSampleBufferRef sbufCopyOut;
@@ -1274,7 +1274,7 @@
     }
 }
 
--(void)grepFacesForSampleBuffer:(CMSampleBufferRef)sampleBuffer{
+- (void)grepFacesForSampleBuffer:(CMSampleBufferRef)sampleBuffer{
     faceThinking = TRUE;
     NSLog(@"Faces thinking");
     CVPixelBufferRef pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);

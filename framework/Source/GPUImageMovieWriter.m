@@ -66,6 +66,7 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 {
     return [self initWithMovieURL:newMovieURL size:newSize fileType:AVFileTypeQuickTimeMovie outputSettings:nil];
 }
+
 - (id)initWithMovieURL:(NSURL *)newMovieURL size:(CGSize)newSize fileType:(NSString *)newFileType outputSettings:(NSMutableDictionary *)outputSettings;
 {
     if (!(self = [super init]))
@@ -83,42 +84,44 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
     previousFrameTime = kCMTimeNegativeInfinity;
     inputRotation = kGPUImageNoRotation;
 
-    [GPUImageOpenGLESContext useImageProcessingContext];
-    
-    if ([GPUImageOpenGLESContext supportsFastTextureUpload])
-    {
-        colorSwizzlingProgram = [[GLProgram alloc] initWithVertexShaderString:kGPUImageVertexShaderString fragmentShaderString:kGPUImagePassthroughFragmentShaderString];
-    }
-    else
-    {
-        colorSwizzlingProgram = [[GLProgram alloc] initWithVertexShaderString:kGPUImageVertexShaderString fragmentShaderString:kGPUImageColorSwizzlingFragmentShaderString];
-    }
-    
-    [colorSwizzlingProgram addAttribute:@"position"];
-	[colorSwizzlingProgram addAttribute:@"inputTextureCoordinate"];
-    
-    if (![colorSwizzlingProgram link])
-	{
-		NSString *progLog = [colorSwizzlingProgram programLog];
-		NSLog(@"Program link log: %@", progLog); 
-		NSString *fragLog = [colorSwizzlingProgram fragmentShaderLog];
-		NSLog(@"Fragment shader compile log: %@", fragLog);
-		NSString *vertLog = [colorSwizzlingProgram vertexShaderLog];
-		NSLog(@"Vertex shader compile log: %@", vertLog);
-		colorSwizzlingProgram = nil;
-        NSAssert(NO, @"Filter shader link failed");
-	}
-    
-    colorSwizzlingPositionAttribute = [colorSwizzlingProgram attributeIndex:@"position"];
-    colorSwizzlingTextureCoordinateAttribute = [colorSwizzlingProgram attributeIndex:@"inputTextureCoordinate"];
-    colorSwizzlingInputTextureUniform = [colorSwizzlingProgram uniformIndex:@"inputImageTexture"];
-    
-    // REFACTOR: Wrap this in a block for the image processing queue
-    [GPUImageOpenGLESContext setActiveShaderProgram:colorSwizzlingProgram];
-    
-	glEnableVertexAttribArray(colorSwizzlingPositionAttribute);
-	glEnableVertexAttribArray(colorSwizzlingTextureCoordinateAttribute);
-    
+    runSynchronouslyOnVideoProcessingQueue(^{
+        [GPUImageOpenGLESContext useImageProcessingContext];
+        
+        if ([GPUImageOpenGLESContext supportsFastTextureUpload])
+        {
+            colorSwizzlingProgram = [[GLProgram alloc] initWithVertexShaderString:kGPUImageVertexShaderString fragmentShaderString:kGPUImagePassthroughFragmentShaderString];
+        }
+        else
+        {
+            colorSwizzlingProgram = [[GLProgram alloc] initWithVertexShaderString:kGPUImageVertexShaderString fragmentShaderString:kGPUImageColorSwizzlingFragmentShaderString];
+        }
+        
+        [colorSwizzlingProgram addAttribute:@"position"];
+        [colorSwizzlingProgram addAttribute:@"inputTextureCoordinate"];
+        
+        if (![colorSwizzlingProgram link])
+        {
+            NSString *progLog = [colorSwizzlingProgram programLog];
+            NSLog(@"Program link log: %@", progLog); 
+            NSString *fragLog = [colorSwizzlingProgram fragmentShaderLog];
+            NSLog(@"Fragment shader compile log: %@", fragLog);
+            NSString *vertLog = [colorSwizzlingProgram vertexShaderLog];
+            NSLog(@"Vertex shader compile log: %@", vertLog);
+            colorSwizzlingProgram = nil;
+            NSAssert(NO, @"Filter shader link failed");
+        }
+        
+        colorSwizzlingPositionAttribute = [colorSwizzlingProgram attributeIndex:@"position"];
+        colorSwizzlingTextureCoordinateAttribute = [colorSwizzlingProgram attributeIndex:@"inputTextureCoordinate"];
+        colorSwizzlingInputTextureUniform = [colorSwizzlingProgram uniformIndex:@"inputImageTexture"];
+        
+        // REFACTOR: Wrap this in a block for the image processing queue
+        [GPUImageOpenGLESContext setActiveShaderProgram:colorSwizzlingProgram];
+        
+        glEnableVertexAttribArray(colorSwizzlingPositionAttribute);
+        glEnableVertexAttribArray(colorSwizzlingTextureCoordinateAttribute);
+    });
+        
     [self initializeMovieWithOutputSettings:outputSettings];
 
     return self;
@@ -241,10 +244,17 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 
 - (void)finishRecording;
 {
+    if (assetWriter.status == AVAssetWriterStatusCompleted)
+    {
+        return;
+    }
+
     isRecording = NO;
-	[assetWriterVideoInput markAsFinished];
-	[assetWriterAudioInput markAsFinished];
-	[assetWriter finishWriting];
+    runOnMainQueueWithoutDeadlocking(^{
+        [assetWriterVideoInput markAsFinished];
+        [assetWriterAudioInput markAsFinished];
+        [assetWriter finishWriting];
+    });
 }
 
 - (void)processAudioBuffer:(CMSampleBufferRef)audioBuffer;
@@ -284,12 +294,12 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
     if (videoInputReadyCallback != NULL)
     {
         [assetWriter startWriting];
-        [assetWriterVideoInput requestMediaDataWhenReadyOnQueue:dispatch_get_main_queue() usingBlock:videoInputReadyCallback];
+        [assetWriterVideoInput requestMediaDataWhenReadyOnQueue:[GPUImageOpenGLESContext sharedOpenGLESQueue] usingBlock:videoInputReadyCallback];
     }
     
     if (audioInputReadyCallback != NULL)
     {
-        [assetWriterAudioInput requestMediaDataWhenReadyOnQueue:dispatch_get_main_queue() usingBlock:audioInputReadyCallback];
+        [assetWriterAudioInput requestMediaDataWhenReadyOnQueue:[GPUImageOpenGLESContext sharedOpenGLESQueue] usingBlock:audioInputReadyCallback];
     }        
     
 }

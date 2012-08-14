@@ -29,22 +29,7 @@
         return nil;
     }
 
-    if ([GPUImageOpenGLESContext supportsFastTextureUpload])
-    {
-        [GPUImageOpenGLESContext useImageProcessingContext];
-#if defined(__IPHONE_6_0)
-        CVReturn err = CVOpenGLESTextureCacheCreate(kCFAllocatorDefault, NULL, [[GPUImageOpenGLESContext sharedImageProcessingOpenGLESContext] context], NULL, &coreVideoTextureCache);
-#else
-        CVReturn err = CVOpenGLESTextureCacheCreate(kCFAllocatorDefault, NULL, (__bridge void *)[[GPUImageOpenGLESContext sharedImageProcessingOpenGLESContext] context], NULL, &coreVideoTextureCache);
-#endif
-        if (err) 
-        {
-            NSAssert(NO, @"Error at CVOpenGLESTextureCacheCreate %d", err);
-        }
-
-        // Need to remove the initially created texture
-        [self deleteOutputTexture];
-    }
+    [self textureCacheSetup];
 
     self.url = url;
     self.asset = nil;
@@ -52,32 +37,41 @@
     return self;
 }
 
--(id)initWithAsset:(AVAsset *)asset {
+- (id)initWithAsset:(AVAsset *)asset;
+{
     if (!(self = [super init])) 
     {
       return nil;
     }
+    
+    [self textureCacheSetup];
 
-    if ([GPUImageOpenGLESContext supportsFastTextureUpload])
-    {
-        [GPUImageOpenGLESContext useImageProcessingContext];
-#if defined(__IPHONE_6_0)
-        CVReturn err = CVOpenGLESTextureCacheCreate(kCFAllocatorDefault, NULL, [[GPUImageOpenGLESContext sharedImageProcessingOpenGLESContext] context], NULL, &coreVideoTextureCache);
-#else
-        CVReturn err = CVOpenGLESTextureCacheCreate(kCFAllocatorDefault, NULL, (__bridge void *)[[GPUImageOpenGLESContext sharedImageProcessingOpenGLESContext] context], NULL, &coreVideoTextureCache);
-#endif
-        if (err) 
-        {
-            NSAssert(NO, @"Error at CVOpenGLESTextureCacheCreate %d", err);
-        }
-
-        // Need to remove the initially created texture
-        [self deleteOutputTexture];
-    }
     self.url = nil;
     self.asset = asset;
 
     return self;
+}
+
+- (void)textureCacheSetup;
+{
+    if ([GPUImageOpenGLESContext supportsFastTextureUpload])
+    {
+        runSynchronouslyOnVideoProcessingQueue(^{
+            [GPUImageOpenGLESContext useImageProcessingContext];
+#if defined(__IPHONE_6_0)
+            CVReturn err = CVOpenGLESTextureCacheCreate(kCFAllocatorDefault, NULL, [[GPUImageOpenGLESContext sharedImageProcessingOpenGLESContext] context], NULL, &coreVideoTextureCache);
+#else
+            CVReturn err = CVOpenGLESTextureCacheCreate(kCFAllocatorDefault, NULL, (__bridge void *)[[GPUImageOpenGLESContext sharedImageProcessingOpenGLESContext] context], NULL, &coreVideoTextureCache);
+#endif
+            if (err)
+            {
+                NSAssert(NO, @"Error at CVOpenGLESTextureCacheCreate %d", err);
+            }
+            
+            // Need to remove the initially created texture
+            [self deleteOutputTexture];
+        });
+    }
 }
 
 - (void)dealloc
@@ -188,7 +182,7 @@
         if (sampleBufferRef) 
         {
             __unsafe_unretained GPUImageMovie *weakSelf = self;
-            runOnMainQueueWithoutDeadlocking(^{
+            runSynchronouslyOnVideoProcessingQueue(^{
                 [weakSelf processMovieFrame:sampleBufferRef];
             });
             
@@ -221,10 +215,12 @@
     
     if (audioSampleBufferRef) 
     {
-        [self.audioEncodingTarget processAudioBuffer:audioSampleBufferRef]; 
-        
-        CMSampleBufferInvalidate(audioSampleBufferRef);
-        CFRelease(audioSampleBufferRef);
+        runSynchronouslyOnVideoProcessingQueue(^{
+            [self.audioEncodingTarget processAudioBuffer:audioSampleBufferRef];
+            
+            CMSampleBufferInvalidate(audioSampleBufferRef);
+            CFRelease(audioSampleBufferRef);
+        });
     }
     else
     {

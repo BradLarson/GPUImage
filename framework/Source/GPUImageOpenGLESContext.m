@@ -7,6 +7,18 @@
 @synthesize context = _context;
 @synthesize currentShaderProgram = _currentShaderProgram;
 
+- (id)init;
+{
+    if (!(self = [super init]))
+    {
+		return nil;
+    }
+        
+    _contextQueue = dispatch_queue_create("com.sunsetlakesoftware.GPUImage.openGLESContextQueue", NULL);
+    
+    return self;
+}
+
 // Based on Colin Wheeler's example here: http://cocoasamurai.blogspot.com/2011/04/singletons-your-doing-them-wrong.html
 + (GPUImageOpenGLESContext *)sharedImageProcessingOpenGLESContext;
 {
@@ -116,8 +128,6 @@
         
         // Set up a few global settings for the image processing pipeline
         glDisable(GL_DEPTH_TEST);
-        
-        _contextQueue = dispatch_queue_create("com.sunsetlakesoftware.GPUImage.openGLESContextQueue", NULL);
     }
     
     return _context;
