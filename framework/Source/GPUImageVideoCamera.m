@@ -550,37 +550,39 @@
 
 - (void)setOutputImageOrientation:(UIInterfaceOrientation)newValue;
 {
-    _outputImageOrientation = newValue;
-    
-//    From the iOS 5.0 release notes:
-//    In previous iOS versions, the front-facing camera would always deliver buffers in AVCaptureVideoOrientationLandscapeLeft and the back-facing camera would always deliver buffers in AVCaptureVideoOrientationLandscapeRight.
-    
-    if ([self cameraPosition] == AVCaptureDevicePositionBack)
-    {
-        switch(_outputImageOrientation)
+    runSynchronouslyOnVideoProcessingQueue(^{
+        _outputImageOrientation = newValue;
+        
+        //    From the iOS 5.0 release notes:
+        //    In previous iOS versions, the front-facing camera would always deliver buffers in AVCaptureVideoOrientationLandscapeLeft and the back-facing camera would always deliver buffers in AVCaptureVideoOrientationLandscapeRight.
+        
+        if ([self cameraPosition] == AVCaptureDevicePositionBack)
         {
-            case UIInterfaceOrientationPortrait:outputRotation = kGPUImageRotateRight; break;
-            case UIInterfaceOrientationPortraitUpsideDown:outputRotation = kGPUImageRotateLeft; break;
-            case UIInterfaceOrientationLandscapeLeft:outputRotation = kGPUImageNoRotation; break;
-            case UIInterfaceOrientationLandscapeRight:outputRotation = kGPUImageRotate180; break;
+            switch(_outputImageOrientation)
+            {
+                case UIInterfaceOrientationPortrait:outputRotation = kGPUImageRotateRight; break;
+                case UIInterfaceOrientationPortraitUpsideDown:outputRotation = kGPUImageRotateLeft; break;
+                case UIInterfaceOrientationLandscapeLeft:outputRotation = kGPUImageNoRotation; break;
+                case UIInterfaceOrientationLandscapeRight:outputRotation = kGPUImageRotate180; break;
+            }
         }
-    }
-    else
-    {
-        switch(_outputImageOrientation)
+        else
         {
-            case UIInterfaceOrientationPortrait:outputRotation = kGPUImageRotateRight; break;
-            case UIInterfaceOrientationPortraitUpsideDown:outputRotation = kGPUImageRotateLeft; break;
-            case UIInterfaceOrientationLandscapeLeft:outputRotation = kGPUImageRotate180; break;
-            case UIInterfaceOrientationLandscapeRight:outputRotation = kGPUImageNoRotation; break;
+            switch(_outputImageOrientation)
+            {
+                case UIInterfaceOrientationPortrait:outputRotation = kGPUImageRotateRight; break;
+                case UIInterfaceOrientationPortraitUpsideDown:outputRotation = kGPUImageRotateLeft; break;
+                case UIInterfaceOrientationLandscapeLeft:outputRotation = kGPUImageRotate180; break;
+                case UIInterfaceOrientationLandscapeRight:outputRotation = kGPUImageNoRotation; break;
+            }
         }
-    }
-    
-    for (id<GPUImageInput> currentTarget in targets)
-    {
-        NSInteger indexOfObject = [targets indexOfObject:currentTarget];
-        [currentTarget setInputRotation:outputRotation atIndex:[[targetTextureIndices objectAtIndex:indexOfObject] integerValue]];
-    }
+        
+        for (id<GPUImageInput> currentTarget in targets)
+        {
+            NSInteger indexOfObject = [targets indexOfObject:currentTarget];
+            [currentTarget setInputRotation:outputRotation atIndex:[[targetTextureIndices objectAtIndex:indexOfObject] integerValue]];
+        }
+    });
 }
 
 @end
