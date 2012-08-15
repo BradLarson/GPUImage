@@ -6,6 +6,7 @@
 
 @synthesize context = _context;
 @synthesize currentShaderProgram = _currentShaderProgram;
+@synthesize contextQueue = _contextQueue;
 
 - (id)init;
 {
