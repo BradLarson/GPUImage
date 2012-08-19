@@ -118,3 +118,4 @@
 #import "GPUImageDivideBlendFilter.h"
 #import "GPUImagePolkaDotFilter.h"
 #import "GPUImageLocalBinaryPatternFilter.h"
+#import "GPUImageLanczosResamplingFilter.h"
