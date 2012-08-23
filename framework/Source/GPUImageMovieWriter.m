@@ -89,27 +89,30 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
         
         if ([GPUImageOpenGLESContext supportsFastTextureUpload])
         {
-            colorSwizzlingProgram = [[GLProgram alloc] initWithVertexShaderString:kGPUImageVertexShaderString fragmentShaderString:kGPUImagePassthroughFragmentShaderString];
+            colorSwizzlingProgram = [[GPUImageOpenGLESContext sharedImageProcessingOpenGLESContext] programForVertexShaderString:kGPUImageVertexShaderString fragmentShaderString:kGPUImagePassthroughFragmentShaderString];
         }
         else
         {
-            colorSwizzlingProgram = [[GLProgram alloc] initWithVertexShaderString:kGPUImageVertexShaderString fragmentShaderString:kGPUImageColorSwizzlingFragmentShaderString];
+            colorSwizzlingProgram = [[GPUImageOpenGLESContext sharedImageProcessingOpenGLESContext] programForVertexShaderString:kGPUImageVertexShaderString fragmentShaderString:kGPUImageColorSwizzlingFragmentShaderString];
         }
         
-        [colorSwizzlingProgram addAttribute:@"position"];
-        [colorSwizzlingProgram addAttribute:@"inputTextureCoordinate"];
-        
-        if (![colorSwizzlingProgram link])
+        if (!colorSwizzlingProgram.initialized)
         {
-            NSString *progLog = [colorSwizzlingProgram programLog];
-            NSLog(@"Program link log: %@", progLog); 
-            NSString *fragLog = [colorSwizzlingProgram fragmentShaderLog];
-            NSLog(@"Fragment shader compile log: %@", fragLog);
-            NSString *vertLog = [colorSwizzlingProgram vertexShaderLog];
-            NSLog(@"Vertex shader compile log: %@", vertLog);
-            colorSwizzlingProgram = nil;
-            NSAssert(NO, @"Filter shader link failed");
-        }
+            [colorSwizzlingProgram addAttribute:@"position"];
+            [colorSwizzlingProgram addAttribute:@"inputTextureCoordinate"];
+            
+            if (![colorSwizzlingProgram link])
+            {
+                NSString *progLog = [colorSwizzlingProgram programLog];
+                NSLog(@"Program link log: %@", progLog);
+                NSString *fragLog = [colorSwizzlingProgram fragmentShaderLog];
+                NSLog(@"Fragment shader compile log: %@", fragLog);
+                NSString *vertLog = [colorSwizzlingProgram vertexShaderLog];
+                NSLog(@"Vertex shader compile log: %@", vertLog);
+                colorSwizzlingProgram = nil;
+                NSAssert(NO, @"Filter shader link failed");
+            }
+        }        
         
         colorSwizzlingPositionAttribute = [colorSwizzlingProgram attributeIndex:@"position"];
         colorSwizzlingTextureCoordinateAttribute = [colorSwizzlingProgram attributeIndex:@"inputTextureCoordinate"];

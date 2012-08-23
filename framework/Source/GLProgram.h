@@ -15,6 +15,9 @@
 	vertShader, 
 	fragShader;	
 }
+
+@property(readwrite, nonatomic) BOOL initialized;
+
 - (id)initWithVertexShaderString:(NSString *)vShaderString 
             fragmentShaderString:(NSString *)fShaderString;
 - (id)initWithVertexShaderString:(NSString *)vShaderString 

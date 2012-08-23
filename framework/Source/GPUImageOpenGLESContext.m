@@ -2,6 +2,13 @@
 #import <OpenGLES/EAGLDrawable.h>
 #import <AVFoundation/AVFoundation.h>
 
+@interface GPUImageOpenGLESContext()
+{
+    NSMutableDictionary *shaderProgramCache;
+}
+
+@end
+
 @implementation GPUImageOpenGLESContext
 
 @synthesize context = _context;
@@ -16,6 +23,7 @@
     }
         
     _contextQueue = dispatch_queue_create("com.sunsetlakesoftware.GPUImage.openGLESContextQueue", NULL);
+    shaderProgramCache = [[NSMutableDictionary alloc] init];
     
     return self;
 }
@@ -103,6 +111,21 @@
 {
     [_context presentRenderbuffer:GL_RENDERBUFFER];
 }
+
+- (GLProgram *)programForVertexShaderString:(NSString *)vertexShaderString fragmentShaderString:(NSString *)fragmentShaderString;
+{
+    NSString *lookupKeyForShaderProgram = [NSString stringWithFormat:@"V: %@ - F: %@", vertexShaderString, fragmentShaderString];
+    GLProgram *programFromCache = [shaderProgramCache objectForKey:lookupKeyForShaderProgram];
+
+    if (programFromCache == nil)
+    {
+        programFromCache = [[GLProgram alloc] initWithVertexShaderString:vertexShaderString fragmentShaderString:fragmentShaderString];
+        [shaderProgramCache setObject:programFromCache forKey:lookupKeyForShaderProgram];
+    }
+    
+    return programFromCache;
+}
+
 
 #pragma mark -
 #pragma mark Manage fast texture upload

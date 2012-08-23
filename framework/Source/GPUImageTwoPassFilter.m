@@ -14,20 +14,24 @@
     
     runSynchronouslyOnVideoProcessingQueue(^{
         [GPUImageOpenGLESContext useImageProcessingContext];
-        secondFilterProgram = [[GLProgram alloc] initWithVertexShaderString:secondStageVertexShaderString fragmentShaderString:secondStageFragmentShaderString];
+
+        secondFilterProgram = [[GPUImageOpenGLESContext sharedImageProcessingOpenGLESContext] programForVertexShaderString:secondStageVertexShaderString fragmentShaderString:secondStageFragmentShaderString];
         
-        [self initializeAttributes];
-        
-        if (![secondFilterProgram link])
+        if (!secondFilterProgram.initialized)
         {
-            NSString *progLog = [secondFilterProgram programLog];
-            NSLog(@"Program link log: %@", progLog);
-            NSString *fragLog = [secondFilterProgram fragmentShaderLog];
-            NSLog(@"Fragment shader compile log: %@", fragLog);
-            NSString *vertLog = [secondFilterProgram vertexShaderLog];
-            NSLog(@"Vertex shader compile log: %@", vertLog);
-            filterProgram = nil;
-            NSAssert(NO, @"Filter shader link failed");
+            [self initializeAttributes];
+            
+            if (![secondFilterProgram link])
+            {
+                NSString *progLog = [secondFilterProgram programLog];
+                NSLog(@"Program link log: %@", progLog);
+                NSString *fragLog = [secondFilterProgram fragmentShaderLog];
+                NSLog(@"Fragment shader compile log: %@", fragLog);
+                NSString *vertLog = [secondFilterProgram vertexShaderLog];
+                NSLog(@"Vertex shader compile log: %@", vertLog);
+                filterProgram = nil;
+                NSAssert(NO, @"Filter shader link failed");
+            }
         }
         
         secondFilterPositionAttribute = [secondFilterProgram attributeIndex:@"position"];

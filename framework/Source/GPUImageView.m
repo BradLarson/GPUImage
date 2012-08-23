@@ -92,21 +92,23 @@
     runSynchronouslyOnVideoProcessingQueue(^{
         [GPUImageOpenGLESContext useImageProcessingContext];
         
-        displayProgram = [[GLProgram alloc] initWithVertexShaderString:kGPUImageVertexShaderString fragmentShaderString:kGPUImagePassthroughFragmentShaderString];
-
-        [displayProgram addAttribute:@"position"];
-        [displayProgram addAttribute:@"inputTextureCoordinate"];
-        
-        if (![displayProgram link])
+        displayProgram = [[GPUImageOpenGLESContext sharedImageProcessingOpenGLESContext] programForVertexShaderString:kGPUImageVertexShaderString fragmentShaderString:kGPUImagePassthroughFragmentShaderString];
+        if (!displayProgram.initialized)
         {
-            NSString *progLog = [displayProgram programLog];
-            NSLog(@"Program link log: %@", progLog); 
-            NSString *fragLog = [displayProgram fragmentShaderLog];
-            NSLog(@"Fragment shader compile log: %@", fragLog);
-            NSString *vertLog = [displayProgram vertexShaderLog];
-            NSLog(@"Vertex shader compile log: %@", vertLog);
-            displayProgram = nil;
-            NSAssert(NO, @"Filter shader link failed");
+            [displayProgram addAttribute:@"position"];
+            [displayProgram addAttribute:@"inputTextureCoordinate"];
+            
+            if (![displayProgram link])
+            {
+                NSString *progLog = [displayProgram programLog];
+                NSLog(@"Program link log: %@", progLog);
+                NSString *fragLog = [displayProgram fragmentShaderLog];
+                NSLog(@"Fragment shader compile log: %@", fragLog);
+                NSString *vertLog = [displayProgram vertexShaderLog];
+                NSLog(@"Vertex shader compile log: %@", vertLog);
+                displayProgram = nil;
+                NSAssert(NO, @"Filter shader link failed");
+            }
         }
         
         displayPositionAttribute = [displayProgram attributeIndex:@"position"];

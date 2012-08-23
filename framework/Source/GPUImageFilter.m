@@ -57,20 +57,24 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size);
     
     runSynchronouslyOnVideoProcessingQueue(^{
         [GPUImageOpenGLESContext useImageProcessingContext];
-        filterProgram = [[GLProgram alloc] initWithVertexShaderString:vertexShaderString fragmentShaderString:fragmentShaderString];
+
+        filterProgram = [[GPUImageOpenGLESContext sharedImageProcessingOpenGLESContext] programForVertexShaderString:vertexShaderString fragmentShaderString:fragmentShaderString];
         
-        [self initializeAttributes];
-        
-        if (![filterProgram link])
+        if (!filterProgram.initialized)
         {
-            NSString *progLog = [filterProgram programLog];
-            NSLog(@"Program link log: %@", progLog);
-            NSString *fragLog = [filterProgram fragmentShaderLog];
-            NSLog(@"Fragment shader compile log: %@", fragLog);
-            NSString *vertLog = [filterProgram vertexShaderLog];
-            NSLog(@"Vertex shader compile log: %@", vertLog);
-            filterProgram = nil;
-            NSAssert(NO, @"Filter shader link failed");
+            [self initializeAttributes];
+            
+            if (![filterProgram link])
+            {
+                NSString *progLog = [filterProgram programLog];
+                NSLog(@"Program link log: %@", progLog);
+                NSString *fragLog = [filterProgram fragmentShaderLog];
+                NSLog(@"Fragment shader compile log: %@", fragLog);
+                NSString *vertLog = [filterProgram vertexShaderLog];
+                NSLog(@"Vertex shader compile log: %@", vertLog);
+                filterProgram = nil;
+                NSAssert(NO, @"Filter shader link failed");
+            }
         }
         
         filterPositionAttribute = [filterProgram attributeIndex:@"position"];

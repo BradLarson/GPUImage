@@ -56,27 +56,30 @@
     [GPUImageOpenGLESContext useImageProcessingContext];
     if ( (outputBGRA && ![GPUImageOpenGLESContext supportsFastTextureUpload]) || (!outputBGRA && [GPUImageOpenGLESContext supportsFastTextureUpload]) )
     {
-        dataProgram = [[GLProgram alloc] initWithVertexShaderString:kGPUImageVertexShaderString fragmentShaderString:kGPUImageColorSwizzlingFragmentShaderString];
+        dataProgram = [[GPUImageOpenGLESContext sharedImageProcessingOpenGLESContext] programForVertexShaderString:kGPUImageVertexShaderString fragmentShaderString:kGPUImageColorSwizzlingFragmentShaderString];
     }
     else
     {
-        dataProgram = [[GLProgram alloc] initWithVertexShaderString:kGPUImageVertexShaderString fragmentShaderString:kGPUImagePassthroughFragmentShaderString];
-    }    
-    
-    [dataProgram addAttribute:@"position"];
-	[dataProgram addAttribute:@"inputTextureCoordinate"];
-    
-    if (![dataProgram link])
-	{
-		NSString *progLog = [dataProgram programLog];
-		NSLog(@"Program link log: %@", progLog); 
-		NSString *fragLog = [dataProgram fragmentShaderLog];
-		NSLog(@"Fragment shader compile log: %@", fragLog);
-		NSString *vertLog = [dataProgram vertexShaderLog];
-		NSLog(@"Vertex shader compile log: %@", vertLog);
-		dataProgram = nil;
-        NSAssert(NO, @"Filter shader link failed");
-	}
+        dataProgram = [[GPUImageOpenGLESContext sharedImageProcessingOpenGLESContext] programForVertexShaderString:kGPUImageVertexShaderString fragmentShaderString:kGPUImagePassthroughFragmentShaderString];
+    }
+ 
+    if (!dataProgram.initialized)
+    {
+        [dataProgram addAttribute:@"position"];
+        [dataProgram addAttribute:@"inputTextureCoordinate"];
+        
+        if (![dataProgram link])
+        {
+            NSString *progLog = [dataProgram programLog];
+            NSLog(@"Program link log: %@", progLog);
+            NSString *fragLog = [dataProgram fragmentShaderLog];
+            NSLog(@"Fragment shader compile log: %@", fragLog);
+            NSString *vertLog = [dataProgram vertexShaderLog];
+            NSLog(@"Vertex shader compile log: %@", vertLog);
+            dataProgram = nil;
+            NSAssert(NO, @"Filter shader link failed");
+        }
+    }
     
     dataPositionAttribute = [dataProgram attributeIndex:@"position"];
     dataTextureCoordinateAttribute = [dataProgram attributeIndex:@"inputTextureCoordinate"];

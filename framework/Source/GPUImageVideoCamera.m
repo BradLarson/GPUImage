@@ -517,8 +517,6 @@
                 audioInput = nil;
                 audioOutput = nil;
                 _microphone = nil;
-                dispatch_release(audioProcessingQueue);
-                audioProcessingQueue = NULL;
             }
         }
         else
