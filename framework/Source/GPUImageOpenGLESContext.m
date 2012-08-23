@@ -2,10 +2,31 @@
 #import <OpenGLES/EAGLDrawable.h>
 #import <AVFoundation/AVFoundation.h>
 
+@interface GPUImageOpenGLESContext()
+{
+    NSMutableDictionary *shaderProgramCache;
+}
+
+@end
+
 @implementation GPUImageOpenGLESContext
 
 @synthesize context = _context;
 @synthesize currentShaderProgram = _currentShaderProgram;
+@synthesize contextQueue = _contextQueue;
+
+- (id)init;
+{
+    if (!(self = [super init]))
+    {
+		return nil;
+    }
+        
+    _contextQueue = dispatch_queue_create("com.sunsetlakesoftware.GPUImage.openGLESContextQueue", NULL);
+    shaderProgramCache = [[NSMutableDictionary alloc] init];
+    
+    return self;
+}
 
 // Based on Colin Wheeler's example here: http://cocoasamurai.blogspot.com/2011/04/singletons-your-doing-them-wrong.html
 + (GPUImageOpenGLESContext *)sharedImageProcessingOpenGLESContext;
@@ -91,6 +112,21 @@
     [_context presentRenderbuffer:GL_RENDERBUFFER];
 }
 
+- (GLProgram *)programForVertexShaderString:(NSString *)vertexShaderString fragmentShaderString:(NSString *)fragmentShaderString;
+{
+    NSString *lookupKeyForShaderProgram = [NSString stringWithFormat:@"V: %@ - F: %@", vertexShaderString, fragmentShaderString];
+    GLProgram *programFromCache = [shaderProgramCache objectForKey:lookupKeyForShaderProgram];
+
+    if (programFromCache == nil)
+    {
+        programFromCache = [[GLProgram alloc] initWithVertexShaderString:vertexShaderString fragmentShaderString:fragmentShaderString];
+        [shaderProgramCache setObject:programFromCache forKey:lookupKeyForShaderProgram];
+    }
+    
+    return programFromCache;
+}
+
+
 #pragma mark -
 #pragma mark Manage fast texture upload
 
@@ -116,8 +152,6 @@
         
         // Set up a few global settings for the image processing pipeline
         glDisable(GL_DEPTH_TEST);
-        
-        _contextQueue = dispatch_queue_create("com.sunsetlakesoftware.GPUImage.openGLESContextQueue", NULL);
     }
     
     return _context;

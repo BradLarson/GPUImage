@@ -38,6 +38,7 @@
 
 - (void)renderByRotatingAroundX:(float)xRotation rotatingAroundY:(float)yRotation;
 - (void)convert3DTransform:(CATransform3D *)transform3D toMatrix:(GLfloat *)matrix;
+- (void)startCameraCapture;
 
 @end
 

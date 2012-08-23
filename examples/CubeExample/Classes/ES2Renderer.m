@@ -79,9 +79,6 @@ enum {
         
         [videoCamera addTarget:inputFilter];
         [inputFilter addTarget:textureOutput];
-        
-        [videoCamera startCameraCapture];
-
     }
 
     return self;
@@ -89,6 +86,11 @@ enum {
 
 - (void)renderByRotatingAroundX:(float)xRotation rotatingAroundY:(float)yRotation;
 {
+    if (!newFrameAvailableBlock)
+    {
+        return;
+    }
+    
     static const GLfloat cubeVertices[] = { 
         -1.0, -1.0, -1.0, // 0
         1.0,  1.0, -1.0, // 2
@@ -466,14 +468,23 @@ enum {
 	matrix[15] = (GLfloat)transform3D->m44;
 }
 
+- (void)startCameraCapture;
+{
+    [videoCamera startCameraCapture];
+}
+
 #pragma mark -
 #pragma mark GPUImageTextureOutputDelegate delegate method
 
 - (void)newFrameReadyFromTextureOutput:(GPUImageTextureOutput *)callbackTextureOutput;
 {
-    textureForCubeFace = callbackTextureOutput.texture;
-    
-    [self renderByRotatingAroundX:0.0 rotatingAroundY:0.0];
+    // Rotation in response to touch events is handled on the main thread, so to be safe we dispatch this on the main queue as well
+    // Nominally, I should create a dispatch queue just for the rendering within this application, but not today
+    dispatch_async(dispatch_get_main_queue(), ^{
+        textureForCubeFace = callbackTextureOutput.texture;
+        
+        [self renderByRotatingAroundX:0.0 rotatingAroundY:0.0];
+    });
 }
 
 @end

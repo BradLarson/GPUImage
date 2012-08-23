@@ -17,6 +17,7 @@
 	self.view = primaryView;
     
     [self setupDisplayFiltering];
+    [self setupImageResampling];
     [self setupImageFilteringToDisk];
 }
 
@@ -81,6 +82,8 @@
         
     // Do a simpler image filtering
     GPUImageSketchFilter *stillImageFilter2 = [[GPUImageSketchFilter alloc] init];
+//    GPUImageUnsharpMaskFilter *stillImageFilter2 = [[GPUImageUnsharpMaskFilter alloc] init];
+//    GPUImageSepiaFilter *stillImageFilter2 = [[GPUImageSepiaFilter alloc] init];
     UIImage *quickFilteredImage = [stillImageFilter2 imageByFilteringImage:inputImage];
 
     
@@ -99,7 +102,59 @@
     if (![dataForPNGFile2 writeToFile:[documentsDirectory stringByAppendingPathComponent:@"Lambeau-filtered2.png"] options:NSAtomicWrite error:&error])
     {
         return;
-    }    
+    }
+}
+
+- (void)setupImageResampling;
+{
+    UIImage *inputImage = [UIImage imageNamed:@"Lambeau.jpg"];
+    GPUImagePicture *stillImageSource = [[GPUImagePicture alloc] initWithImage:inputImage];
+    
+    // Linear downsampling
+    GPUImageBrightnessFilter *passthroughFilter = [[GPUImageBrightnessFilter alloc] init];
+    [passthroughFilter forceProcessingAtSize:CGSizeMake(640.0, 480.0)];
+    [stillImageSource addTarget:passthroughFilter];
+    [stillImageSource processImage];
+    UIImage *nearestNeighborImage = [passthroughFilter imageFromCurrentlyProcessedOutput];
+
+    // Lanczos downsampling
+    [stillImageSource removeAllTargets];
+    GPUImageLanczosResamplingFilter *lanczosResamplingFilter = [[GPUImageLanczosResamplingFilter alloc] init];
+    [lanczosResamplingFilter forceProcessingAtSize:CGSizeMake(640.0, 480.0)];
+    [stillImageSource addTarget:lanczosResamplingFilter];
+    [stillImageSource processImage];
+    UIImage *lanczosImage = [lanczosResamplingFilter imageFromCurrentlyProcessedOutput];
+    
+    // Trilinear downsampling
+    GPUImagePicture *stillImageSource2 = [[GPUImagePicture alloc] initWithImage:inputImage smoothlyScaleOutput:YES];
+    GPUImageBrightnessFilter *passthroughFilter2 = [[GPUImageBrightnessFilter alloc] init];
+    [passthroughFilter2 forceProcessingAtSize:CGSizeMake(640.0, 480.0)];
+    [stillImageSource2 addTarget:passthroughFilter2];
+    [stillImageSource2 processImage];
+    UIImage *trilinearImage = [passthroughFilter2 imageFromCurrentlyProcessedOutput];
+
+    NSData *dataForPNGFile1 = UIImagePNGRepresentation(nearestNeighborImage);
+    NSData *dataForPNGFile2 = UIImagePNGRepresentation(lanczosImage);
+    NSData *dataForPNGFile3 = UIImagePNGRepresentation(trilinearImage);
+    
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0];
+    
+    NSError *error = nil;
+    if (![dataForPNGFile1 writeToFile:[documentsDirectory stringByAppendingPathComponent:@"Lambeau-Resized-NN.png"] options:NSAtomicWrite error:&error])
+    {
+        return;
+    }
+
+    if (![dataForPNGFile2 writeToFile:[documentsDirectory stringByAppendingPathComponent:@"Lambeau-Resized-Lanczos.png"] options:NSAtomicWrite error:&error])
+    {
+        return;
+    }
+
+    if (![dataForPNGFile3 writeToFile:[documentsDirectory stringByAppendingPathComponent:@"Lambeau-Resized-Trilinear.png"] options:NSAtomicWrite error:&error])
+    {
+        return;
+    }
 }
 
 @end

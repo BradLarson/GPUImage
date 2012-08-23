@@ -67,10 +67,7 @@ NSString *const kGPUMonochromeFragmentShaderString = SHADER_STRING
 
 - (void)setColorRed:(GLfloat)redComponent green:(GLfloat)greenComponent blue:(GLfloat)blueComponent;
 {
-    GLfloat filterColor[3];
-    filterColor[0] = redComponent;
-    filterColor[1] = greenComponent;    
-    filterColor[2] = blueComponent;
+    GPUVector3 filterColor = {redComponent, greenComponent, blueComponent};
     
     [self setVec3:filterColor forUniform:filterColorUniform program:filterProgram];
 }

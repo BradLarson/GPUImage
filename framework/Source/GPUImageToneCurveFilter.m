@@ -32,8 +32,8 @@
 
 @synthesize rgbCompositeCurvePoints, redCurvePoints, greenCurvePoints, blueCurvePoints;
 
-- (id) initWithCurveFile:(NSString*)curveFile{
-    
+- (id) initWithCurveFile:(NSString*)curveFile
+{    
     self = [super init];
 	if (self != nil)
 	{
@@ -41,7 +41,8 @@
         
         NSFileHandle* file = [NSFileHandle fileHandleForReadingAtPath: bundleCurvePath];
         
-        if (file == nil){
+        if (file == nil)
+        {
             NSLog(@"Failed to open file");
             
             return self;
@@ -62,7 +63,8 @@
         
         float pointRate = (1.0 / 255);
         // The following is the data for each curve specified by count above
-        for (NSInteger x = 0; x<totalCurves; x++) {
+        for (NSInteger x = 0; x<totalCurves; x++)
+        {
             // 2 bytes, Count of points in the curve (short integer from 2...19)
             databuffer = [file readDataOfLength:2];            
             short pointCount = CFSwapInt16BigToHost(*(int*)([databuffer bytes]));
@@ -72,7 +74,8 @@
             // Curve points. Each curve point is a pair of short integers where 
             // the first number is the output value (vertical coordinate on the 
             // Curves dialog graph) and the second is the input value. All coordinates have range 0 to 255. 
-            for (NSInteger y = 0; y<pointCount; y++) {
+            for (NSInteger y = 0; y<pointCount; y++)
+            {
                 databuffer = [file readDataOfLength:2];
                 short y = CFSwapInt16BigToHost(*(int*)([databuffer bytes]));
                 databuffer = [file readDataOfLength:2];
@@ -378,38 +381,40 @@ NSString *const kGPUImageToneCurveFragmentShaderString = SHADER_STRING
 
 - (void)updateToneCurveTexture;
 {
-    [GPUImageOpenGLESContext useImageProcessingContext];
-    if (!toneCurveTexture)
-    {        
-        glActiveTexture(GL_TEXTURE3);
-        glGenTextures(1, &toneCurveTexture);
-        glBindTexture(GL_TEXTURE_2D, toneCurveTexture);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        
-        toneCurveByteArray = calloc(256 * 4, sizeof(GLubyte));
-    }
-    else
-    {
-        glActiveTexture(GL_TEXTURE3);
-        glBindTexture(GL_TEXTURE_2D, toneCurveTexture);
-    }
-    
-    if ( ([_redCurve count] >= 256) && ([_greenCurve count] >= 256) && ([_blueCurve count] >= 256) )
-    {
-        for (unsigned int currentCurveIndex = 0; currentCurveIndex < 256; currentCurveIndex++)
+    runSynchronouslyOnVideoProcessingQueue(^{
+        [GPUImageOpenGLESContext useImageProcessingContext];
+        if (!toneCurveTexture)
         {
-            // BGRA for upload to texture
-            toneCurveByteArray[currentCurveIndex * 4] = currentCurveIndex + [[_blueCurve objectAtIndex:currentCurveIndex] floatValue];
-            toneCurveByteArray[currentCurveIndex * 4 + 1] = currentCurveIndex + [[_greenCurve objectAtIndex:currentCurveIndex] floatValue];
-            toneCurveByteArray[currentCurveIndex * 4 + 2] = currentCurveIndex + [[_redCurve objectAtIndex:currentCurveIndex] floatValue];
-            toneCurveByteArray[currentCurveIndex * 4 + 3] = 255;
+            glActiveTexture(GL_TEXTURE3);
+            glGenTextures(1, &toneCurveTexture);
+            glBindTexture(GL_TEXTURE_2D, toneCurveTexture);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+            
+            toneCurveByteArray = calloc(256 * 4, sizeof(GLubyte));
+        }
+        else
+        {
+            glActiveTexture(GL_TEXTURE3);
+            glBindTexture(GL_TEXTURE_2D, toneCurveTexture);
         }
         
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 256 /*width*/, 1 /*height*/, 0, GL_BGRA, GL_UNSIGNED_BYTE, toneCurveByteArray);
-    }
+        if ( ([_redCurve count] >= 256) && ([_greenCurve count] >= 256) && ([_blueCurve count] >= 256) )
+        {
+            for (unsigned int currentCurveIndex = 0; currentCurveIndex < 256; currentCurveIndex++)
+            {
+                // BGRA for upload to texture
+                toneCurveByteArray[currentCurveIndex * 4] = currentCurveIndex + [[_blueCurve objectAtIndex:currentCurveIndex] floatValue];
+                toneCurveByteArray[currentCurveIndex * 4 + 1] = currentCurveIndex + [[_greenCurve objectAtIndex:currentCurveIndex] floatValue];
+                toneCurveByteArray[currentCurveIndex * 4 + 2] = currentCurveIndex + [[_redCurve objectAtIndex:currentCurveIndex] floatValue];
+                toneCurveByteArray[currentCurveIndex * 4 + 3] = 255;
+            }
+            
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 256 /*width*/, 1 /*height*/, 0, GL_BGRA, GL_UNSIGNED_BYTE, toneCurveByteArray);
+        }        
+    });
 }
 
 #pragma mark -

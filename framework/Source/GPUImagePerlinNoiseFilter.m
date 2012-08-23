@@ -134,14 +134,14 @@ NSString *const kGPUImagePerlinNoiseFragmentShaderString = SHADER_STRING
 {
     _colorStart = colorStart;
     
-    [self setVec4:(GLfloat *)&_colorStart forUniform:colorStartUniform program:filterProgram];
+    [self setVec4:_colorStart forUniform:colorStartUniform program:filterProgram];
 }
 
 - (void)setColorFinish:(GPUVector4)colorFinish 
 {
     _colorFinish = colorFinish;
 
-    [self setVec4:(GLfloat *)&_colorFinish forUniform:colorFinishUniform program:filterProgram];
+    [self setVec4:_colorFinish forUniform:colorFinishUniform program:filterProgram];
 }
 
 @end

@@ -45,11 +45,10 @@
     // For thumbnails smaller than the input video size, we currently need to make them render at a smaller size.
     // This is to avoid wasting processing time on larger frames than will be displayed.
     // You'll need to use -forceProcessingAtSize: with a zero size to re-enable full frame processing of video.
-    
     [filter1 forceProcessingAtSize:view2.sizeInPixels];
     [filter2 forceProcessingAtSize:view3.sizeInPixels];
     [filter3 forceProcessingAtSize:view4.sizeInPixels];
-    
+
     [videoCamera addTarget:view1];
     [videoCamera addTarget:filter1];
     [filter1 addTarget:view2];
@@ -57,7 +56,7 @@
     [filter2 addTarget:view3];
     [videoCamera addTarget:filter3];
     [filter3 addTarget:view4];
-    
+
     [videoCamera startCameraCapture];
 }
 
