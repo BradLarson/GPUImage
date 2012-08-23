@@ -110,6 +110,16 @@
     [_terminalFilter removeAllTargets];
 }
 
+- (void)setFrameProcessingCompletionBlock:(void (^)(GPUImageOutput *, CMTime))frameProcessingCompletionBlock;
+{
+    [_terminalFilter setFrameProcessingCompletionBlock:frameProcessingCompletionBlock];
+}
+
+- (void (^)(GPUImageOutput *, CMTime))frameProcessingCompletionBlock;
+{
+    return [_terminalFilter frameProcessingCompletionBlock];
+}
+
 #pragma mark -
 #pragma mark GPUImageInput protocol
 
