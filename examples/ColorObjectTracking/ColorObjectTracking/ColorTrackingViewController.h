@@ -10,6 +10,7 @@ typedef enum { PASSTHROUGH_VIDEO, SIMPLE_THRESHOLDING, POSITION_THRESHOLDING, OB
     GPUImageVideoCamera *videoCamera;
     GPUImageFilter *thresholdFilter, *positionFilter;
     GPUImageRawDataOutput *positionRawData, *videoRawData;
+    GPUImageAverageColor *positionAverageColor;
     GPUImageView *filteredVideoView;
     
     ColorTrackingDisplayMode displayMode;

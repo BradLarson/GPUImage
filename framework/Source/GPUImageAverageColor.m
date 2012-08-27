@@ -26,11 +26,9 @@ NSString *const kGPUImageColorAveragingVertexShaderString = SHADER_STRING
 
 NSString *const kGPUImageColorAveragingFragmentShaderString = SHADER_STRING
 (
- precision lowp float;
+ precision highp float;
  
  uniform sampler2D inputImageTexture;
- 
- uniform mediump mat3 convolutionMatrix;
  
  varying highp vec2 outputTextureCoordinate;
  
@@ -41,10 +39,10 @@ NSString *const kGPUImageColorAveragingFragmentShaderString = SHADER_STRING
  
  void main()
  {
-     mediump vec4 upperLeftColor = texture2D(inputImageTexture, upperLeftInputTextureCoordinate);
-     mediump vec4 upperRightColor = texture2D(inputImageTexture, upperRightInputTextureCoordinate);
-     mediump vec4 lowerLeftColor = texture2D(inputImageTexture, lowerLeftInputTextureCoordinate);
-     mediump vec4 lowerRightColor = texture2D(inputImageTexture, lowerRightInputTextureCoordinate);
+     highp vec4 upperLeftColor = texture2D(inputImageTexture, upperLeftInputTextureCoordinate);
+     highp vec4 upperRightColor = texture2D(inputImageTexture, upperRightInputTextureCoordinate);
+     highp vec4 lowerLeftColor = texture2D(inputImageTexture, lowerLeftInputTextureCoordinate);
+     highp vec4 lowerRightColor = texture2D(inputImageTexture, lowerRightInputTextureCoordinate);
      
      gl_FragColor = 0.25 * (upperLeftColor + upperRightColor + lowerLeftColor + lowerRightColor);
  }
@@ -104,9 +102,11 @@ NSString *const kGPUImageColorAveragingFragmentShaderString = SHADER_STRING
         {
 //            CGSize currentStageSize = CGSizeMake(ceil(inputTextureSize.width / pow(4.0, currentReduction + 1.0)), ceil(inputTextureSize.height / pow(4.0, currentReduction + 1.0)));
             CGSize currentStageSize = CGSizeMake(floor(inputTextureSize.width / pow(4.0, currentReduction + 1.0)), floor(inputTextureSize.height / pow(4.0, currentReduction + 1.0)));
-            if (currentStageSize.height < 2.0)
+            if ( (currentStageSize.height < 2.0) || (currentStageSize.width < 2.0) )
             {
-                currentStageSize.height = 2.0; // TODO: Rotate the image to account for this case, which causes FBO construction to fail
+                // A really small last stage seems to cause significant errors in the average, so I abort and leave the rest to the CPU at this point
+                break;
+//                currentStageSize.height = 2.0; // TODO: Rotate the image to account for this case, which causes FBO construction to fail
             }
             
             [stageSizes addObject:[NSValue valueWithCGSize:currentStageSize]];

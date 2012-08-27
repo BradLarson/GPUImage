@@ -70,7 +70,20 @@
     __unsafe_unretained ColorTrackingViewController *weakSelf = self;
     [positionRawData setNewFrameAvailableBlock:^{
         GLubyte *bytesForPositionData = positionRawData.rawBytesForImage;
-        CGPoint currentTrackingLocation = [weakSelf centroidFromTexture:bytesForPositionData ofSize:[positionRawData maximumOutputSize]];		
+        CGPoint currentTrackingLocation = [weakSelf centroidFromTexture:bytesForPositionData ofSize:[positionRawData maximumOutputSize]];
+//        NSLog(@"Centroid from CPU: %f, %f", currentTrackingLocation.x, currentTrackingLocation.y);
+        CGSize currentViewSize = weakSelf.view.bounds.size;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            trackingDot.position = CGPointMake(currentTrackingLocation.x * currentViewSize.width, currentTrackingLocation.y * currentViewSize.height);
+        });
+    }];
+    
+    positionAverageColor = [[GPUImageAverageColor alloc] init];
+    [positionAverageColor setColorAverageProcessingFinishedBlock:^(CGFloat redComponent, CGFloat greenComponent, CGFloat blueComponent, CGFloat alphaComponent, CMTime frameTime) {
+//        NSLog(@"GPU Average R: %f, G: %f, A: %f", redComponent, greenComponent, alphaComponent);
+        CGPoint currentTrackingLocation = CGPointMake(1.0 - (greenComponent / alphaComponent), (redComponent / alphaComponent));
+//        NSLog(@"Centroid from GPU: %f, %f", currentTrackingLocation.x, currentTrackingLocation.y);
+        //                NSLog(@"Average color: %f, %f, %f, %f", redComponent, greenComponent, blueComponent, alphaComponent);
         CGSize currentViewSize = weakSelf.view.bounds.size;
         dispatch_async(dispatch_get_main_queue(), ^{
             trackingDot.position = CGPointMake(currentTrackingLocation.x * currentViewSize.width, currentTrackingLocation.y * currentViewSize.height);
@@ -204,7 +217,8 @@
             {
                 [videoCamera addTarget:filteredVideoView];
                 [videoCamera addTarget:positionFilter];
-                [positionFilter addTarget:positionRawData];
+//                [positionFilter addTarget:positionRawData]; // Enable this for CPU-based centroid computation
+                [positionFilter addTarget:positionAverageColor]; // Enable this for GPU-based centroid computation
             }; break;
         }
     }    
@@ -235,6 +249,8 @@
             currentPixelTotal += (CGFloat)pixels[(currentPixel * 4) + 3] / 255.0f;
         }
     }
+    
+//    NSLog(@"CPU Average R: %f, G: %f, A: %f", currentXTotal / (textureSize.width * textureSize.height), currentYTotal / (textureSize.width * textureSize.height), currentPixelTotal / (textureSize.width * textureSize.height));
 	
 	return CGPointMake((1.0 - currentYTotal / currentPixelTotal), currentXTotal / currentPixelTotal);
 }
