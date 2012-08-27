@@ -128,13 +128,14 @@ NSString *const kGPUImageToneCurveFragmentShaderString = SHADER_STRING
     GLuint toneCurveTexture;
     GLubyte *toneCurveByteArray;
     
-    NSArray *_redCurve, *_greenCurve, *_blueCurve;
+    NSArray *_redCurve, *_greenCurve, *_blueCurve, *_rgbCompositeCurve;
 }
 
 @end
 
 @implementation GPUImageToneCurveFilter
 
+@synthesize rgbCompositeControlPoints = _rgbCompositeControlPoints;
 @synthesize redControlPoints = _redControlPoints;
 @synthesize greenControlPoints = _greenControlPoints;
 @synthesize blueControlPoints = _blueControlPoints;
@@ -151,7 +152,11 @@ NSString *const kGPUImageToneCurveFragmentShaderString = SHADER_STRING
     
     toneCurveTextureUniform = [filterProgram uniformIndex:@"toneCurveTexture"];    
     
-    [self setRGBControlPoints:[NSArray arrayWithObjects:[NSValue valueWithCGPoint:CGPointMake(0.0, 0.0)], [NSValue valueWithCGPoint:CGPointMake(0.5, 0.5)], [NSValue valueWithCGPoint:CGPointMake(1.0, 1.0)], nil]];
+    NSArray *defaultCurve = [NSArray arrayWithObjects:[NSValue valueWithCGPoint:CGPointMake(0.0, 0.0)], [NSValue valueWithCGPoint:CGPointMake(0.5, 0.5)], [NSValue valueWithCGPoint:CGPointMake(1.0, 1.0)], nil];
+    [self setRgbCompositeControlPoints:defaultCurve];
+    [self setRedControlPoints:defaultCurve];
+    [self setGreenControlPoints:defaultCurve];
+    [self setBlueControlPoints:defaultCurve];
     
     return self;
 }
@@ -168,6 +173,7 @@ NSString *const kGPUImageToneCurveFragmentShaderString = SHADER_STRING
     
     GPUImageACVFile *curve = [[GPUImageACVFile alloc] initWithCurveFile:curveFile];
 
+    [self setRgbCompositeControlPoints:curve.rgbCompositeCurvePoints];
     [self setRedControlPoints:curve.redCurvePoints];
     [self setGreenControlPoints:curve.greenCurvePoints];
     [self setBlueControlPoints:curve.blueCurvePoints];
@@ -181,6 +187,7 @@ NSString *const kGPUImageToneCurveFragmentShaderString = SHADER_STRING
 {
     GPUImageACVFile *curve = [[GPUImageACVFile alloc] initWithCurveFile:curveFile];
     
+    [self setRgbCompositeControlPoints:curve.rgbCompositeCurvePoints];
     [self setRedControlPoints:curve.redCurvePoints];
     [self setGreenControlPoints:curve.greenCurvePoints];
     [self setBlueControlPoints:curve.blueCurvePoints];
@@ -401,14 +408,14 @@ NSString *const kGPUImageToneCurveFragmentShaderString = SHADER_STRING
             glBindTexture(GL_TEXTURE_2D, toneCurveTexture);
         }
         
-        if ( ([_redCurve count] >= 256) && ([_greenCurve count] >= 256) && ([_blueCurve count] >= 256) )
+        if ( ([_redCurve count] >= 256) && ([_greenCurve count] >= 256) && ([_blueCurve count] >= 256) && ([_rgbCompositeCurve count] >= 256))
         {
             for (unsigned int currentCurveIndex = 0; currentCurveIndex < 256; currentCurveIndex++)
             {
                 // BGRA for upload to texture
-                toneCurveByteArray[currentCurveIndex * 4] = currentCurveIndex + [[_blueCurve objectAtIndex:currentCurveIndex] floatValue];
-                toneCurveByteArray[currentCurveIndex * 4 + 1] = currentCurveIndex + [[_greenCurve objectAtIndex:currentCurveIndex] floatValue];
-                toneCurveByteArray[currentCurveIndex * 4 + 2] = currentCurveIndex + [[_redCurve objectAtIndex:currentCurveIndex] floatValue];
+                toneCurveByteArray[currentCurveIndex * 4] = fmax(currentCurveIndex + [[_blueCurve objectAtIndex:currentCurveIndex] floatValue] + [[_rgbCompositeCurve objectAtIndex:currentCurveIndex] floatValue], 0);
+                toneCurveByteArray[currentCurveIndex * 4 + 1] = fmax(currentCurveIndex + [[_greenCurve objectAtIndex:currentCurveIndex] floatValue] + [[_rgbCompositeCurve objectAtIndex:currentCurveIndex] floatValue], 0);
+                toneCurveByteArray[currentCurveIndex * 4 + 2] = fmax(currentCurveIndex + [[_redCurve objectAtIndex:currentCurveIndex] floatValue] + [[_rgbCompositeCurve objectAtIndex:currentCurveIndex] floatValue], 0);
                 toneCurveByteArray[currentCurveIndex * 4 + 3] = 255;
             }
             
@@ -462,6 +469,15 @@ NSString *const kGPUImageToneCurveFragmentShaderString = SHADER_STRING
     _blueCurve = [self getPreparedSplineCurve:_blueControlPoints];
     
     [self updateToneCurveTexture];
+}
+
+
+- (void)setRgbCompositeControlPoints:(NSArray *)newValue
+{
+  _rgbCompositeControlPoints = [newValue copy];
+  _rgbCompositeCurve = [self getPreparedSplineCurve:_rgbCompositeControlPoints];
+  
+  [self updateToneCurveTexture];
 }
 
 
