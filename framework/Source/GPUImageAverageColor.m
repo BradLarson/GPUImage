@@ -180,7 +180,7 @@ NSString *const kGPUImageColorAveragingFragmentShaderString = SHADER_STRING
             
             CGSize currentFramebufferSize = [[stageSizes objectAtIndex:currentStage] CGSizeValue];
             
-            NSLog(@"FBO stage size: %f, %f", currentFramebufferSize.width, currentFramebufferSize.height);
+//            NSLog(@"FBO stage size: %f, %f", currentFramebufferSize.width, currentFramebufferSize.height);
             glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (int)currentFramebufferSize.width, (int)currentFramebufferSize.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
             glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, currentTexture, 0);
             GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);

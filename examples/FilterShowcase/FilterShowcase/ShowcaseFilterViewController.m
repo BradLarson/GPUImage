@@ -319,6 +319,13 @@
             
             filter = [[GPUImageAverageColor alloc] init];
         }; break;
+		case GPUIMAGE_LUMINOSITY:
+        {
+            self.title = @"Luminosity";
+            self.filterSettingsSlider.hidden = YES;
+            
+            filter = [[GPUImageLuminosity alloc] init];
+        }; break;
 		case GPUIMAGE_HISTOGRAM:
         {
             self.title = @"Histogram";
@@ -1188,7 +1195,18 @@
             
             [colorGenerator addTarget:filterView];
         }
-        else 
+        else if (filterType == GPUIMAGE_LUMINOSITY)
+        {
+            GPUImageSolidColorGenerator *colorGenerator = [[GPUImageSolidColorGenerator alloc] init];
+            [colorGenerator forceProcessingAtSize:[filterView sizeInPixels]];
+            
+            [(GPUImageLuminosity *)filter setLuminosityProcessingFinishedBlock:^(CGFloat luminosity, CMTime frameTime) {
+                [colorGenerator setColorRed:luminosity green:luminosity blue:luminosity alpha:1.0];
+            }];
+            
+            [colorGenerator addTarget:filterView];
+        }
+        else
         {
             [filter addTarget:filterView];
         }

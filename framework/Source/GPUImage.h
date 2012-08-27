@@ -121,3 +121,4 @@
 #import "GPUImageLanczosResamplingFilter.h"
 #import "GPUImageAverageColor.h"
 #import "GPUImageSolidColorGenerator.h"
+#import "GPUImageLuminosity.h"

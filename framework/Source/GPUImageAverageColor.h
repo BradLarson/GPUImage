@@ -1,5 +1,7 @@
 #import "GPUImageFilter.h"
 
+extern NSString *const kGPUImageColorAveragingVertexShaderString;
+
 @interface GPUImageAverageColor : GPUImageFilter
 {
     GLint texelWidthUniform, texelHeightUniform;

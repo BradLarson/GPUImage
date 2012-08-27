@@ -75,8 +75,15 @@
     [averageColor setColorAverageProcessingFinishedBlock:^(CGFloat redComponent, CGFloat greenComponent, CGFloat blueComponent, CGFloat alphaComponent, CMTime frameTime){
         NSLog(@"Red: %f, green: %f, blue: %f, alpha: %f", redComponent, greenComponent, blueComponent, alphaComponent);
     }];
+    
+    GPUImageLuminosity *averageLuminosity = [[GPUImageLuminosity alloc] init];
+    [averageLuminosity setLuminosityProcessingFinishedBlock:^(CGFloat luminosity, CMTime frameTime) {
+        NSLog(@"Luminosity: %f", luminosity);
+    }];
+    
     [chairPicture removeAllTargets];
     [chairPicture addTarget:averageColor];
+    [chairPicture addTarget:averageLuminosity];
     [chairPicture processImage];
 //    UIImage *lbpOutput = [lbpFilter imageFromCurrentlyProcessedOutput];
 //    [self saveImage:lbpOutput fileName:@"LocalBinaryPatterns.png"];
