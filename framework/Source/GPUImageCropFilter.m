@@ -229,6 +229,11 @@ NSString *const kGPUImageCropFragmentShaderString =  SHADER_STRING
 
 - (void)setCropRegion:(CGRect)newValue;
 {
+    NSParameterAssert(newValue.origin.x >= 0 && newValue.origin.x <= 1 &&
+                      newValue.origin.y >= 0 && newValue.origin.y <= 1 &&
+                      newValue.size.width >= 0 && newValue.size.width <= 1 &&
+                      newValue.size.height >= 0 && newValue.size.height <= 1);
+
     _cropRegion = newValue;
     [self calculateCropTextureCoordinates];
 }
