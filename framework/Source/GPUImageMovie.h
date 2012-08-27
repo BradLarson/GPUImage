@@ -5,14 +5,16 @@
 
 /** Source object for filtering movies
  */
-@interface GPUImageMovie : GPUImageOutput
+@interface GPUImageMovie : GPUImageOutput{
+}
 
 @property (readwrite, retain) AVAsset *asset;
 @property(readwrite, retain) NSURL *url;
-
 /** This enables the benchmarking mode, which logs out instantaneous and average frame times to the console
  */
 @property(readwrite, nonatomic) BOOL runBenchmark;
+
+@property(nonatomic, copy) void(^encodingProgressBlock)(float);
 
 /// @name Initialization and teardown
 - (id)initWithAsset:(AVAsset *)asset;
@@ -25,6 +27,6 @@
 - (void)readNextAudioSampleFromOutput:(AVAssetReaderTrackOutput *)readerAudioTrackOutput;
 - (void)startProcessing;
 - (void)endProcessing;
-- (void)processMovieFrame:(CMSampleBufferRef)movieSampleBuffer; 
+- (void)processMovieFrame:(CMSampleBufferRef)movieSampleBuffer;
 
 @end
