@@ -106,25 +106,21 @@ NSString *const kGPUImageLanczosFragmentShaderString = SHADER_STRING
 - (void)setupFilterForSize:(CGSize)filterFrameSize;
 {
     runSynchronouslyOnVideoProcessingQueue(^{
-        [GPUImageOpenGLESContext setActiveShaderProgram:filterProgram];
-        
         // The first pass through the framebuffer may rotate the inbound image, so need to account for that by changing up the kernel ordering for that pass
         if (GPUImageRotationSwapsWidthAndHeight(inputRotation))
         {
-            glUniform1f(verticalPassTexelWidthOffsetUniform, 1.0 / _originalImageSize.height);
-            glUniform1f(verticalPassTexelHeightOffsetUniform, 0.0);
+            verticalPassTexelWidthOffset = 1.0 / _originalImageSize.height;
+            verticalPassTexelHeightOffset = 0.0;
         }
         else
         {
-            glUniform1f(verticalPassTexelWidthOffsetUniform, 0.0);
-            glUniform1f(verticalPassTexelHeightOffsetUniform, 1.0 / _originalImageSize.height);
+            verticalPassTexelWidthOffset = 0.0;
+            verticalPassTexelHeightOffset = 1.0 / _originalImageSize.height;
         }
         
-        [GPUImageOpenGLESContext setActiveShaderProgram:secondFilterProgram];
-        glUniform1f(horizontalPassTexelWidthOffsetUniform, 1.0 / _originalImageSize.width);
-        glUniform1f(horizontalPassTexelHeightOffsetUniform, 0.0);
+        horizontalPassTexelWidthOffset = 1.0 / _originalImageSize.width;
+        horizontalPassTexelHeightOffset = 0.0;
     });
 }
-
 
 @end

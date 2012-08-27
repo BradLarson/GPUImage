@@ -67,6 +67,20 @@
     UIImage *lbpOutput = [lbpFilter imageFromCurrentlyProcessedOutput];
     [self saveImage:lbpOutput fileName:@"LocalBinaryPatterns.png"];
 
+    // Testing image color averaging
+    UIImage *chairImage = [UIImage imageNamed:@"ChairTest.png"];
+    GPUImagePicture *chairPicture = [[GPUImagePicture alloc] initWithImage:chairImage];
+
+    GPUImageAverageColor *averageColor = [[GPUImageAverageColor alloc] init];
+    [averageColor setColorAverageProcessingFinishedBlock:^(CGFloat redComponent, CGFloat greenComponent, CGFloat blueComponent, CGFloat alphaComponent, CMTime frameTime){
+        NSLog(@"Red: %f, green: %f, blue: %f, alpha: %f", redComponent, greenComponent, blueComponent, alphaComponent);
+    }];
+    [chairPicture removeAllTargets];
+    [chairPicture addTarget:averageColor];
+    [chairPicture processImage];
+//    UIImage *lbpOutput = [lbpFilter imageFromCurrentlyProcessedOutput];
+//    [self saveImage:lbpOutput fileName:@"LocalBinaryPatterns.png"];
+    
     return YES;
 }
 

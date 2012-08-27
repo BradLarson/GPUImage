@@ -119,3 +119,4 @@
 #import "GPUImagePolkaDotFilter.h"
 #import "GPUImageLocalBinaryPatternFilter.h"
 #import "GPUImageLanczosResamplingFilter.h"
+#import "GPUImageAverageColor.h"

@@ -352,7 +352,7 @@ To filter live video from an iOS device's camera, you can use code like the foll
 
 	// Add the view somewhere so it's visible
 
-	[videoCamera addTarget:thresholdFilter];
+	[videoCamera addTarget:customFilter];
 	[customFilter addTarget:filteredVideoView];
 
 	[videoCamera startCameraCapture];
