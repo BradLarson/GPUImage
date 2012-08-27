@@ -120,3 +120,4 @@
 #import "GPUImageLocalBinaryPatternFilter.h"
 #import "GPUImageLanczosResamplingFilter.h"
 #import "GPUImageAverageColor.h"
+#import "GPUImageSolidColorGenerator.h"

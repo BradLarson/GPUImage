@@ -312,6 +312,13 @@
             
             filter = [[GPUImageHazeFilter alloc] init];
         }; break;
+		case GPUIMAGE_AVERAGECOLOR:
+        {
+            self.title = @"Average Color";
+            self.filterSettingsSlider.hidden = YES;
+            
+            filter = [[GPUImageAverageColor alloc] init];
+        }; break;
 		case GPUIMAGE_HISTOGRAM:
         {
             self.title = @"Histogram";
@@ -1169,10 +1176,21 @@
             [blendFilter addTarget:filterView];
 
         }
+        else if (filterType == GPUIMAGE_AVERAGECOLOR)
+        {
+            GPUImageSolidColorGenerator *colorGenerator = [[GPUImageSolidColorGenerator alloc] init];
+            [colorGenerator forceProcessingAtSize:[filterView sizeInPixels]];
+            
+            [(GPUImageAverageColor *)filter setColorAverageProcessingFinishedBlock:^(CGFloat redComponent, CGFloat greenComponent, CGFloat blueComponent, CGFloat alphaComponent, CMTime frameTime) {
+                [colorGenerator setColorRed:redComponent green:greenComponent blue:blueComponent alpha:alphaComponent];
+//                NSLog(@"Average color: %f, %f, %f, %f", redComponent, greenComponent, blueComponent, alphaComponent);
+            }];
+            
+            [colorGenerator addTarget:filterView];
+        }
         else 
         {
             [filter addTarget:filterView];
-            
         }
     } 
 
