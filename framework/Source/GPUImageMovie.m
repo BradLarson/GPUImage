@@ -234,7 +234,11 @@
     CVImageBufferRef movieFrame = CMSampleBufferGetImageBuffer(movieSampleBuffer);
 
     int bufferHeight = CVPixelBufferGetHeight(movieFrame);
+#if TARGET_IPHONE_SIMULATOR
+    int bufferWidth = CVPixelBufferGetBytesPerRow(movieFrame) / 4; // This works around certain movie frame types on the Simulator (see https://github.com/BradLarson/GPUImage/issues/424)
+#else
     int bufferWidth = CVPixelBufferGetWidth(movieFrame);
+#endif
 
     CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
 

@@ -27,6 +27,8 @@
 //    videoCamera = [[GPUImageVideoCamera alloc] initWithSessionPreset:AVCaptureSessionPreset1920x1080 cameraPosition:AVCaptureDevicePositionBack];
 
     videoCamera.outputImageOrientation = UIInterfaceOrientationPortrait;
+    videoCamera.horizontallyMirrorFrontFacingCamera = NO;
+    videoCamera.horizontallyMirrorRearFacingCamera = YES;
 
     filter = [[GPUImageSepiaFilter alloc] init];
     
