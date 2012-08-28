@@ -1,4 +1,3 @@
-
 #import "GPUImageVideoCamera.h"
 #import "GPUImageMovieWriter.h"
 
@@ -255,6 +254,7 @@
         [_captureSession commitConfiguration];
     }
     
+    _inputCamera = backFacingCamera;
     [self setOutputImageOrientation:_outputImageOrientation];
 }
 
