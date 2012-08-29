@@ -148,7 +148,10 @@
     }
     
     [prevFilter removeAllTargets];
-    [prevFilter addTarget:self.output];
+
+    if (self.output != nil) {
+        [prevFilter addTarget:self.output];
+    }
 }
 
 - (UIImage *) currentFilteredFrame {
