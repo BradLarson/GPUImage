@@ -28,7 +28,7 @@
 
     videoCamera.outputImageOrientation = UIInterfaceOrientationPortrait;
     videoCamera.horizontallyMirrorFrontFacingCamera = NO;
-    videoCamera.horizontallyMirrorRearFacingCamera = YES;
+    videoCamera.horizontallyMirrorRearFacingCamera = NO;
 
     filter = [[GPUImageSepiaFilter alloc] init];
     
