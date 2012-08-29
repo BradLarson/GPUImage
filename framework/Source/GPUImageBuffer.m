@@ -70,14 +70,12 @@
         return;
     }
     
-    [GPUImageOpenGLESContext useImageProcessingContext];
+    [GPUImageOpenGLESContext setActiveShaderProgram:filterProgram];
     [self setFilterFBO];
     
     glBindTexture(GL_TEXTURE_2D, [[bufferedTextures lastObject] intValue]);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, [[bufferedTextures lastObject] intValue], 0);
-    
-    [filterProgram use];
-    
+        
     glClearColor(backgroundColorRed, backgroundColorGreen, backgroundColorBlue, backgroundColorAlpha);
     glClear(GL_COLOR_BUFFER_BIT);
     
@@ -160,6 +158,8 @@
             [self removeTexture:[lastTextureName intValue]];
         }
     }
+
+  _bufferSize = newValue;
 }
 
 @end

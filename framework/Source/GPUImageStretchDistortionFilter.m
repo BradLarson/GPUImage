@@ -64,17 +64,8 @@ NSString *const kGPUImageStretchDistortionFragmentShaderString = SHADER_STRING
 {
     _center = newValue;
     
-    [GPUImageOpenGLESContext useImageProcessingContext];
-    [filterProgram use];
-
     CGPoint rotatedPoint = [self rotatedPoint:_center forRotation:inputRotation];
-    
-    GLfloat centerPosition[2];
-    centerPosition[0] = rotatedPoint.x;
-    centerPosition[1] = rotatedPoint.y;
-    
-    glUniform2fv(centerUniform, 1, centerPosition);
+    [self setPoint:rotatedPoint forUniform:centerUniform program:filterProgram];
 }
-
 
 @end

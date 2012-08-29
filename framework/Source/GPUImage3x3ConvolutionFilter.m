@@ -71,10 +71,8 @@ NSString *const kGPUImage3x3ConvolutionFragmentShaderString = SHADER_STRING
 - (void)setConvolutionKernel:(GPUMatrix3x3)newValue;
 {
     _convolutionKernel = newValue;
-    [GPUImageOpenGLESContext useImageProcessingContext];
-    [filterProgram use];
     
-    glUniformMatrix3fv(convolutionMatrixUniform, 1, GL_FALSE, (GLfloat *)&_convolutionKernel);
+    [self setMatrix3f:_convolutionKernel forUniform:convolutionMatrixUniform program:filterProgram];
 }
 
 @end

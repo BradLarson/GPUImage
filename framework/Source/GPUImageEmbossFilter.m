@@ -29,9 +29,6 @@
     
     _intensity = newValue;
     
-    [GPUImageOpenGLESContext useImageProcessingContext];
-    [filterProgram use];
-    
     GPUMatrix3x3 newConvolutionMatrix;
     newConvolutionMatrix.one.one = _intensity * (-2.0);
     newConvolutionMatrix.one.two = -_intensity;    

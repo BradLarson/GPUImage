@@ -3,7 +3,7 @@
 @interface GPUImageTransformFilter : GPUImageFilter
 {
     GLint transformMatrixUniform, orthographicMatrixUniform;
-    GLfloat orthographicMatrix[16];
+    GPUMatrix4x4 orthographicMatrix;
 }
 
 // You can either set the transform to apply to be a 2-D affine transform or a 3-D transform. The default is the identity transform (the output image is identical to the input).

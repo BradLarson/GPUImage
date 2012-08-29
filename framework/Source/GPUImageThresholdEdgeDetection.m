@@ -70,9 +70,7 @@ NSString *const kGPUImageThresholdEdgeDetectionFragmentShaderString = SHADER_STR
 {
     _threshold = newValue;
     
-    [GPUImageOpenGLESContext useImageProcessingContext];
-    [secondFilterProgram use];
-    glUniform1f(thresholdUniform, _threshold);
+    [self setFloat:_threshold forUniform:thresholdUniform program:secondFilterProgram];
 }
 
 @end

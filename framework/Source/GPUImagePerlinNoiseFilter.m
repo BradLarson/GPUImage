@@ -127,27 +127,21 @@ NSString *const kGPUImagePerlinNoiseFragmentShaderString = SHADER_STRING
 {
     _scale = scale;
     
-    [GPUImageOpenGLESContext useImageProcessingContext];
-    [filterProgram use];
-    glUniform1f(scaleUniform, _scale);
+    [self setFloat:_scale forUniform:scaleUniform program:filterProgram];
 }
 
 - (void)setColorStart:(GPUVector4)colorStart 
 {
     _colorStart = colorStart;
     
-    [GPUImageOpenGLESContext useImageProcessingContext];
-    [filterProgram use];
-    glUniform4f(colorStartUniform, _colorStart.one, _colorStart.two, _colorStart.three, _colorStart.four);
+    [self setVec4:_colorStart forUniform:colorStartUniform program:filterProgram];
 }
 
 - (void)setColorFinish:(GPUVector4)colorFinish 
 {
     _colorFinish = colorFinish;
-    
-    [GPUImageOpenGLESContext useImageProcessingContext];
-    [filterProgram use];
-    glUniform4f(colorFinishUniform, _colorFinish.one, _colorFinish.two, _colorFinish.three, _colorFinish.four);
+
+    [self setVec4:_colorFinish forUniform:colorFinishUniform program:filterProgram];
 }
 
 @end

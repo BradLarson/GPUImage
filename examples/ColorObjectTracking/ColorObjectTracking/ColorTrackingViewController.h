@@ -10,6 +10,7 @@ typedef enum { PASSTHROUGH_VIDEO, SIMPLE_THRESHOLDING, POSITION_THRESHOLDING, OB
     GPUImageVideoCamera *videoCamera;
     GPUImageFilter *thresholdFilter, *positionFilter;
     GPUImageRawDataOutput *positionRawData, *videoRawData;
+    GPUImageAverageColor *positionAverageColor;
     GPUImageView *filteredVideoView;
     
     ColorTrackingDisplayMode displayMode;
@@ -17,7 +18,7 @@ typedef enum { PASSTHROUGH_VIDEO, SIMPLE_THRESHOLDING, POSITION_THRESHOLDING, OB
 	BOOL shouldReplaceThresholdColor;
 	CGPoint currentTouchPoint;
 	GLfloat thresholdSensitivity;
-	GLfloat thresholdColor[3];
+	GPUVector3 thresholdColor;
 }
 
 - (void)configureVideoFiltering;

@@ -75,7 +75,7 @@ NSString *const kGPUImageUnsharpMaskFragmentShaderString = SHADER_STRING
 - (void)setIntensity:(CGFloat)newValue;
 {
     _intensity = newValue;
-    [unsharpMaskFilter setFloat:newValue forUniform:@"intensity"];
+    [unsharpMaskFilter setFloat:newValue forUniformName:@"intensity"];
 }
 
 @end

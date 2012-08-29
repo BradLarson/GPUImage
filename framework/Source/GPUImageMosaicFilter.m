@@ -75,17 +75,20 @@ NSString *const kGPUImageMosaicFragmentShaderString = SHADER_STRING
     return self;
 }
 
--(void)setColorOn:(BOOL)yes {
+- (void)setColorOn:(BOOL)yes
+{
     glUniform1i(colorOnUniform, yes);
 }
 
--(void)setNumTiles:(float)numTiles {
+- (void)setNumTiles:(float)numTiles
+{
 
     _numTiles = numTiles;
-    [self setFloat:_numTiles forUniform:@"numTiles"];
+    [self setFloat:_numTiles forUniformName:@"numTiles"];
 }
 
--(void)setInputTileSize:(CGSize)inputTileSize {
+- (void)setInputTileSize:(CGSize)inputTileSize
+{
     if (inputTileSize.width > 1.0) {
         _inputTileSize.width = 1.0;
     } 
@@ -102,15 +105,11 @@ NSString *const kGPUImageMosaicFragmentShaderString = SHADER_STRING
     
     _inputTileSize = inputTileSize;
     
-    [GPUImageOpenGLESContext useImageProcessingContext];
-    [filterProgram use];
-    GLfloat inputTS[2];
-    inputTS[0] = _inputTileSize.width;
-    inputTS[1] = _inputTileSize.height;
-    glUniform2fv(inputTileSizeUniform, 1, inputTS);
+    [self setSize:_inputTileSize forUniform:inputTileSizeUniform program:filterProgram];    
 }
 
--(void)setDisplayTileSize:(CGSize)displayTileSize {
+-(void)setDisplayTileSize:(CGSize)displayTileSize
+{
     if (displayTileSize.width > 1.0) {
         _displayTileSize.width = 1.0;
     } 
@@ -127,18 +126,11 @@ NSString *const kGPUImageMosaicFragmentShaderString = SHADER_STRING
     
     _displayTileSize = displayTileSize;
     
-    [GPUImageOpenGLESContext useImageProcessingContext];
-    [filterProgram use];
-    GLfloat displayTS[2];
-    displayTS[0] = _displayTileSize.width;
-    displayTS[1] = _displayTileSize.height;
-    glUniform2fv(displayTileSizeUniform, 1, displayTS);
+    [self setSize:_displayTileSize forUniform:displayTileSizeUniform program:filterProgram];
 }
 
-
-
--(void)setTileSet:(NSString *)tileSet {
-    
+-(void)setTileSet:(NSString *)tileSet
+{    
     UIImage *img = [UIImage imageNamed:tileSet];
     pic = [[GPUImagePicture alloc] initWithImage:img smoothlyScaleOutput:YES];
     [pic addTarget:self];

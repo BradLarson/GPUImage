@@ -23,6 +23,8 @@ typedef enum {
  */
 @property(readonly, nonatomic) CGSize sizeInPixels;
 
+@property(nonatomic) BOOL enabled;
+
 /** Handling fill mode
  
  @param redComponent Red component for background color

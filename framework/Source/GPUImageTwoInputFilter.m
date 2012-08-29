@@ -41,9 +41,7 @@ NSString *const kGPUImageTwoInputTextureVertexShaderString = SHADER_STRING
     }
     
     inputRotation2 = kGPUImageNoRotation;
-    filterSecondTextureCoordinateAttribute = [filterProgram attributeIndex:@"inputTextureCoordinate2"];
-    filterInputTextureUniform2 = [filterProgram uniformIndex:@"inputImageTexture2"]; // This does assume a name of "inputImageTexture2" for second input texture in the fragment shader
-
+    
     hasSetFirstTexture = NO;
     
     hasReceivedFirstFrame = NO;
@@ -53,9 +51,15 @@ NSString *const kGPUImageTwoInputTextureVertexShaderString = SHADER_STRING
     
     firstFrameTime = kCMTimeInvalid;
     secondFrameTime = kCMTimeInvalid;
+        
+    runSynchronouslyOnVideoProcessingQueue(^{
+        [GPUImageOpenGLESContext useImageProcessingContext];
+        filterSecondTextureCoordinateAttribute = [filterProgram attributeIndex:@"inputTextureCoordinate2"];
+        
+        filterInputTextureUniform2 = [filterProgram uniformIndex:@"inputImageTexture2"]; // This does assume a name of "inputImageTexture2" for second input texture in the fragment shader
+        glEnableVertexAttribArray(filterSecondTextureCoordinateAttribute);
+    });
     
-	glEnableVertexAttribArray(filterSecondTextureCoordinateAttribute);
-
     return self;
 }
 
@@ -76,10 +80,10 @@ NSString *const kGPUImageTwoInputTextureVertexShaderString = SHADER_STRING
         return;
     }
     
-    [GPUImageOpenGLESContext useImageProcessingContext];
+    [GPUImageOpenGLESContext setActiveShaderProgram:filterProgram];
+    [self setUniformsForProgramAtIndex:0];
+
     [self setFilterFBO];
-    
-    [filterProgram use];
     
     glClearColor(backgroundColorRed, backgroundColorGreen, backgroundColorBlue, backgroundColorAlpha);
     glClear(GL_COLOR_BUFFER_BIT);

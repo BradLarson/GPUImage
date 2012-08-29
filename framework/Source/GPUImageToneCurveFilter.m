@@ -4,10 +4,6 @@
 #pragma mark GPUImageACVFile Helper
 
 //  GPUImageACVFile
-//  Snapp
-//
-//  Created by Omer Duzyol on 7/15/12.
-//  Copyright (c) 2012 Creaworks Interactive. All rights reserved.
 //
 //  ACV File format Parser
 //  Please refer to http://www.adobe.com/devnet-apps/photoshop/fileformatashtml/PhotoshopFileFormats.htm#50577411_pgfId-1056330
@@ -36,8 +32,8 @@
 
 @synthesize rgbCompositeCurvePoints, redCurvePoints, greenCurvePoints, blueCurvePoints;
 
-- (id) initWithCurveFile:(NSString*)curveFile{
-    
+- (id) initWithCurveFile:(NSString*)curveFile
+{    
     self = [super init];
 	if (self != nil)
 	{
@@ -45,7 +41,8 @@
         
         NSFileHandle* file = [NSFileHandle fileHandleForReadingAtPath: bundleCurvePath];
         
-        if (file == nil){
+        if (file == nil)
+        {
             NSLog(@"Failed to open file");
             
             return self;
@@ -66,7 +63,8 @@
         
         float pointRate = (1.0 / 255);
         // The following is the data for each curve specified by count above
-        for (NSInteger x = 0; x<totalCurves; x++) {
+        for (NSInteger x = 0; x<totalCurves; x++)
+        {
             // 2 bytes, Count of points in the curve (short integer from 2...19)
             databuffer = [file readDataOfLength:2];            
             short pointCount = CFSwapInt16BigToHost(*(int*)([databuffer bytes]));
@@ -76,7 +74,8 @@
             // Curve points. Each curve point is a pair of short integers where 
             // the first number is the output value (vertical coordinate on the 
             // Curves dialog graph) and the second is the input value. All coordinates have range 0 to 255. 
-            for (NSInteger y = 0; y<pointCount; y++) {
+            for (NSInteger y = 0; y<pointCount; y++)
+            {
                 databuffer = [file readDataOfLength:2];
                 short y = CFSwapInt16BigToHost(*(int*)([databuffer bytes]));
                 databuffer = [file readDataOfLength:2];
@@ -129,13 +128,14 @@ NSString *const kGPUImageToneCurveFragmentShaderString = SHADER_STRING
     GLuint toneCurveTexture;
     GLubyte *toneCurveByteArray;
     
-    NSArray *_redCurve, *_greenCurve, *_blueCurve;
+    NSArray *_redCurve, *_greenCurve, *_blueCurve, *_rgbCompositeCurve;
 }
 
 @end
 
 @implementation GPUImageToneCurveFilter
 
+@synthesize rgbCompositeControlPoints = _rgbCompositeControlPoints;
 @synthesize redControlPoints = _redControlPoints;
 @synthesize greenControlPoints = _greenControlPoints;
 @synthesize blueControlPoints = _blueControlPoints;
@@ -152,11 +152,16 @@ NSString *const kGPUImageToneCurveFragmentShaderString = SHADER_STRING
     
     toneCurveTextureUniform = [filterProgram uniformIndex:@"toneCurveTexture"];    
     
-    [self setRGBControlPoints:[NSArray arrayWithObjects:[NSValue valueWithCGPoint:CGPointMake(0.0, 0.0)], [NSValue valueWithCGPoint:CGPointMake(0.5, 0.5)], [NSValue valueWithCGPoint:CGPointMake(1.0, 1.0)], nil]];
+    NSArray *defaultCurve = [NSArray arrayWithObjects:[NSValue valueWithCGPoint:CGPointMake(0.0, 0.0)], [NSValue valueWithCGPoint:CGPointMake(0.5, 0.5)], [NSValue valueWithCGPoint:CGPointMake(1.0, 1.0)], nil];
+    [self setRgbCompositeControlPoints:defaultCurve];
+    [self setRedControlPoints:defaultCurve];
+    [self setGreenControlPoints:defaultCurve];
+    [self setBlueControlPoints:defaultCurve];
     
     return self;
 }
 
+// This pulls in Adobe ACV curve files to specify the tone curve
 - (id)initWithACV:(NSString*)curveFile
 {
     if (!(self = [super initWithFragmentShaderFromString:kGPUImageToneCurveFragmentShaderString]))
@@ -168,6 +173,7 @@ NSString *const kGPUImageToneCurveFragmentShaderString = SHADER_STRING
     
     GPUImageACVFile *curve = [[GPUImageACVFile alloc] initWithCurveFile:curveFile];
 
+    [self setRgbCompositeControlPoints:curve.rgbCompositeCurvePoints];
     [self setRedControlPoints:curve.redCurvePoints];
     [self setGreenControlPoints:curve.greenCurvePoints];
     [self setBlueControlPoints:curve.blueCurvePoints];
@@ -181,6 +187,7 @@ NSString *const kGPUImageToneCurveFragmentShaderString = SHADER_STRING
 {
     GPUImageACVFile *curve = [[GPUImageACVFile alloc] initWithCurveFile:curveFile];
     
+    [self setRgbCompositeControlPoints:curve.rgbCompositeCurvePoints];
     [self setRedControlPoints:curve.redCurvePoints];
     [self setGreenControlPoints:curve.greenCurvePoints];
     [self setBlueControlPoints:curve.blueCurvePoints];
@@ -222,8 +229,22 @@ NSString *const kGPUImageToneCurveFragmentShaderString = SHADER_STRING
             [convertedPoints addObject:[NSValue valueWithCGPoint:point]];
         }
         
-        NSArray *splinePoints = [self splineCurve:convertedPoints];
-                
+        
+        NSMutableArray *splinePoints = [self splineCurve:convertedPoints];
+        
+        // If we have a first point like (0.3, 0) we'll be missing some points at the beginning
+        // that should be 0.
+        CGPoint firstSplinePoint = [[splinePoints objectAtIndex:0] CGPointValue];
+        
+        if (firstSplinePoint.x > 0) {
+            for (int i=0; i <=firstSplinePoint.x; i++) {
+                CGPoint newCGPoint = CGPointMake(0, 0);
+                [splinePoints insertObject:[NSValue valueWithCGPoint:newCGPoint] atIndex:0];
+            }
+        }
+        
+        
+        // Prepare the spline points.
         NSMutableArray *preparedSplinePoints = [NSMutableArray arrayWithCapacity:[splinePoints count]];
         for (int i=0; i<[splinePoints count]; i++) 
         {
@@ -247,9 +268,9 @@ NSString *const kGPUImageToneCurveFragmentShaderString = SHADER_STRING
 }
 
 
-- (NSArray *)splineCurve:(NSArray *)points
+- (NSMutableArray *)splineCurve:(NSArray *)points
 {
-    NSArray *sdA = [self secondDerivative:points];
+    NSMutableArray *sdA = [self secondDerivative:points];
     
     // Is [points count] equal to [sdA count]?
 //    int n = [points count];
@@ -270,7 +291,7 @@ NSString *const kGPUImageToneCurveFragmentShaderString = SHADER_STRING
         CGPoint cur = [[points objectAtIndex:i] CGPointValue];
         CGPoint next = [[points objectAtIndex:(i+1)] CGPointValue];
         
-        for(int x=cur.x;x<next.x;x++) 
+        for(int x=cur.x;x<(int)next.x;x++) 
         {
             double t = (double)(x-cur.x)/(next.x-cur.x);
             
@@ -300,7 +321,7 @@ NSString *const kGPUImageToneCurveFragmentShaderString = SHADER_STRING
     return output;
 }
 
-- (NSArray *)secondDerivative:(NSArray *)points
+- (NSMutableArray *)secondDerivative:(NSArray *)points
 {
     int n = [points count];
     if ((n <= 0) || (n == 1))
@@ -367,38 +388,40 @@ NSString *const kGPUImageToneCurveFragmentShaderString = SHADER_STRING
 
 - (void)updateToneCurveTexture;
 {
-    [GPUImageOpenGLESContext useImageProcessingContext];
-    if (!toneCurveTexture)
-    {        
-        glActiveTexture(GL_TEXTURE3);
-        glGenTextures(1, &toneCurveTexture);
-        glBindTexture(GL_TEXTURE_2D, toneCurveTexture);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        
-        toneCurveByteArray = calloc(256 * 4, sizeof(GLubyte));
-    }
-    else
-    {
-        glActiveTexture(GL_TEXTURE3);
-        glBindTexture(GL_TEXTURE_2D, toneCurveTexture);
-    }
-    
-    if ( ([_redCurve count] >= 256) && ([_greenCurve count] >= 256) && ([_blueCurve count] >= 256) )
-    {
-        for (unsigned int currentCurveIndex = 0; currentCurveIndex < 256; currentCurveIndex++)
+    runSynchronouslyOnVideoProcessingQueue(^{
+        [GPUImageOpenGLESContext useImageProcessingContext];
+        if (!toneCurveTexture)
         {
-            // BGRA for upload to texture
-            toneCurveByteArray[currentCurveIndex * 4] = currentCurveIndex + [[_blueCurve objectAtIndex:currentCurveIndex] floatValue];
-            toneCurveByteArray[currentCurveIndex * 4 + 1] = currentCurveIndex + [[_greenCurve objectAtIndex:currentCurveIndex] floatValue];
-            toneCurveByteArray[currentCurveIndex * 4 + 2] = currentCurveIndex + [[_redCurve objectAtIndex:currentCurveIndex] floatValue];
-            toneCurveByteArray[currentCurveIndex * 4 + 3] = 255;
+            glActiveTexture(GL_TEXTURE3);
+            glGenTextures(1, &toneCurveTexture);
+            glBindTexture(GL_TEXTURE_2D, toneCurveTexture);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+            
+            toneCurveByteArray = calloc(256 * 4, sizeof(GLubyte));
+        }
+        else
+        {
+            glActiveTexture(GL_TEXTURE3);
+            glBindTexture(GL_TEXTURE_2D, toneCurveTexture);
         }
         
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 256 /*width*/, 1 /*height*/, 0, GL_BGRA, GL_UNSIGNED_BYTE, toneCurveByteArray);
-    }
+        if ( ([_redCurve count] >= 256) && ([_greenCurve count] >= 256) && ([_blueCurve count] >= 256) && ([_rgbCompositeCurve count] >= 256))
+        {
+            for (unsigned int currentCurveIndex = 0; currentCurveIndex < 256; currentCurveIndex++)
+            {
+                // BGRA for upload to texture
+                toneCurveByteArray[currentCurveIndex * 4] = fmax(currentCurveIndex + [[_blueCurve objectAtIndex:currentCurveIndex] floatValue] + [[_rgbCompositeCurve objectAtIndex:currentCurveIndex] floatValue], 0);
+                toneCurveByteArray[currentCurveIndex * 4 + 1] = fmax(currentCurveIndex + [[_greenCurve objectAtIndex:currentCurveIndex] floatValue] + [[_rgbCompositeCurve objectAtIndex:currentCurveIndex] floatValue], 0);
+                toneCurveByteArray[currentCurveIndex * 4 + 2] = fmax(currentCurveIndex + [[_redCurve objectAtIndex:currentCurveIndex] floatValue] + [[_rgbCompositeCurve objectAtIndex:currentCurveIndex] floatValue], 0);
+                toneCurveByteArray[currentCurveIndex * 4 + 3] = 255;
+            }
+            
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 256 /*width*/, 1 /*height*/, 0, GL_BGRA, GL_UNSIGNED_BYTE, toneCurveByteArray);
+        }        
+    });
 }
 
 #pragma mark -
@@ -411,10 +434,8 @@ NSString *const kGPUImageToneCurveFragmentShaderString = SHADER_STRING
         return;
     }
     
-    [GPUImageOpenGLESContext useImageProcessingContext];
+    [GPUImageOpenGLESContext setActiveShaderProgram:filterProgram];
     [self setFilterFBO];
-    
-    [filterProgram use];
     
     glClearColor(backgroundColorRed, backgroundColorGreen, backgroundColorBlue, backgroundColorAlpha);
     glClear(GL_COLOR_BUFFER_BIT);
@@ -448,6 +469,15 @@ NSString *const kGPUImageToneCurveFragmentShaderString = SHADER_STRING
     _blueCurve = [self getPreparedSplineCurve:_blueControlPoints];
     
     [self updateToneCurveTexture];
+}
+
+
+- (void)setRgbCompositeControlPoints:(NSArray *)newValue
+{
+  _rgbCompositeControlPoints = [newValue copy];
+  _rgbCompositeCurve = [self getPreparedSplineCurve:_rgbCompositeControlPoints];
+  
+  [self updateToneCurveTexture];
 }
 
 

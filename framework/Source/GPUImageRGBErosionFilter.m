@@ -4,7 +4,7 @@
 // Radius 1
 NSString *const kGPUImageRGBErosionRadiusOneFragmentShaderString = SHADER_STRING
 (
- precision lowp float;
+ precision highp float;
  
  varying vec2 centerTextureCoordinate;
  varying vec2 oneStepPositiveTextureCoordinate;
@@ -14,21 +14,20 @@ NSString *const kGPUImageRGBErosionRadiusOneFragmentShaderString = SHADER_STRING
  
  void main()
  {
-     vec4 centerIntensity = texture2D(inputImageTexture, centerTextureCoordinate);
-     vec3 oneStepPositiveIntensity = texture2D(inputImageTexture, oneStepPositiveTextureCoordinate).rgb;
-     vec3 oneStepNegativeIntensity = texture2D(inputImageTexture, oneStepNegativeTextureCoordinate).rgb;
+     lowp vec4 centerIntensity = texture2D(inputImageTexture, centerTextureCoordinate);
+     lowp vec4 oneStepPositiveIntensity = texture2D(inputImageTexture, oneStepPositiveTextureCoordinate);
+     lowp vec4 oneStepNegativeIntensity = texture2D(inputImageTexture, oneStepNegativeTextureCoordinate);
      
-     lowp vec3 minValue = min(centerIntensity.rgb, oneStepPositiveIntensity);
-     minValue = min(minValue, oneStepNegativeIntensity);
+     lowp vec4 minValue = min(centerIntensity, oneStepPositiveIntensity);
      
-     gl_FragColor = vec4(minValue, centerIntensity.a);
+     gl_FragColor = min(minValue, oneStepNegativeIntensity);
  }
 );
 
 // Radius 2
 NSString *const kGPUImageRGBErosionRadiusTwoFragmentShaderString = SHADER_STRING
 (
- precision lowp float;
+ precision highp float;
  
  varying vec2 centerTextureCoordinate;
  varying vec2 oneStepPositiveTextureCoordinate;
@@ -40,25 +39,24 @@ NSString *const kGPUImageRGBErosionRadiusTwoFragmentShaderString = SHADER_STRING
  
  void main()
  {
-     vec4 centerIntensity = texture2D(inputImageTexture, centerTextureCoordinate);
-     vec3 oneStepPositiveIntensity = texture2D(inputImageTexture, oneStepPositiveTextureCoordinate).rgb;
-     vec3 oneStepNegativeIntensity = texture2D(inputImageTexture, oneStepNegativeTextureCoordinate).rgb;
-     vec3 twoStepsPositiveIntensity = texture2D(inputImageTexture, twoStepsPositiveTextureCoordinate).rgb;
-     vec3 twoStepsNegativeIntensity = texture2D(inputImageTexture, twoStepsNegativeTextureCoordinate).rgb;
+     lowp vec4 centerIntensity = texture2D(inputImageTexture, centerTextureCoordinate);
+     lowp vec4 oneStepPositiveIntensity = texture2D(inputImageTexture, oneStepPositiveTextureCoordinate);
+     lowp vec4 oneStepNegativeIntensity = texture2D(inputImageTexture, oneStepNegativeTextureCoordinate);
+     lowp vec4 twoStepsPositiveIntensity = texture2D(inputImageTexture, twoStepsPositiveTextureCoordinate);
+     lowp vec4 twoStepsNegativeIntensity = texture2D(inputImageTexture, twoStepsNegativeTextureCoordinate);
      
-     vec3 minValue = min(centerIntensity.rgb, oneStepPositiveIntensity);
+     lowp vec4 minValue = min(centerIntensity, oneStepPositiveIntensity);
      minValue = min(minValue, oneStepNegativeIntensity);
      minValue = min(minValue, twoStepsPositiveIntensity);
-     minValue = min(minValue, twoStepsNegativeIntensity);
      
-     gl_FragColor = vec4(minValue, centerIntensity.a);
+     gl_FragColor = min(minValue, twoStepsNegativeIntensity);
  }
  );
 
 // Radius 3
 NSString *const kGPUImageRGBErosionRadiusThreeFragmentShaderString = SHADER_STRING
 (
- precision lowp float;
+ precision highp float;
  
  varying vec2 centerTextureCoordinate;
  varying vec2 oneStepPositiveTextureCoordinate;
@@ -72,29 +70,28 @@ NSString *const kGPUImageRGBErosionRadiusThreeFragmentShaderString = SHADER_STRI
  
  void main()
  {
-     vec4 centerIntensity = texture2D(inputImageTexture, centerTextureCoordinate);
-     vec3 oneStepPositiveIntensity = texture2D(inputImageTexture, oneStepPositiveTextureCoordinate).rgb;
-     vec3 oneStepNegativeIntensity = texture2D(inputImageTexture, oneStepNegativeTextureCoordinate).rgb;
-     vec3 twoStepsPositiveIntensity = texture2D(inputImageTexture, twoStepsPositiveTextureCoordinate).rgb;
-     vec3 twoStepsNegativeIntensity = texture2D(inputImageTexture, twoStepsNegativeTextureCoordinate).rgb;
-     vec3 threeStepsPositiveIntensity = texture2D(inputImageTexture, threeStepsPositiveTextureCoordinate).rgb;
-     vec3 threeStepsNegativeIntensity = texture2D(inputImageTexture, threeStepsNegativeTextureCoordinate).rgb;
+     lowp vec4 centerIntensity = texture2D(inputImageTexture, centerTextureCoordinate);
+     lowp vec4 oneStepPositiveIntensity = texture2D(inputImageTexture, oneStepPositiveTextureCoordinate);
+     lowp vec4 oneStepNegativeIntensity = texture2D(inputImageTexture, oneStepNegativeTextureCoordinate);
+     lowp vec4 twoStepsPositiveIntensity = texture2D(inputImageTexture, twoStepsPositiveTextureCoordinate);
+     lowp vec4 twoStepsNegativeIntensity = texture2D(inputImageTexture, twoStepsNegativeTextureCoordinate);
+     lowp vec4 threeStepsPositiveIntensity = texture2D(inputImageTexture, threeStepsPositiveTextureCoordinate);
+     lowp vec4 threeStepsNegativeIntensity = texture2D(inputImageTexture, threeStepsNegativeTextureCoordinate);
      
-     vec3 minValue = min(centerIntensity.rgb, oneStepPositiveIntensity);
+     lowp vec4 minValue = min(centerIntensity, oneStepPositiveIntensity);
      minValue = min(minValue, oneStepNegativeIntensity);
      minValue = min(minValue, twoStepsPositiveIntensity);
      minValue = min(minValue, twoStepsNegativeIntensity);
      minValue = min(minValue, threeStepsPositiveIntensity);
-     minValue = min(minValue, threeStepsNegativeIntensity);
      
-     gl_FragColor = vec4(minValue, centerIntensity.a);
+     gl_FragColor = min(minValue, threeStepsNegativeIntensity);
  }
  );
 
 // Radius 4
 NSString *const kGPUImageRGBErosionRadiusFourFragmentShaderString = SHADER_STRING
 (
- precision lowp float;
+ precision highp float;
  
  varying vec2 centerTextureCoordinate;
  varying vec2 oneStepPositiveTextureCoordinate;
@@ -110,26 +107,25 @@ NSString *const kGPUImageRGBErosionRadiusFourFragmentShaderString = SHADER_STRIN
  
  void main()
  {
-     vec4 centerIntensity = texture2D(inputImageTexture, centerTextureCoordinate);
-     vec3 oneStepPositiveIntensity = texture2D(inputImageTexture, oneStepPositiveTextureCoordinate).rgb;
-     vec3 oneStepNegativeIntensity = texture2D(inputImageTexture, oneStepNegativeTextureCoordinate).rgb;
-     vec3 twoStepsPositiveIntensity = texture2D(inputImageTexture, twoStepsPositiveTextureCoordinate).rgb;
-     vec3 twoStepsNegativeIntensity = texture2D(inputImageTexture, twoStepsNegativeTextureCoordinate).rgb;
-     vec3 threeStepsPositiveIntensity = texture2D(inputImageTexture, threeStepsPositiveTextureCoordinate).rgb;
-     vec3 threeStepsNegativeIntensity = texture2D(inputImageTexture, threeStepsNegativeTextureCoordinate).rgb;
-     vec3 fourStepsPositiveIntensity = texture2D(inputImageTexture, fourStepsPositiveTextureCoordinate).rgb;
-     vec3 fourStepsNegativeIntensity = texture2D(inputImageTexture, fourStepsNegativeTextureCoordinate).rgb;
+     lowp vec4 centerIntensity = texture2D(inputImageTexture, centerTextureCoordinate);
+     lowp vec4 oneStepPositiveIntensity = texture2D(inputImageTexture, oneStepPositiveTextureCoordinate);
+     lowp vec4 oneStepNegativeIntensity = texture2D(inputImageTexture, oneStepNegativeTextureCoordinate);
+     lowp vec4 twoStepsPositiveIntensity = texture2D(inputImageTexture, twoStepsPositiveTextureCoordinate);
+     lowp vec4 twoStepsNegativeIntensity = texture2D(inputImageTexture, twoStepsNegativeTextureCoordinate);
+     lowp vec4 threeStepsPositiveIntensity = texture2D(inputImageTexture, threeStepsPositiveTextureCoordinate);
+     lowp vec4 threeStepsNegativeIntensity = texture2D(inputImageTexture, threeStepsNegativeTextureCoordinate);
+     lowp vec4 fourStepsPositiveIntensity = texture2D(inputImageTexture, fourStepsPositiveTextureCoordinate);
+     lowp vec4 fourStepsNegativeIntensity = texture2D(inputImageTexture, fourStepsNegativeTextureCoordinate);
      
-     vec3 minValue = min(centerIntensity.rgb, oneStepPositiveIntensity);
+     lowp vec4 minValue = min(centerIntensity, oneStepPositiveIntensity);
      minValue = min(minValue, oneStepNegativeIntensity);
      minValue = min(minValue, twoStepsPositiveIntensity);
      minValue = min(minValue, twoStepsNegativeIntensity);
      minValue = min(minValue, threeStepsPositiveIntensity);
      minValue = min(minValue, threeStepsNegativeIntensity);
      minValue = min(minValue, fourStepsPositiveIntensity);
-     minValue = min(minValue, fourStepsNegativeIntensity);
      
-     gl_FragColor = vec4(minValue, 1.0);
+     gl_FragColor = min(minValue, fourStepsNegativeIntensity);
  }
 );
 

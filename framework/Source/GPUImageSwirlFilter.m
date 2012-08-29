@@ -72,34 +72,22 @@ NSString *const kGPUImageSwirlFragmentShaderString = SHADER_STRING
 {
     _radius = newValue;
     
-    [GPUImageOpenGLESContext useImageProcessingContext];
-    [filterProgram use];
-    glUniform1f(radiusUniform, _radius);
+    [self setFloat:_radius forUniform:radiusUniform program:filterProgram];
 }
 
 - (void)setAngle:(CGFloat)newValue;
 {
     _angle = newValue;
-    
-    [GPUImageOpenGLESContext useImageProcessingContext];
-    [filterProgram use];
-    glUniform1f(angleUniform, _angle);
+
+    [self setFloat:_angle forUniform:angleUniform program:filterProgram];
 }
 
 - (void)setCenter:(CGPoint)newValue;
 {
     _center = newValue;
     
-    [GPUImageOpenGLESContext useImageProcessingContext];
-    [filterProgram use];
-    
     CGPoint rotatedPoint = [self rotatedPoint:_center forRotation:inputRotation];
-    
-    GLfloat centerPosition[2];
-    centerPosition[0] = rotatedPoint.x;
-    centerPosition[1] = rotatedPoint.y;
-    
-    glUniform2fv(centerUniform, 1, centerPosition);
+    [self setPoint:rotatedPoint forUniform:centerUniform program:filterProgram];
 }
 
 @end

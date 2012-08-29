@@ -42,9 +42,7 @@ NSString *const kGPUImagePosterizeFragmentShaderString = SHADER_STRING
 {
     _colorLevels = newValue;
     
-    [GPUImageOpenGLESContext useImageProcessingContext];
-    [filterProgram use];
-    glUniform1f(colorLevelsUniform, (GLfloat)_colorLevels);
+    [self setFloat:_colorLevels forUniform:colorLevelsUniform program:filterProgram];
 }
 
 @end

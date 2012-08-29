@@ -63,26 +63,16 @@ NSString *const kGPUFalseColorFragmentShaderString = SHADER_STRING
 
 - (void)setFirstColorRed:(GLfloat)redComponent green:(GLfloat)greenComponent blue:(GLfloat)blueComponent;
 {
-    GLfloat filterColor[3];
-    filterColor[0] = redComponent;
-    filterColor[1] = greenComponent;
-    filterColor[2] = blueComponent;
+    GPUVector3 firstColor = {redComponent, greenComponent, blueComponent};
     
-    [GPUImageOpenGLESContext useImageProcessingContext];
-    [filterProgram use];
-    glUniform3fv(firstColorUniform, 1, filterColor);
+    [self setVec3:firstColor forUniform:firstColorUniform program:filterProgram];
 }
 
 - (void)setSecondColorRed:(GLfloat)redComponent green:(GLfloat)greenComponent blue:(GLfloat)blueComponent;
 {
-    GLfloat filterColor[3];
-    filterColor[0] = redComponent;
-    filterColor[1] = greenComponent;
-    filterColor[2] = blueComponent;
+    GPUVector3 secondColor = {redComponent, greenComponent, blueComponent};
     
-    [GPUImageOpenGLESContext useImageProcessingContext];
-    [filterProgram use];
-    glUniform3fv(secondColorUniform, 1, filterColor);
+    [self setVec3:secondColor forUniform:secondColorUniform program:filterProgram];
 }
 
 @end

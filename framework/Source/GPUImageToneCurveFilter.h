@@ -2,22 +2,25 @@
 
 @interface GPUImageToneCurveFilter : GPUImageFilter
 
-// The tone curve takes in a series of control points that define the spline curve for each color component. 
-// These are stored as NSValue-wrapped CGPoints in an NSArray, with normalized X and Y coordinates from 0 - 1. The defaults are (0,0), (0.5,0.5), (1,1).
 @property(readwrite, nonatomic, copy) NSArray *redControlPoints;
 @property(readwrite, nonatomic, copy) NSArray *greenControlPoints;
 @property(readwrite, nonatomic, copy) NSArray *blueControlPoints;
+@property(readwrite, nonatomic, copy) NSArray *rgbCompositeControlPoints;
 
+// Initialization and teardown
 - (id)initWithACV:(NSString*)curveFile;
 
 // This lets you set all three red, green, and blue tone curves at once.
-- (void)setRGBControlPoints:(NSArray *)points;
+// NOTE: Deprecated this function because this effect can be accomplished
+// using the rgbComposite channel rather then setting all 3 R, G, and B channels.
+- (void)setRGBControlPoints:(NSArray *)points DEPRECATED_ATTRIBUTE;
+
 - (void)setPointsWithACV:(NSString*)curveFile;
 
 // Curve calculation
-- (NSArray *)getPreparedSplineCurve:(NSArray *)points;
-- (NSArray *)splineCurve:(NSArray *)points;
-- (NSArray *)secondDerivative:(NSArray *)cgPoints;
+- (NSMutableArray *)getPreparedSplineCurve:(NSArray *)points;
+- (NSMutableArray *)splineCurve:(NSArray *)points;
+- (NSMutableArray *)secondDerivative:(NSArray *)cgPoints;
 - (void)updateToneCurveTexture;
    
 @end

@@ -53,8 +53,10 @@ NSString *const kGPUImageHueFragmentShaderString = SHADER_STRING
 @implementation GPUImageHueFilter
 @synthesize hue;
 
--(id) init {
-    if(! (self = [super initWithFragmentShaderFromString:kGPUImageHueFragmentShaderString]) ){
+- (id)init
+{
+    if(! (self = [super initWithFragmentShaderFromString:kGPUImageHueFragmentShaderString]) )
+    {
         return nil;
     }
     
@@ -64,14 +66,11 @@ NSString *const kGPUImageHueFragmentShaderString = SHADER_STRING
     return self;
 }
 
--(void) setHue:(CGFloat)newHue {
+- (void)setHue:(CGFloat)newHue
+{
     // Convert degrees to radians for hue rotation
-    hue = fmodf(newHue, 360.0) * M_PI/180 ;
-    [GPUImageOpenGLESContext useImageProcessingContext];
-    [filterProgram use];
-    glUniform1f(hueAdjustUniform, hue);
-    
+    hue = fmodf(newHue, 360.0) * M_PI/180;
+    [self setFloat:hue forUniform:hueAdjustUniform program:filterProgram];
 }
-
 
 @end

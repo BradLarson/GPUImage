@@ -49,18 +49,14 @@ NSString *const kGPUImageVignetteFragmentShaderString = SHADER_STRING
 {
     _vignetteStart = newValue;
     
-    [GPUImageOpenGLESContext useImageProcessingContext];
-    [filterProgram use];
-    glUniform1f(vignetteStartUniform, _vignetteStart);
+    [self setFloat:_vignetteStart forUniform:vignetteStartUniform program:filterProgram];
 }
 
 - (void)setVignetteEnd:(CGFloat)newValue;
 {
     _vignetteEnd = newValue;
-    
-    [GPUImageOpenGLESContext useImageProcessingContext];
-    [filterProgram use];
-    glUniform1f(vignetteEndUniform, _vignetteEnd);
+
+    [self setFloat:_vignetteEnd forUniform:vignetteEndUniform program:filterProgram];
 }
 
 @end

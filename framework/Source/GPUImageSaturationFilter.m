@@ -48,9 +48,7 @@ NSString *const kGPUImageSaturationFragmentShaderString = SHADER_STRING
 {
     _saturation = newValue;
     
-    [GPUImageOpenGLESContext useImageProcessingContext];
-    [filterProgram use];
-    glUniform1f(saturationUniform, _saturation);
+    [self setFloat:_saturation forUniform:saturationUniform program:filterProgram];
 }
 
 @end

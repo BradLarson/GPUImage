@@ -83,10 +83,11 @@ NSString *const kGPUImageSobelEdgeDetectionFragmentShaderString = SHADER_STRING
         _texelWidth = 1.0 / filterFrameSize.width;
         _texelHeight = 1.0 / filterFrameSize.height;
 
-        [GPUImageOpenGLESContext useImageProcessingContext];
-        [secondFilterProgram use];
-        glUniform1f(texelWidthUniform, _texelWidth);
-        glUniform1f(texelHeightUniform, _texelHeight);
+        runSynchronouslyOnVideoProcessingQueue(^{
+            [GPUImageOpenGLESContext setActiveShaderProgram:secondFilterProgram];
+            glUniform1f(texelWidthUniform, _texelWidth);
+            glUniform1f(texelHeightUniform, _texelHeight);
+        });
     }
 }
 
@@ -98,19 +99,15 @@ NSString *const kGPUImageSobelEdgeDetectionFragmentShaderString = SHADER_STRING
     hasOverriddenImageSizeFactor = YES;
     _texelWidth = newValue;
     
-    [GPUImageOpenGLESContext useImageProcessingContext];
-    [secondFilterProgram use];
-    glUniform1f(texelWidthUniform, _texelWidth);
+    [self setFloat:_texelWidth forUniform:texelWidthUniform program:secondFilterProgram];
 }
 
 - (void)setTexelHeight:(CGFloat)newValue;
 {
     hasOverriddenImageSizeFactor = YES;
     _texelHeight = newValue;
-    
-    [GPUImageOpenGLESContext useImageProcessingContext];
-    [secondFilterProgram use];
-    glUniform1f(texelHeightUniform, _texelHeight);
+
+    [self setFloat:_texelHeight forUniform:texelHeightUniform program:secondFilterProgram];
 }
 
 @end

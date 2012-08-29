@@ -42,9 +42,7 @@ NSString *const kGPUImageContrastFragmentShaderString = SHADER_STRING
 {
     _contrast = newValue;
     
-    [GPUImageOpenGLESContext useImageProcessingContext];
-    [filterProgram use];
-    glUniform1f(contrastUniform, _contrast);
+    [self setFloat:_contrast forUniform:contrastUniform program:filterProgram];
 }
 
 @end

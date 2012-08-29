@@ -10,5 +10,6 @@
 // Image filtering
 - (void)setupDisplayFiltering;
 - (void)setupImageFilteringToDisk;
+- (void)setupImageResampling;
 
 @end

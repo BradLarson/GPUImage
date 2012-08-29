@@ -57,15 +57,14 @@ NSString *const kGPUImageHistogramGeneratorFragmentShaderString = SHADER_STRING
 
 - (void)setBackgroundColorRed:(GLfloat)redComponent green:(GLfloat)greenComponent blue:(GLfloat)blueComponent alpha:(GLfloat)alphaComponent;
 {
-    GLfloat backgroundColor[4];
-    backgroundColor[0] = redComponent;
-    backgroundColor[1] = greenComponent;    
-    backgroundColor[2] = blueComponent;
-    backgroundColor[3] = alphaComponent;
+//    GLfloat backgroundColor[4];
+//    backgroundColor[0] = redComponent;
+//    backgroundColor[1] = greenComponent;    
+//    backgroundColor[2] = blueComponent;
+//    backgroundColor[3] = alphaComponent;
+    GPUVector4 backgroundColor = {redComponent, greenComponent, blueComponent, alphaComponent};
     
-    [GPUImageOpenGLESContext useImageProcessingContext];
-    [filterProgram use];
-    glUniform4fv(backgroundColorUniform, 1, backgroundColor);    
+    [self setVec4:backgroundColor forUniform:backgroundColorUniform program:filterProgram];
 }
 
 @end

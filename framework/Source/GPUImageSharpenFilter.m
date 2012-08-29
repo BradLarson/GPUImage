@@ -88,19 +88,20 @@ NSString *const kGPUImageSharpenFragmentShaderString = SHADER_STRING
 
 - (void)setupFilterForSize:(CGSize)filterFrameSize;
 {
-    [GPUImageOpenGLESContext useImageProcessingContext];
-    [filterProgram use];
-
-    if (GPUImageRotationSwapsWidthAndHeight(inputRotation))
-    {
-        glUniform1f(imageWidthFactorUniform, 1.0 / filterFrameSize.height);
-        glUniform1f(imageHeightFactorUniform, 1.0 / filterFrameSize.width);
-    }
-    else
-    {
-        glUniform1f(imageWidthFactorUniform, 1.0 / filterFrameSize.width);
-        glUniform1f(imageHeightFactorUniform, 1.0 / filterFrameSize.height);
-    }
+    runSynchronouslyOnVideoProcessingQueue(^{
+        [GPUImageOpenGLESContext setActiveShaderProgram:filterProgram];
+        
+        if (GPUImageRotationSwapsWidthAndHeight(inputRotation))
+        {
+            glUniform1f(imageWidthFactorUniform, 1.0 / filterFrameSize.height);
+            glUniform1f(imageHeightFactorUniform, 1.0 / filterFrameSize.width);
+        }
+        else
+        {
+            glUniform1f(imageWidthFactorUniform, 1.0 / filterFrameSize.width);
+            glUniform1f(imageHeightFactorUniform, 1.0 / filterFrameSize.height);
+        }
+    });
 }
 
 #pragma mark -
@@ -110,9 +111,7 @@ NSString *const kGPUImageSharpenFragmentShaderString = SHADER_STRING
 {
     _sharpness = newValue;
     
-    [GPUImageOpenGLESContext useImageProcessingContext];
-    [filterProgram use];
-    glUniform1f(sharpnessUniform, _sharpness);
+    [self setFloat:_sharpness forUniform:sharpnessUniform program:filterProgram];
 }
 
 @end
