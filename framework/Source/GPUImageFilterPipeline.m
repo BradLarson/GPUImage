@@ -36,7 +36,7 @@
     if (!filters) return NO;
     
     NSError *regexError = nil;
-    NSRegularExpression *parsingRegex = [NSRegularExpression regularExpressionWithPattern:@"(float|CGPoint)\\((.*?)(?:,\\s*(.*?))*\\)"
+    NSRegularExpression *parsingRegex = [NSRegularExpression regularExpressionWithPattern:@"(float|CGPoint|NSString)\\((.*?)(?:,\\s*(.*?))*\\)"
                                                                                   options:0
                                                                                     error:&regexError];
     
@@ -73,6 +73,10 @@
                     CGFloat x = [[string substringWithRange:[parse rangeAtIndex:2]] floatValue];
                     CGFloat y = [[string substringWithRange:[parse rangeAtIndex:3]] floatValue];
                     CGPoint value = CGPointMake(x, y);
+                    [inv setArgument:&value atIndex:2];
+                } else if ([modifier isEqualToString:@"NSString"]) {
+                    // NSString modifier, one string argument
+                    NSString *value = [[string substringWithRange:[parse rangeAtIndex:2]] copy];
                     [inv setArgument:&value atIndex:2];
                 } else {
                     return NO;
