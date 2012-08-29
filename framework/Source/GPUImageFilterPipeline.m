@@ -57,7 +57,7 @@
                 [inv setTarget:genericFilter];
                 
                 // Parse the argument
-                
+                NSString *stringValue = nil;
                 NSString *string = [filterAttributes objectForKey:propertyKey];
                 NSTextCheckingResult *parse = [parsingRegex firstMatchInString:string
                                                                        options:0
@@ -76,8 +76,8 @@
                     [inv setArgument:&value atIndex:2];
                 } else if ([modifier isEqualToString:@"NSString"]) {
                     // NSString modifier, one string argument
-                    NSString *value = [[string substringWithRange:[parse rangeAtIndex:2]] copy];
-                    [inv setArgument:&value atIndex:2];
+                    stringValue = [[string substringWithRange:[parse rangeAtIndex:2]] copy];
+                    [inv setArgument:&stringValue atIndex:2];
                 } else {
                     return NO;
                 }
