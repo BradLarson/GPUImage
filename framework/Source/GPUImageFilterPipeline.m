@@ -36,7 +36,7 @@
     if (!filters) return NO;
     
     NSError *regexError = nil;
-    NSRegularExpression *parsingRegex = [NSRegularExpression regularExpressionWithPattern:@"(float|CGPoint)\\((.*?)(?:,\\s*(.*?))*\\)"
+    NSRegularExpression *parsingRegex = [NSRegularExpression regularExpressionWithPattern:@"(float|CGPoint|NSString)\\((.*?)(?:,\\s*(.*?))*\\)"
                                                                                   options:0
                                                                                     error:&regexError];
     
@@ -57,7 +57,7 @@
                 [inv setTarget:genericFilter];
                 
                 // Parse the argument
-                
+                NSString *stringValue = nil;
                 NSString *string = [filterAttributes objectForKey:propertyKey];
                 NSTextCheckingResult *parse = [parsingRegex firstMatchInString:string
                                                                        options:0
@@ -74,6 +74,10 @@
                     CGFloat y = [[string substringWithRange:[parse rangeAtIndex:3]] floatValue];
                     CGPoint value = CGPointMake(x, y);
                     [inv setArgument:&value atIndex:2];
+                } else if ([modifier isEqualToString:@"NSString"]) {
+                    // NSString modifier, one string argument
+                    stringValue = [[string substringWithRange:[parse rangeAtIndex:2]] copy];
+                    [inv setArgument:&stringValue atIndex:2];
                 } else {
                     return NO;
                 }
@@ -144,7 +148,10 @@
     }
     
     [prevFilter removeAllTargets];
-    [prevFilter addTarget:self.output];
+
+    if (self.output != nil) {
+        [prevFilter addTarget:self.output];
+    }
 }
 
 - (UIImage *) currentFilteredFrame {
