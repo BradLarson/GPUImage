@@ -73,6 +73,14 @@ Documentation is generated from header comments using appledoc. To build the doc
   - *colorMatrix*: A 4x4 matrix used to transform each color in an image
   - *intensity*: The degree to which the new transformed color replaces the original color for each pixel
 
+- **GPUImageRGBFilter**: Adjusts the individual RGB channels of an image
+  - *red*: Normalized values by which each color channel is multiplied. The range is from 0.0 up, with 1.0 as the default.
+  - *green*: 
+  - *blue*:
+
+- **GPUImageHueFilter**: Adjusts the hue of an image
+  - *hue*: The hue angle, in degrees. 90 degrees by default
+
 - **GPUImageToneCurveFilter**: Adjusts the colors of an image based on spline curves for each color channel.
   - *redControlPoints*:
   - *greenControlPoints*:
@@ -127,6 +135,10 @@ Documentation is generated from header comments using appledoc. To build the doc
 - **GPUImageAverageColor**: This processes an input image and determines the average color of the scene, by averaging the RGBA components for each pixel in the image. A reduction process is used to progressively downsample the source image on the GPU, followed by a short averaging calculation on the CPU. The output from this filter is meaningless, but you need to set the colorAverageProcessingFinishedBlock property to a block that takes in four color components and a frame time and does something with them.
 
 - **GPUImageLuminosity**: Like the GPUImageAverageColor, this reduces an image to its average luminosity. You need to set the luminosityProcessingFinishedBlock to handle the output of this filter, which just returns a luminosity value and a frame time.
+
+- **GPUImageChromaKeyFilter**: For a given color in the image, sets the alpha channel to 0. This is similar to the GPUImageChromaKeyBlendFilter, only instead of blending in a second image for a matching color this doesn't take in a second image and just turns a given color transparent.
+- *thresholdSensitivity*: How close a color match needs to exist to the target color to be replaced (default of 0.4)
+- *smoothing*: How smoothly to blend for the color match (default of 0.1)
 
 ### Image processing ###
 

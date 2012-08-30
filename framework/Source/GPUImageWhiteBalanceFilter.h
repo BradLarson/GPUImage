@@ -8,7 +8,7 @@
 {
     GLint temperatureUniform, tintUniform;
 }
-//choose color temperature, in degress Kelvin
+//choose color temperature, in degrees Kelvin
 @property(readwrite, nonatomic) int temperature;
 
 //adjust tint to compensate
