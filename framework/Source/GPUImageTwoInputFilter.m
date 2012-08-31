@@ -66,7 +66,6 @@ NSString *const kGPUImageTwoInputTextureVertexShaderString = SHADER_STRING
 - (void)initializeAttributes;
 {
     [super initializeAttributes];
-    
     [filterProgram addAttribute:@"inputTextureCoordinate2"];
 }
 
@@ -94,8 +93,8 @@ NSString *const kGPUImageTwoInputTextureVertexShaderString = SHADER_STRING
     
     glActiveTexture(GL_TEXTURE3);
     glBindTexture(GL_TEXTURE_2D, filterSourceTexture2);                
-    glUniform1i(filterInputTextureUniform2, 3);	
-        
+    glUniform1i(filterInputTextureUniform2, 3);
+    
     glVertexAttribPointer(filterPositionAttribute, 2, GL_FLOAT, 0, 0, vertices);
 	glVertexAttribPointer(filterTextureCoordinateAttribute, 2, GL_FLOAT, 0, 0, textureCoordinates);
     glVertexAttribPointer(filterSecondTextureCoordinateAttribute, 2, GL_FLOAT, 0, 0, [[self class] textureCoordinatesForRotation:inputRotation2]);

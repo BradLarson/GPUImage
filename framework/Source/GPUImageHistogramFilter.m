@@ -136,7 +136,7 @@ NSString *const kGPUImageHistogramAccumulationFragmentShaderString = SHADER_STRI
                 
                 if (!secondFilterProgram.initialized)
                 {
-                    [self initializeAttributes];
+                    [self initializeSecondaryAttributes];
                     
                     if (![secondFilterProgram link])
                     {
@@ -186,9 +186,8 @@ NSString *const kGPUImageHistogramAccumulationFragmentShaderString = SHADER_STRI
     return self;
 }
 
-- (void)initializeAttributes;
+- (void)initializeSecondaryAttributes;
 {
-    [super initializeAttributes];
     [secondFilterProgram addAttribute:@"position"];
 	[thirdFilterProgram addAttribute:@"position"];
 }

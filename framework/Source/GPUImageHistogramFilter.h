@@ -17,6 +17,7 @@ typedef enum { kGPUImageHistogramRed, kGPUImageHistogramGreen, kGPUImageHistogra
 
 // Initialization and teardown
 - (id)initWithHistogramType:(GPUImageHistogramType)newHistogramType;
+- (void)initializeSecondaryAttributes;
 
 // Rendering
 - (void)generatePointCoordinates;

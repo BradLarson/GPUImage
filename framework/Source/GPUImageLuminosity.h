@@ -12,5 +12,6 @@
 @property(nonatomic, copy) void(^luminosityProcessingFinishedBlock)(CGFloat luminosity, CMTime frameTime);
 
 - (void)extractLuminosityAtFrameTime:(CMTime)frameTime;
+- (void)initializeSecondaryAttributes;
 
 @end

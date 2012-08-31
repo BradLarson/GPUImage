@@ -19,7 +19,7 @@
         
         if (!secondFilterProgram.initialized)
         {
-            [self initializeAttributes];
+            [self initializeSecondaryAttributes];
             
             if (![secondFilterProgram link])
             {
@@ -58,9 +58,8 @@
     return self;
 }
 
-- (void)initializeAttributes;
+- (void)initializeSecondaryAttributes;
 {
-    [super initializeAttributes];
     [secondFilterProgram addAttribute:@"position"];
 	[secondFilterProgram addAttribute:@"inputTextureCoordinate"];
 }
