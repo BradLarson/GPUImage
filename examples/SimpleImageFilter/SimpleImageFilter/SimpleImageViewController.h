@@ -4,7 +4,7 @@
 @interface SimpleImageViewController : UIViewController
 {
     GPUImagePicture *sourcePicture;
-    GPUImageFilter *sepiaFilter, *sepiaFilter2;
+    GPUImageOutput<GPUImageInput> *sepiaFilter, *sepiaFilter2;
 }
 
 // Image filtering

@@ -46,7 +46,6 @@
     
     sourcePicture = [[GPUImagePicture alloc] initWithImage:inputImage smoothlyScaleOutput:YES];
     sepiaFilter = [[GPUImageSepiaFilter alloc] init];
-  
     
     GPUImageView *imageView = (GPUImageView *)self.view;
     [sepiaFilter forceProcessingAtSize:imageView.sizeInPixels]; // This is now needed to make the filter run at the smaller output size
@@ -85,7 +84,6 @@
 //    GPUImageUnsharpMaskFilter *stillImageFilter2 = [[GPUImageUnsharpMaskFilter alloc] init];
 //    GPUImageSepiaFilter *stillImageFilter2 = [[GPUImageSepiaFilter alloc] init];
     UIImage *quickFilteredImage = [stillImageFilter2 imageByFilteringImage:inputImage];
-
     
     // Write images to disk, as proof
     NSData *dataForPNGFile = UIImagePNGRepresentation(currentFilteredImage);

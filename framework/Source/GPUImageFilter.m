@@ -222,7 +222,8 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
     return finalImage;
 }
 
-- (CGImageRef)newCGImageByFilteringCGImage:(CGImageRef)imageToFilter {
+- (CGImageRef)newCGImageByFilteringCGImage:(CGImageRef)imageToFilter
+{
     return [self newCGImageByFilteringCGImage:imageToFilter orientation:UIImageOrientationUp];
 }
 
@@ -241,7 +242,8 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
     return processedImage;
 }
 
-- (CGImageRef)newCGImageByFilteringImage:(UIImage *)imageToFilter {
+- (CGImageRef)newCGImageByFilteringImage:(UIImage *)imageToFilter
+{
     return [self newCGImageByFilteringCGImage:[imageToFilter CGImage] orientation:[imageToFilter imageOrientation]];
 }
 
