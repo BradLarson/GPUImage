@@ -48,6 +48,8 @@ NSString *const kGPUImageTwoInputTextureVertexShaderString = SHADER_STRING
     hasReceivedSecondFrame = NO;
     firstFrameWasVideo = NO;
     secondFrameWasVideo = NO;
+    firstFrameCheckDisabled = NO;
+    secondFrameCheckDisabled = NO;
     
     firstFrameTime = kCMTimeInvalid;
     secondFrameTime = kCMTimeInvalid;
@@ -67,6 +69,16 @@ NSString *const kGPUImageTwoInputTextureVertexShaderString = SHADER_STRING
 {
     [super initializeAttributes];
     [filterProgram addAttribute:@"inputTextureCoordinate2"];
+}
+
+- (void)disableFirstFrameCheck;
+{
+    firstFrameCheckDisabled = YES;
+}
+
+- (void)disableSecondFrameCheck;
+{
+    secondFrameCheckDisabled = YES;
 }
 
 #pragma mark -
@@ -192,6 +204,10 @@ NSString *const kGPUImageTwoInputTextureVertexShaderString = SHADER_STRING
     {
         hasReceivedFirstFrame = YES;
         firstFrameTime = frameTime;
+        if (secondFrameCheckDisabled)
+        {
+            hasReceivedSecondFrame = YES;
+        }
         
         if (!CMTIME_IS_INDEFINITE(frameTime))
         {
@@ -205,6 +221,10 @@ NSString *const kGPUImageTwoInputTextureVertexShaderString = SHADER_STRING
     {
         hasReceivedSecondFrame = YES;
         secondFrameTime = frameTime;
+        if (firstFrameCheckDisabled)
+        {
+            hasReceivedSecondFrame = YES;
+        }
 
         if (!CMTIME_IS_INDEFINITE(frameTime))
         {
@@ -214,7 +234,8 @@ NSString *const kGPUImageTwoInputTextureVertexShaderString = SHADER_STRING
             }
         }
     }
-    
+
+    // || (hasReceivedFirstFrame && secondFrameCheckDisabled) || (hasReceivedSecondFrame && firstFrameCheckDisabled)
     if ((hasReceivedFirstFrame && hasReceivedSecondFrame) || updatedMovieFrameOppositeStillImage)
     {
         [super newFrameReadyAtTime:frameTime atIndex:0];

@@ -125,3 +125,5 @@
 #import "GPUImageAverageLuminanceThresholdFilter.h"
 #import "GPUImageWhiteBalanceFilter.h"
 #import "GPUImageChromaKeyFilter.h"
+#import "GPUImageLowPassFilter.h"
+#import "GPUImageHighPassFilter.h"
