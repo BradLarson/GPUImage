@@ -127,3 +127,4 @@
 #import "GPUImageChromaKeyFilter.h"
 #import "GPUImageLowPassFilter.h"
 #import "GPUImageHighPassFilter.h"
+#import "GPUImageMotionDetector.h"

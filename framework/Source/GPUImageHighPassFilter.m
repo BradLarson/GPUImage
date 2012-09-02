@@ -2,6 +2,8 @@
 
 @implementation GPUImageHighPassFilter
 
+@synthesize filterStrength;
+
 - (id)init;
 {
     if (!(self = [super init]))

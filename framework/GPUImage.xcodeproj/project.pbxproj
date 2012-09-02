@@ -166,6 +166,8 @@
 		BCB3B46615F2BA9300EDA3BE /* GPUImageLowPassFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = BCB3B46415F2BA9300EDA3BE /* GPUImageLowPassFilter.m */; };
 		BCB3B46A15F2FD1B00EDA3BE /* GPUImageHighPassFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = BCB3B46815F2FD1B00EDA3BE /* GPUImageHighPassFilter.h */; };
 		BCB3B46B15F2FD1B00EDA3BE /* GPUImageHighPassFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = BCB3B46915F2FD1B00EDA3BE /* GPUImageHighPassFilter.m */; };
+		BCB3B47915F3108700EDA3BE /* GPUImageMotionDetector.h in Headers */ = {isa = PBXBuildFile; fileRef = BCB3B47715F3108700EDA3BE /* GPUImageMotionDetector.h */; };
+		BCB3B47A15F3108700EDA3BE /* GPUImageMotionDetector.m in Sources */ = {isa = PBXBuildFile; fileRef = BCB3B47815F3108700EDA3BE /* GPUImageMotionDetector.m */; };
 		BCB5DE0D14E87F32000AF3C2 /* GPUImagePixellateFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = BCB5DE0B14E87F32000AF3C2 /* GPUImagePixellateFilter.h */; };
 		BCB5DE0E14E87F32000AF3C2 /* GPUImagePixellateFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = BCB5DE0C14E87F32000AF3C2 /* GPUImagePixellateFilter.m */; };
 		BCB5E75C14E2086300701302 /* GPUImageView.h in Headers */ = {isa = PBXBuildFile; fileRef = BCB5E75A14E2086300701302 /* GPUImageView.h */; };
@@ -464,6 +466,8 @@
 		BCB3B46415F2BA9300EDA3BE /* GPUImageLowPassFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GPUImageLowPassFilter.m; path = Source/GPUImageLowPassFilter.m; sourceTree = SOURCE_ROOT; };
 		BCB3B46815F2FD1B00EDA3BE /* GPUImageHighPassFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GPUImageHighPassFilter.h; path = Source/GPUImageHighPassFilter.h; sourceTree = SOURCE_ROOT; };
 		BCB3B46915F2FD1B00EDA3BE /* GPUImageHighPassFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GPUImageHighPassFilter.m; path = Source/GPUImageHighPassFilter.m; sourceTree = SOURCE_ROOT; };
+		BCB3B47715F3108700EDA3BE /* GPUImageMotionDetector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GPUImageMotionDetector.h; path = Source/GPUImageMotionDetector.h; sourceTree = SOURCE_ROOT; };
+		BCB3B47815F3108700EDA3BE /* GPUImageMotionDetector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GPUImageMotionDetector.m; path = Source/GPUImageMotionDetector.m; sourceTree = SOURCE_ROOT; };
 		BCB5DE0B14E87F32000AF3C2 /* GPUImagePixellateFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GPUImagePixellateFilter.h; path = Source/GPUImagePixellateFilter.h; sourceTree = SOURCE_ROOT; };
 		BCB5DE0C14E87F32000AF3C2 /* GPUImagePixellateFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GPUImagePixellateFilter.m; path = Source/GPUImagePixellateFilter.m; sourceTree = SOURCE_ROOT; };
 		BCB5E75A14E2086300701302 /* GPUImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GPUImageView.h; path = Source/GPUImageView.h; sourceTree = SOURCE_ROOT; };
@@ -947,6 +951,8 @@
 				BCB3B46415F2BA9300EDA3BE /* GPUImageLowPassFilter.m */,
 				BCB3B46815F2FD1B00EDA3BE /* GPUImageHighPassFilter.h */,
 				BCB3B46915F2FD1B00EDA3BE /* GPUImageHighPassFilter.m */,
+				BCB3B47715F3108700EDA3BE /* GPUImageMotionDetector.h */,
+				BCB3B47815F3108700EDA3BE /* GPUImageMotionDetector.m */,
 			);
 			name = "Image processing";
 			sourceTree = "<group>";
@@ -1173,6 +1179,7 @@
 				BC99235315EFFC9700ED2C8C /* GPUImageWhiteBalanceFilter.h in Headers */,
 				BCB3B46515F2BA9300EDA3BE /* GPUImageLowPassFilter.h in Headers */,
 				BCB3B46A15F2FD1B00EDA3BE /* GPUImageHighPassFilter.h in Headers */,
+				BCB3B47915F3108700EDA3BE /* GPUImageMotionDetector.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1422,6 +1429,7 @@
 				BC99235415EFFC9700ED2C8C /* GPUImageWhiteBalanceFilter.m in Sources */,
 				BCB3B46615F2BA9300EDA3BE /* GPUImageLowPassFilter.m in Sources */,
 				BCB3B46B15F2FD1B00EDA3BE /* GPUImageHighPassFilter.m in Sources */,
+				BCB3B47A15F3108700EDA3BE /* GPUImageMotionDetector.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

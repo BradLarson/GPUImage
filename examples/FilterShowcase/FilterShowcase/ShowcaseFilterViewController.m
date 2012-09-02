@@ -545,6 +545,19 @@
             
             filter = [[GPUImageHighPassFilter alloc] init];
         }; break;
+        case GPUIMAGE_MOTIONDETECTOR:
+        {
+            [videoCamera rotateCamera];
+
+            self.title = @"Motion Detector";
+            self.filterSettingsSlider.hidden = NO;
+            
+            [self.filterSettingsSlider setMinimumValue:0.0];
+            [self.filterSettingsSlider setMaximumValue:1.0];
+            [self.filterSettingsSlider setValue:0.5];
+            
+            filter = [[GPUImageMotionDetector alloc] init];
+        }; break;
         case GPUIMAGE_SKETCH:
         {
             self.title = @"Sketch";
@@ -1263,6 +1276,36 @@
             
             [colorGenerator addTarget:filterView];
         }
+        else if (filterType == GPUIMAGE_MOTIONDETECTOR)
+        {
+            faceView = [[UIView alloc] initWithFrame:CGRectMake(100.0, 100.0, 100.0, 100.0)];
+            faceView.layer.borderWidth = 1;
+            faceView.layer.borderColor = [[UIColor redColor] CGColor];
+            [self.view addSubview:faceView];
+            faceView.hidden = YES;
+            
+            [(GPUImageMotionDetector *) filter setMotionDetectionBlock:^(CGPoint motionCentroid, CGFloat motionIntensity, CMTime frameTime) {
+                if (motionIntensity > 0.01)
+                {
+                    CGFloat motionBoxWidth = 1500.0 * motionIntensity;
+                    CGSize viewBounds = self.view.bounds.size;
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        faceView.frame = CGRectMake(round(viewBounds.width * motionCentroid.x - motionBoxWidth / 2.0), round(viewBounds.height * motionCentroid.y - motionBoxWidth / 2.0), motionBoxWidth, motionBoxWidth);
+                        faceView.hidden = NO;
+                    });
+                    
+                }
+                else
+                {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        faceView.hidden = YES;
+                    });
+                }
+                
+            }];
+            
+            [videoCamera addTarget:filterView];
+        }
         else
         {
             [filter addTarget:filterView];
@@ -1305,6 +1348,7 @@
         case GPUIMAGE_DISSOLVE: [(GPUImageDissolveBlendFilter *)filter setMix:[(UISlider *)sender value]]; break;
         case GPUIMAGE_LOWPASS: [(GPUImageLowPassFilter *)filter setFilterStrength:[(UISlider *)sender value]]; break;
         case GPUIMAGE_HIGHPASS: [(GPUImageHighPassFilter *)filter setFilterStrength:[(UISlider *)sender value]]; break;
+        case GPUIMAGE_MOTIONDETECTOR: [(GPUImageMotionDetector *)filter setLowPassFilterStrength:[(UISlider *)sender value]]; break;
         case GPUIMAGE_CHROMAKEY: [(GPUImageChromaKeyBlendFilter *)filter setThresholdSensitivity:[(UISlider *)sender value]]; break;
         case GPUIMAGE_CHROMAKEYNONBLEND: [(GPUImageChromaKeyFilter *)filter setThresholdSensitivity:[(UISlider *)sender value]]; break;
         case GPUIMAGE_KUWAHARA: [(GPUImageKuwaharaFilter *)filter setRadius:round([(UISlider *)sender value])]; break;
