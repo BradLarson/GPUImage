@@ -110,6 +110,10 @@
  */
 - (AVCaptureDevicePosition)cameraPosition;
 
+/** Get the AVCaptureConnection of the source camera
+ */
+- (AVCaptureConnection *)videoCaptureConnection;
+
 /** This flips between the front and rear cameras
  */
 - (void)rotateCamera;
