@@ -9,6 +9,8 @@
     AVAssetReader *reader;
 }
 
+@property (strong) NSTimer *frameFetcher;
+
 - (void)processAsset;
 
 @end
@@ -18,6 +20,8 @@
 @synthesize url = _url;
 @synthesize asset = _asset;
 @synthesize runBenchmark = _runBenchmark;
+@synthesize respectFrameRate = _respectFrameRate;
+@synthesize frameFetcher = _frameFetcher;
 
 #pragma mark -
 #pragma mark Initialization and teardown
@@ -33,6 +37,7 @@
 
     self.url = url;
     self.asset = nil;
+    self.respectFrameRate = NO;
 
     return self;
 }
@@ -48,6 +53,7 @@
 
     self.url = nil;
     self.asset = asset;
+    self.respectFrameRate = NO;
 
     return self;
 }
@@ -120,7 +126,8 @@
     NSMutableDictionary *outputSettings = [NSMutableDictionary dictionary];
     [outputSettings setObject: [NSNumber numberWithInt:kCVPixelFormatType_32BGRA]  forKey: (NSString*)kCVPixelBufferPixelFormatTypeKey];
     // Maybe set alwaysCopiesSampleData to NO on iOS 5.0 for faster video decoding
-    AVAssetReaderTrackOutput *readerVideoTrackOutput = [AVAssetReaderTrackOutput assetReaderTrackOutputWithTrack:[[self.asset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0] outputSettings:outputSettings];
+    AVAssetTrack *track = [[self.asset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0];
+    AVAssetReaderTrackOutput *readerVideoTrackOutput = [AVAssetReaderTrackOutput assetReaderTrackOutputWithTrack:track outputSettings:outputSettings];
     [reader addOutput:readerVideoTrackOutput];
 
     NSArray *audioTracks = [self.asset tracksWithMediaType:AVMediaTypeAudio];
@@ -157,19 +164,43 @@
     }
     else
     {
-        while (reader.status == AVAssetReaderStatusReading) 
-        {
-                [weakSelf readNextVideoFrameFromOutput:readerVideoTrackOutput];
+        SEL selector = @selector(readNextVideoFrameFromOutput:audioSampleFromOutput:);
+        NSMethodSignature *signature = [GPUImageMovie instanceMethodSignatureForSelector:selector];
+        NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:signature];
+        [invocation setSelector:selector];
+        [invocation setTarget:weakSelf];
+        [invocation setArgument:&readerVideoTrackOutput atIndex:2];
+        [invocation setArgument:&readerAudioTrackOutput atIndex:3];
 
-            if ( (shouldRecordAudioTrack) && (!audioEncodingIsFinished) )
+        weakSelf.frameFetcher = [NSTimer timerWithTimeInterval:1.0/track.nominalFrameRate invocation:invocation repeats:YES];
+        
+        if (self.respectFrameRate) {
+            [[NSRunLoop currentRunLoop] addTimer:weakSelf.frameFetcher forMode:NSRunLoopCommonModes];
+            [[NSRunLoop currentRunLoop] run];
+        } else {
+            while (reader.status == AVAssetReaderStatusReading)
             {
-                    [weakSelf readNextAudioSampleFromOutput:readerAudioTrackOutput];
+                [weakSelf.frameFetcher fire];
             }
-
-        }
-
-        if (reader.status == AVAssetWriterStatusCompleted) {
+            
+            if (reader.status == AVAssetWriterStatusCompleted) {
                 [weakSelf endProcessing];
+            }
+        }
+    }
+}
+
+- (void)readNextVideoFrameFromOutput:(AVAssetReaderTrackOutput *)readerVideoTrackOutput audioSampleFromOutput:(AVAssetReaderTrackOutput *)readerAudioTrackOutput;
+{
+    if (reader.status == AVAssetWriterStatusCompleted) {
+        [self endProcessing];
+        [self.frameFetcher invalidate];
+        // a callback here might be interesting. Stop processing the filter that uses this movie, but maybe swap in the next media.
+    } else if (reader.status == AVAssetReaderStatusReading){
+        [self readNextVideoFrameFromOutput:readerVideoTrackOutput];
+        
+        if (readerAudioTrackOutput) {
+            [self readNextAudioSampleFromOutput:readerAudioTrackOutput];
         }
     }
 }
