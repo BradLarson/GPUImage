@@ -145,11 +145,11 @@ void GPUImageCreateResizedSampleBuffer(CVPixelBufferRef cameraFrame, CGSize fina
 
 - (void)capturePhotoAsJPEGProcessedUpToFilter:(GPUImageOutput<GPUImageInput> *)finalFilterInChain withCompletionHandler:(void (^)(NSData *processedJPEG, NSError *error))block;
 {
-//    report_memory(@"Before still image capture");
+//    reportAvailableMemoryForGPUImage(@"Before still image capture");
     dispatch_semaphore_wait(frameRenderingSemaphore, DISPATCH_TIME_FOREVER);
 
     [photoOutput captureStillImageAsynchronouslyFromConnection:[[photoOutput connections] objectAtIndex:0] completionHandler:^(CMSampleBufferRef imageSampleBuffer, NSError *error) {
-//        report_memory(@"Before filter processing");
+//        reportAvailableMemoryForGPUImage(@"Before filter processing");
 
         // For now, resize photos to fix within the max texture size of the GPU
         CVImageBufferRef cameraFrame = CMSampleBufferGetImageBuffer(imageSampleBuffer);
@@ -179,20 +179,20 @@ void GPUImageCreateResizedSampleBuffer(CVPixelBufferRef cameraFrame, CGSize fina
            }
         }        
 
-//        report_memory(@"After filter processing");
+//        reportAvailableMemoryForGPUImage(@"After filter processing");
         
         __strong NSData *dataForJPEGFile = nil;
         @autoreleasepool {
             UIImage *filteredPhoto = [finalFilterInChain imageFromCurrentlyProcessedOutput];
             dispatch_semaphore_signal(frameRenderingSemaphore);
             
-//            report_memory(@"After UIImage generation");
+//            reportAvailableMemoryForGPUImage(@"After UIImage generation");
 
             dataForJPEGFile = UIImageJPEGRepresentation(filteredPhoto, 0.8);
-//            report_memory(@"After JPEG generation");
+//            reportAvailableMemoryForGPUImage(@"After JPEG generation");
         }
 
-//        report_memory(@"After autorelease pool");
+//        reportAvailableMemoryForGPUImage(@"After autorelease pool");
 
         block(dataForJPEGFile, error);        
     }];

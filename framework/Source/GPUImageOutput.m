@@ -29,7 +29,7 @@ void runSynchronouslyOnVideoProcessingQueue(void (^block)(void))
 	}
 }
 
-void report_memory(NSString *tag) 
+void reportAvailableMemoryForGPUImage(NSString *tag) 
 {    
     if (!tag)
         tag = @"Default";
