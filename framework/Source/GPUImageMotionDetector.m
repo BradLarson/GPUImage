@@ -25,7 +25,7 @@ NSString *const kGPUImageMotionComparisonFragmentShaderString = SHADER_STRING
 
 @implementation GPUImageMotionDetector
 
-@synthesize lowPassFilterStrength;
+@synthesize lowPassFilterStrength, motionDetectionBlock;
 
 #pragma mark -
 #pragma mark Initialization and teardown
