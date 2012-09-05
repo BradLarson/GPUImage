@@ -25,6 +25,7 @@
     
     movieFile = [[GPUImageMovie alloc] initWithURL:sampleURL];
     movieFile.runBenchmark = YES;
+    movieFile.playAtActualSpeed = YES;
 //    filter = [[GPUImagePixellateFilter alloc] init];
 //    filter = [[GPUImageUnsharpMaskFilter alloc] init];
     
@@ -86,7 +87,8 @@
 
 - (IBAction)updatePixelWidth:(id)sender
 {
-    [(GPUImageUnsharpMaskFilter *)filter setIntensity:[(UISlider *)sender value]];
+//    [(GPUImageUnsharpMaskFilter *)filter setIntensity:[(UISlider *)sender value]];
+    [(GPUImageDissolveBlendFilter *)filter setMix:[(UISlider *)sender value]];
 //    pixellateFilter.fractionalWidthOfAPixel = [(UISlider *)sender value];
 }
 
