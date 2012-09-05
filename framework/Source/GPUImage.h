@@ -86,6 +86,7 @@
 #import "GPUImageXYDerivativeFilter.h"
 #import "GPUImageHarrisCornerDetectionFilter.h"
 #import "GPUImageAlphaBlendFilter.h"
+#import "GPUImageNormalBlendFilter.h"
 #import "GPUImageNonMaximumSuppressionFilter.h"
 #import "GPUImageRGBFilter.h"
 #import "GPUImageMedianFilter.h"
