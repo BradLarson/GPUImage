@@ -17,6 +17,9 @@
  The resultant color is premultiplied with the alpha. To restore the color to the unmultiplied values, just divide by Da, the resultant alpha.
  
  http://stackoverflow.com/questions/1724946/blend-mode-on-a-transparent-and-semi-transparent-background
+ 
+ For some reason Photoshop behaves 
+ D = C1 + C2 * C2a * (1 - C1a)
  */
 NSString *const kGPUImageNormalBlendFragmentShaderString = SHADER_STRING
 (
