@@ -128,3 +128,4 @@
 #import "GPUImageLowPassFilter.h"
 #import "GPUImageHighPassFilter.h"
 #import "GPUImageMotionDetector.h"
+#import "GPUImageColorBlendFilter.h"
