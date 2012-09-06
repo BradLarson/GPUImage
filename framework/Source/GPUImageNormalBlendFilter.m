@@ -1,10 +1,4 @@
-//
-//  GPUNormalBlendFilter.m
-//  GPUImage
-//
 //  Created by Jorge Garcia on 9/5/12.
-//  Copyright (c) 2012 Brad Larson. All rights reserved.
-//
 
 #import "GPUImageNormalBlendFilter.h"
 /*

@@ -947,6 +947,15 @@
             
             filter = [[GPUImageSoftLightBlendFilter alloc] init];
         }; break;
+        case GPUIMAGE_NORMALBLEND:
+        {
+            self.title = @"Normal Blend";
+            self.filterSettingsSlider.hidden = YES;
+            needsSecondImage = YES;
+            
+            filter = [[GPUImageNormalBlendFilter alloc] init];
+        }; break;
+
         case GPUIMAGE_OPACITY:
         {
             self.title = @"Opacity Adjustment";
