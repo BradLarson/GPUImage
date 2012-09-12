@@ -15,9 +15,9 @@
     GPUImagePicture *blackAndWhiteBoxImage = [[GPUImagePicture alloc] initWithImage:inputImage];
     
     [self testHarrisCornerDetectorAgainstPicture:blackAndWhiteBoxImage withName:@"WhiteBoxes"];
+
     [self testNobleCornerDetectorAgainstPicture:blackAndWhiteBoxImage withName:@"WhiteBoxes"];
     [self testShiTomasiCornerDetectorAgainstPicture:blackAndWhiteBoxImage withName:@"WhiteBoxes"];
-    
     
     // Testing erosion and dilation
     GPUImageErosionFilter *erosionFilter = [[GPUImageErosionFilter alloc] initWithRadius:4];
@@ -93,17 +93,17 @@
 
 - (void)testCornerDetector:(GPUImageHarrisCornerDetectionFilter *)cornerDetector ofName:(NSString *)detectorName againstPicture:(GPUImagePicture *)pictureInput withName:(NSString *)pictureName;
 {
+    cornerDetector.threshold = 0.4;
+    cornerDetector.sensitivity = 4.0;
+    cornerDetector.blurSize = 1.0;
     [pictureInput removeAllTargets];
     
     [pictureInput addTarget:cornerDetector];
     
     GPUImageCrosshairGenerator *crosshairGenerator = [[GPUImageCrosshairGenerator alloc] init];
-    crosshairGenerator.crosshairWidth = 5.0;
+    crosshairGenerator.crosshairWidth = 10.0;
+    [crosshairGenerator setCrosshairColorRed:1.0 green:0.0 blue:0.0];
     [crosshairGenerator forceProcessingAtSize:[pictureInput outputImageSize]];
-    
-    [cornerDetector setCornersDetectedBlock:^(GLfloat* cornerArray, NSUInteger cornersDetected, CMTime frameTime) {
-        [crosshairGenerator renderCrosshairsFromArray:cornerArray count:cornersDetected frameTime:frameTime];
-    }];
     
     GPUImageAlphaBlendFilter *blendFilter = [[GPUImageAlphaBlendFilter alloc] init];
     [blendFilter forceProcessingAtSize:[pictureInput outputImageSize]];
@@ -113,19 +113,29 @@
     [crosshairGenerator addTarget:blendFilter];
     
     [blendFilter prepareForImageCapture];
-    [pictureInput processImage];
     
-    NSUInteger currentImageIndex = 0;
-    for (UIImage *currentImage in cornerDetector.intermediateImages)
-    {
-        [self saveImage:currentImage fileName:[NSString stringWithFormat:@"%@-%@-%d.png", detectorName, pictureName, currentImageIndex]];
+    [cornerDetector setCornersDetectedBlock:^(GLfloat* cornerArray, NSUInteger cornersDetected, CMTime frameTime) {
+        NSLog(@"Number of corners: %d", cornersDetected);
+        [crosshairGenerator renderCrosshairsFromArray:cornerArray count:cornersDetected frameTime:frameTime];
         
-        currentImageIndex++;
-    }
+        dispatch_async(dispatch_get_main_queue(), ^{
+            NSUInteger currentImageIndex = 0;
+            for (UIImage *currentImage in cornerDetector.intermediateImages)
+            {
+                [self saveImage:currentImage fileName:[NSString stringWithFormat:@"%@-%@-%d.png", detectorName, pictureName, currentImageIndex]];
+                
+                currentImageIndex++;
+            }
+            
+            NSLog(@"Save corner image");
+            UIImage *crosshairResult = [blendFilter imageFromCurrentlyProcessedOutput];
+            
+            [self saveImage:crosshairResult fileName:[NSString stringWithFormat:@"%@-%@-Crosshairs.png", detectorName, pictureName]];
+        });
+    }];
     
-    UIImage *crosshairResult = [blendFilter imageFromCurrentlyProcessedOutput];
-    
-    [self saveImage:crosshairResult fileName:[NSString stringWithFormat:@"%@-%@-Crosshairs.png", detectorName, pictureName]];
+
+    [pictureInput processImage];
 }
 
 - (void)testHarrisCornerDetectorAgainstPicture:(GPUImagePicture *)pictureInput withName:(NSString *)pictureName;
