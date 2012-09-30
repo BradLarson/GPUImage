@@ -107,6 +107,12 @@ void GPUImageCreateResizedSampleBuffer(CVPixelBufferRef cameraFrame, CGSize fina
 
     [photoOutput captureStillImageAsynchronouslyFromConnection:[[photoOutput connections] objectAtIndex:0] completionHandler:^(CMSampleBufferRef imageSampleBuffer, NSError *error) {
 
+        if(imageSampleBuffer == NULL){
+            dispatch_semaphore_signal(frameRenderingSemaphore);
+            block(nil, error);
+            return;
+        }
+
         // For now, resize photos to fix within the max texture size of the GPU
         CVImageBufferRef cameraFrame = CMSampleBufferGetImageBuffer(imageSampleBuffer);
         
@@ -150,6 +156,12 @@ void GPUImageCreateResizedSampleBuffer(CVPixelBufferRef cameraFrame, CGSize fina
 
     [photoOutput captureStillImageAsynchronouslyFromConnection:[[photoOutput connections] objectAtIndex:0] completionHandler:^(CMSampleBufferRef imageSampleBuffer, NSError *error) {
 //        reportAvailableMemoryForGPUImage(@"Before filter processing");
+
+        if(imageSampleBuffer == NULL){
+            dispatch_semaphore_signal(frameRenderingSemaphore);
+            block(nil, error);
+            return;
+        }
 
         // For now, resize photos to fix within the max texture size of the GPU
         CVImageBufferRef cameraFrame = CMSampleBufferGetImageBuffer(imageSampleBuffer);
@@ -205,7 +217,13 @@ void GPUImageCreateResizedSampleBuffer(CVPixelBufferRef cameraFrame, CGSize fina
     dispatch_semaphore_wait(frameRenderingSemaphore, DISPATCH_TIME_FOREVER);
 
     [photoOutput captureStillImageAsynchronouslyFromConnection:[[photoOutput connections] objectAtIndex:0] completionHandler:^(CMSampleBufferRef imageSampleBuffer, NSError *error) {
-        
+
+        if(imageSampleBuffer == NULL){
+            dispatch_semaphore_signal(frameRenderingSemaphore);
+            block(nil, error);
+            return;
+        }
+
         // For now, resize photos to fix within the max texture size of the GPU
         CVImageBufferRef cameraFrame = CMSampleBufferGetImageBuffer(imageSampleBuffer);
         
