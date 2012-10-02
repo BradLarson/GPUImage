@@ -81,7 +81,7 @@ NSString *const kGPUImageSphereRefractionFragmentShaderString = SHADER_STRING
     CGSize oldInputSize = inputTextureSize;
     [super setInputSize:newSize atIndex:textureIndex];
 
-    if (!CGSizeEqualToSize(oldInputSize, inputTextureSize))
+    if (!CGSizeEqualToSize(oldInputSize, inputTextureSize) && (!CGSizeEqualToSize(newSize, CGSizeZero)) )
     {
         [self setAspectRatio:(inputTextureSize.width / inputTextureSize.height)];
     }

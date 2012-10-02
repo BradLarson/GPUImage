@@ -322,6 +322,18 @@
 	return _frameRate;
 }
 
+- (AVCaptureConnection *)videoCaptureConnection {
+    for (AVCaptureConnection *connection in [videoOutput connections] ) {
+		for ( AVCaptureInputPort *port in [connection inputPorts] ) {
+			if ( [[port mediaType] isEqual:AVMediaTypeVideo] ) {
+				return connection;
+			}
+		}
+	}
+    
+    return nil;
+}
+
 #define INITIALFRAMESTOIGNOREFORBENCHMARK 5
 
 - (void)processVideoSampleBuffer:(CMSampleBufferRef)sampleBuffer;
@@ -370,17 +382,17 @@
                 
                 if (currentTarget != self.targetToIgnoreForUpdates)
                 {
+                    [currentTarget setInputRotation:outputRotation atIndex:textureIndexOfTarget];
                     [currentTarget setInputSize:CGSizeMake(bufferWidth, bufferHeight) atIndex:textureIndexOfTarget];
                     
                     [currentTarget setInputTexture:outputTexture atIndex:textureIndexOfTarget];
-                    [currentTarget setInputRotation:outputRotation atIndex:textureIndexOfTarget];
                     
                     [currentTarget newFrameReadyAtTime:currentTime atIndex:textureIndexOfTarget];
                 }
                 else
                 {
-                    [currentTarget setInputTexture:outputTexture atIndex:textureIndexOfTarget];
                     [currentTarget setInputRotation:outputRotation atIndex:textureIndexOfTarget];
+                    [currentTarget setInputTexture:outputTexture atIndex:textureIndexOfTarget];
                 }
             }
         }

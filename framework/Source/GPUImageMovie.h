@@ -14,6 +14,10 @@
  */
 @property(readwrite, nonatomic) BOOL runBenchmark;
 
+/** This determines whether to play back a movie as fast as the frames can be processed, or if the original speed of the movie should be respected. Defaults to NO.
+ */
+@property(readwrite, nonatomic) BOOL playAtActualSpeed;
+
 /// @name Initialization and teardown
 - (id)initWithAsset:(AVAsset *)asset;
 - (id)initWithURL:(NSURL *)url;

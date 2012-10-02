@@ -11,6 +11,10 @@ extern NSString *const kGPUImageTwoInputTextureVertexShaderString;
     CMTime firstFrameTime, secondFrameTime;
     
     BOOL hasSetFirstTexture, hasReceivedFirstFrame, hasReceivedSecondFrame, firstFrameWasVideo, secondFrameWasVideo;
+    BOOL firstFrameCheckDisabled, secondFrameCheckDisabled;
 }
+
+- (void)disableFirstFrameCheck;
+- (void)disableSecondFrameCheck;
 
 @end

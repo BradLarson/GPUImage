@@ -34,12 +34,14 @@
 
 - (BOOL)_parseConfiguration:(NSDictionary *)configuration {
     NSArray *filters = [configuration objectForKey:@"Filters"];
-    if (!filters) return NO;
+    if (!filters) {
+        return NO;
+    }
 
     NSError *regexError = nil;
-    NSRegularExpression *parsingRegex = [NSRegularExpression regularExpressionWithPattern:@"(float|CGPoint)\\((.*?)(?:,\\s*(.*?))*\\)"
-                                                                                  options:0
-                                                                                    error:&regexError];
+    NSRegularExpression *parsingRegex = [NSRegularExpression regularExpressionWithPattern:@"(float|CGPoint|NSString)\\((.*?)(?:,\\s*(.*?))*\\)"
+            options:0
+            error:&regexError];
 
     // It's faster to put them into an array and then pass it to the filters property than it is to call [self addFilter:] every time
     NSMutableArray *orderedFilters = [NSMutableArray arrayWithCapacity:[filters count]];
@@ -64,8 +66,8 @@
                     parsedArray = [NSMutableArray arrayWithCapacity:[array count]];
                     for (NSString *string in array) {
                         NSTextCheckingResult *parse = [parsingRegex firstMatchInString:string
-                                                                               options:0
-                                                                                 range:NSMakeRange(0, [string length])];
+                                options:0
+                                range:NSMakeRange(0, [string length])];
                         NSLog(@"Ranges: %d", parse.numberOfRanges);
                         NSString *modifier = [string substringWithRange:[parse rangeAtIndex:1]];
                         if ([modifier isEqualToString:@"float"]) {
@@ -79,6 +81,11 @@
                             CGFloat y = [[string substringWithRange:[parse rangeAtIndex:3]] floatValue];
                             CGPoint value = CGPointMake(x, y);
                             [parsedArray addObject:[NSValue valueWithCGPoint:value]];
+                        } else if ([modifier isEqualToString:@"NSString"]) {
+                            // NSString modifier, one string argument
+                            NSString *stringValue = [[string substringWithRange:[parse rangeAtIndex:2]] copy];
+                            [inv setArgument:&stringValue atIndex:2];
+
                         } else {
                             return NO;
                         }
@@ -87,8 +94,8 @@
                 } else {
                     NSString *string = [filterAttributes objectForKey:propertyKey];
                     NSTextCheckingResult *parse = [parsingRegex firstMatchInString:string
-                                                                           options:0
-                                                                             range:NSMakeRange(0, [string length])];
+                            options:0
+                            range:NSMakeRange(0, [string length])];
                     NSLog(@"Ranges: %d", parse.numberOfRanges);
                     NSString *modifier = [string substringWithRange:[parse rangeAtIndex:1]];
                     if ([modifier isEqualToString:@"float"]) {
@@ -171,7 +178,10 @@
     }
 
     [prevFilter removeAllTargets];
-    [prevFilter addTarget:self.output];
+
+    if (self.output != nil) {
+        [prevFilter addTarget:self.output];
+    }
 }
 
 - (UIImage *)currentFilteredFrame {

@@ -149,7 +149,7 @@
             [currentTarget setInputSize:pixelSizeOfImage atIndex:textureIndexOfTarget];
             [currentTarget newFrameReadyAtTime:kCMTimeIndefinite atIndex:textureIndexOfTarget];
         }    
-    });    
+    });
 }
 
 - (CGSize)outputImageSize;

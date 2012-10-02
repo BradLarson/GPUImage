@@ -24,7 +24,7 @@
 @property(strong,nonatomic) NSArray *greenCurvePoints;    
 @property(strong,nonatomic) NSArray *blueCurvePoints;
 
-- (id) initWithCurveFile:(NSString*)curveFile;
+- (id) initWithCurveFilePathURL:(NSURL*)curveFilePathURL;
 
 @end
 
@@ -32,18 +32,18 @@
 
 @synthesize rgbCompositeCurvePoints, redCurvePoints, greenCurvePoints, blueCurvePoints;
 
-- (id) initWithCurveFile:(NSString*)curveFile
-{    
+- (id) initWithCurveFilePathURL:(NSURL*)curveFilePathURL
+{
     self = [super init];
 	if (self != nil)
 	{
-        NSString *bundleCurvePath = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: curveFile];
+        NSError* error = nil;
+        NSFileHandle* file = [NSFileHandle fileHandleForReadingFromURL:curveFilePathURL
+                                                                 error:&error];
         
-        NSFileHandle* file = [NSFileHandle fileHandleForReadingAtPath: bundleCurvePath];
-        
-        if (file == nil)
+        if (error)
         {
-            NSLog(@"Failed to open file");
+            NSLog(@"Failed to open file: %@", error);
             
             return self;
         }
@@ -162,17 +162,24 @@ NSString *const kGPUImageToneCurveFragmentShaderString = SHADER_STRING
 }
 
 // This pulls in Adobe ACV curve files to specify the tone curve
-- (id)initWithACV:(NSString*)curveFile
+- (id)initWithACV:(NSString*)curveFilename
+{
+    return [self initWithACVURL:[[NSBundle mainBundle] URLForResource:curveFilename
+                                                        withExtension:@"acv"]];
+}
+
+- (id)initWithACVURL:(NSURL*)curveFileURL
 {
     if (!(self = [super initWithFragmentShaderFromString:kGPUImageToneCurveFragmentShaderString]))
     {
 		return nil;
     }
     
-    toneCurveTextureUniform = [filterProgram uniformIndex:@"toneCurveTexture"];    
+    toneCurveTextureUniform = [filterProgram uniformIndex:@"toneCurveTexture"];
     
-    GPUImageACVFile *curve = [[GPUImageACVFile alloc] initWithCurveFile:curveFile];
-
+    
+    GPUImageACVFile *curve = [[GPUImageACVFile alloc] initWithCurveFilePathURL:curveFileURL];
+    
     [self setRgbCompositeControlPoints:curve.rgbCompositeCurvePoints];
     [self setRedControlPoints:curve.redCurvePoints];
     [self setGreenControlPoints:curve.greenCurvePoints];
@@ -181,11 +188,17 @@ NSString *const kGPUImageToneCurveFragmentShaderString = SHADER_STRING
     curve = nil;
     
     return self;
+    
 }
 
-- (void)setPointsWithACV:(NSString*)curveFile
+- (void)setPointsWithACV:(NSString*)curveFilename
 {
-    GPUImageACVFile *curve = [[GPUImageACVFile alloc] initWithCurveFile:curveFile];
+    [self setPointsWithACVURL:[[NSBundle mainBundle] URLForResource:curveFilename withExtension:@"acv"]];
+}
+
+- (void)setPointsWithACVURL:(NSURL*)curveFileURL
+{
+    GPUImageACVFile *curve = [[GPUImageACVFile alloc] initWithCurveFilePathURL:curveFileURL];
     
     [self setRgbCompositeControlPoints:curve.rgbCompositeCurvePoints];
     [self setRedControlPoints:curve.redCurvePoints];

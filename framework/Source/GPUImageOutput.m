@@ -1,5 +1,6 @@
 #import "GPUImageOutput.h"
 #import "GPUImageMovieWriter.h"
+#import "GPUImagePicture.h"
 #import <mach/mach.h>
 
 void runOnMainQueueWithoutDeadlocking(void (^block)(void))
@@ -28,7 +29,7 @@ void runSynchronouslyOnVideoProcessingQueue(void (^block)(void))
 	}
 }
 
-void report_memory(NSString *tag) 
+void reportAvailableMemoryForGPUImage(NSString *tag) 
 {    
     if (!tag)
         tag = @"Default";
@@ -289,12 +290,19 @@ void report_memory(NSString *tag)
 
 - (UIImage *)imageFromCurrentlyProcessedOutputWithOrientation:(UIImageOrientation)imageOrientation;
 {
-    return nil;
+    CGImageRef cgImageFromBytes = [self newCGImageFromCurrentlyProcessedOutputWithOrientation:imageOrientation];
+    UIImage *finalImage = [UIImage imageWithCGImage:cgImageFromBytes scale:1.0 orientation:imageOrientation];
+    CGImageRelease(cgImageFromBytes);
+    
+    return finalImage;
 }
 
 - (UIImage *)imageByFilteringImage:(UIImage *)imageToFilter;
 {
-    return nil;
+    CGImageRef image = [self newCGImageByFilteringCGImage:[imageToFilter CGImage] orientation:[imageToFilter imageOrientation]];
+    UIImage *processedImage = [UIImage imageWithCGImage:image scale:[imageToFilter scale] orientation:[imageToFilter imageOrientation]];
+    CGImageRelease(image);
+    return processedImage;
 }
 
 - (CGImageRef)newCGImageFromCurrentlyProcessedOutputWithOrientation:(UIImageOrientation)imageOrientation;
@@ -302,19 +310,29 @@ void report_memory(NSString *tag)
     return nil;
 }
 
-- (CGImageRef)newCGImageByFilteringImage:(UIImage *)imageToFilter;
+- (CGImageRef)newCGImageByFilteringCGImage:(CGImageRef)imageToFilter
 {
-    return nil;
+    return [self newCGImageByFilteringCGImage:imageToFilter orientation:UIImageOrientationUp];
 }
 
-- (CGImageRef)newCGImageByFilteringCGImage:(CGImageRef)imageToFilter;
+- (CGImageRef)newCGImageByFilteringImage:(UIImage *)imageToFilter
 {
-    return nil;
+    return [self newCGImageByFilteringCGImage:[imageToFilter CGImage] orientation:[imageToFilter imageOrientation]];
 }
 
 - (CGImageRef)newCGImageByFilteringCGImage:(CGImageRef)imageToFilter orientation:(UIImageOrientation)orientation;
 {
-    return nil;
+    GPUImagePicture *stillImageSource = [[GPUImagePicture alloc] initWithCGImage:imageToFilter];
+    
+    [self prepareForImageCapture];
+    
+    [stillImageSource addTarget:(id<GPUImageInput>)self];
+    [stillImageSource processImage];
+    
+    CGImageRef processedImage = [self newCGImageFromCurrentlyProcessedOutputWithOrientation:orientation];
+    
+    [stillImageSource removeTarget:(id<GPUImageInput>)self];
+    return processedImage;
 }
 
 - (void)prepareForImageCapture;

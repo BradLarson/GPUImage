@@ -222,7 +222,8 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
     return finalImage;
 }
 
-- (CGImageRef)newCGImageByFilteringCGImage:(CGImageRef)imageToFilter {
+- (CGImageRef)newCGImageByFilteringCGImage:(CGImageRef)imageToFilter
+{
     return [self newCGImageByFilteringCGImage:imageToFilter orientation:UIImageOrientationUp];
 }
 
@@ -241,7 +242,8 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
     return processedImage;
 }
 
-- (CGImageRef)newCGImageByFilteringImage:(UIImage *)imageToFilter {
+- (CGImageRef)newCGImageByFilteringImage:(UIImage *)imageToFilter
+{
     return [self newCGImageByFilteringCGImage:[imageToFilter CGImage] orientation:[imageToFilter imageOrientation]];
 }
 
@@ -830,6 +832,15 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
         inputTextureSize = frameSize;
         forcedMaximumSize = CGSizeZero;
     }
+    
+    [self destroyFilterFBO];
+    
+    for (id<GPUImageInput> currentTarget in targets)
+    {
+        if ([currentTarget respondsToSelector:@selector(destroyFilterFBO)]) {
+            [currentTarget performSelector:@selector(destroyFilterFBO)];
+        }
+    }
 }
 
 - (void)forceProcessingAtSizeRespectingAspectRatio:(CGSize)frameSize;
@@ -844,6 +855,15 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
     {
         overrideInputSize = YES;
         forcedMaximumSize = frameSize;
+    }
+    
+    [self destroyFilterFBO];
+    
+    for (id<GPUImageInput> currentTarget in targets)
+    {
+        if ([currentTarget respondsToSelector:@selector(destroyFilterFBO)]) {
+            [currentTarget performSelector:@selector(destroyFilterFBO)];
+        }
     }
 }
 

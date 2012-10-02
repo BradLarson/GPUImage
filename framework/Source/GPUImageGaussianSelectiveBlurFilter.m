@@ -72,7 +72,7 @@ NSString *const kGPUImageGaussianSelectiveBlurFragmentShaderString = SHADER_STRI
     [super setInputSize:newSize atIndex:textureIndex];
     inputTextureSize = newSize;
     
-    if ( (!CGSizeEqualToSize(oldInputSize, inputTextureSize)) && (!hasOverriddenAspectRatio) )
+    if ( (!CGSizeEqualToSize(oldInputSize, inputTextureSize)) && (!hasOverriddenAspectRatio) && (!CGSizeEqualToSize(newSize, CGSizeZero)) )
     {
         _aspectRatio = (inputTextureSize.width / inputTextureSize.height);
         [selectiveFocusFilter setFloat:_aspectRatio forUniformName:@"aspectRatio"];
