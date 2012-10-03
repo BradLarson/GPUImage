@@ -29,6 +29,20 @@ void runSynchronouslyOnVideoProcessingQueue(void (^block)(void))
 	}
 }
 
+void runAsynchronouslyOnVideoProcessingQueue(void (^block)(void))
+{
+    dispatch_queue_t videoProcessingQueue = [GPUImageOpenGLESContext sharedOpenGLESQueue];
+    
+	if (dispatch_get_current_queue() == videoProcessingQueue)
+	{
+		block();
+	}
+	else
+	{
+		dispatch_async(videoProcessingQueue, block);
+	}
+}
+
 void reportAvailableMemoryForGPUImage(NSString *tag) 
 {    
     if (!tag)

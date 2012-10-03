@@ -4,6 +4,7 @@
 
 void runOnMainQueueWithoutDeadlocking(void (^block)(void));
 void runSynchronouslyOnVideoProcessingQueue(void (^block)(void));
+void runAsynchronouslyOnVideoProcessingQueue(void (^block)(void));
 void reportAvailableMemoryForGPUImage(NSString *tag);
 
 @class GPUImageMovieWriter;

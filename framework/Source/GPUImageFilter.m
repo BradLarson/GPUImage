@@ -603,7 +603,7 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
 
 - (void)setMatrix3f:(GPUMatrix3x3)matrix forUniform:(GLint)uniform program:(GLProgram *)shaderProgram;
 {
-    dispatch_async([GPUImageOpenGLESContext sharedOpenGLESQueue], ^{
+    runAsynchronouslyOnVideoProcessingQueue(^{
         [GPUImageOpenGLESContext setActiveShaderProgram:shaderProgram];
         glUniformMatrix3fv(uniform, 1, GL_FALSE, (GLfloat *)&matrix);
     });
@@ -611,7 +611,7 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
 
 - (void)setMatrix4f:(GPUMatrix4x4)matrix forUniform:(GLint)uniform program:(GLProgram *)shaderProgram;
 {
-    dispatch_async([GPUImageOpenGLESContext sharedOpenGLESQueue], ^{
+    runAsynchronouslyOnVideoProcessingQueue(^{
         [GPUImageOpenGLESContext setActiveShaderProgram:shaderProgram];
         glUniformMatrix4fv(uniform, 1, GL_FALSE, (GLfloat *)&matrix);
     });
@@ -619,7 +619,7 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
 
 - (void)setFloat:(GLfloat)floatValue forUniform:(GLint)uniform program:(GLProgram *)shaderProgram;
 {
-    dispatch_async([GPUImageOpenGLESContext sharedOpenGLESQueue], ^{
+    runAsynchronouslyOnVideoProcessingQueue(^{
         [GPUImageOpenGLESContext setActiveShaderProgram:shaderProgram];
         glUniform1f(uniform, floatValue);
     });
@@ -627,7 +627,7 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
 
 - (void)setPoint:(CGPoint)pointValue forUniform:(GLint)uniform program:(GLProgram *)shaderProgram;
 {
-    dispatch_async([GPUImageOpenGLESContext sharedOpenGLESQueue], ^{
+    runAsynchronouslyOnVideoProcessingQueue(^{
         [GPUImageOpenGLESContext setActiveShaderProgram:shaderProgram];
 
         GLfloat positionArray[2];
@@ -640,7 +640,7 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
 
 - (void)setSize:(CGSize)sizeValue forUniform:(GLint)uniform program:(GLProgram *)shaderProgram;
 {
-    dispatch_async([GPUImageOpenGLESContext sharedOpenGLESQueue], ^{
+    runAsynchronouslyOnVideoProcessingQueue(^{
         [GPUImageOpenGLESContext setActiveShaderProgram:shaderProgram];
         
         GLfloat sizeArray[2];
@@ -653,7 +653,7 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
 
 - (void)setVec3:(GPUVector3)vectorValue forUniform:(GLint)uniform program:(GLProgram *)shaderProgram;
 {
-    dispatch_async([GPUImageOpenGLESContext sharedOpenGLESQueue], ^{
+    runAsynchronouslyOnVideoProcessingQueue(^{
         [GPUImageOpenGLESContext setActiveShaderProgram:shaderProgram];
 
         glUniform3fv(uniform, 1, (GLfloat *)&vectorValue);
@@ -662,7 +662,7 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
 
 - (void)setVec4:(GPUVector4)vectorValue forUniform:(GLint)uniform program:(GLProgram *)shaderProgram;
 {
-    dispatch_async([GPUImageOpenGLESContext sharedOpenGLESQueue], ^{
+    runAsynchronouslyOnVideoProcessingQueue(^{
         [GPUImageOpenGLESContext setActiveShaderProgram:shaderProgram];
         
         glUniform4fv(uniform, 1, (GLfloat *)&vectorValue);
@@ -671,7 +671,7 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
 
 - (void)setFloatArray:(GLfloat *)arrayValue length:(GLsizei)arrayLength forUniform:(GLint)uniform program:(GLProgram *)shaderProgram;
 {
-    dispatch_async([GPUImageOpenGLESContext sharedOpenGLESQueue], ^{
+    runAsynchronouslyOnVideoProcessingQueue(^{
         [GPUImageOpenGLESContext setActiveShaderProgram:shaderProgram];
         
         glUniform1fv(uniform, arrayLength, arrayValue);
@@ -680,7 +680,7 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
 
 - (void)setInteger:(GLint)intValue forUniform:(GLint)uniform program:(GLProgram *)shaderProgram;
 {
-    dispatch_async([GPUImageOpenGLESContext sharedOpenGLESQueue], ^{
+    runAsynchronouslyOnVideoProcessingQueue(^{
         [GPUImageOpenGLESContext setActiveShaderProgram:shaderProgram];
         glUniform1i(uniform, intValue);
     });
