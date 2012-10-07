@@ -250,19 +250,9 @@ NSString *const kGPUImageToneCurveFragmentShaderString = SHADER_STRING
         CGPoint firstSplinePoint = [[splinePoints objectAtIndex:0] CGPointValue];
         
         if (firstSplinePoint.x > 0) {
-            for (int i=firstSplinePoint.x; i >= 0; i--) {
-                CGPoint newCGPoint = CGPointMake(i, 0);
+            for (int i=0; i <=firstSplinePoint.x; i++) {
+                CGPoint newCGPoint = CGPointMake(0, 0);
                 [splinePoints insertObject:[NSValue valueWithCGPoint:newCGPoint] atIndex:0];
-            }
-        }
-
-        // Insert points similarly at the end, if necessary.
-        CGPoint lastSplinePoint = [[splinePoints objectAtIndex:([splinePoints count] - 1)] CGPointValue];
-
-        if (lastSplinePoint.x < 255) {
-            for (int i = lastSplinePoint.x + 1; i <= 255; i++) {
-                CGPoint newCGPoint = CGPointMake(i, 255);
-                [splinePoints addObject:[NSValue valueWithCGPoint:newCGPoint]];
             }
         }
         
