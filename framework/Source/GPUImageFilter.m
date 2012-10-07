@@ -450,6 +450,13 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
         1.0f, 1.0f,
     };
     
+    static const GLfloat rotateLeftVerticalFlipTextureCoordinates[] = {
+        1.0f, 1.0f,
+        1.0f, 0.0f,
+        0.0f, 1.0f,
+        0.0f, 0.0f,
+    };
+    
     static const GLfloat rotate180TextureCoordinates[] = {
         1.0f, 1.0f,
         0.0f, 1.0f,
@@ -465,6 +472,7 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
         case kGPUImageFlipVertical: return verticalFlipTextureCoordinates;
         case kGPUImageFlipHorizonal: return horizontalFlipTextureCoordinates;
         case kGPUImageRotateRightFlipVertical: return rotateRightVerticalFlipTextureCoordinates;
+        case kGPUImageRotateLeftFlipVertical: return rotateLeftVerticalFlipTextureCoordinates;
         case kGPUImageRotate180: return rotate180TextureCoordinates;
     }
 }
@@ -770,6 +778,11 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
         {
             rotatedPoint.x = pointToRotate.y;
             rotatedPoint.y = pointToRotate.x;
+        }; break;
+        case kGPUImageRotateLeftFlipVertical:
+        {
+            rotatedPoint.x = 1.0 - pointToRotate.y;
+            rotatedPoint.y = 1.0 - pointToRotate.x;
         }; break;
         case kGPUImageRotate180:
         {

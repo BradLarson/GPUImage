@@ -608,7 +608,7 @@
                 switch(_outputImageOrientation)
                 {
                     case UIInterfaceOrientationPortrait:outputRotation = kGPUImageRotateRightFlipVertical; break;
-                    case UIInterfaceOrientationPortraitUpsideDown:outputRotation = kGPUImageRotateRight; break;
+                    case UIInterfaceOrientationPortraitUpsideDown:outputRotation = kGPUImageRotateLeftFlipVertical; break;
                     case UIInterfaceOrientationLandscapeLeft:outputRotation = kGPUImageFlipVertical; break;
                     case UIInterfaceOrientationLandscapeRight:outputRotation = kGPUImageFlipHorizonal; break;
                 }
