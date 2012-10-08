@@ -25,6 +25,8 @@ typedef enum {
 
 @property(nonatomic) BOOL enabled;
 
+@property(nonatomic) BOOL mirror;
+
 /** Handling fill mode
  
  @param redComponent Red component for background color
