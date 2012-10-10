@@ -89,6 +89,10 @@
 		}
 	}
     
+    if (!_inputCamera) {
+        return nil;
+    }
+    
 	// Create the capture session
 	_captureSession = [[AVCaptureSession alloc] init];
 	
@@ -117,6 +121,7 @@
 	else
 	{
 		NSLog(@"Couldn't add video output");
+        return nil;
 	}
     
 	_captureSessionPreset = sessionPreset;
