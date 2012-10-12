@@ -502,9 +502,9 @@
         CFRetain(sampleBuffer);
         dispatch_async([GPUImageOpenGLESContext sharedOpenGLESQueue], ^{
             //Feature Detection Hook.
-            if (self.delegate)
+            if (weakSelf.delegate)
             {
-                [self.delegate willOutputSampleBuffer:sampleBuffer];
+                [weakSelf.delegate willOutputSampleBuffer:sampleBuffer];
             }
             
             [weakSelf processVideoSampleBuffer:sampleBuffer];
