@@ -41,7 +41,7 @@
         NSFileHandle* file = [NSFileHandle fileHandleForReadingFromURL:curveFilePathURL
                                                                  error:&error];
         
-        if (error)
+        if ((file == nil) || (error != nil))
         {
             NSLog(@"Failed to open file: %@", error);
             
