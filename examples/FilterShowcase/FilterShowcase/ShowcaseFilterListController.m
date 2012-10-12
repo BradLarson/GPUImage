@@ -109,6 +109,7 @@
 		case GPUIMAGE_SOBELEDGEDETECTION: cell.textLabel.text = @"Sobel edge detection"; break;
 		case GPUIMAGE_PREWITTEDGEDETECTION: cell.textLabel.text = @"Prewitt edge detection"; break;
 		case GPUIMAGE_CANNYEDGEDETECTION: cell.textLabel.text = @"Canny edge detection"; break;
+		case GPUIMAGE_THRESHOLDEDGEDETECTION: cell.textLabel.text = @"Threshold edge detection"; break;
 		case GPUIMAGE_XYGRADIENT: cell.textLabel.text = @"XY derivative"; break;
 		case GPUIMAGE_HARRISCORNERDETECTION: cell.textLabel.text = @"Harris corner detection"; break;
 		case GPUIMAGE_NOBLECORNERDETECTION: cell.textLabel.text = @"Noble corner detection"; break;
@@ -118,6 +119,7 @@
 		case GPUIMAGE_LOWPASS: cell.textLabel.text = @"Low pass"; break;
 		case GPUIMAGE_HIGHPASS: cell.textLabel.text = @"High pass"; break;
 		case GPUIMAGE_SKETCH: cell.textLabel.text = @"Sketch"; break;
+		case GPUIMAGE_THRESHOLDSKETCH: cell.textLabel.text = @"Threshold Sketch"; break;
 		case GPUIMAGE_TOON: cell.textLabel.text = @"Toon"; break;
 		case GPUIMAGE_SMOOTHTOON: cell.textLabel.text = @"Smooth toon"; break;
 		case GPUIMAGE_TILTSHIFT: cell.textLabel.text = @"Tilt shift"; break;

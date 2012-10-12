@@ -9,7 +9,7 @@
 - (id)initWithFilterType:(GPUImageShowcaseFilterType)newFilterType;
 {
     self = [super initWithNibName:@"ShowcaseFilterViewController" bundle:nil];
-    if (self) 
+    if (self)
     {
         filterType = newFilterType;
     }
@@ -516,6 +516,17 @@
 
             filter = [[GPUImageCannyEdgeDetectionFilter alloc] init];
         }; break;
+        case GPUIMAGE_THRESHOLDEDGEDETECTION:
+        {
+            self.title = @"Threshold Edge Detection";
+            self.filterSettingsSlider.hidden = NO;
+            
+            [self.filterSettingsSlider setMinimumValue:0.0];
+            [self.filterSettingsSlider setMaximumValue:1.0];
+            [self.filterSettingsSlider setValue:0.5];
+            
+            filter = [[GPUImageThresholdEdgeDetectionFilter alloc] init];
+        }; break;
         case GPUIMAGE_LOCALBINARYPATTERN:
         {
             self.title = @"Local Binary Pattern";
@@ -575,6 +586,17 @@
             self.filterSettingsSlider.hidden = YES;
             
             filter = [[GPUImageSketchFilter alloc] init];
+        }; break;
+        case GPUIMAGE_THRESHOLDSKETCH:
+        {
+            self.title = @"Threshold Sketch";
+            self.filterSettingsSlider.hidden = NO;
+            
+            [self.filterSettingsSlider setMinimumValue:0.9];
+            [self.filterSettingsSlider setMaximumValue:1.0];
+            [self.filterSettingsSlider setValue:0.9];
+            
+            filter = [[GPUImageThresholdSketchFilter alloc] init];
         }; break;
         case GPUIMAGE_TOON:
         {
@@ -1381,7 +1403,9 @@
         case GPUIMAGE_NOBLECORNERDETECTION: [(GPUImageNobleCornerDetectionFilter *)filter setThreshold:[(UISlider*)sender value]]; break;
         case GPUIMAGE_SHITOMASIFEATUREDETECTION: [(GPUImageShiTomasiFeatureDetectionFilter *)filter setThreshold:[(UISlider*)sender value]]; break;
 //        case GPUIMAGE_HARRISCORNERDETECTION: [(GPUImageHarrisCornerDetectionFilter *)filter setSensitivity:[(UISlider*)sender value]]; break;
+        case GPUIMAGE_THRESHOLDEDGEDETECTION: [(GPUImageThresholdEdgeDetectionFilter *)filter setThreshold:[(UISlider *)sender value]]; break;
         case GPUIMAGE_SMOOTHTOON: [(GPUImageSmoothToonFilter *)filter setBlurSize:[(UISlider*)sender value]]; break;
+        case GPUIMAGE_THRESHOLDSKETCH: [(GPUImageThresholdSketchFilter *)filter setThreshold:[(UISlider *)sender value]]; break;
 //        case GPUIMAGE_BULGE: [(GPUImageBulgeDistortionFilter *)filter setRadius:[(UISlider *)sender value]]; break;
         case GPUIMAGE_BULGE: [(GPUImageBulgeDistortionFilter *)filter setScale:[(UISlider *)sender value]]; break;
         case GPUIMAGE_SPHEREREFRACTION: [(GPUImageSphereRefractionFilter *)filter setRadius:[(UISlider *)sender value]]; break;
