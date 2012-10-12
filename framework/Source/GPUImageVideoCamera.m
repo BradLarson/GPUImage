@@ -477,7 +477,7 @@
 
 - (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection
 {
-    __unsafe_unretained id weakSelf = self;
+    __unsafe_unretained __typeof(self) weakSelf = self;
     if (captureOutput == audioOutput)
     {
 //        if (dispatch_semaphore_wait(frameRenderingSemaphore, DISPATCH_TIME_NOW) != 0)
@@ -502,9 +502,9 @@
         CFRetain(sampleBuffer);
         dispatch_async([GPUImageOpenGLESContext sharedOpenGLESQueue], ^{
             //Feature Detection Hook.
-            if (self.delegate)
+            if (weakSelf.delegate)
             {
-                [self.delegate willOutputSampleBuffer:sampleBuffer];
+                [weakSelf.delegate willOutputSampleBuffer:sampleBuffer];
             }
             
             [weakSelf processVideoSampleBuffer:sampleBuffer];
