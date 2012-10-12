@@ -211,7 +211,7 @@
 - (void)setSecondFilterFBO;
 {
     glBindFramebuffer(GL_FRAMEBUFFER, secondFilterFramebuffer);
-    
+
 //    CGSize currentFBOSize = [self sizeOfFBO];
 //    glViewport(0, 0, (int)currentFBOSize.width, (int)currentFBOSize.height);
 }

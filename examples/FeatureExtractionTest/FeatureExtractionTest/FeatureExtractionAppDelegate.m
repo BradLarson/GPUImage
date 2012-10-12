@@ -2,8 +2,8 @@
 
 @interface FeatureExtractionAppDelegate()
 {
-    GPUImageHoughTransformLineDetector *houghTransformLineDetector, *houghTransformLineDetector2, *houghTransformLineDetector3;
-    GPUImagePicture *blackAndWhiteBoxImage, *chairPicture, *lineTestPicture;
+    GPUImageHoughTransformLineDetector *houghTransformLineDetector, *houghTransformLineDetector2, *houghTransformLineDetector3, *houghTransformLineDetector4;
+    GPUImagePicture *blackAndWhiteBoxImage, *chairPicture, *lineTestPicture, *lineTestPicture2;
     GPUImageAverageColor *averageColor;
     GPUImageLuminosity *averageLuminosity;
     GPUImageHarrisCornerDetectionFilter *harrisCornerFilter;
@@ -29,6 +29,8 @@
     chairPicture = [[GPUImagePicture alloc] initWithImage:chairImage];
     UIImage *lineTestImage = [UIImage imageNamed:@"LineTest.png"];
     lineTestPicture = [[GPUImagePicture alloc] initWithImage:lineTestImage];
+    UIImage *lineTestImage2 = [UIImage imageNamed:@"LineTest2.png"];
+    lineTestPicture2 = [[GPUImagePicture alloc] initWithImage:lineTestImage2];
 
     // Testing feature detection
     [self testHarrisCornerDetectorAgainstPicture:blackAndWhiteBoxImage withName:@"WhiteBoxes"];
@@ -42,6 +44,8 @@
     [self testHoughTransform:houghTransformLineDetector2 ofName:@"HoughTransform" againstPicture:chairPicture withName:@"Chair"];
     houghTransformLineDetector3 = [[GPUImageHoughTransformLineDetector alloc] init];
     [self testHoughTransform:houghTransformLineDetector3 ofName:@"HoughTransform" againstPicture:lineTestPicture withName:@"LineTest"];
+    houghTransformLineDetector4 = [[GPUImageHoughTransformLineDetector alloc] init];
+    [self testHoughTransform:houghTransformLineDetector4 ofName:@"HoughTransform" againstPicture:lineTestPicture2 withName:@"LineTest2"];
     
     // Testing erosion and dilation
     GPUImageErosionFilter *erosionFilter = [[GPUImageErosionFilter alloc] initWithRadius:4];
@@ -119,11 +123,6 @@
     
     [lineDetector setLinesDetectedBlock:^(GLfloat* lineArray, NSUInteger linesDetected, CMTime frameTime){
         NSLog(@"Number of lines: %d", linesDetected);
-        
-        for (NSUInteger currentLineIndex = 0; currentLineIndex < linesDetected; currentLineIndex++)
-        {
-            NSLog(@"Current line: y = %f * x + %f", lineArray[currentLineIndex * 2], lineArray[currentLineIndex * 2 + 1]);
-        }
         
         GPUImageLineGenerator *lineGenerator = [[GPUImageLineGenerator alloc] init];
 //        lineGenerator.crosshairWidth = 10.0;

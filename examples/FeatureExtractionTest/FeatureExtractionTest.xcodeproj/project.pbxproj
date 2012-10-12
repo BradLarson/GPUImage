@@ -24,6 +24,7 @@
 		BCA464C9162785EA00C0F68E /* LineTest.png in Resources */ = {isa = PBXBuildFile; fileRef = BCA464C8162785EA00C0F68E /* LineTest.png */; };
 		BCB79DC715E9754000965D92 /* ChairTest.png in Resources */ = {isa = PBXBuildFile; fileRef = BCB79DC615E9754000965D92 /* ChairTest.png */; };
 		BCD9A356157EC35E00C41504 /* 8pixeltest.png in Resources */ = {isa = PBXBuildFile; fileRef = BCD9A355157EC35E00C41504 /* 8pixeltest.png */; };
+		BCF2860F1628A5140051E9C5 /* LineTest2.png in Resources */ = {isa = PBXBuildFile; fileRef = BCF2860E1628A5140051E9C5 /* LineTest2.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -72,6 +73,7 @@
 		BCA464C8162785EA00C0F68E /* LineTest.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = LineTest.png; sourceTree = "<group>"; };
 		BCB79DC615E9754000965D92 /* ChairTest.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ChairTest.png; sourceTree = "<group>"; };
 		BCD9A355157EC35E00C41504 /* 8pixeltest.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 8pixeltest.png; sourceTree = "<group>"; };
+		BCF2860E1628A5140051E9C5 /* LineTest2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = LineTest2.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -140,6 +142,7 @@
 		BC18E0A1156C822E00AB8026 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				BCF2860E1628A5140051E9C5 /* LineTest2.png */,
 				BCA464C8162785EA00C0F68E /* LineTest.png */,
 				BC46D52315D03D9C00CC63CA /* LBPTest.png */,
 				BCD9A355157EC35E00C41504 /* 8pixeltest.png */,
@@ -244,6 +247,7 @@
 				BC46D52415D03D9C00CC63CA /* LBPTest.png in Resources */,
 				BCB79DC715E9754000965D92 /* ChairTest.png in Resources */,
 				BCA464C9162785EA00C0F68E /* LineTest.png in Resources */,
+				BCF2860F1628A5140051E9C5 /* LineTest2.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

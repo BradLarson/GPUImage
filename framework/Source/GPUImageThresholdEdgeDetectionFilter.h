@@ -1,6 +1,6 @@
 #import "GPUImageSobelEdgeDetectionFilter.h"
 
-@interface GPUImageThresholdEdgeDetection : GPUImageSobelEdgeDetectionFilter
+@interface GPUImageThresholdEdgeDetectionFilter : GPUImageSobelEdgeDetectionFilter
 {
     GLint thresholdUniform;
 }

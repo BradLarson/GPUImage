@@ -716,6 +716,11 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
 - (void)recreateFilterFBO
 {
     cachedMaximumOutputSize = CGSizeZero;
+    if (!filterFramebuffer)
+    {
+        return;
+    }
+    
     [self destroyFilterFBO];
     
     if (!([GPUImageOpenGLESContext supportsFastTextureUpload] && preparedToCaptureImage))

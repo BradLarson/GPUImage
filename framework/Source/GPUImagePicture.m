@@ -35,6 +35,8 @@
     {
 		return nil;
     }
+    
+    hasProcessedImage = NO;
     self.shouldSmoothlyScaleOutput = smoothlyScaleOutput;
         
     // TODO: Dispatch this whole thing asynchronously to move image loading off main thread
@@ -135,6 +137,12 @@
 
 #pragma mark -
 #pragma mark Image rendering
+
+- (void)removeAllTargets;
+{
+    [super removeAllTargets];
+    hasProcessedImage = NO;
+}
 
 - (void)processImage;
 {

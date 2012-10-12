@@ -114,6 +114,7 @@
 		case GPUIMAGE_HARRISCORNERDETECTION: cell.textLabel.text = @"Harris corner detection"; break;
 		case GPUIMAGE_NOBLECORNERDETECTION: cell.textLabel.text = @"Noble corner detection"; break;
 		case GPUIMAGE_SHITOMASIFEATUREDETECTION: cell.textLabel.text = @"Shi-Tomasi feature detection"; break;
+		case GPUIMAGE_HOUGHTRANSFORMLINEDETECTOR: cell.textLabel.text = @"Hough transform line detection"; break;
 		case GPUIMAGE_BUFFER: cell.textLabel.text = @"Image buffer"; break;
 		case GPUIMAGE_MOTIONDETECTOR: cell.textLabel.text = @"Motion detector"; break;
 		case GPUIMAGE_LOWPASS: cell.textLabel.text = @"Low pass"; break;
