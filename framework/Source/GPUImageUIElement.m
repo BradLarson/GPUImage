@@ -6,6 +6,8 @@
     CALayer *layer;
     
     CGSize previousLayerSizeInPixels;
+    CMTime time;
+    NSTimeInterval actualTimeOfLastUpdate;
 }
 
 @end
@@ -60,6 +62,16 @@
 {
     [GPUImageOpenGLESContext useImageProcessingContext];
     
+    if(CMTIME_IS_INVALID(time)) {
+        time = CMTimeMakeWithSeconds(0, 600);
+        actualTimeOfLastUpdate = [NSDate timeIntervalSinceReferenceDate];
+    } else {
+        NSTimeInterval now = [NSDate timeIntervalSinceReferenceDate];
+        NSTimeInterval diff = now - actualTimeOfLastUpdate;
+        time = CMTimeAdd(time, CMTimeMakeWithSeconds(diff, 600));
+        actualTimeOfLastUpdate = now;
+    }
+    
     CGSize layerPixelSize = [self layerSizeInPixels];
     
     GLubyte *imageData = (GLubyte *) calloc(1, (int)layerPixelSize.width * (int)layerPixelSize.height * 4);
@@ -81,7 +93,6 @@
     
     free(imageData);
     
-    
     for (id<GPUImageInput> currentTarget in targets)
     {
         if (currentTarget != self.targetToIgnoreForUpdates)
@@ -90,7 +101,7 @@
             NSInteger textureIndexOfTarget = [[targetTextureIndices objectAtIndex:indexOfObject] integerValue];
             
             [currentTarget setInputSize:layerPixelSize atIndex:textureIndexOfTarget];
-            [currentTarget newFrameReadyAtTime:kCMTimeIndefinite atIndex:textureIndexOfTarget];
+            [currentTarget newFrameReadyAtTime:time atIndex:textureIndexOfTarget];
         }
     }    
 }
