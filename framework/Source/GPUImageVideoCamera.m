@@ -482,7 +482,7 @@
 
 - (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection
 {
-    __unsafe_unretained __typeof(self) weakSelf = self;
+    __unsafe_unretained GPUImageVideoCamera *weakSelf = self;
     if (captureOutput == audioOutput)
     {
 //        if (dispatch_semaphore_wait(frameRenderingSemaphore, DISPATCH_TIME_NOW) != 0)
