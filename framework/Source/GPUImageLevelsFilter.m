@@ -12,9 +12,9 @@
  ** Details: http://blog.mouaif.org/2009/01/28/levels-control-shader/
  */
 
-#define LevelsControlInputRange(color, minInput, maxInput)				min(max(color - vec3(minInput), vec3(0.0)) / (vec3(maxInput) - vec3(minInput)), vec3(1.0))
+#define LevelsControlInputRange(color, minInput, maxInput)				min(max(color - minInput, vec3(0.0)) / (maxInput - minInput), vec3(1.0))
 #define LevelsControlInput(color, minInput, gamma, maxInput)				GammaCorrection(LevelsControlInputRange(color, minInput, maxInput), gamma)
-#define LevelsControlOutputRange(color, minOutput, maxOutput) 			mix(vec3(minOutput), vec3(maxOutput), color)
+#define LevelsControlOutputRange(color, minOutput, maxOutput) 			mix(minOutput, maxOutput, color)
 #define LevelsControl(color, minInput, gamma, maxInput, minOutput, maxOutput) 	LevelsControlOutputRange(LevelsControlInput(color, minInput, gamma, maxInput), minOutput, maxOutput)
 
 NSString *const kGPUImageLevelsFragmentShaderString = SHADER_STRING
@@ -22,15 +22,17 @@ NSString *const kGPUImageLevelsFragmentShaderString = SHADER_STRING
  varying highp vec2 textureCoordinate;
  
  uniform sampler2D inputImageTexture;
- uniform lowp float red[5];
- uniform lowp float green[5];
- uniform lowp float blue[5];
+ uniform lowp vec3 min;
+ uniform lowp vec3 mid;
+ uniform lowp vec3 max;
+ uniform lowp vec3 minOutput;
+ uniform lowp vec3 maxOutput;
  
  void main()
  {
      lowp vec4 textureColor = texture2D(inputImageTexture, textureCoordinate);
      
-     gl_FragColor = vec4(LevelsControl(textureColor.rgb, vec3(red[0], green[0], blue[0]), vec3(red[1], green[1], blue[1]), vec3(red[2], green[2], blue[2]), vec3(red[3], green[3], blue[3]), vec3(red[4], green[4], blue[4])), textureColor.a);
+     gl_FragColor = vec4(LevelsControl(textureColor.rgb, min, mid, max, minOutput, maxOutput), textureColor.a);
  }
  );
 
@@ -46,15 +48,28 @@ NSString *const kGPUImageLevelsFragmentShaderString = SHADER_STRING
 		return nil;
     }
     
-    redUniform = [filterProgram uniformIndex:@"red"];
-    greenUniform = [filterProgram uniformIndex:@"green"];
-    blueUniform = [filterProgram uniformIndex:@"blue"];
+    minUniform = [filterProgram uniformIndex:@"min"];
+    midUniform = [filterProgram uniformIndex:@"mid"];
+    maxUniform = [filterProgram uniformIndex:@"max"];
+    minOutputUniform = [filterProgram uniformIndex:@"minOutput"];
+    maxOutputUniform = [filterProgram uniformIndex:@"maxOutput"];
     
     [self setRedMin:0.0 gamma:1.4 max:1.0 minOut:0.0 maxOut:1.0];
     [self setGreenMin:0.0 gamma:0.8 max:1.0 minOut:0.0 maxOut:1.0];
     [self setBlueMin:0.0 gamma:0.4 max:1.0 minOut:0.0 maxOut:1.0];
     
     return self;
+}
+
+#pragma mark -
+#pragma mark Helpers
+
+- (void)updateUniforms {
+    [self setVec3:minVector forUniform:minUniform program:filterProgram];
+    [self setVec3:midVector forUniform:midUniform program:filterProgram];
+    [self setVec3:maxVector forUniform:maxUniform program:filterProgram];
+    [self setVec3:minOutputVector forUniform:minOutputUniform program:filterProgram];
+    [self setVec3:maxOutputVector forUniform:maxOutputUniform program:filterProgram];
 }
 
 #pragma mark -
@@ -71,11 +86,13 @@ NSString *const kGPUImageLevelsFragmentShaderString = SHADER_STRING
 }
 
 - (void)setRedMin:(CGFloat)min gamma:(CGFloat)mid max:(CGFloat)max minOut:(CGFloat)minOut maxOut:(CGFloat)maxOut {
-    [self setFloat:min forUniform:redUniform program:filterProgram];
-    [self setFloat:mid forUniform:redUniform + 1 program:filterProgram];
-    [self setFloat:max forUniform:redUniform + 2 program:filterProgram];
-    [self setFloat:minOut forUniform:redUniform + 3 program:filterProgram];
-    [self setFloat:maxOut forUniform:redUniform + 4 program:filterProgram];
+    minVector.one = min;
+    midVector.one = mid;
+    maxVector.one = max;
+    minOutputVector.one = minOut;
+    maxOutputVector.one = maxOut;
+    
+    [self updateUniforms];
 }
 
 - (void)setRedMin:(CGFloat)min gamma:(CGFloat)mid max:(CGFloat)max {
@@ -83,11 +100,13 @@ NSString *const kGPUImageLevelsFragmentShaderString = SHADER_STRING
 }
 
 - (void)setGreenMin:(CGFloat)min gamma:(CGFloat)mid max:(CGFloat)max minOut:(CGFloat)minOut maxOut:(CGFloat)maxOut {
-    [self setFloat:min forUniform:greenUniform program:filterProgram];
-    [self setFloat:mid forUniform:greenUniform + 1 program:filterProgram];
-    [self setFloat:max forUniform:greenUniform + 2 program:filterProgram];
-    [self setFloat:minOut forUniform:greenUniform + 3 program:filterProgram];
-    [self setFloat:maxOut forUniform:greenUniform + 4 program:filterProgram];
+    minVector.two = min;
+    midVector.two = mid;
+    maxVector.two = max;
+    minOutputVector.two = minOut;
+    maxOutputVector.two = maxOut;
+    
+    [self updateUniforms];
 }
 
 - (void)setGreenMin:(CGFloat)min gamma:(CGFloat)mid max:(CGFloat)max {
@@ -95,11 +114,13 @@ NSString *const kGPUImageLevelsFragmentShaderString = SHADER_STRING
 }
 
 - (void)setBlueMin:(CGFloat)min gamma:(CGFloat)mid max:(CGFloat)max minOut:(CGFloat)minOut maxOut:(CGFloat)maxOut {
-    [self setFloat:min forUniform:blueUniform program:filterProgram];
-    [self setFloat:mid forUniform:blueUniform + 1 program:filterProgram];
-    [self setFloat:max forUniform:blueUniform + 2 program:filterProgram];
-    [self setFloat:minOut forUniform:blueUniform + 3 program:filterProgram];
-    [self setFloat:maxOut forUniform:blueUniform + 4 program:filterProgram];
+    minVector.three = min;
+    midVector.three = mid;
+    maxVector.three = max;
+    minOutputVector.three = minOut;
+    maxOutputVector.three = maxOut;
+    
+    [self updateUniforms];
 }
 
 - (void)setBlueMin:(CGFloat)min gamma:(CGFloat)mid max:(CGFloat)max {

@@ -2,9 +2,13 @@
 
 @interface GPUImageLevelsFilter : GPUImageFilter
 {
-    GLint redUniform;
-    GLint greenUniform;
-    GLint blueUniform;
+    GLint minUniform;
+    GLint midUniform;
+    GLint maxUniform;
+    GLint minOutputUniform;
+    GLint maxOutputUniform;
+    
+    GPUVector3 minVector, midVector, maxVector, minOutputVector, maxOutputVector;
 }
 
 - (void)setRedMin:(CGFloat)min gamma:(CGFloat)mid max:(CGFloat)max minOut:(CGFloat)minOut maxOut:(CGFloat)maxOut;
