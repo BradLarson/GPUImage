@@ -28,6 +28,7 @@
 #import "GPUImageContrastFilter.h"
 #import "GPUImageExposureFilter.h"
 #import "GPUImageBrightnessFilter.h"
+#import "GPUImageLevelsFilter.h"
 #import "GPUImageSharpenFilter.h"
 #import "GPUImageGammaFilter.h"
 #import "GPUImageSobelEdgeDetectionFilter.h"
