@@ -12,9 +12,9 @@
  ** Details: http://blog.mouaif.org/2009/01/28/levels-control-shader/
  */
 
-#define LevelsControlInputRange(color, minInput, maxInput)				min(max(color - minInput, 0.0) / (maxInput - minInput), 1.0)
+#define LevelsControlInputRange(color, minInput, maxInput)				min(max(color - vec3(minInput), vec3(0.0)) / (vec3(maxInput) - vec3(minInput)), vec3(1.0))
 #define LevelsControlInput(color, minInput, gamma, maxInput)				GammaCorrection(LevelsControlInputRange(color, minInput, maxInput), gamma)
-#define LevelsControlOutputRange(color, minOutput, maxOutput) 			mix(minOutput, maxOutput, color)
+#define LevelsControlOutputRange(color, minOutput, maxOutput) 			mix(vec3(minOutput), vec3(maxOutput), color)
 #define LevelsControl(color, minInput, gamma, maxInput, minOutput, maxOutput) 	LevelsControlOutputRange(LevelsControlInput(color, minInput, gamma, maxInput), minOutput, maxOutput)
 
 NSString *const kGPUImageLevelsFragmentShaderString = SHADER_STRING
@@ -30,7 +30,7 @@ NSString *const kGPUImageLevelsFragmentShaderString = SHADER_STRING
  {
      lowp vec4 textureColor = texture2D(inputImageTexture, textureCoordinate);
      
-     gl_FragColor = vec4(LevelsControl(textureColor.r, red[0], red[1], red[2], red[3], red[4]), LevelsControl(textureColor.g, green[0], green[1], green[2], green[3], green[4]), LevelsControl(textureColor.b, blue[0], blue[1], blue[2], blue[3], blue[4]), textureColor.a); 
+     gl_FragColor = vec4(LevelsControl(textureColor.rgb, vec3(red[0], green[0], blue[0]), vec3(red[1], green[1], blue[1]), vec3(red[2], green[2], blue[2]), vec3(red[3], green[3], blue[3]), vec3(red[4], green[4], blue[4])), textureColor.a);
  }
  );
 
