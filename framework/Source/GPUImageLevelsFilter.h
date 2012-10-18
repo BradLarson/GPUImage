@@ -15,5 +15,8 @@
 - (void)setGreenMin:(CGFloat)min gamma:(CGFloat)mid max:(CGFloat)max;
 - (void)setBlueMin:(CGFloat)min gamma:(CGFloat)mid max:(CGFloat)max;
 
+- (void)setMin:(CGFloat)min gamma:(CGFloat)mid max:(CGFloat)max minOut:(CGFloat)minOut maxOut:(CGFloat)maxOut;
+- (void)setMin:(CGFloat)min gamma:(CGFloat)mid max:(CGFloat)max;
+
 @end
 
