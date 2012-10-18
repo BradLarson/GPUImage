@@ -54,9 +54,9 @@ NSString *const kGPUImageLevelsFragmentShaderString = SHADER_STRING
     minOutputUniform = [filterProgram uniformIndex:@"minOutput"];
     maxOutputUniform = [filterProgram uniformIndex:@"maxOutput"];
     
-    [self setRedMin:0.0 gamma:1.4 max:1.0 minOut:0.0 maxOut:1.0];
-    [self setGreenMin:0.0 gamma:0.8 max:1.0 minOut:0.0 maxOut:1.0];
-    [self setBlueMin:0.0 gamma:0.4 max:1.0 minOut:0.0 maxOut:1.0];
+    [self setRedMin:0.0 gamma:1.0 max:1.0 minOut:0.0 maxOut:1.0];
+    [self setGreenMin:0.0 gamma:1.0 max:1.0 minOut:0.0 maxOut:1.0];
+    [self setBlueMin:0.0 gamma:1.0 max:1.0 minOut:0.0 maxOut:1.0];
     
     return self;
 }
