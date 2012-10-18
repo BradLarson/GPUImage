@@ -436,9 +436,9 @@ NSString *const kGPUImageToneCurveFragmentShaderString = SHADER_STRING
             for (unsigned int currentCurveIndex = 0; currentCurveIndex < 256; currentCurveIndex++)
             {
                 // BGRA for upload to texture
-                toneCurveByteArray[currentCurveIndex * 4] = fmax(currentCurveIndex + [[_blueCurve objectAtIndex:currentCurveIndex] floatValue] + [[_rgbCompositeCurve objectAtIndex:currentCurveIndex] floatValue], 0);
-                toneCurveByteArray[currentCurveIndex * 4 + 1] = fmax(currentCurveIndex + [[_greenCurve objectAtIndex:currentCurveIndex] floatValue] + [[_rgbCompositeCurve objectAtIndex:currentCurveIndex] floatValue], 0);
-                toneCurveByteArray[currentCurveIndex * 4 + 2] = fmax(currentCurveIndex + [[_redCurve objectAtIndex:currentCurveIndex] floatValue] + [[_rgbCompositeCurve objectAtIndex:currentCurveIndex] floatValue], 0);
+                toneCurveByteArray[currentCurveIndex * 4] = fmin(fmax(currentCurveIndex + [[_blueCurve objectAtIndex:currentCurveIndex] floatValue] + [[_rgbCompositeCurve objectAtIndex:currentCurveIndex] floatValue], 0), 255);
+                toneCurveByteArray[currentCurveIndex * 4 + 1] = fmin(fmax(currentCurveIndex + [[_greenCurve objectAtIndex:currentCurveIndex] floatValue] + [[_rgbCompositeCurve objectAtIndex:currentCurveIndex] floatValue], 0), 255);
+                toneCurveByteArray[currentCurveIndex * 4 + 2] = fmin(fmax(currentCurveIndex + [[_redCurve objectAtIndex:currentCurveIndex] floatValue] + [[_rgbCompositeCurve objectAtIndex:currentCurveIndex] floatValue], 0), 255);
                 toneCurveByteArray[currentCurveIndex * 4 + 3] = 255;
             }
             
