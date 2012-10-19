@@ -174,6 +174,7 @@ void reportAvailableMemoryForGPUImage(NSString *tag)
     runSynchronouslyOnVideoProcessingQueue(^{
         [targetToRemove setInputSize:CGSizeZero atIndex:textureIndexOfTarget];
         [targetToRemove setInputTexture:0 atIndex:textureIndexOfTarget];
+		[targetToRemove setInputRotation:kGPUImageNoRotation atIndex:textureIndexOfTarget];
 
         [targetTextureIndices removeObjectAtIndex:indexOfObject];
         [targets removeObject:targetToRemove];
@@ -191,7 +192,7 @@ void reportAvailableMemoryForGPUImage(NSString *tag)
             NSInteger textureIndexOfTarget = [[targetTextureIndices objectAtIndex:indexOfObject] integerValue];
             
             [targetToRemove setInputSize:CGSizeZero atIndex:textureIndexOfTarget];
-            [targetToRemove setInputTexture:0 atIndex:[[targetTextureIndices objectAtIndex:indexOfObject] integerValue]];
+            [targetToRemove setInputTexture:0 atIndex:textureIndexOfTarget];
             [targetToRemove setInputRotation:kGPUImageNoRotation atIndex:textureIndexOfTarget];
         }
         [targets removeAllObjects];
