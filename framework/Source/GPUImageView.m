@@ -39,7 +39,6 @@
 @synthesize sizeInPixels = _sizeInPixels;
 @synthesize fillMode = _fillMode;
 @synthesize enabled;
-@synthesize mirror = _mirror;
 
 #pragma mark -
 #pragma mark Initialization and teardown
@@ -89,7 +88,6 @@
     eaglLayer.drawableProperties = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:NO], kEAGLDrawablePropertyRetainedBacking, kEAGLColorFormatRGBA8, kEAGLDrawablePropertyColorFormat, nil];
 
     self.enabled = YES;
-	_mirror = NO;
     
     runSynchronouslyOnVideoProcessingQueue(^{
         [GPUImageOpenGLESContext useImageProcessingContext];
@@ -255,25 +253,15 @@
                 heightScaling = currentViewSize.width / insetRect.size.width;
             }; break;
         }
-        if ( _mirror ) {
-			imageVertices[0] = widthScaling;
-			imageVertices[1] = -heightScaling;
-			imageVertices[2] = -widthScaling;
-			imageVertices[3] = -heightScaling;
-			imageVertices[4] = widthScaling;
-			imageVertices[5] = heightScaling;
-			imageVertices[6] = -widthScaling;
-			imageVertices[7] = heightScaling;
-		} else {
-			imageVertices[0] = -widthScaling;
-			imageVertices[1] = -heightScaling;
-			imageVertices[2] = widthScaling;
-			imageVertices[3] = -heightScaling;
-			imageVertices[4] = -widthScaling;
-			imageVertices[5] = heightScaling;
-			imageVertices[6] = widthScaling;
-			imageVertices[7] = heightScaling;
-		}
+        
+        imageVertices[0] = -widthScaling;
+        imageVertices[1] = -heightScaling;
+        imageVertices[2] = widthScaling;
+        imageVertices[3] = -heightScaling;
+        imageVertices[4] = -widthScaling;
+        imageVertices[5] = heightScaling;
+        imageVertices[6] = widthScaling;
+        imageVertices[7] = heightScaling;
     });
     
 //    static const GLfloat imageVertices[] = {
