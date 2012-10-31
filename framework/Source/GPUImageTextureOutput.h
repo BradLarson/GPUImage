@@ -4,6 +4,9 @@
 @protocol GPUImageTextureOutputDelegate;
 
 @interface GPUImageTextureOutput : NSObject <GPUImageInput>
+{
+    __unsafe_unretained id<GPUImageTextureDelegate> textureDelegate;
+}
 
 @property(readwrite, unsafe_unretained, nonatomic) id<GPUImageTextureOutputDelegate> delegate;
 @property(readonly) GLint texture;

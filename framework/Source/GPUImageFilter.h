@@ -106,6 +106,7 @@ typedef struct GPUMatrix3x3 GPUMatrix3x3;
 - (void)destroyFilterFBO;
 - (void)setFilterFBO;
 - (void)setOutputFBO;
+- (void)releaseInputTexturesIfNeeded;
 
 /// @name Rendering
 + (const GLfloat *)textureCoordinatesForRotation:(GPUImageRotationMode)rotationMode;

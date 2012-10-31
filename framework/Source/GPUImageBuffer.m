@@ -23,6 +23,7 @@
     }
     
     bufferedTextures = [[NSMutableArray alloc] init];
+    [self initializeOutputTextureIfNeeded];
     [bufferedTextures addObject:[NSNumber numberWithInt:outputTexture]];
     _bufferSize = 1;
     
@@ -42,6 +43,8 @@
 
 - (void)newFrameReadyAtTime:(CMTime)frameTime atIndex:(NSInteger)textureIndex;
 {
+    outputTextureRetainCount = [targets count];
+
     static const GLfloat imageVertices[] = {
         -1.0f, -1.0f,
         1.0f, -1.0f,

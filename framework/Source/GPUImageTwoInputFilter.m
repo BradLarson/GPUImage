@@ -114,6 +114,16 @@ NSString *const kGPUImageTwoInputTextureVertexShaderString = SHADER_STRING
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);    
 }
 
+- (void)releaseInputTexturesIfNeeded;
+{
+    if (shouldConserveMemoryForNextFrame)
+    {
+        [firstTextureDelegate textureNoLongerNeededForTarget:self];
+        [secondTextureDelegate textureNoLongerNeededForTarget:self];
+        shouldConserveMemoryForNextFrame = NO;
+    }
+}
+
 #pragma mark -
 #pragma mark GPUImageInput
 
@@ -192,6 +202,8 @@ NSString *const kGPUImageTwoInputTextureVertexShaderString = SHADER_STRING
 
 - (void)newFrameReadyAtTime:(CMTime)frameTime atIndex:(NSInteger)textureIndex;
 {
+    outputTextureRetainCount = [targets count];
+
     // You can set up infinite update loops, so this helps to short circuit them
     if (hasReceivedFirstFrame && hasReceivedSecondFrame)
     {
@@ -244,5 +256,16 @@ NSString *const kGPUImageTwoInputTextureVertexShaderString = SHADER_STRING
     }
 }
 
+- (void)setTextureDelegate:(id<GPUImageTextureDelegate>)newTextureDelegate atIndex:(NSInteger)textureIndex;
+{
+    if (textureIndex == 0)
+    {
+        firstTextureDelegate = newTextureDelegate;
+    }
+    else
+    {
+        secondTextureDelegate = newTextureDelegate;
+    }
+}
 
 @end

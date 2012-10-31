@@ -110,6 +110,8 @@
     runSynchronouslyOnVideoProcessingQueue(^{
         [GPUImageOpenGLESContext useImageProcessingContext];
         
+        [self initializeOutputTextureIfNeeded];
+
         glBindTexture(GL_TEXTURE_2D, outputTexture);
         if (self.shouldSmoothlyScaleOutput)
         {
@@ -149,6 +151,12 @@
     hasProcessedImage = YES;
   
     dispatch_async([GPUImageOpenGLESContext sharedOpenGLESQueue], ^{
+        
+        if (MAX(pixelSizeOfImage.width, pixelSizeOfImage.height) > 1000.0)
+        {
+            [self conserveMemoryForNextFrame];
+        }
+        
         for (id<GPUImageInput> currentTarget in targets)
         {
             NSInteger indexOfObject = [targets indexOfObject:currentTarget];

@@ -61,6 +61,7 @@
 - (void)update;
 {
     [GPUImageOpenGLESContext useImageProcessingContext];
+    [self initializeOutputTextureIfNeeded];
     
     if(CMTIME_IS_INVALID(time)) {
         time = CMTimeMakeWithSeconds(0, 600);

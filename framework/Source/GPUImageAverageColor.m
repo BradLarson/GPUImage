@@ -81,7 +81,7 @@ NSString *const kGPUImageColorAveragingFragmentShaderString = SHADER_STRING
 #pragma mark -
 #pragma mark Manage the output texture
 
-- (void)initializeOutputTexture;
+- (void)initializeOutputTextureIfNeeded;
 {
     if (inputTextureSize.width < 1.0)
     {
@@ -155,7 +155,7 @@ NSString *const kGPUImageColorAveragingFragmentShaderString = SHADER_STRING
     cachedMaximumOutputSize = CGSizeZero;
     [self destroyFilterFBO];    
     [self deleteOutputTexture];
-    [self initializeOutputTexture];
+    [self initializeOutputTextureIfNeeded];
     
     [self setFilterFBO];
 }

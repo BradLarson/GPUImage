@@ -1,7 +1,7 @@
 #import "GPUImageOutput.h"
 #import "GPUImageFilter.h"
 
-@interface GPUImageFilterGroup : GPUImageOutput <GPUImageInput>
+@interface GPUImageFilterGroup : GPUImageOutput <GPUImageInput, GPUImageTextureDelegate>
 {
     NSMutableArray *filters;
 }

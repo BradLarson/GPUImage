@@ -70,6 +70,8 @@ NSString *const kGPUImageHoughAccumulationFragmentShaderString = SHADER_STRING
 
 - (void)newFrameReadyAtTime:(CMTime)frameTime atIndex:(NSInteger)textureIndex;
 {
+    outputTextureRetainCount = [targets count];
+
     if (lineCoordinates == NULL)
     {
         [self generateLineCoordinates];

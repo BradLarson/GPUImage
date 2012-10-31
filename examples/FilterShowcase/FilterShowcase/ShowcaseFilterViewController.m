@@ -21,6 +21,10 @@
     [super didReceiveMemoryWarning];
 }
 
+- (void)dealloc;
+{
+}
+
 #pragma mark - View lifecycle
 
 - (void)viewDidLoad
