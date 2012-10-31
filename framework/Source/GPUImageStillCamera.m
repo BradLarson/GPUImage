@@ -96,7 +96,11 @@ void GPUImageCreateResizedSampleBuffer(CVPixelBufferRef cameraFrame, CGSize fina
     
     [photoOutput captureStillImageAsynchronouslyFromConnection:[[photoOutput connections] objectAtIndex:0] completionHandler:^(CMSampleBufferRef imageSampleBuffer, NSError *error) {
         block(imageSampleBuffer, error);
-    }];*/
+    }];
+     
+     dispatch_semaphore_signal(frameRenderingSemaphore);
+
+     */
     
     return;
 }
@@ -113,6 +117,8 @@ void GPUImageCreateResizedSampleBuffer(CVPixelBufferRef cameraFrame, CGSize fina
             return;
         }
 
+        [self conserveMemoryForNextFrame];
+        
         // For now, resize photos to fix within the max texture size of the GPU
         CVImageBufferRef cameraFrame = CMSampleBufferGetImageBuffer(imageSampleBuffer);
         
@@ -162,6 +168,8 @@ void GPUImageCreateResizedSampleBuffer(CVPixelBufferRef cameraFrame, CGSize fina
             block(nil, error);
             return;
         }
+
+        [self conserveMemoryForNextFrame];
 
         // For now, resize photos to fix within the max texture size of the GPU
         CVImageBufferRef cameraFrame = CMSampleBufferGetImageBuffer(imageSampleBuffer);
@@ -223,6 +231,8 @@ void GPUImageCreateResizedSampleBuffer(CVPixelBufferRef cameraFrame, CGSize fina
             block(nil, error);
             return;
         }
+
+        [self conserveMemoryForNextFrame];
 
         // For now, resize photos to fix within the max texture size of the GPU
         CVImageBufferRef cameraFrame = CMSampleBufferGetImageBuffer(imageSampleBuffer);

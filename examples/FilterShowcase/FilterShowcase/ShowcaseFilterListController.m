@@ -72,6 +72,7 @@
 		case GPUIMAGE_SATURATION: cell.textLabel.text = @"Saturation"; break;
 		case GPUIMAGE_CONTRAST: cell.textLabel.text = @"Contrast"; break;
 		case GPUIMAGE_BRIGHTNESS: cell.textLabel.text = @"Brightness"; break;
+		case GPUIMAGE_LEVELS: cell.textLabel.text = @"Levels"; break;
 		case GPUIMAGE_EXPOSURE: cell.textLabel.text = @"Exposure"; break;
         case GPUIMAGE_RGB: cell.textLabel.text = @"RGB"; break;
         case GPUIMAGE_HUE: cell.textLabel.text = @"Hue"; break;
@@ -109,15 +110,18 @@
 		case GPUIMAGE_SOBELEDGEDETECTION: cell.textLabel.text = @"Sobel edge detection"; break;
 		case GPUIMAGE_PREWITTEDGEDETECTION: cell.textLabel.text = @"Prewitt edge detection"; break;
 		case GPUIMAGE_CANNYEDGEDETECTION: cell.textLabel.text = @"Canny edge detection"; break;
+		case GPUIMAGE_THRESHOLDEDGEDETECTION: cell.textLabel.text = @"Threshold edge detection"; break;
 		case GPUIMAGE_XYGRADIENT: cell.textLabel.text = @"XY derivative"; break;
 		case GPUIMAGE_HARRISCORNERDETECTION: cell.textLabel.text = @"Harris corner detection"; break;
 		case GPUIMAGE_NOBLECORNERDETECTION: cell.textLabel.text = @"Noble corner detection"; break;
 		case GPUIMAGE_SHITOMASIFEATUREDETECTION: cell.textLabel.text = @"Shi-Tomasi feature detection"; break;
+		case GPUIMAGE_HOUGHTRANSFORMLINEDETECTOR: cell.textLabel.text = @"Hough transform line detection"; break;
 		case GPUIMAGE_BUFFER: cell.textLabel.text = @"Image buffer"; break;
 		case GPUIMAGE_MOTIONDETECTOR: cell.textLabel.text = @"Motion detector"; break;
 		case GPUIMAGE_LOWPASS: cell.textLabel.text = @"Low pass"; break;
 		case GPUIMAGE_HIGHPASS: cell.textLabel.text = @"High pass"; break;
 		case GPUIMAGE_SKETCH: cell.textLabel.text = @"Sketch"; break;
+		case GPUIMAGE_THRESHOLDSKETCH: cell.textLabel.text = @"Threshold Sketch"; break;
 		case GPUIMAGE_TOON: cell.textLabel.text = @"Toon"; break;
 		case GPUIMAGE_SMOOTHTOON: cell.textLabel.text = @"Smooth toon"; break;
 		case GPUIMAGE_TILTSHIFT: cell.textLabel.text = @"Tilt shift"; break;

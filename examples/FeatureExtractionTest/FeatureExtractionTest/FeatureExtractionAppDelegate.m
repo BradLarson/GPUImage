@@ -1,5 +1,17 @@
 #import "FeatureExtractionAppDelegate.h"
 
+@interface FeatureExtractionAppDelegate()
+{
+    GPUImageHoughTransformLineDetector *houghTransformLineDetector, *houghTransformLineDetector2, *houghTransformLineDetector3, *houghTransformLineDetector4;
+    GPUImagePicture *blackAndWhiteBoxImage, *chairPicture, *lineTestPicture, *lineTestPicture2;
+    GPUImageAverageColor *averageColor;
+    GPUImageLuminosity *averageLuminosity;
+    GPUImageHarrisCornerDetectionFilter *harrisCornerFilter;
+    GPUImageNobleCornerDetectionFilter *nobleCornerFilter;
+    GPUImageShiTomasiFeatureDetectionFilter *shiTomasiCornerFilter;
+}
+@end
+
 @implementation FeatureExtractionAppDelegate
 
 @synthesize window = _window;
@@ -12,12 +24,28 @@
     [self.window makeKeyAndVisible];
     
     UIImage *inputImage = [UIImage imageNamed:@"71yih.png"];    
-    GPUImagePicture *blackAndWhiteBoxImage = [[GPUImagePicture alloc] initWithImage:inputImage];
-    
-    [self testHarrisCornerDetectorAgainstPicture:blackAndWhiteBoxImage withName:@"WhiteBoxes"];
+    blackAndWhiteBoxImage = [[GPUImagePicture alloc] initWithImage:inputImage];
+    UIImage *chairImage = [UIImage imageNamed:@"ChairTest.png"];
+    chairPicture = [[GPUImagePicture alloc] initWithImage:chairImage];
+    UIImage *lineTestImage = [UIImage imageNamed:@"LineTest.png"];
+    lineTestPicture = [[GPUImagePicture alloc] initWithImage:lineTestImage];
+    UIImage *lineTestImage2 = [UIImage imageNamed:@"LineTest2.png"];
+    lineTestPicture2 = [[GPUImagePicture alloc] initWithImage:lineTestImage2];
 
+    // Testing feature detection
+    [self testHarrisCornerDetectorAgainstPicture:blackAndWhiteBoxImage withName:@"WhiteBoxes"];
     [self testNobleCornerDetectorAgainstPicture:blackAndWhiteBoxImage withName:@"WhiteBoxes"];
     [self testShiTomasiCornerDetectorAgainstPicture:blackAndWhiteBoxImage withName:@"WhiteBoxes"];
+    
+    // Testing Hough transform
+    houghTransformLineDetector = [[GPUImageHoughTransformLineDetector alloc] init];
+    [self testHoughTransform:houghTransformLineDetector ofName:@"HoughTransform" againstPicture:blackAndWhiteBoxImage withName:@"WhiteBoxes"];
+    houghTransformLineDetector2 = [[GPUImageHoughTransformLineDetector alloc] init];
+    [self testHoughTransform:houghTransformLineDetector2 ofName:@"HoughTransform" againstPicture:chairPicture withName:@"Chair"];
+    houghTransformLineDetector3 = [[GPUImageHoughTransformLineDetector alloc] init];
+    [self testHoughTransform:houghTransformLineDetector3 ofName:@"HoughTransform" againstPicture:lineTestPicture withName:@"LineTest"];
+    houghTransformLineDetector4 = [[GPUImageHoughTransformLineDetector alloc] init];
+    [self testHoughTransform:houghTransformLineDetector4 ofName:@"HoughTransform" againstPicture:lineTestPicture2 withName:@"LineTest2"];
     
     // Testing erosion and dilation
     GPUImageErosionFilter *erosionFilter = [[GPUImageErosionFilter alloc] initWithRadius:4];
@@ -68,15 +96,12 @@
     [self saveImage:lbpOutput fileName:@"LocalBinaryPatterns.png"];
 
     // Testing image color averaging
-    UIImage *chairImage = [UIImage imageNamed:@"ChairTest.png"];
-    GPUImagePicture *chairPicture = [[GPUImagePicture alloc] initWithImage:chairImage];
-
-    GPUImageAverageColor *averageColor = [[GPUImageAverageColor alloc] init];
+    averageColor = [[GPUImageAverageColor alloc] init];
     [averageColor setColorAverageProcessingFinishedBlock:^(CGFloat redComponent, CGFloat greenComponent, CGFloat blueComponent, CGFloat alphaComponent, CMTime frameTime){
         NSLog(@"Red: %f, green: %f, blue: %f, alpha: %f", redComponent, greenComponent, blueComponent, alphaComponent);
     }];
     
-    GPUImageLuminosity *averageLuminosity = [[GPUImageLuminosity alloc] init];
+    averageLuminosity = [[GPUImageLuminosity alloc] init];
     [averageLuminosity setLuminosityProcessingFinishedBlock:^(CGFloat luminosity, CMTime frameTime) {
         NSLog(@"Luminosity: %f", luminosity);
     }];
@@ -91,6 +116,48 @@
     return YES;
 }
 
+- (void)testHoughTransform:(GPUImageHoughTransformLineDetector *)lineDetector ofName:(NSString *)detectorName againstPicture:(GPUImagePicture *)pictureInput withName:(NSString *)pictureName;
+{
+    [pictureInput removeAllTargets];
+    [pictureInput addTarget:lineDetector];
+    
+    [lineDetector setLinesDetectedBlock:^(GLfloat* lineArray, NSUInteger linesDetected, CMTime frameTime){
+        NSLog(@"Number of lines: %d", linesDetected);
+        
+        GPUImageLineGenerator *lineGenerator = [[GPUImageLineGenerator alloc] init];
+//        lineGenerator.crosshairWidth = 10.0;
+        [lineGenerator setLineColorRed:1.0 green:0.0 blue:0.0];
+        [lineGenerator forceProcessingAtSize:[pictureInput outputImageSize]];
+        
+        GPUImageAlphaBlendFilter *blendFilter = [[GPUImageAlphaBlendFilter alloc] init];
+        [blendFilter forceProcessingAtSize:[pictureInput outputImageSize]];
+        
+        [pictureInput addTarget:blendFilter];
+        
+        [lineGenerator addTarget:blendFilter];
+        
+        [blendFilter prepareForImageCapture];
+        
+        [lineGenerator renderLinesFromArray:lineArray count:linesDetected frameTime:frameTime];
+
+        dispatch_async(dispatch_get_main_queue(), ^{
+            NSUInteger currentImageIndex = 0;
+            for (UIImage *currentImage in lineDetector.intermediateImages)
+            {
+                [self saveImage:currentImage fileName:[NSString stringWithFormat:@"%@-%@-%d.png", detectorName, pictureName, currentImageIndex]];
+                
+                currentImageIndex++;
+            }
+            
+            UIImage *crosshairResult = [blendFilter imageFromCurrentlyProcessedOutput];
+            
+            [self saveImage:crosshairResult fileName:[NSString stringWithFormat:@"%@-%@-Lines.png", detectorName, pictureName]];
+        });
+    }];
+    
+    [pictureInput processImage];
+}
+
 - (void)testCornerDetector:(GPUImageHarrisCornerDetectionFilter *)cornerDetector ofName:(NSString *)detectorName againstPicture:(GPUImagePicture *)pictureInput withName:(NSString *)pictureName;
 {
     cornerDetector.threshold = 0.4;
@@ -100,21 +167,22 @@
     
     [pictureInput addTarget:cornerDetector];
     
-    GPUImageCrosshairGenerator *crosshairGenerator = [[GPUImageCrosshairGenerator alloc] init];
-    crosshairGenerator.crosshairWidth = 10.0;
-    [crosshairGenerator setCrosshairColorRed:1.0 green:0.0 blue:0.0];
-    [crosshairGenerator forceProcessingAtSize:[pictureInput outputImageSize]];
-    
-    GPUImageAlphaBlendFilter *blendFilter = [[GPUImageAlphaBlendFilter alloc] init];
-    [blendFilter forceProcessingAtSize:[pictureInput outputImageSize]];
-    [pictureInput addTarget:blendFilter];
-    pictureInput.targetToIgnoreForUpdates = blendFilter;
-    
-    [crosshairGenerator addTarget:blendFilter];
-    
-    [blendFilter prepareForImageCapture];
     
     [cornerDetector setCornersDetectedBlock:^(GLfloat* cornerArray, NSUInteger cornersDetected, CMTime frameTime) {
+        GPUImageCrosshairGenerator *crosshairGenerator = [[GPUImageCrosshairGenerator alloc] init];
+        crosshairGenerator.crosshairWidth = 10.0;
+        [crosshairGenerator setCrosshairColorRed:1.0 green:0.0 blue:0.0];
+        [crosshairGenerator forceProcessingAtSize:[pictureInput outputImageSize]];
+        
+        GPUImageAlphaBlendFilter *blendFilter = [[GPUImageAlphaBlendFilter alloc] init];
+        [blendFilter forceProcessingAtSize:[pictureInput outputImageSize]];
+        
+        [pictureInput addTarget:blendFilter];
+        
+        [crosshairGenerator addTarget:blendFilter];
+        
+        [blendFilter prepareForImageCapture];
+
         NSLog(@"Number of corners: %d", cornersDetected);
         [crosshairGenerator renderCrosshairsFromArray:cornerArray count:cornersDetected frameTime:frameTime];
         
@@ -127,7 +195,6 @@
                 currentImageIndex++;
             }
             
-            NSLog(@"Save corner image");
             UIImage *crosshairResult = [blendFilter imageFromCurrentlyProcessedOutput];
             
             [self saveImage:crosshairResult fileName:[NSString stringWithFormat:@"%@-%@-Crosshairs.png", detectorName, pictureName]];
@@ -140,20 +207,20 @@
 
 - (void)testHarrisCornerDetectorAgainstPicture:(GPUImagePicture *)pictureInput withName:(NSString *)pictureName;
 {
-    GPUImageHarrisCornerDetectionFilter *harrisCornerFilter = [[GPUImageHarrisCornerDetectionFilter alloc] init];
+    harrisCornerFilter = [[GPUImageHarrisCornerDetectionFilter alloc] init];
     [self testCornerDetector:harrisCornerFilter ofName:@"Harris" againstPicture:pictureInput withName:pictureName];
 }
 
 - (void)testNobleCornerDetectorAgainstPicture:(GPUImagePicture *)pictureInput withName:(NSString *)pictureName;
 {
-    GPUImageNobleCornerDetectionFilter *nobleCornerFilter = [[GPUImageNobleCornerDetectionFilter alloc] init];
+    nobleCornerFilter = [[GPUImageNobleCornerDetectionFilter alloc] init];
     [self testCornerDetector:nobleCornerFilter ofName:@"Noble" againstPicture:pictureInput withName:pictureName];
 }
 
 - (void)testShiTomasiCornerDetectorAgainstPicture:(GPUImagePicture *)pictureInput withName:(NSString *)pictureName;
 {
-    GPUImageShiTomasiFeatureDetectionFilter *nobleCornerFilter = [[GPUImageShiTomasiFeatureDetectionFilter alloc] init];
-    [self testCornerDetector:nobleCornerFilter ofName:@"ShiTomasi" againstPicture:pictureInput withName:pictureName];
+    shiTomasiCornerFilter = [[GPUImageShiTomasiFeatureDetectionFilter alloc] init];
+    [self testCornerDetector:shiTomasiCornerFilter ofName:@"ShiTomasi" againstPicture:pictureInput withName:pictureName];
 }
 
 - (void)saveImage:(UIImage *)imageToSave fileName:(NSString *)imageName;

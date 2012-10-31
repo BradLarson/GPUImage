@@ -18,6 +18,8 @@ typedef struct GPUByteColorVector GPUByteColorVector;
     GPUImageRotationMode inputRotation;
     BOOL outputBGRA;
     CVOpenGLESTextureRef renderTexture;
+    
+    __unsafe_unretained id<GPUImageTextureDelegate> textureDelegate;
 }
 
 @property(readonly) GLubyte *rawBytesForImage;

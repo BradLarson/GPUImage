@@ -137,6 +137,8 @@ NSString *const kGPUImageTransformVertexShaderString = SHADER_STRING
 
 - (void)newFrameReadyAtTime:(CMTime)frameTime atIndex:(NSInteger)textureIndex;
 {
+    outputTextureRetainCount = [targets count];
+
     CGSize currentFBOSize = [self sizeOfFBO];
     CGFloat normalizedHeight = currentFBOSize.height / currentFBOSize.width;
     

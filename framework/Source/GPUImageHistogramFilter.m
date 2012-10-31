@@ -215,6 +215,8 @@ NSString *const kGPUImageHistogramAccumulationFragmentShaderString = SHADER_STRI
 
 - (void)newFrameReadyAtTime:(CMTime)frameTime atIndex:(NSInteger)textureIndex;
 {
+    outputTextureRetainCount = [targets count];
+
     if (vertexSamplingCoordinates == NULL)
     {
         [self generatePointCoordinates];

@@ -4,7 +4,7 @@
 @interface PhotoViewController : UIViewController
 {
     GPUImageStillCamera *stillCamera;
-    GPUImageOutput<GPUImageInput> *filter;
+    GPUImageOutput<GPUImageInput> *filter, *secondFilter, *terminalFilter;
     UISlider *filterSettingsSlider;
     UIButton *photoCaptureButton;
 }

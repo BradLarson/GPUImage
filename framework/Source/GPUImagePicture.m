@@ -35,6 +35,8 @@
     {
 		return nil;
     }
+    
+    hasProcessedImage = NO;
     self.shouldSmoothlyScaleOutput = smoothlyScaleOutput;
         
     // TODO: Dispatch this whole thing asynchronously to move image loading off main thread
@@ -108,6 +110,8 @@
     runSynchronouslyOnVideoProcessingQueue(^{
         [GPUImageOpenGLESContext useImageProcessingContext];
         
+        [self initializeOutputTextureIfNeeded];
+
         glBindTexture(GL_TEXTURE_2D, outputTexture);
         if (self.shouldSmoothlyScaleOutput)
         {
@@ -136,11 +140,23 @@
 #pragma mark -
 #pragma mark Image rendering
 
+- (void)removeAllTargets;
+{
+    [super removeAllTargets];
+    hasProcessedImage = NO;
+}
+
 - (void)processImage;
 {
     hasProcessedImage = YES;
   
     dispatch_async([GPUImageOpenGLESContext sharedOpenGLESQueue], ^{
+        
+        if (MAX(pixelSizeOfImage.width, pixelSizeOfImage.height) > 1000.0)
+        {
+            [self conserveMemoryForNextFrame];
+        }
+        
         for (id<GPUImageInput> currentTarget in targets)
         {
             NSInteger indexOfObject = [targets indexOfObject:currentTarget];

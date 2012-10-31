@@ -16,8 +16,6 @@
     
     filters = [[NSMutableArray alloc] init];
     
-    [self deleteOutputTexture];
-    
     return self;
 }
 
@@ -99,6 +97,14 @@
     }
 }
 
+- (void)setTextureDelegate:(id<GPUImageTextureDelegate>)newTextureDelegate atIndex:(NSInteger)textureIndex;
+{
+    for (GPUImageOutput<GPUImageInput> *currentFilter in _initialFilters)
+    {
+        [currentFilter setTextureDelegate:newTextureDelegate atIndex:textureIndex];
+    }
+}
+
 - (void)setInputTexture:(GLuint)newInputTexture atIndex:(NSInteger)textureIndex;
 {
     for (GPUImageOutput<GPUImageInput> *currentFilter in _initialFilters)
@@ -168,6 +174,14 @@
     for (GPUImageOutput<GPUImageInput> *currentFilter in _initialFilters)
     {
         [currentFilter endProcessing];
+    }
+}
+
+- (void)conserveMemoryForNextFrame;
+{
+    for (GPUImageOutput<GPUImageInput> *currentFilter in _initialFilters)
+    {
+        [currentFilter conserveMemoryForNextFrame];
     }
 }
 

@@ -9,7 +9,7 @@
 - (id)initWithFilterType:(GPUImageShowcaseFilterType)newFilterType;
 {
     self = [super initWithNibName:@"ShowcaseFilterViewController" bundle:nil];
-    if (self) 
+    if (self)
     {
         filterType = newFilterType;
     }
@@ -19,6 +19,10 @@
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
+}
+
+- (void)dealloc;
+{
 }
 
 #pragma mark - View lifecycle
@@ -220,6 +224,17 @@
             [self.filterSettingsSlider setValue:0.0];
             
             filter = [[GPUImageBrightnessFilter alloc] init];
+        }; break;
+        case GPUIMAGE_LEVELS:
+        {
+            self.title = @"Levels";
+            self.filterSettingsSlider.hidden = NO;
+            
+            [self.filterSettingsSlider setMinimumValue:0.0];
+            [self.filterSettingsSlider setMaximumValue:1.0];
+            [self.filterSettingsSlider setValue:0.0];
+            
+            filter = [[GPUImageLevelsFilter alloc] init];
         }; break;
         case GPUIMAGE_RGB:
         {
@@ -494,6 +509,19 @@
             filter = [[GPUImageShiTomasiFeatureDetectionFilter alloc] init];
             [(GPUImageShiTomasiFeatureDetectionFilter *)filter setThreshold:0.20];            
         }; break;
+        case GPUIMAGE_HOUGHTRANSFORMLINEDETECTOR:
+        {
+            self.title = @"Line Detection";
+            self.filterSettingsSlider.hidden = NO;
+            
+            [self.filterSettingsSlider setMinimumValue:0.2];
+            [self.filterSettingsSlider setMaximumValue:1.0];
+            [self.filterSettingsSlider setValue:0.6];
+            
+            filter = [[GPUImageHoughTransformLineDetector alloc] init];
+            [(GPUImageHoughTransformLineDetector *)filter setLineDetectionThreshold:0.60];
+        }; break;
+
         case GPUIMAGE_PREWITTEDGEDETECTION:
         {
             self.title = @"Prewitt Edge Detection";
@@ -515,6 +543,17 @@
 //            [self.filterSettingsSlider setValue:0.1];
 
             filter = [[GPUImageCannyEdgeDetectionFilter alloc] init];
+        }; break;
+        case GPUIMAGE_THRESHOLDEDGEDETECTION:
+        {
+            self.title = @"Threshold Edge Detection";
+            self.filterSettingsSlider.hidden = NO;
+            
+            [self.filterSettingsSlider setMinimumValue:0.0];
+            [self.filterSettingsSlider setMaximumValue:1.0];
+            [self.filterSettingsSlider setValue:0.5];
+            
+            filter = [[GPUImageThresholdEdgeDetectionFilter alloc] init];
         }; break;
         case GPUIMAGE_LOCALBINARYPATTERN:
         {
@@ -575,6 +614,17 @@
             self.filterSettingsSlider.hidden = YES;
             
             filter = [[GPUImageSketchFilter alloc] init];
+        }; break;
+        case GPUIMAGE_THRESHOLDSKETCH:
+        {
+            self.title = @"Threshold Sketch";
+            self.filterSettingsSlider.hidden = NO;
+            
+            [self.filterSettingsSlider setMinimumValue:0.9];
+            [self.filterSettingsSlider setMaximumValue:1.0];
+            [self.filterSettingsSlider setValue:0.9];
+            
+            filter = [[GPUImageThresholdSketchFilter alloc] init];
         }; break;
         case GPUIMAGE_TOON:
         {
@@ -1201,6 +1251,26 @@
 
             [blendFilter addTarget:filterView];
         }
+        else if (filterType == GPUIMAGE_HOUGHTRANSFORMLINEDETECTOR)
+        {
+            GPUImageLineGenerator *lineGenerator = [[GPUImageLineGenerator alloc] init];
+//            lineGenerator.crosshairWidth = 15.0;
+            [lineGenerator forceProcessingAtSize:CGSizeMake(480.0, 640.0)];
+            [lineGenerator setLineColorRed:1.0 green:0.0 blue:0.0];
+            [(GPUImageHoughTransformLineDetector *)filter setLinesDetectedBlock:^(GLfloat* lineArray, NSUInteger linesDetected, CMTime frameTime){
+                [lineGenerator renderLinesFromArray:lineArray count:linesDetected frameTime:frameTime];
+            }];
+            
+            GPUImageAlphaBlendFilter *blendFilter = [[GPUImageAlphaBlendFilter alloc] init];
+            [blendFilter forceProcessingAtSize:CGSizeMake(480.0, 640.0)];
+            GPUImageGammaFilter *gammaFilter = [[GPUImageGammaFilter alloc] init];
+            [videoCamera addTarget:gammaFilter];
+            [gammaFilter addTarget:blendFilter];
+            
+            [lineGenerator addTarget:blendFilter];
+            
+            [blendFilter addTarget:filterView];
+        }
         else if (filterType == GPUIMAGE_UIELEMENT)
         {
             GPUImageAlphaBlendFilter *blendFilter = [[GPUImageAlphaBlendFilter alloc] init];
@@ -1350,6 +1420,12 @@
         case GPUIMAGE_SATURATION: [(GPUImageSaturationFilter *)filter setSaturation:[(UISlider *)sender value]]; break;
         case GPUIMAGE_CONTRAST: [(GPUImageContrastFilter *)filter setContrast:[(UISlider *)sender value]]; break;
         case GPUIMAGE_BRIGHTNESS: [(GPUImageBrightnessFilter *)filter setBrightness:[(UISlider *)sender value]]; break;
+        case GPUIMAGE_LEVELS: {
+            float value = [(UISlider *)sender value];
+            [(GPUImageLevelsFilter *)filter setRedMin:value gamma:1.0 max:1.0 minOut:0.0 maxOut:1.0];
+            [(GPUImageLevelsFilter *)filter setGreenMin:value gamma:1.0 max:1.0 minOut:0.0 maxOut:1.0];
+            [(GPUImageLevelsFilter *)filter setBlueMin:value gamma:1.0 max:1.0 minOut:0.0 maxOut:1.0];
+        }; break;
         case GPUIMAGE_EXPOSURE: [(GPUImageExposureFilter *)filter setExposure:[(UISlider *)sender value]]; break;
         case GPUIMAGE_MONOCHROME: [(GPUImageMonochromeFilter *)filter setIntensity:[(UISlider *)sender value]]; break;
         case GPUIMAGE_RGB: [(GPUImageRGBFilter *)filter setGreen:[(UISlider *)sender value]]; break;
@@ -1380,8 +1456,11 @@
         case GPUIMAGE_HARRISCORNERDETECTION: [(GPUImageHarrisCornerDetectionFilter *)filter setThreshold:[(UISlider*)sender value]]; break;
         case GPUIMAGE_NOBLECORNERDETECTION: [(GPUImageNobleCornerDetectionFilter *)filter setThreshold:[(UISlider*)sender value]]; break;
         case GPUIMAGE_SHITOMASIFEATUREDETECTION: [(GPUImageShiTomasiFeatureDetectionFilter *)filter setThreshold:[(UISlider*)sender value]]; break;
+        case GPUIMAGE_HOUGHTRANSFORMLINEDETECTOR: [(GPUImageHoughTransformLineDetector *)filter setLineDetectionThreshold:[(UISlider*)sender value]]; break;
 //        case GPUIMAGE_HARRISCORNERDETECTION: [(GPUImageHarrisCornerDetectionFilter *)filter setSensitivity:[(UISlider*)sender value]]; break;
+        case GPUIMAGE_THRESHOLDEDGEDETECTION: [(GPUImageThresholdEdgeDetectionFilter *)filter setThreshold:[(UISlider *)sender value]]; break;
         case GPUIMAGE_SMOOTHTOON: [(GPUImageSmoothToonFilter *)filter setBlurSize:[(UISlider*)sender value]]; break;
+        case GPUIMAGE_THRESHOLDSKETCH: [(GPUImageThresholdSketchFilter *)filter setThreshold:[(UISlider *)sender value]]; break;
 //        case GPUIMAGE_BULGE: [(GPUImageBulgeDistortionFilter *)filter setRadius:[(UISlider *)sender value]]; break;
         case GPUIMAGE_BULGE: [(GPUImageBulgeDistortionFilter *)filter setScale:[(UISlider *)sender value]]; break;
         case GPUIMAGE_SPHEREREFRACTION: [(GPUImageSphereRefractionFilter *)filter setRadius:[(UISlider *)sender value]]; break;

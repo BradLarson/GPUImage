@@ -4,6 +4,7 @@
 
 void runOnMainQueueWithoutDeadlocking(void (^block)(void));
 void runSynchronouslyOnVideoProcessingQueue(void (^block)(void));
+void runAsynchronouslyOnVideoProcessingQueue(void (^block)(void));
 void reportAvailableMemoryForGPUImage(NSString *tag);
 
 @class GPUImageMovieWriter;
@@ -19,7 +20,7 @@ void reportAvailableMemoryForGPUImage(NSString *tag);
  
  Source objects upload still image frames to OpenGL ES as textures, then hand those textures off to the next objects in the processing chain.
  */
-@interface GPUImageOutput : NSObject
+@interface GPUImageOutput : NSObject <GPUImageTextureDelegate>
 {
     NSMutableArray *targets, *targetTextureIndices;
     
@@ -27,6 +28,12 @@ void reportAvailableMemoryForGPUImage(NSString *tag);
     CGSize inputTextureSize, cachedMaximumOutputSize, forcedMaximumSize;
     
     BOOL overrideInputSize;
+    
+    BOOL processingLargeImage;
+    NSUInteger outputTextureRetainCount;
+    
+    __unsafe_unretained id<GPUImageTextureDelegate> firstTextureDelegate;
+    BOOL shouldConserveMemoryForNextFrame;
 }
 
 @property(readwrite, nonatomic) BOOL shouldSmoothlyScaleOutput;
@@ -75,10 +82,11 @@ void reportAvailableMemoryForGPUImage(NSString *tag);
 
 /// @name Manage the output texture
 
-- (void)initializeOutputTexture;
+- (void)initializeOutputTextureIfNeeded;
 - (void)deleteOutputTexture;
 - (void)forceProcessingAtSize:(CGSize)frameSize;
 - (void)forceProcessingAtSizeRespectingAspectRatio:(CGSize)frameSize;
+- (void)cleanupOutputImage;
 
 /// @name Still image processing
 
@@ -105,5 +113,6 @@ void reportAvailableMemoryForGPUImage(NSString *tag);
 - (CGImageRef)newCGImageByFilteringCGImage:(CGImageRef)imageToFilter orientation:(UIImageOrientation)orientation;
 
 - (void)prepareForImageCapture;
+- (void)conserveMemoryForNextFrame;
 
 @end

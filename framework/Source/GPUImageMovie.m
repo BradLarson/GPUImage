@@ -299,6 +299,7 @@
             
             [currentTarget setInputSize:CGSizeMake(bufferWidth, bufferHeight) atIndex:targetTextureIndex];
             [currentTarget setInputTexture:outputTexture atIndex:targetTextureIndex];
+            [currentTarget setTextureDelegate:self atIndex:targetTextureIndex];
             
             [currentTarget newFrameReadyAtTime:currentSampleTime atIndex:targetTextureIndex];
         }

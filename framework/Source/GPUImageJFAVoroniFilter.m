@@ -224,7 +224,7 @@ NSString *const kGPUImageJFAVoroniFragmentShaderString = SHADER_STRING
 #pragma mark Managing the display FBOs
 
 
-- (void)initializeOutputTexture;
+- (void)initializeOutputTextureIfNeeded;
 {
     [GPUImageOpenGLESContext useImageProcessingContext];
     
@@ -343,6 +343,8 @@ NSString *const kGPUImageJFAVoroniFragmentShaderString = SHADER_STRING
     }
     else
     {
+        [self initializeOutputTextureIfNeeded];
+
         glBindTexture(GL_TEXTURE_2D, secondFilterOutputTexture);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (int)currentFBOSize.width, (int)currentFBOSize.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, secondFilterOutputTexture, 0);

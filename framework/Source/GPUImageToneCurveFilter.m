@@ -41,7 +41,7 @@
         NSFileHandle* file = [NSFileHandle fileHandleForReadingFromURL:curveFilePathURL
                                                                  error:&error];
         
-        if (error)
+        if ((file == nil) || (error != nil))
         {
             NSLog(@"Failed to open file: %@", error);
             
@@ -250,9 +250,19 @@ NSString *const kGPUImageToneCurveFragmentShaderString = SHADER_STRING
         CGPoint firstSplinePoint = [[splinePoints objectAtIndex:0] CGPointValue];
         
         if (firstSplinePoint.x > 0) {
-            for (int i=0; i <=firstSplinePoint.x; i++) {
-                CGPoint newCGPoint = CGPointMake(0, 0);
+            for (int i=firstSplinePoint.x; i >= 0; i--) {
+                CGPoint newCGPoint = CGPointMake(i, 0);
                 [splinePoints insertObject:[NSValue valueWithCGPoint:newCGPoint] atIndex:0];
+            }
+        }
+
+        // Insert points similarly at the end, if necessary.
+        CGPoint lastSplinePoint = [[splinePoints objectAtIndex:([splinePoints count] - 1)] CGPointValue];
+
+        if (lastSplinePoint.x < 255) {
+            for (int i = lastSplinePoint.x + 1; i <= 255; i++) {
+                CGPoint newCGPoint = CGPointMake(i, 255);
+                [splinePoints addObject:[NSValue valueWithCGPoint:newCGPoint]];
             }
         }
         
@@ -426,9 +436,9 @@ NSString *const kGPUImageToneCurveFragmentShaderString = SHADER_STRING
             for (unsigned int currentCurveIndex = 0; currentCurveIndex < 256; currentCurveIndex++)
             {
                 // BGRA for upload to texture
-                toneCurveByteArray[currentCurveIndex * 4] = fmax(currentCurveIndex + [[_blueCurve objectAtIndex:currentCurveIndex] floatValue] + [[_rgbCompositeCurve objectAtIndex:currentCurveIndex] floatValue], 0);
-                toneCurveByteArray[currentCurveIndex * 4 + 1] = fmax(currentCurveIndex + [[_greenCurve objectAtIndex:currentCurveIndex] floatValue] + [[_rgbCompositeCurve objectAtIndex:currentCurveIndex] floatValue], 0);
-                toneCurveByteArray[currentCurveIndex * 4 + 2] = fmax(currentCurveIndex + [[_redCurve objectAtIndex:currentCurveIndex] floatValue] + [[_rgbCompositeCurve objectAtIndex:currentCurveIndex] floatValue], 0);
+                toneCurveByteArray[currentCurveIndex * 4] = fmin(fmax(currentCurveIndex + [[_blueCurve objectAtIndex:currentCurveIndex] floatValue] + [[_rgbCompositeCurve objectAtIndex:currentCurveIndex] floatValue], 0), 255);
+                toneCurveByteArray[currentCurveIndex * 4 + 1] = fmin(fmax(currentCurveIndex + [[_greenCurve objectAtIndex:currentCurveIndex] floatValue] + [[_rgbCompositeCurve objectAtIndex:currentCurveIndex] floatValue], 0), 255);
+                toneCurveByteArray[currentCurveIndex * 4 + 2] = fmin(fmax(currentCurveIndex + [[_redCurve objectAtIndex:currentCurveIndex] floatValue] + [[_rgbCompositeCurve objectAtIndex:currentCurveIndex] floatValue], 0), 255);
                 toneCurveByteArray[currentCurveIndex * 4 + 3] = 255;
             }
             
