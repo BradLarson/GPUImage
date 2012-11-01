@@ -72,8 +72,14 @@
 
 + (GLint)maximumTextureSizeForThisDevice;
 {
-    GLint maxTextureSize; 
-    glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTextureSize);
+    static dispatch_once_t pred;
+    static GLint maxTextureSize = 0;
+    
+    dispatch_once(&pred, ^{
+        [self useImageProcessingContext];
+        glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTextureSize);
+    });
+
     return maxTextureSize;
 }
 
