@@ -5,6 +5,7 @@
 @interface GPUImageOpenGLESContext()
 {
     NSMutableDictionary *shaderProgramCache;
+    EAGLSharegroup *_sharegroup;
 }
 
 @end
@@ -35,7 +36,7 @@
     static GPUImageOpenGLESContext *sharedImageProcessingOpenGLESContext = nil;
     
     dispatch_once(&pred, ^{
-        sharedImageProcessingOpenGLESContext = [[GPUImageOpenGLESContext alloc] init];
+        sharedImageProcessingOpenGLESContext = [[[self class] alloc] init];
     });
     return sharedImageProcessingOpenGLESContext;
 }
@@ -115,7 +116,7 @@
 
 - (void)presentBufferForDisplay;
 {
-    [_context presentRenderbuffer:GL_RENDERBUFFER];
+    [self.context presentRenderbuffer:GL_RENDERBUFFER];
 }
 
 - (GLProgram *)programForVertexShaderString:(NSString *)vertexShaderString fragmentShaderString:(NSString *)fragmentShaderString;
@@ -130,6 +131,20 @@
     }
     
     return programFromCache;
+}
+
+- (void)useSharegroup:(EAGLSharegroup *)sharegroup;
+{
+    NSAssert(_context == nil, @"Unable to use a share group when the context has already been created. Call this method before you use the context for the first time.");
+    
+    _sharegroup = sharegroup;
+}
+
+- (EAGLContext *)createContext;
+{
+    EAGLContext *context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2 sharegroup:_sharegroup];
+    NSAssert(context != nil, @"Unable to create an OpenGL ES 2.0 context. The GPUImage framework requires OpenGL ES 2.0 support to work.");
+    return context;
 }
 
 
@@ -152,8 +167,7 @@
 {
     if (_context == nil)
     {
-        _context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
-        NSAssert(_context != nil, @"Unable to create an OpenGL ES 2.0 context. The GPUImage framework requires OpenGL ES 2.0 support to work.");
+        _context = [self createContext];
         [EAGLContext setCurrentContext:_context];
         
         // Set up a few global settings for the image processing pipeline

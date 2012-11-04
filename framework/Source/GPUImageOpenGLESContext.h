@@ -27,6 +27,8 @@ typedef enum { kGPUImageNoRotation, kGPUImageRotateLeft, kGPUImageRotateRight, k
 - (void)presentBufferForDisplay;
 - (GLProgram *)programForVertexShaderString:(NSString *)vertexShaderString fragmentShaderString:(NSString *)fragmentShaderString;
 
+- (void)useSharegroup:(EAGLSharegroup *)sharegroup;
+
 // Manage fast texture upload
 + (BOOL)supportsFastTextureUpload;
 
