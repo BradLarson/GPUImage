@@ -115,7 +115,7 @@
 
 - (void)presentBufferForDisplay;
 {
-    [_context presentRenderbuffer:GL_RENDERBUFFER];
+    [self.context presentRenderbuffer:GL_RENDERBUFFER];
 }
 
 - (GLProgram *)programForVertexShaderString:(NSString *)vertexShaderString fragmentShaderString:(NSString *)fragmentShaderString;
