@@ -35,7 +35,7 @@
     static GPUImageOpenGLESContext *sharedImageProcessingOpenGLESContext = nil;
     
     dispatch_once(&pred, ^{
-        sharedImageProcessingOpenGLESContext = [[GPUImageOpenGLESContext alloc] init];
+        sharedImageProcessingOpenGLESContext = [[[self class] alloc] init];
     });
     return sharedImageProcessingOpenGLESContext;
 }
