@@ -38,7 +38,8 @@
     
     hasProcessedImage = NO;
     self.shouldSmoothlyScaleOutput = smoothlyScaleOutput;
-        
+    imageUpdateSemaphore = dispatch_semaphore_create(1);
+    
     // TODO: Dispatch this whole thing asynchronously to move image loading off main thread
     CGFloat widthOfImage = CGImageGetWidth(newImageSource);
     CGFloat heightOfImage = CGImageGetHeight(newImageSource);
@@ -138,6 +139,14 @@
     return self;
 }
 
+- (void)dealloc;
+{
+    if (imageUpdateSemaphore != NULL)
+    {
+        dispatch_release(imageUpdateSemaphore);
+    }
+}
+
 #pragma mark -
 #pragma mark Image rendering
 
@@ -151,6 +160,13 @@
 {
     hasProcessedImage = YES;
   
+//    dispatch_semaphore_wait(imageUpdateSemaphore, DISPATCH_TIME_FOREVER);
+
+    if (dispatch_semaphore_wait(imageUpdateSemaphore, DISPATCH_TIME_NOW) != 0)
+    {
+        return;
+    }
+
     dispatch_async([GPUImageOpenGLESContext sharedOpenGLESQueue], ^{
         
         if (MAX(pixelSizeOfImage.width, pixelSizeOfImage.height) > 1000.0)
@@ -165,7 +181,9 @@
             
             [currentTarget setInputSize:pixelSizeOfImage atIndex:textureIndexOfTarget];
             [currentTarget newFrameReadyAtTime:kCMTimeIndefinite atIndex:textureIndexOfTarget];
-        }    
+        }
+        
+        dispatch_semaphore_signal(imageUpdateSemaphore);
     });
 }
 

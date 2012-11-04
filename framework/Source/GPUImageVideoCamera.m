@@ -162,6 +162,11 @@
     {
         dispatch_release(audioProcessingQueue);
     }
+    
+    if (frameRenderingSemaphore != NULL)
+    {
+        dispatch_release(frameRenderingSemaphore);
+    }
 }
 
 - (void)removeInputsAndOutputs;

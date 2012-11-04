@@ -945,6 +945,11 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
 
 - (void)conserveMemoryForNextFrame;
 {
+    if (overrideInputSize)
+    {
+        return;
+    }
+    
     shouldConserveMemoryForNextFrame = YES;
 
     for (id<GPUImageInput> currentTarget in targets)
