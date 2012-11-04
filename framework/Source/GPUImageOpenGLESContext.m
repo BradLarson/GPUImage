@@ -133,14 +133,14 @@
     return programFromCache;
 }
 
-- (void)useSharegroup:(EAGLSharegroup *)sharegroup
+- (void)useSharegroup:(EAGLSharegroup *)sharegroup;
 {
     NSAssert(_context == nil, @"Unable to use a share group when the context has already been created. Call this method before you use the context for the first time.");
     
     _sharegroup = sharegroup;
 }
 
-- (EAGLContext *)createContext
+- (EAGLContext *)createContext;
 {
     EAGLContext *context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2 sharegroup:_sharegroup];
     NSAssert(context != nil, @"Unable to create an OpenGL ES 2.0 context. The GPUImage framework requires OpenGL ES 2.0 support to work.");
