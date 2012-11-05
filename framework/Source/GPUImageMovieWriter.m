@@ -256,7 +256,11 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
     runOnMainQueueWithoutDeadlocking(^{
         [assetWriterVideoInput markAsFinished];
         [assetWriterAudioInput markAsFinished];
-        [assetWriter finishWriting];
+		if ( [assetWriter respondsToSelector:@selector(finishWritingWithCompletionHandler:)] ) {
+			[assetWriter finishWritingWithCompletionHandler:^{}];
+		} else {
+			[assetWriter finishWriting];
+		}
     });
 }
 
