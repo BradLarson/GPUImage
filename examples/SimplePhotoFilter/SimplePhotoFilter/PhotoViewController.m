@@ -107,7 +107,7 @@
         ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
 //        report_memory(@"After asset library creation");
         
-        [library writeImageDataToSavedPhotosAlbum:processedJPEG metadata:nil completionBlock:^(NSURL *assetURL, NSError *error2)
+        [library writeImageDataToSavedPhotosAlbum:processedJPEG metadata:stillCamera.currentCaptureMetadata completionBlock:^(NSURL *assetURL, NSError *error2)
          {
 //             report_memory(@"After writing to library");
              if (error2) {
