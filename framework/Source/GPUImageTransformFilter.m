@@ -53,19 +53,22 @@ NSString *const kGPUImageTransformVertexShaderString = SHADER_STRING
     GLfloat ty = - (top + bottom) / (top - bottom);
     GLfloat tz = - (far + near) / (far - near);
     
-    matrix[0] = 2.0f / r_l;
+	tx=-1.0f;
+	ty=-1.0f;
+	
+    matrix[0] = 4.0f / r_l;
     matrix[1] = 0.0f;
     matrix[2] = 0.0f;
     matrix[3] = tx;
     
     matrix[4] = 0.0f;
-    matrix[5] = 2.0f / t_b;
+    matrix[5] = 4.0f / t_b;
     matrix[6] = 0.0f;
     matrix[7] = ty;
     
     matrix[8] = 0.0f;
     matrix[9] = 0.0f;
-    matrix[10] = 2.0f / f_n;
+    matrix[10] = 4.0f / f_n;
     matrix[11] = tz;
     
     matrix[12] = 0.0f;
@@ -143,15 +146,15 @@ NSString *const kGPUImageTransformVertexShaderString = SHADER_STRING
     CGFloat normalizedHeight = currentFBOSize.height / currentFBOSize.width;
     
     GLfloat adjustedVertices[] = {
-        -1.0f, -normalizedHeight,
-        1.0f, -normalizedHeight,
-        -1.0f,  normalizedHeight,
+        0.0f, 0.0f,
+        1.0f, 0.0f,
+        0.0f,  normalizedHeight,
         1.0f,  normalizedHeight,
     };
     static const GLfloat squareVertices[] = {
-        -1.0f, -1.0f,
-        1.0f, -1.0f,
-        -1.0f,  1.0f,
+        0.0f, 0.0f,
+        1.0f, 0.0f,
+        0.0f,  1.0f,
         1.0f,  1.0f,
     };
 
