@@ -45,6 +45,8 @@ NSString *const kGPUImagePixellationFragmentShaderString = SHADER_STRING
 
 @synthesize fractionalWidthOfAPixel = _fractionalWidthOfAPixel;
 @synthesize aspectRatio = _aspectRatio;
+@synthesize center = _center;
+@synthesize radius = _radius;
 
 #pragma mark -
 #pragma mark Initialization and teardown
