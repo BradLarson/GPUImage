@@ -8,13 +8,30 @@ NSString *const kGPUImagePixellationFragmentShaderString = SHADER_STRING
  
  uniform highp float fractionalWidthOfPixel;
  uniform highp float aspectRatio;
-
+ uniform lowp vec2 pixelateCenter;
+ uniform highp float pixelateRadius;
+ 
  void main()
  {
-     highp vec2 sampleDivisor = vec2(fractionalWidthOfPixel, fractionalWidthOfPixel / aspectRatio);
+//     highp vec2 sampleDivisor = vec2(fractionalWidthOfPixel, fractionalWidthOfPixel / aspectRatio);
+//     highp vec2 samplePos = textureCoordinate - mod(textureCoordinate, sampleDivisor) + 0.5 * sampleDivisor;
+//     
+//     gl_FragColor = texture2D(inputImageTexture, samplePos );
      
-     highp vec2 samplePos = textureCoordinate - mod(textureCoordinate, sampleDivisor) + 0.5 * sampleDivisor;
-     gl_FragColor = texture2D(inputImageTexture, samplePos );
+     highp vec2 textureCoordinateToUse = textureCoordinate;
+     highp float dist = distance(pixelateCenter, textureCoordinate);
+
+     if (dist < pixelateRadius)
+     {
+         textureCoordinateToUse += pixelateCenter;
+         highp vec2 sampleDivisor = vec2(fractionalWidthOfPixel, fractionalWidthOfPixel / aspectRatio);
+         highp vec2 samplePos = textureCoordinate - mod(textureCoordinate, sampleDivisor) + 0.5 * sampleDivisor;
+         gl_FragColor = texture2D(inputImageTexture, samplePos );
+     }
+     else
+     {
+         gl_FragColor = texture2D(inputImageTexture, textureCoordinateToUse );
+     }
  }
 );
 
@@ -51,8 +68,12 @@ NSString *const kGPUImagePixellationFragmentShaderString = SHADER_STRING
     
     fractionalWidthOfAPixelUniform = [filterProgram uniformIndex:@"fractionalWidthOfPixel"];
     aspectRatioUniform = [filterProgram uniformIndex:@"aspectRatio"];
-
+    centerUniform = [filterProgram uniformIndex:@"pixelateCenter"];
+    radiusUniform = [filterProgram uniformIndex:@"pixelateRadius"];
+    
     self.fractionalWidthOfAPixel = 0.05;
+    self.center = CGPointMake(0.5f, 0.5f);
+    self.radius = 1.0f;
     
     return self;
 }
@@ -107,6 +128,20 @@ NSString *const kGPUImagePixellationFragmentShaderString = SHADER_STRING
     _aspectRatio = newValue;
 
     [self setFloat:_aspectRatio forUniform:aspectRatioUniform program:filterProgram];
+}
+
+- (void)setCenter:(CGPoint)center
+{
+    _center = center;
+    
+    [self setPoint:_center forUniform:centerUniform program:filterProgram];
+}
+
+- (void)setRadius:(CGFloat)radius
+{
+    _radius = radius;
+    
+    [self setFloat:_radius forUniform:radiusUniform program:filterProgram];
 }
 
 @end
