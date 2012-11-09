@@ -50,7 +50,7 @@ NSString *const kGPUImageVignetteFragmentShaderString = SHADER_STRING
     
     self.vignetteCenter = (CGPoint){ 0.5f, 0.5f };
     self.vignetteColor = (GPUVector3){ 0.0f, 0.0f, 0.0f };
-    self.vignetteStart = 0.5;
+    self.vignetteStart = 0.3;
     self.vignetteEnd = 0.75;
     
     return self;
