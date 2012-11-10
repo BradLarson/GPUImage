@@ -18,19 +18,18 @@ NSString *const kGPUImagePixellationFragmentShaderString = SHADER_STRING
 //     
 //     gl_FragColor = texture2D(inputImageTexture, samplePos );
      
-     highp vec2 textureCoordinateToUse = textureCoordinate;
-     highp float dist = distance(pixelateCenter, textureCoordinate);
+     highp vec2 textureCoordinateToUse = vec2(textureCoordinate.x, (textureCoordinate.y * aspectRatio + 0.5 - 0.5 * aspectRatio));
+     highp float dist = distance(pixelateCenter, textureCoordinateToUse);
 
      if (dist < pixelateRadius)
      {
-         textureCoordinateToUse += pixelateCenter;
          highp vec2 sampleDivisor = vec2(fractionalWidthOfPixel, fractionalWidthOfPixel / aspectRatio);
          highp vec2 samplePos = textureCoordinate - mod(textureCoordinate, sampleDivisor) + 0.5 * sampleDivisor;
          gl_FragColor = texture2D(inputImageTexture, samplePos );
      }
      else
      {
-         gl_FragColor = texture2D(inputImageTexture, textureCoordinateToUse );
+         gl_FragColor = texture2D(inputImageTexture, textureCoordinate );
      }
  }
 );
