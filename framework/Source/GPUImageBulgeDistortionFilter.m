@@ -25,8 +25,6 @@ NSString *const kGPUImageBulgeDistortionFragmentShaderString = SHADER_STRING
          
          textureCoordinateToUse = textureCoordinateToUse * percent;
          textureCoordinateToUse += center;
-         textureCoordinateToUse.x = clamp(textureCoordinateToUse.x, 0.01, 0.99);
-         textureCoordinateToUse.y = clamp(textureCoordinateToUse.y, 0.01, 0.99);
          
          gl_FragColor = texture2D(inputImageTexture, textureCoordinateToUse );
      }

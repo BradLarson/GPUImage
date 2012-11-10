@@ -25,8 +25,6 @@ NSString *const kGPUImageSwirlFragmentShaderString = SHADER_STRING
          highp float c = cos(theta);
          textureCoordinateToUse = vec2(dot(textureCoordinateToUse, vec2(c, -s)), dot(textureCoordinateToUse, vec2(s, c)));
          textureCoordinateToUse += center;
-         textureCoordinateToUse.x = clamp(textureCoordinateToUse.x, 0.01, 0.99);
-         textureCoordinateToUse.y = clamp(textureCoordinateToUse.y, 0.01, 0.99);
      }
     
      gl_FragColor = texture2D(inputImageTexture, textureCoordinateToUse );
