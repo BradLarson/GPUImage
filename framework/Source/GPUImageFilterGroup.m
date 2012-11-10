@@ -88,6 +88,8 @@
 
 - (void)newFrameReadyAtTime:(CMTime)frameTime atIndex:(NSInteger)textureIndex;
 {
+    outputTextureRetainCount = [_initialFilters count];
+    
     for (GPUImageOutput<GPUImageInput> *currentFilter in _initialFilters)
     {
         if (currentFilter != self.inputFilterToIgnoreForUpdates)
@@ -99,9 +101,11 @@
 
 - (void)setTextureDelegate:(id<GPUImageTextureDelegate>)newTextureDelegate atIndex:(NSInteger)textureIndex;
 {
+    firstTextureDelegate = newTextureDelegate;
+    
     for (GPUImageOutput<GPUImageInput> *currentFilter in _initialFilters)
     {
-        [currentFilter setTextureDelegate:newTextureDelegate atIndex:textureIndex];
+        [currentFilter setTextureDelegate:self atIndex:textureIndex];
     }
 }
 
@@ -182,6 +186,18 @@
     for (GPUImageOutput<GPUImageInput> *currentFilter in _initialFilters)
     {
         [currentFilter conserveMemoryForNextFrame];
+    }
+}
+
+#pragma mark -
+#pragma mark GPUImageTextureDelegate methods
+
+- (void)textureNoLongerNeededForTarget:(id<GPUImageInput>)textureTarget;
+{
+    outputTextureRetainCount--;
+    if (outputTextureRetainCount < 1)
+    {
+        [firstTextureDelegate textureNoLongerNeededForTarget:self];
     }
 }
 
