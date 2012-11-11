@@ -1,6 +1,6 @@
 #import "GPUImagePixellatePositionFilter.h"
 
-NSString *const kGPUImagePixellationFragmentShaderString = SHADER_STRING
+NSString *const kGPUImagePixellationPositionFragmentShaderString = SHADER_STRING
 (
  varying highp vec2 textureCoordinate;
  
@@ -47,7 +47,7 @@ NSString *const kGPUImagePixellationFragmentShaderString = SHADER_STRING
 
 - (id)init;
 {
-    if (!(self = [self initWithFragmentShaderFromString:kGPUImagePixellationFragmentShaderString]))
+    if (!(self = [self initWithFragmentShaderFromString:kGPUImagePixellationPositionFragmentShaderString]))
     {
 		return nil;
     }
