@@ -44,6 +44,7 @@
     NSMutableArray *orderedFilters = [NSMutableArray arrayWithCapacity:[filters count]];
     for (NSDictionary *filter in filters) {
         NSString *filterName = [filter objectForKey:@"FilterName"];
+        NSLog(@"Filter %@", filterName);
         Class theClass = NSClassFromString(filterName);
         GPUImageFilter *genericFilter = [[theClass alloc] init];
         // Set up the properties
@@ -56,30 +57,32 @@
                 [inv setSelector:theSelector];
                 [inv setTarget:genericFilter];
                 
-                // Parse the argument
-                NSString *stringValue = nil;
-                NSString *string = [filterAttributes objectForKey:propertyKey];
-                NSTextCheckingResult *parse = [parsingRegex firstMatchInString:string
-                                                                       options:0
-                                                                         range:NSMakeRange(0, [string length])];
-                NSLog(@"Ranges: %d", parse.numberOfRanges);
-                NSString *modifier = [string substringWithRange:[parse rangeAtIndex:1]];
-                if ([modifier isEqualToString:@"float"]) {
-                    // Float modifier, one argument
-                    CGFloat value = [[string substringWithRange:[parse rangeAtIndex:2]] floatValue];
-                    [inv setArgument:&value atIndex:2];
-                } else if ([modifier isEqualToString:@"CGPoint"]) {
-                    // CGPoint modifier, two float arguments
-                    CGFloat x = [[string substringWithRange:[parse rangeAtIndex:2]] floatValue];
-                    CGFloat y = [[string substringWithRange:[parse rangeAtIndex:3]] floatValue];
-                    CGPoint value = CGPointMake(x, y);
-                    [inv setArgument:&value atIndex:2];
-                } else if ([modifier isEqualToString:@"NSString"]) {
-                    // NSString modifier, one string argument
-                    stringValue = [[string substringWithRange:[parse rangeAtIndex:2]] copy];
-                    [inv setArgument:&stringValue atIndex:2];
-                } else {
-                    return NO;
+                if ([propertyKey hasSuffix:@":"]) {
+                    // Parse the argument
+                    stringValue = nil;
+                    NSString *string = [filterAttributes objectForKey:propertyKey];
+                    NSTextCheckingResult *parse = [parsingRegex firstMatchInString:string
+                                                                           options:0
+                                                                             range:NSMakeRange(0, [string length])];
+                    
+                    NSString *modifier = [string substringWithRange:[parse rangeAtIndex:1]];
+                    if ([modifier isEqualToString:@"float"]) {
+                        // Float modifier, one argument
+                        CGFloat value = [[string substringWithRange:[parse rangeAtIndex:2]] floatValue];
+                        [inv setArgument:&value atIndex:2];
+                    } else if ([modifier isEqualToString:@"CGPoint"]) {
+                        // CGPoint modifier, two float arguments
+                        CGFloat x = [[string substringWithRange:[parse rangeAtIndex:2]] floatValue];
+                        CGFloat y = [[string substringWithRange:[parse rangeAtIndex:3]] floatValue];
+                        CGPoint value = CGPointMake(x, y);
+                        [inv setArgument:&value atIndex:2];
+                    } else if ([modifier isEqualToString:@"NSString"]) {
+                        // NSString modifier, one string argument
+                        stringValue = [string substringWithRange:[parse rangeAtIndex:2]];
+                        [inv setArgument:&stringValue atIndex:2];
+                    } else {
+                        return NO;
+                    }
                 }
                 
                 [inv invoke];
