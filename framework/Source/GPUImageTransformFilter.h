@@ -13,4 +13,7 @@
 // This applies the transform to the raw frame data if set to YES, the default of NO takes the aspect ratio of the image input into account when rotating
 @property(readwrite, nonatomic) BOOL ignoreAspectRatio;
 
+// sets the anchor point to top left corner
+@property(readwrite, nonatomic) BOOL anchorTopLeft;
+
 @end
