@@ -67,6 +67,8 @@ void GPUImageCreateResizedSampleBuffer(CVPixelBufferRef cameraFrame, CGSize fina
     
     [self.captureSession commitConfiguration];
     
+    self.jpegCompressionQuality = 0.8;
+    
     return self;
 }
 
@@ -208,7 +210,7 @@ void GPUImageCreateResizedSampleBuffer(CVPixelBufferRef cameraFrame, CGSize fina
             
 //            reportAvailableMemoryForGPUImage(@"After UIImage generation");
 
-            dataForJPEGFile = UIImageJPEGRepresentation(filteredPhoto, 0.8);
+            dataForJPEGFile = UIImageJPEGRepresentation(filteredPhoto, self.jpegCompressionQuality);
 //            reportAvailableMemoryForGPUImage(@"After JPEG generation");
         }
 
