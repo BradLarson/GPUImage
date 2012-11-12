@@ -35,8 +35,11 @@
     {
 		return nil;
     }
+    
+    hasProcessedImage = NO;
     self.shouldSmoothlyScaleOutput = smoothlyScaleOutput;
-        
+    imageUpdateSemaphore = dispatch_semaphore_create(1);
+    
     // TODO: Dispatch this whole thing asynchronously to move image loading off main thread
     CGFloat widthOfImage = CGImageGetWidth(newImageSource);
     CGFloat heightOfImage = CGImageGetHeight(newImageSource);
@@ -75,8 +78,9 @@
         // For resized image, redraw
         imageData = (GLubyte *) calloc(1, (int)pixelSizeToUseForTexture.width * (int)pixelSizeToUseForTexture.height * 4);
         
-        CGColorSpaceRef genericRGBColorspace = CGColorSpaceCreateDeviceRGB();    
-        CGContextRef imageContext = CGBitmapContextCreate(imageData, (int)pixelSizeToUseForTexture.width, (int)pixelSizeToUseForTexture.height, 8, (int)pixelSizeToUseForTexture.width * 4, genericRGBColorspace,  kCGBitmapByteOrder32Little | kCGImageAlphaPremultipliedFirst);
+        CGColorSpaceRef genericRGBColorspace = CGColorSpaceCreateDeviceRGB();
+        
+        CGContextRef imageContext = CGBitmapContextCreate(imageData, (size_t)pixelSizeToUseForTexture.width, (size_t)pixelSizeToUseForTexture.height, 8, (size_t)pixelSizeToUseForTexture.width * 4, genericRGBColorspace,  kCGBitmapByteOrder32Little | kCGImageAlphaPremultipliedFirst);
 //        CGContextSetBlendMode(imageContext, kCGBlendModeCopy); // From Technical Q&A QA1708: http://developer.apple.com/library/ios/#qa/qa1708/_index.html
         CGContextDrawImage(imageContext, CGRectMake(0.0, 0.0, pixelSizeToUseForTexture.width, pixelSizeToUseForTexture.height), newImageSource);
         CGContextRelease(imageContext);
@@ -108,6 +112,8 @@
     runSynchronouslyOnVideoProcessingQueue(^{
         [GPUImageOpenGLESContext useImageProcessingContext];
         
+        [self initializeOutputTextureIfNeeded];
+
         glBindTexture(GL_TEXTURE_2D, outputTexture);
         if (self.shouldSmoothlyScaleOutput)
         {
@@ -133,14 +139,41 @@
     return self;
 }
 
+- (void)dealloc;
+{
+    if (imageUpdateSemaphore != NULL)
+    {
+        dispatch_release(imageUpdateSemaphore);
+    }
+}
+
 #pragma mark -
 #pragma mark Image rendering
+
+- (void)removeAllTargets;
+{
+    [super removeAllTargets];
+    hasProcessedImage = NO;
+}
 
 - (void)processImage;
 {
     hasProcessedImage = YES;
   
+//    dispatch_semaphore_wait(imageUpdateSemaphore, DISPATCH_TIME_FOREVER);
+
+    if (dispatch_semaphore_wait(imageUpdateSemaphore, DISPATCH_TIME_NOW) != 0)
+    {
+        return;
+    }
+
     dispatch_async([GPUImageOpenGLESContext sharedOpenGLESQueue], ^{
+        
+        if (MAX(pixelSizeOfImage.width, pixelSizeOfImage.height) > 1000.0)
+        {
+            [self conserveMemoryForNextFrame];
+        }
+        
         for (id<GPUImageInput> currentTarget in targets)
         {
             NSInteger indexOfObject = [targets indexOfObject:currentTarget];
@@ -148,8 +181,10 @@
             
             [currentTarget setInputSize:pixelSizeOfImage atIndex:textureIndexOfTarget];
             [currentTarget newFrameReadyAtTime:kCMTimeIndefinite atIndex:textureIndexOfTarget];
-        }    
-    });    
+        }
+        
+        dispatch_semaphore_signal(imageUpdateSemaphore);
+    });
 }
 
 - (CGSize)outputImageSize;

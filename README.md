@@ -73,6 +73,14 @@ Documentation is generated from header comments using appledoc. To build the doc
   - *colorMatrix*: A 4x4 matrix used to transform each color in an image
   - *intensity*: The degree to which the new transformed color replaces the original color for each pixel
 
+- **GPUImageRGBFilter**: Adjusts the individual RGB channels of an image
+  - *red*: Normalized values by which each color channel is multiplied. The range is from 0.0 up, with 1.0 as the default.
+  - *green*: 
+  - *blue*:
+
+- **GPUImageHueFilter**: Adjusts the hue of an image
+  - *hue*: The hue angle, in degrees. 90 degrees by default
+
 - **GPUImageToneCurveFilter**: Adjusts the colors of an image based on spline curves for each color channel.
   - *redControlPoints*:
   - *greenControlPoints*:
@@ -127,6 +135,10 @@ Documentation is generated from header comments using appledoc. To build the doc
 - **GPUImageAverageColor**: This processes an input image and determines the average color of the scene, by averaging the RGBA components for each pixel in the image. A reduction process is used to progressively downsample the source image on the GPU, followed by a short averaging calculation on the CPU. The output from this filter is meaningless, but you need to set the colorAverageProcessingFinishedBlock property to a block that takes in four color components and a frame time and does something with them.
 
 - **GPUImageLuminosity**: Like the GPUImageAverageColor, this reduces an image to its average luminosity. You need to set the luminosityProcessingFinishedBlock to handle the output of this filter, which just returns a luminosity value and a frame time.
+
+- **GPUImageChromaKeyFilter**: For a given color in the image, sets the alpha channel to 0. This is similar to the GPUImageChromaKeyBlendFilter, only instead of blending in a second image for a matching color this doesn't take in a second image and just turns a given color transparent.
+- *thresholdSensitivity*: How close a color match needs to exist to the target color to be replaced (default of 0.4)
+- *smoothing*: How smoothly to blend for the color match (default of 0.1)
 
 ### Image processing ###
 
@@ -220,6 +232,16 @@ Documentation is generated from header comments using appledoc. To build the doc
 
 - **GPUImageRGBClosingFilter**: This is the same as the GPUImageClosingFilter, except that this acts on all color channels, not just the red channel.
 
+- **GPUImageLowPassFilter**: This applies a low pass filter to incoming video frames. This basically accumulates a weighted rolling average of previous frames with the current ones as they come in. This can be used to denoise video, add motion blur, or be used to create a high pass filter.
+  - *filterStrength*: This controls the degree by which the previous accumulated frames are blended with the current one. This ranges from 0.0 to 1.0, with a default of 0.5.
+
+- **GPUImageHighPassFilter**: This applies a high pass filter to incoming video frames. This is the inverse of the low pass filter, showing the difference between the current frame and the weighted rolling average of previous ones. This is most useful for motion detection.
+  - *filterStrength*: This controls the degree by which the previous accumulated frames are blended and then subtracted from the current one. This ranges from 0.0 to 1.0, with a default of 0.5.
+
+- **GPUImageMotionDetector**: This is a motion detector based on a high-pass filter. You set the motionDetectionBlock and on every incoming frame it will give you the centroid of any detected movement in the scene (in normalized X,Y coordinates) as well as an intensity of motion for the scene.
+  - *lowPassFilterStrength*: This controls the strength of the low pass filter used behind the scenes to establish the baseline that incoming frames are compared with. This ranges from 0.0 to 1.0, with a default of 0.5.
+
+
 ### Blending modes ###
 
 - **GPUImageChromaKeyBlendFilter**: Selectively replaces a color in the first image with the second image
@@ -270,6 +292,9 @@ Documentation is generated from header comments using appledoc. To build the doc
 - **GPUImagePolkaDotFilter**: Breaks an image up into colored dots within a regular grid
   - *fractionalWidthOfAPixel*: How large the dots are, as a fraction of the width and height of the image (0.0 - 1.0, default 0.05)
   - *dotScaling*: What fraction of each grid space is taken up by a dot, from 0.0 to 1.0 with a default of 0.9.
+
+- **GPUImageHalftoneFilter**: Applies a halftone effect to an image, like news print
+  - *fractionalWidthOfAPixel*: How large the halftone dots are, as a fraction of the width and height of the image (0.0 - 1.0, default 0.05)
 
 - **GPUImageCrosshatchFilter**: This converts an image into a black-and-white crosshatch pattern
   - *crossHatchSpacing*: The fractional width of the image to use as the spacing for the crosshatch. The default is 0.03.

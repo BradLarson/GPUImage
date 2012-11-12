@@ -154,7 +154,6 @@
                             attrs,
                             &renderTarget);
         
-        CVOpenGLESTextureRef renderTexture;
         CVOpenGLESTextureCacheCreateTextureFromImage (kCFAllocatorDefault,
                                                       rawDataTextureCache, renderTarget,
                                                       NULL, // texture attributes
@@ -191,6 +190,12 @@
 - (void)destroyDataFBO;
 {
     [GPUImageOpenGLESContext useImageProcessingContext];
+
+    if (renderTexture)
+    {
+        CFRelease(renderTexture);
+        renderTexture = NULL;
+    }
 
     if (dataFramebuffer)
 	{
@@ -332,6 +337,16 @@
 - (BOOL)shouldIgnoreUpdatesToThisTarget;
 {
     return NO;
+}
+
+- (void)setTextureDelegate:(id<GPUImageTextureDelegate>)newTextureDelegate atIndex:(NSInteger)textureIndex;
+{
+    textureDelegate = newTextureDelegate;
+}
+
+- (void)conserveMemoryForNextFrame;
+{
+    
 }
 
 #pragma mark -

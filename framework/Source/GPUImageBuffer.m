@@ -1,5 +1,13 @@
 #import "GPUImageBuffer.h"
 
+@interface GPUImageBuffer()
+
+//Texture management
+- (GLuint)generateTexture;
+- (void)removeTexture:(GLuint)textureToRemove;
+
+@end
+
 @implementation GPUImageBuffer
 
 @synthesize bufferSize = _bufferSize;
@@ -15,6 +23,7 @@
     }
     
     bufferedTextures = [[NSMutableArray alloc] init];
+    [self initializeOutputTextureIfNeeded];
     [bufferedTextures addObject:[NSNumber numberWithInt:outputTexture]];
     _bufferSize = 1;
     
@@ -34,6 +43,8 @@
 
 - (void)newFrameReadyAtTime:(CMTime)frameTime atIndex:(NSInteger)textureIndex;
 {
+    outputTextureRetainCount = [targets count];
+
     static const GLfloat imageVertices[] = {
         -1.0f, -1.0f,
         1.0f, -1.0f,

@@ -89,6 +89,10 @@
 		}
 	}
     
+    if (!_inputCamera) {
+        return nil;
+    }
+    
 	// Create the capture session
 	_captureSession = [[AVCaptureSession alloc] init];
 	
@@ -117,6 +121,7 @@
 	else
 	{
 		NSLog(@"Couldn't add video output");
+        return nil;
 	}
     
 	_captureSessionPreset = sessionPreset;
@@ -156,6 +161,11 @@
     if (audioProcessingQueue != NULL)
     {
         dispatch_release(audioProcessingQueue);
+    }
+    
+    if (frameRenderingSemaphore != NULL)
+    {
+        dispatch_release(frameRenderingSemaphore);
     }
 }
 
@@ -322,6 +332,18 @@
 	return _frameRate;
 }
 
+- (AVCaptureConnection *)videoCaptureConnection {
+    for (AVCaptureConnection *connection in [videoOutput connections] ) {
+		for ( AVCaptureInputPort *port in [connection inputPorts] ) {
+			if ( [[port mediaType] isEqual:AVMediaTypeVideo] ) {
+				return connection;
+			}
+		}
+	}
+    
+    return nil;
+}
+
 #define INITIALFRAMESTOIGNOREFORBENCHMARK 5
 
 - (void)processVideoSampleBuffer:(CMSampleBufferRef)sampleBuffer;
@@ -370,17 +392,17 @@
                 
                 if (currentTarget != self.targetToIgnoreForUpdates)
                 {
+                    [currentTarget setInputRotation:outputRotation atIndex:textureIndexOfTarget];
                     [currentTarget setInputSize:CGSizeMake(bufferWidth, bufferHeight) atIndex:textureIndexOfTarget];
                     
                     [currentTarget setInputTexture:outputTexture atIndex:textureIndexOfTarget];
-                    [currentTarget setInputRotation:outputRotation atIndex:textureIndexOfTarget];
                     
                     [currentTarget newFrameReadyAtTime:currentTime atIndex:textureIndexOfTarget];
                 }
                 else
                 {
-                    [currentTarget setInputTexture:outputTexture atIndex:textureIndexOfTarget];
                     [currentTarget setInputRotation:outputRotation atIndex:textureIndexOfTarget];
+                    [currentTarget setInputTexture:outputTexture atIndex:textureIndexOfTarget];
                 }
             }
         }
@@ -465,7 +487,7 @@
 
 - (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection
 {
-    __unsafe_unretained id weakSelf = self;
+    __unsafe_unretained GPUImageVideoCamera *weakSelf = self;
     if (captureOutput == audioOutput)
     {
 //        if (dispatch_semaphore_wait(frameRenderingSemaphore, DISPATCH_TIME_NOW) != 0)
@@ -490,9 +512,9 @@
         CFRetain(sampleBuffer);
         dispatch_async([GPUImageOpenGLESContext sharedOpenGLESQueue], ^{
             //Feature Detection Hook.
-            if (self.delegate)
+            if (weakSelf.delegate)
             {
-                [self.delegate willOutputSampleBuffer:sampleBuffer];
+                [weakSelf.delegate willOutputSampleBuffer:sampleBuffer];
             }
             
             [weakSelf processVideoSampleBuffer:sampleBuffer];

@@ -8,14 +8,16 @@
 @property(readwrite, nonatomic, copy) NSArray *rgbCompositeControlPoints;
 
 // Initialization and teardown
-- (id)initWithACV:(NSString*)curveFile;
+- (id)initWithACV:(NSString*)curveFilename;
+- (id)initWithACVURL:(NSURL*)curveFileURL;
 
 // This lets you set all three red, green, and blue tone curves at once.
 // NOTE: Deprecated this function because this effect can be accomplished
 // using the rgbComposite channel rather then setting all 3 R, G, and B channels.
 - (void)setRGBControlPoints:(NSArray *)points DEPRECATED_ATTRIBUTE;
 
-- (void)setPointsWithACV:(NSString*)curveFile;
+- (void)setPointsWithACV:(NSString*)curveFilename;
+- (void)setPointsWithACVURL:(NSURL*)curveFileURL;
 
 // Curve calculation
 - (NSMutableArray *)getPreparedSplineCurve:(NSArray *)points;

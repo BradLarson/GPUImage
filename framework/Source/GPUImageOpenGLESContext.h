@@ -27,14 +27,19 @@ typedef enum { kGPUImageNoRotation, kGPUImageRotateLeft, kGPUImageRotateRight, k
 - (void)presentBufferForDisplay;
 - (GLProgram *)programForVertexShaderString:(NSString *)vertexShaderString fragmentShaderString:(NSString *)fragmentShaderString;
 
+- (void)useSharegroup:(EAGLSharegroup *)sharegroup;
+
 // Manage fast texture upload
 + (BOOL)supportsFastTextureUpload;
 
 @end
 
-@protocol GPUImageInput
+@protocol GPUImageTextureDelegate;
+
+@protocol GPUImageInput <NSObject>
 - (void)newFrameReadyAtTime:(CMTime)frameTime atIndex:(NSInteger)textureIndex;
 - (void)setInputTexture:(GLuint)newInputTexture atIndex:(NSInteger)textureIndex;
+- (void)setTextureDelegate:(id<GPUImageTextureDelegate>)newTextureDelegate atIndex:(NSInteger)textureIndex;
 - (NSInteger)nextAvailableTextureIndex;
 - (void)setInputSize:(CGSize)newSize atIndex:(NSInteger)textureIndex;
 - (void)setInputRotation:(GPUImageRotationMode)newInputRotation atIndex:(NSInteger)textureIndex;
@@ -42,4 +47,10 @@ typedef enum { kGPUImageNoRotation, kGPUImageRotateLeft, kGPUImageRotateRight, k
 - (void)endProcessing;
 - (BOOL)shouldIgnoreUpdatesToThisTarget;
 - (BOOL)enabled;
+- (void)conserveMemoryForNextFrame;
 @end
+
+@protocol GPUImageTextureDelegate <NSObject>
+- (void)textureNoLongerNeededForTarget:(id<GPUImageInput>)textureTarget;
+@end
+

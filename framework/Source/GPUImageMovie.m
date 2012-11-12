@@ -7,6 +7,8 @@
     GPUImageMovieWriter *synchronizedMovieWriter;
     CVOpenGLESTextureCacheRef coreVideoTextureCache;
     AVAssetReader *reader;
+    CMTime previousFrameTime;
+    CFAbsoluteTime previousActualFrameTime;
 }
 
 - (void)processAsset;
@@ -18,6 +20,7 @@
 @synthesize url = _url;
 @synthesize asset = _asset;
 @synthesize runBenchmark = _runBenchmark;
+@synthesize playAtActualSpeed = _playAtActualSpeed;
 
 #pragma mark -
 #pragma mark Initialization and teardown
@@ -92,10 +95,14 @@
 
 - (void)startProcessing
 {
-    if(self.url == nil) {
+    if(self.url == nil)
+    {
       [self processAsset];
       return;
     }
+    
+    previousFrameTime = kCMTimeZero;
+    previousActualFrameTime = CFAbsoluteTimeGetCurrent();
   
     NSDictionary *inputOptions = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES] forKey:AVURLAssetPreferPreciseDurationAndTimingKey];
     AVURLAsset *inputAsset = [[AVURLAsset alloc] initWithURL:self.url options:inputOptions];    
@@ -181,6 +188,25 @@
         CMSampleBufferRef sampleBufferRef = [readerVideoTrackOutput copyNextSampleBuffer];
         if (sampleBufferRef) 
         {
+            if (_playAtActualSpeed)
+            {
+                // Do this outside of the video processing queue to not slow that down while waiting
+                CMTime currentSampleTime = CMSampleBufferGetOutputPresentationTimeStamp(sampleBufferRef);
+                CMTime differenceFromLastFrame = CMTimeSubtract(currentSampleTime, previousFrameTime);
+                CFAbsoluteTime currentActualTime = CFAbsoluteTimeGetCurrent();
+                
+                CGFloat frameTimeDifference = CMTimeGetSeconds(differenceFromLastFrame);
+                CGFloat actualTimeDifference = currentActualTime - previousActualFrameTime;
+                
+                if (frameTimeDifference > actualTimeDifference)
+                {
+                    usleep(1000000.0 * (frameTimeDifference - actualTimeDifference));
+                }
+                
+                previousFrameTime = currentSampleTime;
+                previousActualFrameTime = CFAbsoluteTimeGetCurrent();
+            }
+
             __unsafe_unretained GPUImageMovie *weakSelf = self;
             runSynchronouslyOnVideoProcessingQueue(^{
                 [weakSelf processMovieFrame:sampleBufferRef];
@@ -230,6 +256,9 @@
 
 - (void)processMovieFrame:(CMSampleBufferRef)movieSampleBuffer; 
 {
+//    CMTimeGetSeconds
+//    CMTimeSubtract
+    
     CMTime currentSampleTime = CMSampleBufferGetOutputPresentationTimeStamp(movieSampleBuffer);
     CVImageBufferRef movieFrame = CMSampleBufferGetImageBuffer(movieSampleBuffer);
 
@@ -270,6 +299,7 @@
             
             [currentTarget setInputSize:CGSizeMake(bufferWidth, bufferHeight) atIndex:targetTextureIndex];
             [currentTarget setInputTexture:outputTexture atIndex:targetTextureIndex];
+            [currentTarget setTextureDelegate:self atIndex:targetTextureIndex];
             
             [currentTarget newFrameReadyAtTime:currentSampleTime atIndex:targetTextureIndex];
         }

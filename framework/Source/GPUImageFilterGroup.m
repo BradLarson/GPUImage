@@ -16,8 +16,6 @@
     
     filters = [[NSMutableArray alloc] init];
     
-    [self deleteOutputTexture];
-    
     return self;
 }
 
@@ -42,44 +40,9 @@
 #pragma mark -
 #pragma mark Still image processing
 
-- (UIImage *)imageFromCurrentlyProcessedOutputWithOrientation:(UIImageOrientation)imageOrientation;
-{
-    return [self.terminalFilter imageFromCurrentlyProcessedOutputWithOrientation:imageOrientation];
-}
-
 - (CGImageRef)newCGImageFromCurrentlyProcessedOutputWithOrientation:(UIImageOrientation)imageOrientation;
 {
     return [self.terminalFilter newCGImageFromCurrentlyProcessedOutputWithOrientation:imageOrientation];
-}
-
-- (UIImage *)imageByFilteringImage:(UIImage *)imageToFilter;
-{
-    return [self.terminalFilter imageByFilteringImage:imageToFilter];
-//    CGImageRef image = [self newCGImageByFilteringCGImage:[imageToFilter CGImage]];
-//    UIImage *processedImage = [UIImage imageWithCGImage:image];
-//    CGImageRelease(image);
-//    return processedImage;
-}
-
-- (CGImageRef)newCGImageByFilteringImage:(UIImage *)imageToFilter;
-{
-    return [self.terminalFilter newCGImageByFilteringImage:imageToFilter];
-//    
-//    return [self newCGImageByFilteringCGImage:[imageToFilter CGImage]];
-}
-
-- (CGImageRef)newCGImageByFilteringCGImage:(CGImageRef)imageToFilter;
-{
-    return [self.terminalFilter newCGImageByFilteringCGImage:imageToFilter];
-//    GPUImagePicture *stillImageSource = [[GPUImagePicture alloc] initWithCGImage:imageToFilter];
-//    
-//    [stillImageSource addTarget:self];
-//    [stillImageSource processImage];
-//    
-//    CGImageRef processedImage = [self.terminalFilter newCGImageFromCurrentlyProcessedOutput];
-//    
-//    [stillImageSource removeTarget:self];
-//    return processedImage;
 }
 
 - (void)prepareForImageCapture;
@@ -125,12 +88,24 @@
 
 - (void)newFrameReadyAtTime:(CMTime)frameTime atIndex:(NSInteger)textureIndex;
 {
+    outputTextureRetainCount = [_initialFilters count];
+    
     for (GPUImageOutput<GPUImageInput> *currentFilter in _initialFilters)
     {
         if (currentFilter != self.inputFilterToIgnoreForUpdates)
         {
             [currentFilter newFrameReadyAtTime:frameTime atIndex:textureIndex];
         }
+    }
+}
+
+- (void)setTextureDelegate:(id<GPUImageTextureDelegate>)newTextureDelegate atIndex:(NSInteger)textureIndex;
+{
+    firstTextureDelegate = newTextureDelegate;
+    
+    for (GPUImageOutput<GPUImageInput> *currentFilter in _initialFilters)
+    {
+        [currentFilter setTextureDelegate:self atIndex:textureIndex];
     }
 }
 
@@ -203,6 +178,26 @@
     for (GPUImageOutput<GPUImageInput> *currentFilter in _initialFilters)
     {
         [currentFilter endProcessing];
+    }
+}
+
+- (void)conserveMemoryForNextFrame;
+{
+    for (GPUImageOutput<GPUImageInput> *currentFilter in _initialFilters)
+    {
+        [currentFilter conserveMemoryForNextFrame];
+    }
+}
+
+#pragma mark -
+#pragma mark GPUImageTextureDelegate methods
+
+- (void)textureNoLongerNeededForTarget:(id<GPUImageInput>)textureTarget;
+{
+    outputTextureRetainCount--;
+    if (outputTextureRetainCount < 1)
+    {
+        [firstTextureDelegate textureNoLongerNeededForTarget:self];
     }
 }
 

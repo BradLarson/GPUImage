@@ -212,6 +212,8 @@ NSString *const kGPUImageCropFragmentShaderString =  SHADER_STRING
 
 - (void)newFrameReadyAtTime:(CMTime)frameTime atIndex:(NSInteger)textureIndex;
 {
+    outputTextureRetainCount = [targets count];
+
     static const GLfloat cropSquareVertices[] = {
         -1.0f, -1.0f,
         1.0f, -1.0f,

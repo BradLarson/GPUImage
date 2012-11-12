@@ -85,7 +85,7 @@ NSString *const kGPUImageLuminosityFragmentShaderString = SHADER_STRING
         
         if (!secondFilterProgram.initialized)
         {
-            [self initializeAttributes];
+            [self initializeSecondaryAttributes];
             
             if (![secondFilterProgram link])
             {
@@ -117,9 +117,8 @@ NSString *const kGPUImageLuminosityFragmentShaderString = SHADER_STRING
     return self;
 }
 
-- (void)initializeAttributes;
+- (void)initializeSecondaryAttributes;
 {
-    [super initializeAttributes];
     [secondFilterProgram addAttribute:@"position"];
 	[secondFilterProgram addAttribute:@"inputTextureCoordinate"];
 }

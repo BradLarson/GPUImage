@@ -4,7 +4,7 @@
 @class GPUImageXYDerivativeFilter;
 @class GPUImageGrayscaleFilter;
 @class GPUImageFastBlurFilter;
-@class GPUImageNonMaximumSuppressionFilter;
+@class GPUImageThresholdedNonMaximumSuppressionFilter;
 @class GPUImageColorPackingFilter;
 
 //#define DEBUGFEATUREDETECTION
@@ -23,11 +23,9 @@
 @interface GPUImageHarrisCornerDetectionFilter : GPUImageFilterGroup
 {
     GPUImageXYDerivativeFilter *derivativeFilter;
-//    GPUImageGaussianBlurFilter *blurFilter;
-    GPUImageFastBlurFilter *preblurFilter, *blurFilter;
+    GPUImageFastBlurFilter *blurFilter;
     GPUImageFilter *harrisCornerDetectionFilter;
-    GPUImageNonMaximumSuppressionFilter *nonMaximumSuppressionFilter;
-    GPUImageFilter *simpleThresholdFilter;
+    GPUImageThresholdedNonMaximumSuppressionFilter *nonMaximumSuppressionFilter;
     GPUImageColorPackingFilter *colorPackingFilter;
     GLfloat *cornersArray;
     GLubyte *rawImagePixels;

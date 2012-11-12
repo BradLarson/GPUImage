@@ -53,17 +53,24 @@
 //    stillCamera = [[GPUImageStillCamera alloc] initWithSessionPreset:AVCaptureSessionPreset640x480 cameraPosition:AVCaptureDevicePositionBack];
     stillCamera.outputImageOrientation = UIInterfaceOrientationPortrait;
 //    filter = [[GPUImageGammaFilter alloc] init];
-    filter = [[GPUImageSketchFilter alloc] init];
+//    filter = [[GPUImageSketchFilter alloc] init];
+//    filter = [[GPUImageUnsharpMaskFilter alloc] init];
 //    [(GPUImageSketchFilter *)filter setTexelHeight:(1.0 / 1024.0)];
 //    [(GPUImageSketchFilter *)filter setTexelWidth:(1.0 / 768.0)];
 //    filter = [[GPUImageSmoothToonFilter alloc] init];
-//    filter = [[GPUImageSepiaFilter alloc] init];
-     	
+    filter = [[GPUImageSepiaFilter alloc] init];
+//    secondFilter = [[GPUImageSepiaFilter alloc] init];
+//    terminalFilter = [[GPUImageSepiaFilter alloc] init];
+//    [filter addTarget:secondFilter];
+//    [secondFilter addTarget:terminalFilter];
+    
 	[filter prepareForImageCapture];
+//	[terminalFilter prepareForImageCapture];
     
     [stillCamera addTarget:filter];
     GPUImageView *filterView = (GPUImageView *)self.view;
     [filter addTarget:filterView];
+//    [terminalFilter addTarget:filterView];
     
 //    [stillCamera.inputCamera lockForConfiguration:nil];
 //    [stillCamera.inputCamera setFlashMode:AVCaptureFlashModeOn];
@@ -93,13 +100,14 @@
 {
     [photoCaptureButton setEnabled:NO];
     
+//    [stillCamera capturePhotoAsJPEGProcessedUpToFilter:terminalFilter withCompletionHandler:^(NSData *processedJPEG, NSError *error){
     [stillCamera capturePhotoAsJPEGProcessedUpToFilter:filter withCompletionHandler:^(NSData *processedJPEG, NSError *error){
 
         // Save to assets library
         ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
 //        report_memory(@"After asset library creation");
         
-        [library writeImageDataToSavedPhotosAlbum:processedJPEG metadata:nil completionBlock:^(NSURL *assetURL, NSError *error2)
+        [library writeImageDataToSavedPhotosAlbum:processedJPEG metadata:stillCamera.currentCaptureMetadata completionBlock:^(NSURL *assetURL, NSError *error2)
          {
 //             report_memory(@"After writing to library");
              if (error2) {

@@ -1,6 +1,6 @@
-#import "GPUImageThresholdEdgeDetection.h"
+#import "GPUImageThresholdEdgeDetectionFilter.h"
 
-@implementation GPUImageThresholdEdgeDetection
+@implementation GPUImageThresholdEdgeDetectionFilter
 
 // Invert the colorspace for a sketch
 NSString *const kGPUImageThresholdEdgeDetectionFragmentShaderString = SHADER_STRING
@@ -37,7 +37,7 @@ NSString *const kGPUImageThresholdEdgeDetectionFragmentShaderString = SHADER_STR
      float h = -topLeftIntensity - 2.0 * topIntensity - topRightIntensity + bottomLeftIntensity + 2.0 * bottomIntensity + bottomRightIntensity;
      float v = -bottomLeftIntensity - 2.0 * leftIntensity - topLeftIntensity + bottomRightIntensity + 2.0 * rightIntensity + topRightIntensity;
      
-     float mag = 1.0 - length(vec2(h, v));
+     float mag = length(vec2(h, v));
      mag = step(threshold, mag);
      
      gl_FragColor = vec4(vec3(mag), 1.0);
@@ -49,6 +49,19 @@ NSString *const kGPUImageThresholdEdgeDetectionFragmentShaderString = SHADER_STR
 
 @synthesize threshold = _threshold;
 
+- (id)initWithFragmentShaderFromString:(NSString *)fragmentShaderString;
+{
+    if (!(self = [super initWithFragmentShaderFromString:fragmentShaderString]))
+    {
+		return nil;
+    }
+    
+    thresholdUniform = [secondFilterProgram uniformIndex:@"threshold"];
+    self.threshold = 0.9;
+    
+    return self;
+}
+
 
 - (id)init;
 {
@@ -56,9 +69,6 @@ NSString *const kGPUImageThresholdEdgeDetectionFragmentShaderString = SHADER_STR
     {
 		return nil;
     }
-    
-    thresholdUniform = [secondFilterProgram uniformIndex:@"threshold"];
-    self.threshold = 0.9;
     
     return self;
 }

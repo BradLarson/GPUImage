@@ -48,6 +48,8 @@ NSString *const kGPUImageTwoInputTextureVertexShaderString = SHADER_STRING
     hasReceivedSecondFrame = NO;
     firstFrameWasVideo = NO;
     secondFrameWasVideo = NO;
+    firstFrameCheckDisabled = NO;
+    secondFrameCheckDisabled = NO;
     
     firstFrameTime = kCMTimeInvalid;
     secondFrameTime = kCMTimeInvalid;
@@ -66,8 +68,17 @@ NSString *const kGPUImageTwoInputTextureVertexShaderString = SHADER_STRING
 - (void)initializeAttributes;
 {
     [super initializeAttributes];
-    
     [filterProgram addAttribute:@"inputTextureCoordinate2"];
+}
+
+- (void)disableFirstFrameCheck;
+{
+    firstFrameCheckDisabled = YES;
+}
+
+- (void)disableSecondFrameCheck;
+{
+    secondFrameCheckDisabled = YES;
 }
 
 #pragma mark -
@@ -94,13 +105,23 @@ NSString *const kGPUImageTwoInputTextureVertexShaderString = SHADER_STRING
     
     glActiveTexture(GL_TEXTURE3);
     glBindTexture(GL_TEXTURE_2D, filterSourceTexture2);                
-    glUniform1i(filterInputTextureUniform2, 3);	
-        
+    glUniform1i(filterInputTextureUniform2, 3);
+    
     glVertexAttribPointer(filterPositionAttribute, 2, GL_FLOAT, 0, 0, vertices);
 	glVertexAttribPointer(filterTextureCoordinateAttribute, 2, GL_FLOAT, 0, 0, textureCoordinates);
     glVertexAttribPointer(filterSecondTextureCoordinateAttribute, 2, GL_FLOAT, 0, 0, [[self class] textureCoordinatesForRotation:inputRotation2]);
     
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);    
+}
+
+- (void)releaseInputTexturesIfNeeded;
+{
+    if (shouldConserveMemoryForNextFrame)
+    {
+        [firstTextureDelegate textureNoLongerNeededForTarget:self];
+        [secondTextureDelegate textureNoLongerNeededForTarget:self];
+        shouldConserveMemoryForNextFrame = NO;
+    }
 }
 
 #pragma mark -
@@ -181,6 +202,8 @@ NSString *const kGPUImageTwoInputTextureVertexShaderString = SHADER_STRING
 
 - (void)newFrameReadyAtTime:(CMTime)frameTime atIndex:(NSInteger)textureIndex;
 {
+    outputTextureRetainCount = [targets count];
+
     // You can set up infinite update loops, so this helps to short circuit them
     if (hasReceivedFirstFrame && hasReceivedSecondFrame)
     {
@@ -193,6 +216,10 @@ NSString *const kGPUImageTwoInputTextureVertexShaderString = SHADER_STRING
     {
         hasReceivedFirstFrame = YES;
         firstFrameTime = frameTime;
+        if (secondFrameCheckDisabled)
+        {
+            hasReceivedSecondFrame = YES;
+        }
         
         if (!CMTIME_IS_INDEFINITE(frameTime))
         {
@@ -206,6 +233,10 @@ NSString *const kGPUImageTwoInputTextureVertexShaderString = SHADER_STRING
     {
         hasReceivedSecondFrame = YES;
         secondFrameTime = frameTime;
+        if (firstFrameCheckDisabled)
+        {
+            hasReceivedFirstFrame = YES;
+        }
 
         if (!CMTIME_IS_INDEFINITE(frameTime))
         {
@@ -215,15 +246,26 @@ NSString *const kGPUImageTwoInputTextureVertexShaderString = SHADER_STRING
             }
         }
     }
-    
+
+    // || (hasReceivedFirstFrame && secondFrameCheckDisabled) || (hasReceivedSecondFrame && firstFrameCheckDisabled)
     if ((hasReceivedFirstFrame && hasReceivedSecondFrame) || updatedMovieFrameOppositeStillImage)
     {
-        
         [super newFrameReadyAtTime:frameTime atIndex:0];
         hasReceivedFirstFrame = NO;
         hasReceivedSecondFrame = NO;
     }
 }
 
+- (void)setTextureDelegate:(id<GPUImageTextureDelegate>)newTextureDelegate atIndex:(NSInteger)textureIndex;
+{
+    if (textureIndex == 0)
+    {
+        firstTextureDelegate = newTextureDelegate;
+    }
+    else
+    {
+        secondTextureDelegate = newTextureDelegate;
+    }
+}
 
 @end
