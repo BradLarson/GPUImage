@@ -1,9 +1,7 @@
 #import <Foundation/Foundation.h>
 #import "GPUImageFilter.h"
 
-@interface GPUImageFilterPipeline : NSObject{
-    NSString *stringValue;
-}
+@interface GPUImageFilterPipeline : NSObject
 
 @property (strong) NSMutableArray *filters;
 
