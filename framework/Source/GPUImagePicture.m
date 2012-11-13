@@ -81,6 +81,10 @@
         CGColorSpaceRef genericRGBColorspace = CGColorSpaceCreateDeviceRGB();
         
         CGContextRef imageContext = CGBitmapContextCreate(imageData, (size_t)pixelSizeToUseForTexture.width, (size_t)pixelSizeToUseForTexture.height, 8, (size_t)pixelSizeToUseForTexture.width * 4, genericRGBColorspace,  kCGBitmapByteOrder32Little | kCGImageAlphaPremultipliedFirst);
+        if (imageContext == NULL)
+        {
+            NSLog(@"Empty GPUImage Context");
+        }
 //        CGContextSetBlendMode(imageContext, kCGBlendModeCopy); // From Technical Q&A QA1708: http://developer.apple.com/library/ios/#qa/qa1708/_index.html
         CGContextDrawImage(imageContext, CGRectMake(0.0, 0.0, pixelSizeToUseForTexture.width, pixelSizeToUseForTexture.height), newImageSource);
         CGContextRelease(imageContext);
@@ -111,9 +115,7 @@
     
     runSynchronouslyOnVideoProcessingQueue(^{
         [GPUImageOpenGLESContext useImageProcessingContext];
-        
         [self initializeOutputTextureIfNeeded];
-
         glBindTexture(GL_TEXTURE_2D, outputTexture);
         if (self.shouldSmoothlyScaleOutput)
         {
@@ -156,35 +158,62 @@
     hasProcessedImage = NO;
 }
 
-- (void)processImage;
+- (void)processImageInternal
+{
+    if (MAX(pixelSizeOfImage.width, pixelSizeOfImage.height) > 1000.0)
+    {
+        [self conserveMemoryForNextFrame];
+    }
+    
+    for (id<GPUImageInput> currentTarget in targets)
+    {
+        NSInteger indexOfObject = [targets indexOfObject:currentTarget];
+        NSInteger textureIndexOfTarget = [[targetTextureIndices objectAtIndex:indexOfObject] integerValue];
+        
+        [currentTarget setInputSize:pixelSizeOfImage atIndex:textureIndexOfTarget];
+        [currentTarget newFrameReadyAtTime:kCMTimeIndefinite atIndex:textureIndexOfTarget];
+    }
+    
+    dispatch_semaphore_signal(imageUpdateSemaphore);
+}
+
+- (void)processImage:(BOOL)synchronously
 {
     hasProcessedImage = YES;
-  
-//    dispatch_semaphore_wait(imageUpdateSemaphore, DISPATCH_TIME_FOREVER);
-
+    
+    //    dispatch_semaphore_wait(imageUpdateSemaphore, DISPATCH_TIME_FOREVER);
+    
     if (dispatch_semaphore_wait(imageUpdateSemaphore, DISPATCH_TIME_NOW) != 0)
     {
         return;
     }
-
-    dispatch_async([GPUImageOpenGLESContext sharedOpenGLESQueue], ^{
-        
-        if (MAX(pixelSizeOfImage.width, pixelSizeOfImage.height) > 1000.0)
-        {
-            [self conserveMemoryForNextFrame];
-        }
-        
-        for (id<GPUImageInput> currentTarget in targets)
-        {
-            NSInteger indexOfObject = [targets indexOfObject:currentTarget];
-            NSInteger textureIndexOfTarget = [[targetTextureIndices objectAtIndex:indexOfObject] integerValue];
+    
+    if (synchronously)
+    {
+        dispatch_sync([GPUImageOpenGLESContext sharedOpenGLESQueue], ^{
             
-            [currentTarget setInputSize:pixelSizeOfImage atIndex:textureIndexOfTarget];
-            [currentTarget newFrameReadyAtTime:kCMTimeIndefinite atIndex:textureIndexOfTarget];
-        }
-        
-        dispatch_semaphore_signal(imageUpdateSemaphore);
-    });
+            [self processImageInternal];
+            
+        });
+    }
+    else
+    {
+        dispatch_async([GPUImageOpenGLESContext sharedOpenGLESQueue], ^{
+            
+            [self processImageInternal];
+            
+        });
+    }
+}
+
+- (void)processImageSynchronously
+{
+    [self processImage:YES];
+}
+
+- (void)processImage;
+{
+    [self processImage:NO];
 }
 
 - (CGSize)outputImageSize;

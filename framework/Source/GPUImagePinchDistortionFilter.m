@@ -6,30 +6,42 @@ NSString *const kGPUImagePinchDistortionFragmentShaderString = SHADER_STRING
  
  uniform sampler2D inputImageTexture;
  
+ uniform highp float aspectRatio;
  uniform highp vec2 center;
  uniform highp float radius;
  uniform highp float scale;
  
  void main()
  {
-     highp vec2 textureCoordinateToUse = textureCoordinate;
-     highp float dist = distance(center, textureCoordinate);
-     textureCoordinateToUse -= center;
+     highp vec2 textureCoordinateToUse = vec2(textureCoordinate.x, (textureCoordinate.y * aspectRatio + 0.5 - 0.5 * aspectRatio));
+     highp float dist = distance(center, textureCoordinateToUse);
+     textureCoordinateToUse = textureCoordinate;
+     
      if (dist < radius)
      {
+         textureCoordinateToUse -= center;
          highp float percent = 1.0 + ((0.5 - dist) / 0.5) * scale;
-         
          textureCoordinateToUse = textureCoordinateToUse * percent;
+         textureCoordinateToUse += center;
+         
+         gl_FragColor = texture2D(inputImageTexture, textureCoordinateToUse );
      }
-     textureCoordinateToUse += center;
-    
-     gl_FragColor = texture2D(inputImageTexture, textureCoordinateToUse );
-     
- }
+     else
+     {
+         gl_FragColor = texture2D(inputImageTexture, textureCoordinate );
+     }
+}
 );
+
+@interface GPUImagePinchDistortionFilter ()
+
+@property (readwrite, nonatomic) CGFloat aspectRatio;
+
+@end
 
 @implementation GPUImagePinchDistortionFilter
 
+@synthesize aspectRatio = _aspectRatio;
 @synthesize center = _center;
 @synthesize radius = _radius;
 @synthesize scale = _scale;
@@ -44,6 +56,7 @@ NSString *const kGPUImagePinchDistortionFragmentShaderString = SHADER_STRING
 		return nil;
     }
     
+    aspectRatioUniform = [filterProgram uniformIndex:@"aspectRatio"];
     radiusUniform = [filterProgram uniformIndex:@"radius"];
     scaleUniform = [filterProgram uniformIndex:@"scale"];
     centerUniform = [filterProgram uniformIndex:@"center"];
@@ -58,10 +71,35 @@ NSString *const kGPUImagePinchDistortionFragmentShaderString = SHADER_STRING
 #pragma mark -
 #pragma mark Accessors
 
+- (void)setInputSize:(CGSize)newSize atIndex:(NSInteger)textureIndex;
+{
+    CGSize oldInputSize = inputTextureSize;
+    [super setInputSize:newSize atIndex:textureIndex];
+    
+    if ( (!CGSizeEqualToSize(oldInputSize, inputTextureSize)) && (!CGSizeEqualToSize(newSize, CGSizeZero)) )
+    {
+        if (GPUImageRotationSwapsWidthAndHeight(inputRotation))
+        {
+            [self setAspectRatio:(inputTextureSize.width / inputTextureSize.height)];
+        }
+        else
+        {
+            [self setAspectRatio:(inputTextureSize.height / inputTextureSize.width)];
+        }
+    }
+}
+
 - (void)setInputRotation:(GPUImageRotationMode)newInputRotation atIndex:(NSInteger)textureIndex;
 {
     [super setInputRotation:newInputRotation atIndex:textureIndex];
     [self setCenter:self.center];
+}
+
+- (void)setAspectRatio:(CGFloat)newValue;
+{
+    _aspectRatio = newValue;
+    
+    [self setFloat:_aspectRatio forUniform:aspectRatioUniform program:filterProgram];
 }
 
 - (void)setRadius:(CGFloat)newValue;
