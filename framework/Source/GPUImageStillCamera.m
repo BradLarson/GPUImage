@@ -146,7 +146,6 @@ void GPUImageCreateResizedSampleBuffer(CVPixelBufferRef cameraFrame, CGSize fina
             dispatch_semaphore_signal(frameRenderingSemaphore);
         }
 
-        dispatch_semaphore_signal(frameRenderingSemaphore);
         block(dataForJPEGFile, error);
     }];
 }
