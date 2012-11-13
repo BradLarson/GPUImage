@@ -7,6 +7,8 @@
 @interface GPUImageRawDataInput : GPUImageOutput
 {
     CGSize uploadedImageSize;
+	
+	dispatch_semaphore_t dataUpdateSemaphore;
 }
 
 // Initialization and teardown
