@@ -3,7 +3,7 @@
 /// Creates a bulge distortion on the image
 @interface GPUImageBulgeDistortionFilter : GPUImageFilter
 {
-    GLint radiusUniform, centerUniform, scaleUniform;
+    GLint aspectRatioUniform, radiusUniform, centerUniform, scaleUniform;
 }
 
 /// The center about which to apply the distortion, with a default of (0.5, 0.5)
