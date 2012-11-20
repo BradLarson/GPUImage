@@ -167,7 +167,7 @@
         return;
     }
     
-    dispatch_async([GPUImageOpenGLESContext sharedOpenGLESQueue], ^{
+    runAsynchronouslyOnVideoProcessingQueue(^{
         
         if (MAX(pixelSizeOfImage.width, pixelSizeOfImage.height) > 1000.0)
         {
