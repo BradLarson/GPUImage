@@ -29,8 +29,7 @@
 
 - (void)processTextureWithFrameTime:(CMTime)frameTime;
 {
-    runSynchronouslyOnVideoProcessingQueue(^{
-//    dispatch_async([GPUImageOpenGLESContext sharedOpenGLESQueue], ^{
+    runAsynchronouslyOnVideoProcessingQueue(^{
         for (id<GPUImageInput> currentTarget in targets)
         {
             NSInteger indexOfObject = [targets indexOfObject:currentTarget];
