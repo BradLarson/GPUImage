@@ -60,7 +60,7 @@
         return;
     }
 	
-	dispatch_async([GPUImageOpenGLESContext sharedOpenGLESQueue], ^{
+	runAsynchronouslyOnVideoProcessingQueue(^{
 
 		CGSize pixelSizeOfImage = [self outputImageSize];
     
