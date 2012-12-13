@@ -97,6 +97,9 @@ typedef void (*GLLogFunction) (GLuint program,
                  type:(GLenum)type 
                string:(NSString *)shaderString
 {
+    // because after define SHADER_STRING() bool converted to _Bool, no idea why
+    shaderString = [shaderString stringByReplacingOccurrencesOfString:@"_Bool" withString:@"bool"];
+
     GLint status;
     const GLchar *source;
     
