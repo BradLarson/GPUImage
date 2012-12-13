@@ -2,13 +2,13 @@
 
 NSString *const kGPUImageTransformVertexShaderString = SHADER_STRING
 (
- attribute vec4 position;
- attribute vec4 inputTextureCoordinate;
+ attribute highp vec4 position;
+ attribute highp vec4 inputTextureCoordinate;
  
  uniform mat4 transformMatrix;
  uniform mat4 orthographicMatrix;
  
- varying vec2 textureCoordinate;
+ varying highp vec2 textureCoordinate;
  
  void main()
  {
@@ -22,6 +22,7 @@ NSString *const kGPUImageTransformVertexShaderString = SHADER_STRING
 @synthesize affineTransform;
 @synthesize transform3D = _transform3D;
 @synthesize ignoreAspectRatio = _ignoreAspectRatio;
+@synthesize anchorTopLeft = _anchorTopLeft;
 
 #pragma mark -
 #pragma mark Initialization and teardown
@@ -53,19 +54,27 @@ NSString *const kGPUImageTransformVertexShaderString = SHADER_STRING
     GLfloat ty = - (top + bottom) / (top - bottom);
     GLfloat tz = - (far + near) / (far - near);
     
-    matrix[0] = 2.0f / r_l;
+	float scale = 2.0f;
+	if (_anchorTopLeft)
+	{
+		scale = 4.0f;
+		tx=-1.0f;
+		ty=-1.0f;
+	}
+	
+    matrix[0] = scale / r_l;
     matrix[1] = 0.0f;
     matrix[2] = 0.0f;
     matrix[3] = tx;
     
     matrix[4] = 0.0f;
-    matrix[5] = 2.0f / t_b;
+    matrix[5] = scale / t_b;
     matrix[6] = 0.0f;
     matrix[7] = ty;
     
     matrix[8] = 0.0f;
     matrix[9] = 0.0f;
-    matrix[10] = 2.0f / f_n;
+    matrix[10] = scale / f_n;
     matrix[11] = tz;
     
     matrix[12] = 0.0f;
@@ -155,13 +164,41 @@ NSString *const kGPUImageTransformVertexShaderString = SHADER_STRING
         1.0f,  1.0f,
     };
 
+	GLfloat adjustedVerticesAnchorTL[] = {
+        0.0f, 0.0f,
+        1.0f, 0.0f,
+        0.0f,  normalizedHeight,
+        1.0f,  normalizedHeight,
+    };
+
+    static const GLfloat squareVerticesAnchorTL[] = {
+        0.0f, 0.0f,
+        1.0f, 0.0f,
+        0.0f,  1.0f,
+        1.0f,  1.0f,
+    };
+
     if (_ignoreAspectRatio)
     {
-        [self renderToTextureWithVertices:squareVertices textureCoordinates:[[self class] textureCoordinatesForRotation:inputRotation] sourceTexture:filterSourceTexture];    
+		if (_anchorTopLeft)
+		{
+			[self renderToTextureWithVertices:squareVerticesAnchorTL textureCoordinates:[[self class] textureCoordinatesForRotation:inputRotation] sourceTexture:filterSourceTexture];
+		}
+		else
+		{
+			[self renderToTextureWithVertices:squareVertices textureCoordinates:[[self class] textureCoordinatesForRotation:inputRotation] sourceTexture:filterSourceTexture];
+		}
     }
     else
     {
-        [self renderToTextureWithVertices:adjustedVertices textureCoordinates:[[self class] textureCoordinatesForRotation:inputRotation] sourceTexture:filterSourceTexture];    
+		if (_anchorTopLeft)
+		{
+			[self renderToTextureWithVertices:adjustedVerticesAnchorTL textureCoordinates:[[self class] textureCoordinatesForRotation:inputRotation] sourceTexture:filterSourceTexture];
+		}
+		else
+		{
+			[self renderToTextureWithVertices:adjustedVertices textureCoordinates:[[self class] textureCoordinatesForRotation:inputRotation] sourceTexture:filterSourceTexture];
+		}
     }
     
     [self informTargetsAboutNewFrameAtTime:frameTime];
@@ -214,6 +251,12 @@ NSString *const kGPUImageTransformVertexShaderString = SHADER_STRING
     {
         [self setupFilterForSize:[self sizeOfFBO]];
     }
+}
+
+- (void)setAnchorTopLeft:(BOOL)newValue
+{
+	_anchorTopLeft = newValue;
+	[self setIgnoreAspectRatio:_ignoreAspectRatio];
 }
 
 @end
