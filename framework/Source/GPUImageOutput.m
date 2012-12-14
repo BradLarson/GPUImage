@@ -131,6 +131,11 @@ void reportAvailableMemoryForGPUImage(NSString *tag)
 {
     NSInteger nextAvailableTextureIndex = [newTarget nextAvailableTextureIndex];
     [self addTarget:newTarget atTextureLocation:nextAvailableTextureIndex];
+    if (outputTexture)
+    {
+        [self setInputTextureForTarget:newTarget atIndex:nextAvailableTextureIndex];
+    }
+    
     if ([newTarget shouldIgnoreUpdatesToThisTarget])
     {
         _targetToIgnoreForUpdates = newTarget;

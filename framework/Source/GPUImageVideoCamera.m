@@ -76,6 +76,10 @@
             // Need to remove the initially created texture
             [self deleteOutputTexture];
         }
+        else
+        {
+            [self initializeOutputTextureIfNeeded];
+        }
     });
     
 	// Grab the back-facing or front-facing camera
