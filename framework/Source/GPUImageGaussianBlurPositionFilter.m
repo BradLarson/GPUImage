@@ -1,6 +1,6 @@
-#import "GPUImageGaussianBlurFilter.h"
+#import "GPUImageGaussianBlurPositionFilter.h"
 
-NSString *const kGPUImageGaussianBlurVertexShaderString = SHADER_STRING
+NSString *const kGPUImageGaussianBlurPositionVertexShaderString = SHADER_STRING
 (
  attribute vec4 position;
  attribute vec4 inputTextureCoordinate;
@@ -31,7 +31,7 @@ NSString *const kGPUImageGaussianBlurVertexShaderString = SHADER_STRING
  }
 );
 
-NSString *const kGPUImageGaussianBlurFragmentShaderString = SHADER_STRING
+NSString *const kGPUImageGaussianBlurPositionFragmentShaderString = SHADER_STRING
 (
  uniform sampler2D inputImageTexture;
  
@@ -71,13 +71,13 @@ NSString *const kGPUImageGaussianBlurFragmentShaderString = SHADER_STRING
  }
 );
 
-@interface GPUImageGaussianBlurFilter ()
+@interface GPUImageGaussianBlurPositionFilter ()
 
 @property (readwrite, nonatomic) CGFloat aspectRatio;
 
 @end
 
-@implementation GPUImageGaussianBlurFilter
+@implementation GPUImageGaussianBlurPositionFilter
 
 @synthesize blurSize = _blurSize;
 @synthesize blurCenter = _blurCenter;
@@ -88,10 +88,10 @@ NSString *const kGPUImageGaussianBlurFragmentShaderString = SHADER_STRING
               secondStageVertexShaderFromString:(NSString *)secondStageVertexShaderString
             secondStageFragmentShaderFromString:(NSString *)secondStageFragmentShaderString {
     
-    if (!(self = [super initWithFirstStageVertexShaderFromString:firstStageVertexShaderString ? firstStageVertexShaderString : kGPUImageGaussianBlurVertexShaderString
-                              firstStageFragmentShaderFromString:firstStageFragmentShaderString ? firstStageFragmentShaderString : kGPUImageGaussianBlurFragmentShaderString
-                               secondStageVertexShaderFromString:secondStageVertexShaderString ? secondStageVertexShaderString : kGPUImageGaussianBlurVertexShaderString
-                             secondStageFragmentShaderFromString:secondStageFragmentShaderString ? secondStageFragmentShaderString : kGPUImageGaussianBlurFragmentShaderString])) {
+    if (!(self = [super initWithFirstStageVertexShaderFromString:firstStageVertexShaderString ? firstStageVertexShaderString : kGPUImageGaussianBlurPositionVertexShaderString
+                              firstStageFragmentShaderFromString:firstStageFragmentShaderString ? firstStageFragmentShaderString : kGPUImageGaussianBlurPositionFragmentShaderString
+                               secondStageVertexShaderFromString:secondStageVertexShaderString ? secondStageVertexShaderString : kGPUImageGaussianBlurPositionVertexShaderString
+                             secondStageFragmentShaderFromString:secondStageFragmentShaderString ? secondStageFragmentShaderString : kGPUImageGaussianBlurPositionFragmentShaderString])) {
         return nil;
     }
     
