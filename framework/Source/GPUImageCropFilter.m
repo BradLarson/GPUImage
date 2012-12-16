@@ -116,96 +116,110 @@ NSString *const kGPUImageCropFragmentShaderString =  SHADER_STRING
             
             cropTextureCoordinates[2] = maxX; // 1,0
             cropTextureCoordinates[3] = minY;
-
+			
             cropTextureCoordinates[4] = minX; // 0,1
             cropTextureCoordinates[5] = maxY;
-
+			
             cropTextureCoordinates[6] = maxX; // 1,1
             cropTextureCoordinates[7] = maxY;
         }; break;
-        case kGPUImageRotateLeft: // Broken
+        case kGPUImageRotateLeft: // Works
         {
-            cropTextureCoordinates[0] = maxX; // 1,0
-            cropTextureCoordinates[1] = minY;
-
-            cropTextureCoordinates[2] = maxX; // 1,1
-            cropTextureCoordinates[3] = maxY;
+            cropTextureCoordinates[0] = 1.0 - minY; // 1,0
+            cropTextureCoordinates[1] = minX;
+			
+            cropTextureCoordinates[2] = 1.0 - minY; // 1,1
+            cropTextureCoordinates[3] = maxX;
             
-            cropTextureCoordinates[4] = minX; // 0,0
-            cropTextureCoordinates[5] = minY;
+            cropTextureCoordinates[4] = 1.0 - maxY; // 0,0
+            cropTextureCoordinates[5] = minX;
             
-            cropTextureCoordinates[6] = minX; // 0,1
-            cropTextureCoordinates[7] = maxY;
+            cropTextureCoordinates[6] = 1.0 - maxY; // 0,1
+            cropTextureCoordinates[7] = maxX;
         }; break;
-        case kGPUImageRotateRight: // Fixed
+        case kGPUImageRotateRight: // Works
         {
             cropTextureCoordinates[0] = minY; // 0,1
             cropTextureCoordinates[1] = 1.0 - minX;
-
+			
             cropTextureCoordinates[2] = minY; // 0,0
             cropTextureCoordinates[3] = 1.0 - maxX;
             
             cropTextureCoordinates[4] = maxY; // 1,1
             cropTextureCoordinates[5] = 1.0 - minX;
-
+			
             cropTextureCoordinates[6] = maxY; // 1,0
             cropTextureCoordinates[7] = 1.0 - maxX;
-        }; break;
-        case kGPUImageFlipVertical: // Broken
+		}; break;
+        case kGPUImageFlipVertical: // Works
         {
             cropTextureCoordinates[0] = minX; // 0,1
-            cropTextureCoordinates[1] = maxY;
-
+            cropTextureCoordinates[1] = 1.0 - minY;
+			
             cropTextureCoordinates[2] = maxX; // 1,1
-            cropTextureCoordinates[3] = maxY;
-
+            cropTextureCoordinates[3] = 1.0 - minY;
+			
             cropTextureCoordinates[4] = minX; // 0,0
-            cropTextureCoordinates[5] = minY;
+            cropTextureCoordinates[5] = 1.0 - maxY;
             
             cropTextureCoordinates[6] = maxX; // 1,0
-            cropTextureCoordinates[7] = minY;
+            cropTextureCoordinates[7] = 1.0 - maxY;
         }; break;
-        case kGPUImageFlipHorizonal: // Broken
+        case kGPUImageFlipHorizonal: // Works
         {
-            cropTextureCoordinates[0] = maxX; // 1,0
+            cropTextureCoordinates[0] = 1.0 - minX; // 1,0
             cropTextureCoordinates[1] = minY;
-
-            cropTextureCoordinates[2] = minX; // 0,0
+			
+            cropTextureCoordinates[2] = 1.0 - maxX; // 0,0
             cropTextureCoordinates[3] = minY;
             
-            cropTextureCoordinates[4] = maxX; // 1,1
+            cropTextureCoordinates[4] = 1.0 - minX; // 1,1
             cropTextureCoordinates[5] = maxY;
             
-            cropTextureCoordinates[6] = minX; // 0,1
+            cropTextureCoordinates[6] = 1.0 - maxX; // 0,1
             cropTextureCoordinates[7] = maxY;
         }; break;
-        case kGPUImageRotate180: // Broken
+        case kGPUImageRotate180: // Works
         {
-            cropTextureCoordinates[0] = maxX; // 1,1
-            cropTextureCoordinates[1] = maxY;
-
-            cropTextureCoordinates[2] = maxX; // 1,0
-            cropTextureCoordinates[3] = minY;
-
-            cropTextureCoordinates[4] = minX; // 0,1
-            cropTextureCoordinates[5] = maxY;
-
-            cropTextureCoordinates[6] = minX; // 0,0
-            cropTextureCoordinates[7] = minY;
+            cropTextureCoordinates[0] = 1.0 - minX; // 1,1
+            cropTextureCoordinates[1] = 1.0 - minY;
+			
+            cropTextureCoordinates[2] = 1.0 - maxX; // 0,1
+            cropTextureCoordinates[3] = 1.0 - minY;
+			
+            cropTextureCoordinates[4] = 1.0 - minX; // 1,0
+            cropTextureCoordinates[5] = 1.0 - maxY;
+			
+            cropTextureCoordinates[6] = 1.0 - maxX; // 0,0
+            cropTextureCoordinates[7] = 1.0 - maxY;
         }; break;
-        case kGPUImageRotateRightFlipVertical: // Fixed
+        case kGPUImageRotateRightFlipVertical: // Works
         {
             cropTextureCoordinates[0] = minY; // 0,0
-            cropTextureCoordinates[1] = 1.0 - maxX;
+            cropTextureCoordinates[1] = minX;
             
             cropTextureCoordinates[2] = minY; // 0,1
-            cropTextureCoordinates[3] = 1.0 - minX;
-
+            cropTextureCoordinates[3] = maxX;
+			
             cropTextureCoordinates[4] = maxY; // 1,0
-            cropTextureCoordinates[5] = 1.0 - maxX;
+            cropTextureCoordinates[5] = minX;
             
             cropTextureCoordinates[6] = maxY; // 1,1
-            cropTextureCoordinates[7] = 1.0 - minX;
+            cropTextureCoordinates[7] = maxX;
+        }; break;
+        case kGPUImageRotateLeftFlipVertical: // Works
+        {
+            cropTextureCoordinates[0] = 1.0 - minY; // 1,1
+            cropTextureCoordinates[1] = 1.0 - minX;
+			
+            cropTextureCoordinates[2] = 1.0 - minY; // 1,0
+            cropTextureCoordinates[3] = 1.0 - maxX;
+            
+            cropTextureCoordinates[4] = 1.0 - maxY; // 0,1
+            cropTextureCoordinates[5] = 1.0 - minX;
+            
+            cropTextureCoordinates[6] = 1.0 - maxY; // 0,0
+            cropTextureCoordinates[7] = 1.0 - maxX;
         }; break;
     }    
 }
