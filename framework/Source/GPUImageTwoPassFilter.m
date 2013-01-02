@@ -12,6 +12,8 @@
 		return nil;
     }
     
+    secondProgramUniformStateRestorationBlocks = [NSMutableDictionary dictionaryWithCapacity:10];
+
     runSynchronouslyOnVideoProcessingQueue(^{
         [GPUImageOpenGLESContext useImageProcessingContext];
 
@@ -361,7 +363,6 @@
 {
 }
 
-
 - (void)prepareForImageCapture;
 {
     if (preparedToCaptureImage)
@@ -385,5 +386,35 @@
     });
 }
 
+- (void)setAndExecuteUniformStateCallbackAtIndex:(GLint)uniform forProgram:(GLProgram *)shaderProgram toBlock:(dispatch_block_t)uniformStateBlock;
+{
+    if (shaderProgram == filterProgram)
+    {
+        [uniformStateRestorationBlocks setObject:[uniformStateBlock copy] forKey:[NSNumber numberWithInt:uniform]];
+    }
+    else
+    {
+        [secondProgramUniformStateRestorationBlocks setObject:[uniformStateBlock copy] forKey:[NSNumber numberWithInt:uniform]];
+    }
+    uniformStateBlock();
+}
+
+- (void)setUniformsForProgramAtIndex:(NSUInteger)programIndex;
+{
+    if (programIndex == 0)
+    {
+        [uniformStateRestorationBlocks enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop){
+            dispatch_block_t currentBlock = obj;
+            currentBlock();
+        }];
+    }
+    else
+    {
+        [secondProgramUniformStateRestorationBlocks enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop){
+            dispatch_block_t currentBlock = obj;
+            currentBlock();
+        }];
+    }
+}
 
 @end

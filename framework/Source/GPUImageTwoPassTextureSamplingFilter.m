@@ -23,6 +23,8 @@
 
 - (void)setUniformsForProgramAtIndex:(NSUInteger)programIndex;
 {
+    [super setUniformsForProgramAtIndex:programIndex];
+    
     if (programIndex == 0)
     {
         glUniform1f(verticalPassTexelWidthOffsetUniform, verticalPassTexelWidthOffset);

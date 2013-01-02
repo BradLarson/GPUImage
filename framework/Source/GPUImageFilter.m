@@ -47,6 +47,7 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size);
 		return nil;
     }
 
+    uniformStateRestorationBlocks = [NSMutableDictionary dictionaryWithCapacity:10];
     preparedToCaptureImage = NO;
     _preventRendering = NO;
     inputRotation = kGPUImageNoRotation;
@@ -508,11 +509,6 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 }
 
-- (void)setUniformsForProgramAtIndex:(NSUInteger)programIndex;
-{
-    
-}
-
 - (void)informTargetsAboutNewFrameAtTime:(CMTime)frameTime;
 {
     if (self.frameProcessingCompletionBlock != NULL)
@@ -626,7 +622,9 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
 {
     runAsynchronouslyOnVideoProcessingQueue(^{
         [GPUImageOpenGLESContext setActiveShaderProgram:shaderProgram];
-        glUniformMatrix3fv(uniform, 1, GL_FALSE, (GLfloat *)&matrix);
+        [self setAndExecuteUniformStateCallbackAtIndex:uniform forProgram:shaderProgram toBlock:^{
+            glUniformMatrix3fv(uniform, 1, GL_FALSE, (GLfloat *)&matrix);
+        }];
     });
 }
 
@@ -634,7 +632,9 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
 {
     runAsynchronouslyOnVideoProcessingQueue(^{
         [GPUImageOpenGLESContext setActiveShaderProgram:shaderProgram];
-        glUniformMatrix4fv(uniform, 1, GL_FALSE, (GLfloat *)&matrix);
+        [self setAndExecuteUniformStateCallbackAtIndex:uniform forProgram:shaderProgram toBlock:^{
+            glUniformMatrix4fv(uniform, 1, GL_FALSE, (GLfloat *)&matrix);
+        }];
     });
 }
 
@@ -642,7 +642,9 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
 {
     runAsynchronouslyOnVideoProcessingQueue(^{
         [GPUImageOpenGLESContext setActiveShaderProgram:shaderProgram];
-        glUniform1f(uniform, floatValue);
+        [self setAndExecuteUniformStateCallbackAtIndex:uniform forProgram:shaderProgram toBlock:^{
+            glUniform1f(uniform, floatValue);
+        }];
     });
 }
 
@@ -650,12 +652,13 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
 {
     runAsynchronouslyOnVideoProcessingQueue(^{
         [GPUImageOpenGLESContext setActiveShaderProgram:shaderProgram];
-
-        GLfloat positionArray[2];
-        positionArray[0] = pointValue.x;
-        positionArray[1] = pointValue.y;
-        
-        glUniform2fv(uniform, 1, positionArray);
+        [self setAndExecuteUniformStateCallbackAtIndex:uniform forProgram:shaderProgram toBlock:^{
+            GLfloat positionArray[2];
+            positionArray[0] = pointValue.x;
+            positionArray[1] = pointValue.y;
+            
+            glUniform2fv(uniform, 1, positionArray);
+        }];
     });
 }
 
@@ -664,11 +667,13 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
     runAsynchronouslyOnVideoProcessingQueue(^{
         [GPUImageOpenGLESContext setActiveShaderProgram:shaderProgram];
         
-        GLfloat sizeArray[2];
-        sizeArray[0] = sizeValue.width;
-        sizeArray[1] = sizeValue.height;
-        
-        glUniform2fv(uniform, 1, sizeArray);
+        [self setAndExecuteUniformStateCallbackAtIndex:uniform forProgram:shaderProgram toBlock:^{
+            GLfloat sizeArray[2];
+            sizeArray[0] = sizeValue.width;
+            sizeArray[1] = sizeValue.height;
+            
+            glUniform2fv(uniform, 1, sizeArray);
+        }];
     });
 }
 
@@ -677,7 +682,9 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
     runAsynchronouslyOnVideoProcessingQueue(^{
         [GPUImageOpenGLESContext setActiveShaderProgram:shaderProgram];
 
-        glUniform3fv(uniform, 1, (GLfloat *)&vectorValue);
+        [self setAndExecuteUniformStateCallbackAtIndex:uniform forProgram:shaderProgram toBlock:^{
+            glUniform3fv(uniform, 1, (GLfloat *)&vectorValue);
+        }];
     });
 }
 
@@ -686,7 +693,9 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
     runAsynchronouslyOnVideoProcessingQueue(^{
         [GPUImageOpenGLESContext setActiveShaderProgram:shaderProgram];
         
-        glUniform4fv(uniform, 1, (GLfloat *)&vectorValue);
+        [self setAndExecuteUniformStateCallbackAtIndex:uniform forProgram:shaderProgram toBlock:^{
+            glUniform4fv(uniform, 1, (GLfloat *)&vectorValue);
+        }];
     });
 }
 
@@ -695,7 +704,9 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
     runAsynchronouslyOnVideoProcessingQueue(^{
         [GPUImageOpenGLESContext setActiveShaderProgram:shaderProgram];
         
-        glUniform1fv(uniform, arrayLength, arrayValue);
+        [self setAndExecuteUniformStateCallbackAtIndex:uniform forProgram:shaderProgram toBlock:^{
+            glUniform1fv(uniform, arrayLength, arrayValue);
+        }];
     });
 }
 
@@ -703,8 +714,25 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
 {
     runAsynchronouslyOnVideoProcessingQueue(^{
         [GPUImageOpenGLESContext setActiveShaderProgram:shaderProgram];
-        glUniform1i(uniform, intValue);
+
+        [self setAndExecuteUniformStateCallbackAtIndex:uniform forProgram:shaderProgram toBlock:^{
+            glUniform1i(uniform, intValue);
+        }];
     });
+}
+
+- (void)setAndExecuteUniformStateCallbackAtIndex:(GLint)uniform forProgram:(GLProgram *)shaderProgram toBlock:(dispatch_block_t)uniformStateBlock;
+{
+    [uniformStateRestorationBlocks setObject:[uniformStateBlock copy] forKey:[NSNumber numberWithInt:uniform]];
+    uniformStateBlock();
+}
+
+- (void)setUniformsForProgramAtIndex:(NSUInteger)programIndex;
+{
+    [uniformStateRestorationBlocks enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop){
+        dispatch_block_t currentBlock = obj;
+        currentBlock();
+    }];
 }
 
 #pragma mark -
