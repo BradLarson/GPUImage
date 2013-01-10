@@ -51,6 +51,9 @@ void GPUImageCreateResizedSampleBuffer(CVPixelBufferRef cameraFrame, CGSize fina
 
 @implementation GPUImageStillCamera
 
+@synthesize currentCaptureMetadata = _currentCaptureMetadata;
+@synthesize jpegCompressionQuality = _jpegCompressionQuality;
+
 #pragma mark -
 #pragma mark Initialization and teardown
 
@@ -64,7 +67,17 @@ void GPUImageCreateResizedSampleBuffer(CVPixelBufferRef cameraFrame, CGSize fina
     [self.captureSession beginConfiguration];
     
     photoOutput = [[AVCaptureStillImageOutput alloc] init];
-    [photoOutput setOutputSettings:[NSDictionary dictionaryWithObject:[NSNumber numberWithInt:kCVPixelFormatType_32BGRA] forKey:(id)kCVPixelBufferPixelFormatTypeKey]];
+   
+    if (captureAsYUV && [GPUImageOpenGLESContext deviceSupportsRedTextures])
+    {
+        // TODO: Check for full range output and use that if available
+        [photoOutput setOutputSettings:[NSDictionary dictionaryWithObject:[NSNumber numberWithInt:kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange] forKey:(id)kCVPixelBufferPixelFormatTypeKey]];
+    }
+    else
+    {
+        [photoOutput setOutputSettings:[NSDictionary dictionaryWithObject:[NSNumber numberWithInt:kCVPixelFormatType_32BGRA] forKey:(id)kCVPixelBufferPixelFormatTypeKey]];
+    }
+
     
     [self.captureSession addOutput:photoOutput];
     
@@ -199,7 +212,15 @@ void GPUImageCreateResizedSampleBuffer(CVPixelBufferRef cameraFrame, CGSize fina
         if (!CGSizeEqualToSize(sizeOfPhoto, scaledImageSizeToFitOnGPU))
         {
             CMSampleBufferRef sampleBuffer;
-            GPUImageCreateResizedSampleBuffer(cameraFrame, scaledImageSizeToFitOnGPU, &sampleBuffer);
+            
+            if (captureAsYUV)
+            {
+                NSAssert(NO, @"Error: no downsampling for YUV input in the framework yet");
+            }
+            else
+            {
+                GPUImageCreateResizedSampleBuffer(cameraFrame, scaledImageSizeToFitOnGPU, &sampleBuffer);
+            }
 
             dispatch_semaphore_signal(frameRenderingSemaphore);
             [self captureOutput:photoOutput didOutputSampleBuffer:sampleBuffer fromConnection:[[photoOutput connections] objectAtIndex:0]];
