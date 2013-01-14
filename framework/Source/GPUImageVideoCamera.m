@@ -297,6 +297,8 @@ NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = SHAD
         CFRelease(coreVideoTextureCache);
     }
 
+// ARC forbids explicit message send of 'release'; since iOS 6 even for dispatch_release() calls: stripping it out in that case is required.
+#if __IPHONE_OS_VERSION_MAX_ALLOWED < 60000
     if (cameraProcessingQueue != NULL)
     {
         dispatch_release(cameraProcessingQueue);
@@ -311,6 +313,7 @@ NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = SHAD
     {
         dispatch_release(frameRenderingSemaphore);
     }
+#endif
     
 //    if (captureAsYUV && [GPUImageOpenGLESContext deviceSupportsRedTextures])
     if (captureAsYUV && [GPUImageOpenGLESContext supportsFastTextureUpload])
