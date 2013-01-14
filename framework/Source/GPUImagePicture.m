@@ -140,7 +140,7 @@
 }
 
 // ARC forbids explicit message send of 'release'; since iOS 6 even for dispatch_release() calls: stripping it out in that case is required.
-#if __IPHONE_OS_VERSION_MAX_ALLOWED < 60000
+#if (__IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_6_0)
 - (void)dealloc;
 {
     if (imageUpdateSemaphore != NULL)
