@@ -106,6 +106,9 @@
     return [extensionNames containsObject:extension];
 }
 
+
+// http://www.khronos.org/registry/gles/extensions/EXT/EXT_texture_rg.txt
+
 + (BOOL)deviceSupportsRedTextures;
 {
     static dispatch_once_t pred;

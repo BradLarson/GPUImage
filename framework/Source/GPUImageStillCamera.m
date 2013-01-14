@@ -9,6 +9,8 @@ void stillImageDataReleaseCallback(void *releaseRefCon, const void *baseAddress)
 
 void GPUImageCreateResizedSampleBuffer(CVPixelBufferRef cameraFrame, CGSize finalSize, CMSampleBufferRef *sampleBuffer)
 {
+    // CVPixelBufferCreateWithPlanarBytes for YUV input
+    
     CGSize originalSize = CGSizeMake(CVPixelBufferGetWidth(cameraFrame), CVPixelBufferGetHeight(cameraFrame));
 
     CVPixelBufferLockBaseAddress(cameraFrame, 0);
@@ -68,17 +70,45 @@ void GPUImageCreateResizedSampleBuffer(CVPixelBufferRef cameraFrame, CGSize fina
     
     photoOutput = [[AVCaptureStillImageOutput alloc] init];
    
+    // Having a still photo input set to BGRA and video to YUV doesn't work well, so since I don't have YUV resizing for iPhone 4 yet, kick back to BGRA for that device
+//    if (captureAsYUV && [GPUImageOpenGLESContext supportsFastTextureUpload])
     if (captureAsYUV && [GPUImageOpenGLESContext deviceSupportsRedTextures])
     {
-        // TODO: Check for full range output and use that if available
-        [photoOutput setOutputSettings:[NSDictionary dictionaryWithObject:[NSNumber numberWithInt:kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange] forKey:(id)kCVPixelBufferPixelFormatTypeKey]];
+        BOOL supportsFullYUVRange = NO;
+        NSArray *supportedPixelFormats = photoOutput.availableImageDataCVPixelFormatTypes;
+        for (NSNumber *currentPixelFormat in supportedPixelFormats)
+        {
+            if ([currentPixelFormat intValue] == kCVPixelFormatType_420YpCbCr8BiPlanarFullRange)
+            {
+                supportsFullYUVRange = YES;
+            }
+        }
+        
+        if (supportsFullYUVRange)
+        {
+            [photoOutput setOutputSettings:[NSDictionary dictionaryWithObject:[NSNumber numberWithInt:kCVPixelFormatType_420YpCbCr8BiPlanarFullRange] forKey:(id)kCVPixelBufferPixelFormatTypeKey]];
+        }
+        else
+        {
+            [photoOutput setOutputSettings:[NSDictionary dictionaryWithObject:[NSNumber numberWithInt:kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange] forKey:(id)kCVPixelBufferPixelFormatTypeKey]];
+        }
     }
     else
     {
         [photoOutput setOutputSettings:[NSDictionary dictionaryWithObject:[NSNumber numberWithInt:kCVPixelFormatType_32BGRA] forKey:(id)kCVPixelBufferPixelFormatTypeKey]];
+        [videoOutput setVideoSettings:[NSDictionary dictionaryWithObject:[NSNumber numberWithInt:kCVPixelFormatType_32BGRA] forKey:(id)kCVPixelBufferPixelFormatTypeKey]];
     }
-
     
+//    if (captureAsYUV && [GPUImageOpenGLESContext deviceSupportsRedTextures])
+//    {
+//        // TODO: Check for full range output and use that if available
+//        [photoOutput setOutputSettings:[NSDictionary dictionaryWithObject:[NSNumber numberWithInt:kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange] forKey:(id)kCVPixelBufferPixelFormatTypeKey]];
+//    }
+//    else
+//    {
+//        [photoOutput setOutputSettings:[NSDictionary dictionaryWithObject:[NSNumber numberWithInt:kCVPixelFormatType_32BGRA] forKey:(id)kCVPixelBufferPixelFormatTypeKey]];
+//    }
+
     [self.captureSession addOutput:photoOutput];
     
     [self.captureSession commitConfiguration];
@@ -213,7 +243,7 @@ void GPUImageCreateResizedSampleBuffer(CVPixelBufferRef cameraFrame, CGSize fina
         {
             CMSampleBufferRef sampleBuffer;
             
-            if (captureAsYUV)
+            if (CVPixelBufferGetPlaneCount(cameraFrame) > 0)
             {
                 NSAssert(NO, @"Error: no downsampling for YUV input in the framework yet");
             }
