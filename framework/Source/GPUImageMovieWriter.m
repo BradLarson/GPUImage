@@ -271,7 +271,11 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
     runOnMainQueueWithoutDeadlocking(^{
         [assetWriterVideoInput markAsFinished];
         [assetWriterAudioInput markAsFinished];
+#if __IPHONE_OS_VERSION_MAX_ALLOWED < 60000
         [assetWriter finishWriting];
+#else
+        [assetWriter finishWritingWithCompletionHandler:NULL];
+#endif
     });
 }
 
