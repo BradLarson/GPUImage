@@ -1010,6 +1010,38 @@
             
             filter = [[GPUImageSoftLightBlendFilter alloc] init];
         }; break;
+        case GPUIMAGE_COLORBLEND:
+        {
+            self.title = @"Color Blend";
+            self.filterSettingsSlider.hidden = YES;
+            needsSecondImage = YES;
+            
+            filter = [[GPUImageColorBlendFilter alloc] init];
+        }; break;
+        case GPUIMAGE_HUEBLEND:
+        {
+            self.title = @"Hue Blend";
+            self.filterSettingsSlider.hidden = YES;
+            needsSecondImage = YES;
+            
+            filter = [[GPUImageHueBlendFilter alloc] init];
+        }; break;
+        case GPUIMAGE_SATURATIONBLEND:
+        {
+            self.title = @"Saturation Blend";
+            self.filterSettingsSlider.hidden = YES;
+            needsSecondImage = YES;
+            
+            filter = [[GPUImageSaturationBlendFilter alloc] init];
+        }; break;
+        case GPUIMAGE_LUMINOSITYBLEND:
+        {
+            self.title = @"Luminosity Blend";
+            self.filterSettingsSlider.hidden = YES;
+            needsSecondImage = YES;
+            
+            filter = [[GPUImageLuminosityBlendFilter alloc] init];
+        }; break;
         case GPUIMAGE_NORMALBLEND:
         {
             self.title = @"Normal Blend";
