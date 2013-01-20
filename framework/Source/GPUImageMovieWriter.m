@@ -271,7 +271,7 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
     runOnMainQueueWithoutDeadlocking(^{
         [assetWriterVideoInput markAsFinished];
         [assetWriterAudioInput markAsFinished];
-#if (__IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_6_0)
+#if ( (__IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_6_0) || (!defined(__IPHONE_6_0)) )
         [assetWriter finishWriting];
 #else
         [assetWriter finishWritingWithCompletionHandler:NULL];
@@ -598,6 +598,16 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 }
 
 - (void)conserveMemoryForNextFrame;
+{
+    
+}
+
+- (BOOL)wantsMonochromeInput;
+{
+    return NO;
+}
+
+- (void)setCurrentlyReceivingMonochromeInput:(BOOL)newValue;
 {
     
 }

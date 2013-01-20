@@ -61,11 +61,14 @@ typedef struct GPUMatrix3x3 GPUMatrix3x3;
     CGSize currentFilterSize;
     GPUImageRotationMode inputRotation;
     
+    BOOL currentlyReceivingMonochromeInput;
+    
     NSMutableDictionary *uniformStateRestorationBlocks;
 }
 
 @property(readonly) CVPixelBufferRef renderTarget;
 @property(readwrite, nonatomic) BOOL preventRendering;
+@property(readwrite, nonatomic) BOOL currentlyReceivingMonochromeInput;
 
 /// @name Initialization and teardown
 

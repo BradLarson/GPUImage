@@ -50,6 +50,8 @@ typedef enum { kGPUImageNoRotation, kGPUImageRotateLeft, kGPUImageRotateRight, k
 - (BOOL)shouldIgnoreUpdatesToThisTarget;
 - (BOOL)enabled;
 - (void)conserveMemoryForNextFrame;
+- (BOOL)wantsMonochromeInput;
+- (void)setCurrentlyReceivingMonochromeInput:(BOOL)newValue;
 @end
 
 @protocol GPUImageTextureDelegate <NSObject>

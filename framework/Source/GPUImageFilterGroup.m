@@ -189,6 +189,25 @@
     }
 }
 
+- (BOOL)wantsMonochromeInput;
+{
+    BOOL allInputsWantMonochromeInput = YES;
+    for (GPUImageOutput<GPUImageInput> *currentFilter in _initialFilters)
+    {
+        allInputsWantMonochromeInput = allInputsWantMonochromeInput && [currentFilter wantsMonochromeInput];
+    }
+    
+    return allInputsWantMonochromeInput;
+}
+
+- (void)setCurrentlyReceivingMonochromeInput:(BOOL)newValue;
+{
+    for (GPUImageOutput<GPUImageInput> *currentFilter in _initialFilters)
+    {
+        [currentFilter setCurrentlyReceivingMonochromeInput:newValue];
+    }
+}
+
 #pragma mark -
 #pragma mark GPUImageTextureDelegate methods
 

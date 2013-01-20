@@ -31,7 +31,7 @@
     BOOL capturePaused;
     GPUImageRotationMode outputRotation;
     dispatch_semaphore_t frameRenderingSemaphore;
-    
+        
     BOOL captureAsYUV;
     GLuint luminanceTexture, chrominanceTexture;
 

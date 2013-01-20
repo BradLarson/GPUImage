@@ -441,6 +441,16 @@
     
 }
 
+- (BOOL)wantsMonochromeInput;
+{
+    return NO;
+}
+
+- (void)setCurrentlyReceivingMonochromeInput:(BOOL)newValue;
+{
+    
+}
+
 #pragma mark -
 #pragma mark Accessors
 

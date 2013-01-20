@@ -36,6 +36,7 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size);
 
 @synthesize renderTarget;
 @synthesize preventRendering = _preventRendering;
+@synthesize currentlyReceivingMonochromeInput;
 
 #pragma mark -
 #pragma mark Initialization and teardown
@@ -50,6 +51,7 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size);
     uniformStateRestorationBlocks = [NSMutableDictionary dictionaryWithCapacity:10];
     preparedToCaptureImage = NO;
     _preventRendering = NO;
+    currentlyReceivingMonochromeInput = NO;
     inputRotation = kGPUImageNoRotation;
     backgroundColorRed = 0.0;
     backgroundColorGreen = 0.0;
@@ -344,7 +346,15 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
             [self initializeOutputTextureIfNeeded];
             
             glBindTexture(GL_TEXTURE_2D, outputTexture);
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (int)currentFBOSize.width, (int)currentFBOSize.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+            
+//            if ([self providesMonochromeOutput] && [GPUImageOpenGLESContext deviceSupportsRedTextures])
+//            {
+//                glTexImage2D(GL_TEXTURE_2D, 0, GL_RG_EXT, (int)currentFBOSize.width, (int)currentFBOSize.height, 0, GL_RG_EXT, GL_UNSIGNED_BYTE, 0);
+//            }
+//            else
+//            {
+                glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (int)currentFBOSize.width, (int)currentFBOSize.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+//            }
             glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, outputTexture, 0);
             
             [self notifyTargetsAboutNewOutputTexture];
@@ -987,6 +997,11 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
             [currentTarget conserveMemoryForNextFrame];
         }
     }
+}
+
+- (BOOL)wantsMonochromeInput;
+{
+    return NO;
 }
 
 #pragma mark -
