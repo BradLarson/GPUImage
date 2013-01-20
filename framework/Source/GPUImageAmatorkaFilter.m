@@ -26,6 +26,11 @@
     return self;
 }
 
+-(void)prepareForImageCapture {
+    [lookupImageSource processImage];
+    [super prepareForImageCapture];
+}
+
 #pragma mark -
 #pragma mark Accessors
 
