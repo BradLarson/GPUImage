@@ -18,13 +18,22 @@ NSString *const kGPUImageBilateralFilterFragmentShaderString = SHADER_STRING
      lowp vec4 sum = centralColor * 0.18;
      
      lowp vec4 sampleColor = texture2D(inputImageTexture, blurCoordinates[0]);
+ void main()
+ {
+     lowp vec4 centralColor;
+     lowp float gaussianWeightTotal;
+     lowp vec4 sum;
+     lowp vec4 sampleColor;
      lowp float distanceFromCentralColor;
- //     distanceFromCentralColor = abs(centralColor.g - sampleColor.g);
- //     distanceFromCentralColor = smoothstep(0.0, 1.0, abs(centralColor.g - sampleColor.g));
- //     distanceFromCentralColor = smoothstep(0.0, 1.0, distance(centralColor, sampleColor) * distanceNormalizationFactor);
-     distanceFromCentralColor = min(distance(centralColor, sampleColor) * distanceNormalizationFactor, 1.0);
+     lowp float gaussianWeight;
+     
+     centralColor = texture2D(inputImageTexture, blurCoordinates[4]);
+     gaussianWeightTotal = 0.18;
+     sum = centralColor * 0.18;
 
-     lowp float gaussianWeight = 0.05 * (1.0 - distanceFromCentralColor);
+     sampleColor = texture2D(inputImageTexture, blurCoordinates[0]);
+     distanceFromCentralColor = min(distance(centralColor, sampleColor) * distanceNormalizationFactor, 1.0);
+     gaussianWeight = 0.05 * (1.0 - distanceFromCentralColor);
      gaussianWeightTotal += gaussianWeight;
      sum += sampleColor * gaussianWeight;
 
