@@ -63,6 +63,8 @@
 - (void)setupFilter;
 {
     videoCamera = [[GPUImageVideoCamera alloc] initWithSessionPreset:AVCaptureSessionPreset640x480 cameraPosition:AVCaptureDevicePositionBack];
+//    videoCamera = [[GPUImageVideoCamera alloc] initWithSessionPreset:AVCaptureSessionPreset1280x720 cameraPosition:AVCaptureDevicePositionBack];
+//    videoCamera = [[GPUImageVideoCamera alloc] initWithSessionPreset:AVCaptureSessionPreset1920x1080 cameraPosition:AVCaptureDevicePositionBack];
 //    videoCamera = [[GPUImageVideoCamera alloc] initWithSessionPreset:AVCaptureSessionPreset640x480 cameraPosition:AVCaptureDevicePositionFront];
     videoCamera.outputImageOrientation = UIInterfaceOrientationPortrait;
     facesSwitch.hidden = YES;
@@ -1007,6 +1009,38 @@
             needsSecondImage = YES;	
             
             filter = [[GPUImageSoftLightBlendFilter alloc] init];
+        }; break;
+        case GPUIMAGE_COLORBLEND:
+        {
+            self.title = @"Color Blend";
+            self.filterSettingsSlider.hidden = YES;
+            needsSecondImage = YES;
+            
+            filter = [[GPUImageColorBlendFilter alloc] init];
+        }; break;
+        case GPUIMAGE_HUEBLEND:
+        {
+            self.title = @"Hue Blend";
+            self.filterSettingsSlider.hidden = YES;
+            needsSecondImage = YES;
+            
+            filter = [[GPUImageHueBlendFilter alloc] init];
+        }; break;
+        case GPUIMAGE_SATURATIONBLEND:
+        {
+            self.title = @"Saturation Blend";
+            self.filterSettingsSlider.hidden = YES;
+            needsSecondImage = YES;
+            
+            filter = [[GPUImageSaturationBlendFilter alloc] init];
+        }; break;
+        case GPUIMAGE_LUMINOSITYBLEND:
+        {
+            self.title = @"Luminosity Blend";
+            self.filterSettingsSlider.hidden = YES;
+            needsSecondImage = YES;
+            
+            filter = [[GPUImageLuminosityBlendFilter alloc] init];
         }; break;
         case GPUIMAGE_NORMALBLEND:
         {

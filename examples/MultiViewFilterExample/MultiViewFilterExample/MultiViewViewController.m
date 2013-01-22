@@ -42,6 +42,31 @@
     GPUImageFilter *filter2 = [[GPUImageFilter alloc] initWithFragmentShaderFromFile:@"Shader2"];
     GPUImageSepiaFilter *filter3 = [[GPUImageSepiaFilter alloc] init];
 
+//    GPUImageBrightnessFilter *filter1 = [[GPUImageBrightnessFilter alloc] init];
+//    GPUImageBrightnessFilter *filter2 = [[GPUImageBrightnessFilter alloc] init];
+//    [filter2 setBrightness:0.5];
+//    GPUImageBrightnessFilter *filter3 = [[GPUImageBrightnessFilter alloc] init];
+//    [filter3 setBrightness:-0.5];
+
+//    GPUImageSobelEdgeDetectionFilter *filter1 = [[GPUImageSobelEdgeDetectionFilter alloc] init];
+//    GPUImageSobelEdgeDetectionFilter *filter2 = [[GPUImageSobelEdgeDetectionFilter alloc] init];
+//    [filter2 setTexelHeight:(1.0 / 1024.0)];
+//    [filter2 setTexelWidth:(1.0 / 768.0)];
+//    GPUImageSobelEdgeDetectionFilter *filter3 = [[GPUImageSobelEdgeDetectionFilter alloc] init];
+//    [filter3 setTexelHeight:(1.0 / 200.0)];
+//    [filter3 setTexelWidth:(1.0 / 400.0)];
+    
+//    GPUImageTransformFilter *filter1 = [[GPUImageTransformFilter alloc] init];
+//    GPUImageTransformFilter *filter2 = [[GPUImageTransformFilter alloc] init];
+//    CATransform3D perspectiveTransform = CATransform3DIdentity;
+//    perspectiveTransform.m34 = 0.4;
+//    perspectiveTransform.m33 = 0.4;
+//    perspectiveTransform = CATransform3DScale(perspectiveTransform, 0.75, 0.75, 0.75);
+//    perspectiveTransform = CATransform3DRotate(perspectiveTransform, 0.5, 0.0, 1.0, 0.0);
+//    [filter2 setTransform3D:perspectiveTransform];
+//    GPUImageTransformFilter *filter3 = [[GPUImageTransformFilter alloc] init];
+//    [filter3 setAffineTransform:CGAffineTransformMakeRotation(1.0)];
+    
     // For thumbnails smaller than the input video size, we currently need to make them render at a smaller size.
     // This is to avoid wasting processing time on larger frames than will be displayed.
     // You'll need to use -forceProcessingAtSize: with a zero size to re-enable full frame processing of video.

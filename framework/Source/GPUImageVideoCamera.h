@@ -26,10 +26,14 @@
     AVCaptureDevice *_inputCamera;
     AVCaptureDevice *_microphone;
     AVCaptureDeviceInput *videoInput;
+	AVCaptureVideoDataOutput *videoOutput;
 
     BOOL capturePaused;
     GPUImageRotationMode outputRotation;
     dispatch_semaphore_t frameRenderingSemaphore;
+        
+    BOOL captureAsYUV;
+    GLuint luminanceTexture, chrominanceTexture;
 
     __unsafe_unretained id<GPUImageVideoCameraDelegate> _delegate;
 }
