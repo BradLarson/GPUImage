@@ -284,7 +284,7 @@
         {
             [super createFilterFBOofSize:currentFBOSize];
         }
-        [super setupFilterForSize:currentFBOSize];
+        [self setupFilterForSize:currentFBOSize];
     }
     
     glBindFramebuffer(GL_FRAMEBUFFER, filterFramebuffer);
@@ -408,6 +408,7 @@
 
 - (void)setAndExecuteUniformStateCallbackAtIndex:(GLint)uniform forProgram:(GLProgram *)shaderProgram toBlock:(dispatch_block_t)uniformStateBlock;
 {
+// TODO: Deal with the fact that two-pass filters may have the same shader program identifier
     if (shaderProgram == filterProgram)
     {
         [uniformStateRestorationBlocks setObject:[uniformStateBlock copy] forKey:[NSNumber numberWithInt:uniform]];
