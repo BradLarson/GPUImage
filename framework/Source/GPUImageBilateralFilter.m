@@ -9,22 +9,24 @@ NSString *const kGPUImageBilateralFilterFragmentShaderString = SHADER_STRING
  varying highp vec2 textureCoordinate;
  varying highp vec2 blurCoordinates[GAUSSIAN_SAMPLES];
  
-// const mediump float distanceNormalizationFactor = 0.6933613;
- const mediump float distanceNormalizationFactor = 1.5;
+ uniform mediump float distanceNormalizationFactor;
  
- void main() {
-     lowp vec4 centralColor = texture2D(inputImageTexture, blurCoordinates[4]);
-     lowp float gaussianWeightTotal = 0.18;
-     lowp vec4 sum = centralColor * 0.18;
-     
-     lowp vec4 sampleColor = texture2D(inputImageTexture, blurCoordinates[0]);
+ void main()
+ {
+     lowp vec4 centralColor;
+     lowp float gaussianWeightTotal;
+     lowp vec4 sum;
+     lowp vec4 sampleColor;
      lowp float distanceFromCentralColor;
- //     distanceFromCentralColor = abs(centralColor.g - sampleColor.g);
- //     distanceFromCentralColor = smoothstep(0.0, 1.0, abs(centralColor.g - sampleColor.g));
- //     distanceFromCentralColor = smoothstep(0.0, 1.0, distance(centralColor, sampleColor) * distanceNormalizationFactor);
+     lowp float gaussianWeight;
+     
+     centralColor = texture2D(inputImageTexture, blurCoordinates[4]);
+     gaussianWeightTotal = 0.18;
+     sum = centralColor * 0.18;
+     
+     sampleColor = texture2D(inputImageTexture, blurCoordinates[0]);
      distanceFromCentralColor = min(distance(centralColor, sampleColor) * distanceNormalizationFactor, 1.0);
-
-     lowp float gaussianWeight = 0.05 * (1.0 - distanceFromCentralColor);
+     gaussianWeight = 0.05 * (1.0 - distanceFromCentralColor);
      gaussianWeightTotal += gaussianWeight;
      sum += sampleColor * gaussianWeight;
 
@@ -86,8 +88,31 @@ NSString *const kGPUImageBilateralFilterFragmentShaderString = SHADER_STRING
         return nil;
     }
     
+    firstDistanceNormalizationFactorUniform  = [filterProgram uniformIndex:@"distanceNormalizationFactor"];
+    secondDistanceNormalizationFactorUniform = [filterProgram uniformIndex:@"distanceNormalizationFactor"];
+
+    self.blurSize = 4.0;
+    self.distanceNormalizationFactor = 8.0;
+
     
     return self;
+}
+
+
+#pragma mark -
+#pragma mark Accessors
+
+- (void)setDistanceNormalizationFactor:(CGFloat)newValue
+{
+    _distanceNormalizationFactor = newValue;
+    
+    [self setFloat:newValue
+        forUniform:firstDistanceNormalizationFactorUniform
+           program:filterProgram];
+    
+    [self setFloat:newValue
+        forUniform:secondDistanceNormalizationFactorUniform
+           program:secondFilterProgram];
 }
 
 @end
