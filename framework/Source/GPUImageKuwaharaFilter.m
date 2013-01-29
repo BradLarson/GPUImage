@@ -15,64 +15,86 @@ NSString *const kGPUImageKuwaharaFragmentShaderString = SHADER_STRING
  
  precision highp float;
  
- const vec2 src_size = vec2 (768.0, 1024.0);
+ const vec2 src_size = vec2 (1.0 / 768.0, 1.0 / 1024.0);
  
  void main (void) 
  {
-    vec2 uv = textureCoordinate;
-    float n = float((radius + 1) * (radius + 1));
-    
-    vec3 m[4];
-    vec3 s[4];
-    for (int k = 0; k < 4; ++k) {
-        m[k] = vec3(0.0);
-        s[k] = vec3(0.0);
-    }
-    
-    for (int j = -radius; j <= 0; ++j)  {
-        for (int i = -radius; i <= 0; ++i)  {
-            vec3 c = texture2D(inputImageTexture, uv + vec2(i,j) / src_size).rgb;
-            m[0] += c;
-            s[0] += c * c;
-        }
-    }
-    
-    for (int j = -radius; j <= 0; ++j)  {
-        for (int i = 0; i <= radius; ++i)  {
-            vec3 c = texture2D(inputImageTexture, uv + vec2(i,j) / src_size).rgb;
-            m[1] += c;
-            s[1] += c * c;
-        }
-    }
-    
-    for (int j = 0; j <= radius; ++j)  {
-        for (int i = 0; i <= radius; ++i)  {
-            vec3 c = texture2D(inputImageTexture, uv + vec2(i,j) / src_size).rgb;
-            m[2] += c;
-            s[2] += c * c;
-        }
-    }
-    
-    for (int j = 0; j <= radius; ++j)  {
-        for (int i = -radius; i <= 0; ++i)  {
-            vec3 c = texture2D(inputImageTexture, uv + vec2(i,j) / src_size).rgb;
-            m[3] += c;
-            s[3] += c * c;
-        }
-    }
-    
-    
-    float min_sigma2 = 1e+2;
-    for (int k = 0; k < 4; ++k) {
-        m[k] /= n;
-        s[k] = abs(s[k] / n - m[k] * m[k]);
-        
-        float sigma2 = s[k].r + s[k].g + s[k].b;
-        if (sigma2 < min_sigma2) {
-            min_sigma2 = sigma2;
-            gl_FragColor = vec4(m[k], 1.0);
-        }
-    }
+     vec2 uv = textureCoordinate;
+     float n = float((radius + 1) * (radius + 1));
+     int i; int j;
+     vec3 m0 = vec3(0.0); vec3 m1 = vec3(0.0); vec3 m2 = vec3(0.0); vec3 m3 = vec3(0.0);
+     vec3 s0 = vec3(0.0); vec3 s1 = vec3(0.0); vec3 s2 = vec3(0.0); vec3 s3 = vec3(0.0);
+     vec3 c;
+
+     for (j = -radius; j <= 0; ++j)  {
+         for (i = -radius; i <= 0; ++i)  {
+             c = texture2D(inputImageTexture, uv + vec2(i,j) * src_size).rgb;
+             m0 += c;
+             s0 += c * c;
+         }
+     }
+
+     for (j = -radius; j <= 0; ++j)  {
+         for (i = 0; i <= radius; ++i)  {
+             c = texture2D(inputImageTexture, uv + vec2(i,j) * src_size).rgb;
+             m1 += c;
+             s1 += c * c;
+         }
+     }
+
+     for (j = 0; j <= radius; ++j)  {
+         for (i = 0; i <= radius; ++i)  {
+             c = texture2D(inputImageTexture, uv + vec2(i,j) * src_size).rgb;
+             m2 += c;
+             s2 += c * c;
+         }
+     }
+
+     for (j = 0; j <= radius; ++j)  {
+         for (i = -radius; i <= 0; ++i)  {
+             c = texture2D(inputImageTexture, uv + vec2(i,j) * src_size).rgb;
+             m3 += c;
+             s3 += c * c;
+         }
+     }
+
+
+     float min_sigma2 = 1e+2;
+     m0 /= n;
+     s0 = abs(s0 / n - m0 * m0);
+
+     float sigma2 = s0.r + s0.g + s0.b;
+     if (sigma2 < min_sigma2) {
+         min_sigma2 = sigma2;
+         gl_FragColor = vec4(m0, 1.0);
+     }
+
+     m1 /= n;
+     s1 = abs(s1 / n - m1 * m1);
+
+     sigma2 = s1.r + s1.g + s1.b;
+     if (sigma2 < min_sigma2) {
+         min_sigma2 = sigma2;
+         gl_FragColor = vec4(m1, 1.0);
+     }
+
+     m2 /= n;
+     s2 = abs(s2 / n - m2 * m2);
+
+     sigma2 = s2.r + s2.g + s2.b;
+     if (sigma2 < min_sigma2) {
+         min_sigma2 = sigma2;
+         gl_FragColor = vec4(m2, 1.0);
+     }
+
+     m3 /= n;
+     s3 = abs(s3 / n - m3 * m3);
+
+     sigma2 = s3.r + s3.g + s3.b;
+     if (sigma2 < min_sigma2) {
+         min_sigma2 = sigma2;
+         gl_FragColor = vec4(m3, 1.0);
+     }
  }
 );
 
