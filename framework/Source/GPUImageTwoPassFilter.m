@@ -271,9 +271,10 @@
 
 - (void)setFilterFBO;
 {
+    CGSize currentFBOSize = [self sizeOfFBO];
+
     if (!filterFramebuffer)
     {
-        CGSize currentFBOSize = [self sizeOfFBO];
         if ([GPUImageOpenGLESContext supportsFastTextureUpload] && preparedToCaptureImage)
         {
             preparedToCaptureImage = NO;
@@ -289,7 +290,6 @@
     
     glBindFramebuffer(GL_FRAMEBUFFER, filterFramebuffer);
     
-    CGSize currentFBOSize = [self sizeOfFBO];
     glViewport(0, 0, (int)currentFBOSize.width, (int)currentFBOSize.height);
 }
 
@@ -305,9 +305,6 @@
     glBindFramebuffer(GL_FRAMEBUFFER, secondFilterFramebuffer);
     CGSize currentFBOSize = [self sizeOfFBO];
     glViewport(0, 0, (int)currentFBOSize.width, (int)currentFBOSize.height);
-
-//    CGSize currentFBOSize = [self sizeOfFBO];
-//    glViewport(0, 0, (int)currentFBOSize.width, (int)currentFBOSize.height);
 }
 
 - (void)setOutputFBO;
