@@ -970,6 +970,14 @@
             
             filter = [[GPUImageColorDodgeBlendFilter alloc] init];
         }; break;
+        case GPUIMAGE_LINEARBURN:
+        {
+            self.title = @"Linear Burn Blend";
+            self.filterSettingsSlider.hidden = YES;
+            needsSecondImage = YES;
+            
+            filter = [[GPUImageLinearBurnBlendFilter alloc] init];
+        }; break;
         case GPUIMAGE_EXCLUSIONBLEND:
         {
             self.title = @"Exclusion Blend";
