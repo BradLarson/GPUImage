@@ -123,4 +123,37 @@ NSString *const kGPUImageLanczosFragmentShaderString = SHADER_STRING
     });
 }
 
+// The first pass (vertical) of the resampling needs to be shrunk in only one dimension so that the remaining shrinkage can be performed in the horizonal pass
+- (void)setFilterFBO;
+{
+    CGSize currentFBOSize = [self sizeOfFBO];
+    if (GPUImageRotationSwapsWidthAndHeight(inputRotation))
+    {
+        currentFBOSize.height = self.originalImageSize.height;
+    }
+    else
+    {
+        currentFBOSize.width = self.originalImageSize.width;
+    }
+
+    if (!filterFramebuffer)
+    {
+        if ([GPUImageOpenGLESContext supportsFastTextureUpload] && preparedToCaptureImage)
+        {
+            preparedToCaptureImage = NO;
+            [super createFilterFBOofSize:currentFBOSize];
+            preparedToCaptureImage = YES;
+        }
+        else
+        {
+            [super createFilterFBOofSize:currentFBOSize];
+        }
+        [self setupFilterForSize:currentFBOSize];
+    }
+    
+    glBindFramebuffer(GL_FRAMEBUFFER, filterFramebuffer);
+    
+    glViewport(0, 0, (int)currentFBOSize.width, (int)currentFBOSize.height);
+}
+
 @end
