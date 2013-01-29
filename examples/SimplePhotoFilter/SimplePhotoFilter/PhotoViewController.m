@@ -53,18 +53,19 @@
 //    stillCamera = [[GPUImageStillCamera alloc] initWithSessionPreset:AVCaptureSessionPreset640x480 cameraPosition:AVCaptureDevicePositionBack];
     stillCamera.outputImageOrientation = UIInterfaceOrientationPortrait;
 //    filter = [[GPUImageGammaFilter alloc] init];
-//    filter = [[GPUImageSketchFilter alloc] init];
+    filter = [[GPUImageSketchFilter alloc] init];
 //    filter = [[GPUImageUnsharpMaskFilter alloc] init];
 //    [(GPUImageSketchFilter *)filter setTexelHeight:(1.0 / 1024.0)];
 //    [(GPUImageSketchFilter *)filter setTexelWidth:(1.0 / 768.0)];
 //    filter = [[GPUImageSmoothToonFilter alloc] init];
-    filter = [[GPUImageSepiaFilter alloc] init];
+//    filter = [[GPUImageSepiaFilter alloc] init];
+//    filter = [[GPUImageCropFilter alloc] initWithCropRegion:CGRectMake(0.5, 0.5, 0.5, 0.5)];
 //    secondFilter = [[GPUImageSepiaFilter alloc] init];
 //    terminalFilter = [[GPUImageSepiaFilter alloc] init];
 //    [filter addTarget:secondFilter];
 //    [secondFilter addTarget:terminalFilter];
     
-	[filter prepareForImageCapture];
+//	[filter prepareForImageCapture];
 //	[terminalFilter prepareForImageCapture];
     
     [stillCamera addTarget:filter];
@@ -107,7 +108,7 @@
         ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
 //        report_memory(@"After asset library creation");
         
-        [library writeImageDataToSavedPhotosAlbum:processedJPEG metadata:nil completionBlock:^(NSURL *assetURL, NSError *error2)
+        [library writeImageDataToSavedPhotosAlbum:processedJPEG metadata:stillCamera.currentCaptureMetadata completionBlock:^(NSURL *assetURL, NSError *error2)
          {
 //             report_memory(@"After writing to library");
              if (error2) {
