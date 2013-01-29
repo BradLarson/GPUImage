@@ -104,6 +104,7 @@
 		case GPUIMAGE_AMATORKA: cell.textLabel.text = @"Amatorka (Lookup)"; break;
 		case GPUIMAGE_PIXELLATE: cell.textLabel.text = @"Pixellate"; break;
 		case GPUIMAGE_POLARPIXELLATE: cell.textLabel.text = @"Polar pixellate"; break;
+		case GPUIMAGE_PIXELLATE_POSITION: cell.textLabel.text = @"Pixellate (position)"; break;
 		case GPUIMAGE_POLKADOT: cell.textLabel.text = @"Polka dot"; break;
 		case GPUIMAGE_HALFTONE: cell.textLabel.text = @"Halftone"; break;
 		case GPUIMAGE_CROSSHATCH: cell.textLabel.text = @"Crosshatch"; break;
@@ -174,6 +175,7 @@
         case GPUIMAGE_BILATERAL: cell.textLabel.text = @"Bilateral blur"; break;
         case GPUIMAGE_BOXBLUR: cell.textLabel.text = @"Box blur"; break;
         case GPUIMAGE_GAUSSIAN_SELECTIVE: cell.textLabel.text = @"Gaussian selective blur"; break;
+        case GPUIMAGE_GAUSSIAN_POSITION: cell.textLabel.text = @"Gaussian (centered)"; break;
         case GPUIMAGE_UIELEMENT: cell.textLabel.text = @"UI element"; break;
 		case GPUIMAGE_CUSTOM: cell.textLabel.text = @"Custom"; break;
         case GPUIMAGE_FILECONFIG: cell.textLabel.text = @"Filter Chain"; break;
