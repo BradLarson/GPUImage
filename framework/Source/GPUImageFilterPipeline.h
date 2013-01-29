@@ -2,9 +2,6 @@
 #import "GPUImageFilter.h"
 
 @interface GPUImageFilterPipeline : NSObject
-{
-    NSString *stringValue;
-}
 
 @property (strong) NSMutableArray *filters;
 
@@ -24,6 +21,5 @@
 
 - (UIImage *) currentFilteredFrame;
 - (CGImageRef) newCGImageFromCurrentFilteredFrame;
-- (CGImageRef) newCGImageFromCurrentFilteredFrameWithOrientation:(UIImageOrientation)imageOrientation;
 
 @end

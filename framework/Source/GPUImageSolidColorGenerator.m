@@ -60,7 +60,7 @@ NSString *const kGPUSolidColorFragmentShaderString = SHADER_STRING
 
 - (void)setColor:(GPUVector4)newValue;
 {
-	[self setColorRed:newValue.one green:newValue.two blue:newValue.three alpha:newValue.four];
+	[self setColorRed:_color.one green:_color.two blue:_color.three alpha:_color.four];
 }
 
 - (void)setColorRed:(GLfloat)redComponent green:(GLfloat)greenComponent blue:(GLfloat)blueComponent alpha:(GLfloat)alphaComponent;

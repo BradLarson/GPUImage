@@ -71,14 +71,4 @@
     
 }
 
-- (BOOL)wantsMonochromeInput;
-{
-    return NO;
-}
-
-- (void)setCurrentlyReceivingMonochromeInput:(BOOL)newValue;
-{
-    
-}
-
 @end

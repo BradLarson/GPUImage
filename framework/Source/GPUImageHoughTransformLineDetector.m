@@ -11,7 +11,6 @@
 @synthesize linesDetectedBlock;
 @synthesize edgeThreshold;
 @synthesize lineDetectionThreshold;
-@synthesize intermediateImages = _intermediateImages;
 
 - (id)init;
 {

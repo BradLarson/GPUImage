@@ -88,8 +88,7 @@ void reportAvailableMemoryForGPUImage(NSString *tag)
     targets = [[NSMutableArray alloc] init];
     targetTextureIndices = [[NSMutableArray alloc] init];
     _enabled = YES;
-    allTargetsWantMonochromeData = YES;
-
+    
     return self;
 }
 
@@ -132,11 +131,6 @@ void reportAvailableMemoryForGPUImage(NSString *tag)
 {
     NSInteger nextAvailableTextureIndex = [newTarget nextAvailableTextureIndex];
     [self addTarget:newTarget atTextureLocation:nextAvailableTextureIndex];
-    if (outputTexture)
-    {
-        [self setInputTextureForTarget:newTarget atIndex:nextAvailableTextureIndex];
-    }
-    
     if ([newTarget shouldIgnoreUpdatesToThisTarget])
     {
         _targetToIgnoreForUpdates = newTarget;
@@ -156,8 +150,6 @@ void reportAvailableMemoryForGPUImage(NSString *tag)
         [newTarget setTextureDelegate:self atIndex:textureLocation];
         [targets addObject:newTarget];
         [targetTextureIndices addObject:[NSNumber numberWithInteger:textureLocation]];
-        
-        allTargetsWantMonochromeData = allTargetsWantMonochromeData && [newTarget wantsMonochromeInput];
     });
 }
 
@@ -206,8 +198,6 @@ void reportAvailableMemoryForGPUImage(NSString *tag)
         }
         [targets removeAllObjects];
         [targetTextureIndices removeAllObjects];
-        
-        allTargetsWantMonochromeData = YES;
     });
 }
 
@@ -363,11 +353,6 @@ void reportAvailableMemoryForGPUImage(NSString *tag)
     
     [stillImageSource removeTarget:(id<GPUImageInput>)self];
     return processedImage;
-}
-
-- (BOOL)providesMonochromeOutput;
-{
-    return NO;
 }
 
 - (void)prepareForImageCapture;

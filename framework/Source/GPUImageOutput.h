@@ -34,8 +34,6 @@ void reportAvailableMemoryForGPUImage(NSString *tag);
     
     __unsafe_unretained id<GPUImageTextureDelegate> firstTextureDelegate;
     BOOL shouldConserveMemoryForNextFrame;
-    
-    BOOL allTargetsWantMonochromeData;
 }
 
 @property(readwrite, nonatomic) BOOL shouldSmoothlyScaleOutput;
@@ -113,8 +111,6 @@ void reportAvailableMemoryForGPUImage(NSString *tag);
 - (CGImageRef)newCGImageByFilteringImage:(UIImage *)imageToFilter;
 - (CGImageRef)newCGImageByFilteringCGImage:(CGImageRef)imageToFilter;
 - (CGImageRef)newCGImageByFilteringCGImage:(CGImageRef)imageToFilter orientation:(UIImageOrientation)orientation;
-
-- (BOOL)providesMonochromeOutput;
 
 - (void)prepareForImageCapture;
 - (void)conserveMemoryForNextFrame;

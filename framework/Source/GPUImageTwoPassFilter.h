@@ -9,8 +9,6 @@
     GLint secondFilterInputTextureUniform, secondFilterInputTextureUniform2;
     
     GLuint secondFilterFramebuffer;
-    
-    NSMutableDictionary *secondProgramUniformStateRestorationBlocks;
 }
 
 // Initialization and teardown
