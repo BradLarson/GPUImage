@@ -143,3 +143,6 @@
 #import "GPUImageParallelCoordinateLineTransformFilter.h"
 #import "GPUImageThresholdSketchFilter.h"
 #import "GPUImageLineGenerator.h"
+#import "GPUImageLinearBurnBlendFilter.h"
+#import "GPUImageGaussianBlurPositionFilter.h"
+#import "GPUImagePixellatePositionFilter.h"
