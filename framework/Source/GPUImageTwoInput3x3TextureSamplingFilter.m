@@ -30,6 +30,16 @@ NSString *const kGPUImageTwoInputNearbyTexelSamplingVertexShaderString = SHADER_
  varying vec2 bottomRightTextureCoordinate;
  
  varying vec2 textureCoordinate2;
+ varying vec2 leftTextureCoordinate2;
+ varying vec2 rightTextureCoordinate2;
+ 
+ varying vec2 topTextureCoordinate2;
+ varying vec2 topLeftTextureCoordinate2;
+ varying vec2 topRightTextureCoordinate2;
+ 
+ varying vec2 bottomTextureCoordinate2;
+ varying vec2 bottomLeftTextureCoordinate2;
+ varying vec2 bottomRightTextureCoordinate2;
  
  void main()
  {
@@ -53,6 +63,16 @@ NSString *const kGPUImageTwoInputNearbyTexelSamplingVertexShaderString = SHADER_
      bottomRightTextureCoordinate = inputTextureCoordinate.xy + widthHeightStep;
      
      textureCoordinate2 = inputTextureCoordinate2.xy;
+     leftTextureCoordinate2 = inputTextureCoordinate2.xy - widthStep;
+     rightTextureCoordinate2 = inputTextureCoordinate2.xy + widthStep;
+     
+     topTextureCoordinate2 = inputTextureCoordinate2.xy - heightStep;
+     topLeftTextureCoordinate2 = inputTextureCoordinate2.xy - widthHeightStep;
+     topRightTextureCoordinate2 = inputTextureCoordinate2.xy + widthNegativeHeightStep;
+     
+     bottomTextureCoordinate2 = inputTextureCoordinate2.xy + heightStep;
+     bottomLeftTextureCoordinate2 = inputTextureCoordinate2.xy - widthNegativeHeightStep;
+     bottomRightTextureCoordinate2 = inputTextureCoordinate2.xy + widthHeightStep;
  }
 );
 
