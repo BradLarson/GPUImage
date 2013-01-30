@@ -146,3 +146,5 @@
 #import "GPUImageLinearBurnBlendFilter.h"
 #import "GPUImageGaussianBlurPositionFilter.h"
 #import "GPUImagePixellatePositionFilter.h"
+#import "GPUImageTwoInputCrossTextureSamplingFilter.h"
+#import "GPUImagePoissonBlendFilter.h"
