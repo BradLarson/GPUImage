@@ -1,5 +1,5 @@
 //
-//  GPUImageTwoInput3x3TextureSamplingFilter.h
+//  GPUImageTwoInputCrossTextureSamplingFilter.h
 //  GPUImage
 //
 //  Created by Ian Simon on 1/29/13.
@@ -8,7 +8,7 @@
 
 #import "GPUImageTwoInputFilter.h"
 
-@interface GPUImageTwoInput3x3TextureSamplingFilter : GPUImageTwoInputFilter
+@interface GPUImageTwoInputCrossTextureSamplingFilter : GPUImageTwoInputFilter
 {
     GLint texelWidthUniform, texelHeightUniform;
     

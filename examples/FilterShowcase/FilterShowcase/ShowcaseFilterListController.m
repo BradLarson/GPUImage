@@ -164,6 +164,7 @@
 	    case GPUIMAGE_SATURATIONBLEND: cell.textLabel.text = @"Saturation blend"; break;
 	    case GPUIMAGE_LUMINOSITYBLEND: cell.textLabel.text = @"Luminosity blend"; break;
 	    case GPUIMAGE_NORMALBLEND: cell.textLabel.text = @"Normal blend"; break;
+        case GPUIMAGE_POISSONBLEND: cell.textLabel.text = @"Poisson blend"; break;
 	    case GPUIMAGE_OPACITY: cell.textLabel.text = @"Opacity adjustment"; break;
         case GPUIMAGE_KUWAHARA: cell.textLabel.text = @"Kuwahara"; break;
         case GPUIMAGE_VIGNETTE: cell.textLabel.text = @"Vignette"; break;

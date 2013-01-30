@@ -142,3 +142,5 @@
 #import "GPUImageParallelCoordinateLineTransformFilter.h"
 #import "GPUImageThresholdSketchFilter.h"
 #import "GPUImageLineGenerator.h"
+#import "GPUImageTwoInputCrossTextureSamplingFilter.h"
+#import "GPUImagePoissonBlendFilter.h"
