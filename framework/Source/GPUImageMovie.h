@@ -27,7 +27,7 @@
 
 /** This is used to send the delete Movie did complete playing alert
  */
-@property (readwrite, nonatomic) id <GPUImageMovieDelegate>delegate;
+@property (readwrite, nonatomic, assign) id <GPUImageMovieDelegate>delegate;
 
 /// @name Initialization and teardown
 - (id)initWithAsset:(AVAsset *)asset;
