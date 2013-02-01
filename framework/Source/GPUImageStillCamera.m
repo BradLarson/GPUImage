@@ -242,7 +242,7 @@ void GPUImageCreateResizedSampleBuffer(CVPixelBufferRef cameraFrame, CGSize fina
         CGSize scaledImageSizeToFitOnGPU = [GPUImageOpenGLESContext sizeThatFitsWithinATextureForSize:sizeOfPhoto];
         if (!CGSizeEqualToSize(sizeOfPhoto, scaledImageSizeToFitOnGPU))
         {
-            CMSampleBufferRef sampleBuffer;
+            CMSampleBufferRef sampleBuffer = NULL;
             
             if (CVPixelBufferGetPlaneCount(cameraFrame) > 0)
             {
