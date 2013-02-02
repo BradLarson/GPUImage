@@ -1,9 +1,9 @@
-//
-//  GPUImageJFAVoroni.m
-//  
 //  adapted from unitzeroone - http://unitzeroone.com/labs/jfavoronoi/
 
 #import "GPUImageJFAVoroniFilter.h"
+
+//  The shaders are mostly taken from UnitZeroOne's WebGL example here:  
+//  http://unitzeroone.com/blog/2011/03/22/jump-flood-voronoi-for-webgl/
 
 NSString *const kGPUImageJFAVoroniVertexShaderString = SHADER_STRING
 (
@@ -181,8 +181,15 @@ NSString *const kGPUImageJFAVoroniFragmentShaderString = SHADER_STRING
  }
  );
 
-@implementation GPUImageJFAVoroniFilter
+@interface GPUImageJFAVoroniFilter() {
+    int currentPass;
+}
 
+
+@end
+
+@implementation GPUImageJFAVoroniFilter
+    
 @synthesize sizeInPixels = _sizeInPixels;
 
 - (id)init;
@@ -197,6 +204,7 @@ NSString *const kGPUImageJFAVoroniFragmentShaderString = SHADER_STRING
     
     sampleStepUniform = [filterProgram uniformIndex:@"sampleStep"];
     sizeUniform = [filterProgram uniformIndex:@"size"];
+    //[self disableSecondFrameCheck];
     
     return self;
 }
@@ -224,11 +232,11 @@ NSString *const kGPUImageJFAVoroniFragmentShaderString = SHADER_STRING
 #pragma mark Managing the display FBOs
 
 
-- (void)initializeOutputTexture;
+- (void)initializeOutputTextureIfNeeded;
 {
     [GPUImageOpenGLESContext useImageProcessingContext];
     
-    glActiveTexture(GL_TEXTURE0);
+    glActiveTexture(GL_TEXTURE2);
     glGenTextures(1, &outputTexture);
 	glBindTexture(GL_TEXTURE_2D, outputTexture);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -268,13 +276,14 @@ NSString *const kGPUImageJFAVoroniFragmentShaderString = SHADER_STRING
 - (void)createFilterFBOofSize:(CGSize)currentFBOSize
 {
     
+    [self prepareForImageCapture];
     numPasses = (int)log2([self nextPowerOfTwo:CGPointMake(currentFBOSize.width, currentFBOSize.height)]);
     
     if ([GPUImageOpenGLESContext supportsFastTextureUpload] && preparedToCaptureImage)
     {
-        preparedToCaptureImage = NO;
+        //preparedToCaptureImage = NO;
         [super createFilterFBOofSize:currentFBOSize];
-        preparedToCaptureImage = YES;
+        //preparedToCaptureImage = YES;
         
     }
     else
@@ -288,10 +297,15 @@ NSString *const kGPUImageJFAVoroniFragmentShaderString = SHADER_STRING
     
     if ([GPUImageOpenGLESContext supportsFastTextureUpload] && preparedToCaptureImage)
     {
+#if defined(__IPHONE_6_0)
+        CVReturn err = CVOpenGLESTextureCacheCreate(kCFAllocatorDefault, NULL, [[GPUImageOpenGLESContext sharedImageProcessingOpenGLESContext] context], NULL, &filterTextureCache);
+#else
         CVReturn err = CVOpenGLESTextureCacheCreate(kCFAllocatorDefault, NULL, (__bridge void *)[[GPUImageOpenGLESContext sharedImageProcessingOpenGLESContext] context], NULL, &filterTextureCache);
+#endif
+
         if (err) 
         {
-            NSAssert(NO, @"Error at CVOpenGLESTextureCacheCreate %d");
+            NSAssert(NO, @"Error at CVOpenGLESTextureCacheCreate %d", err);
         }
         
         // Code originally sourced from http://allmybrain.com/2011/12/08/rendering-to-a-texture-with-ios-5-texture-cache-api/
@@ -306,7 +320,7 @@ NSString *const kGPUImageJFAVoroniFragmentShaderString = SHADER_STRING
         if (err) 
         {
             NSLog(@"FBO size: %f, %f", currentFBOSize.width, currentFBOSize.height);
-            NSAssert(NO, @"Error at CVPixelBufferCreate %d");
+            NSAssert(NO, @"Error at CVPixelBufferCreate %d", err);
         }
         
         err = CVOpenGLESTextureCacheCreateTextureFromImage (kCFAllocatorDefault,
@@ -322,7 +336,7 @@ NSString *const kGPUImageJFAVoroniFragmentShaderString = SHADER_STRING
                                                             &renderTexture);
         if (err) 
         {
-            NSAssert(NO, @"Error at CVOpenGLESTextureCacheCreateTextureFromImage %d");
+            NSAssert(NO, @"Error at CVOpenGLESTextureCacheCreateTextureFromImage %d", err);
         }
         
         CFRelease(attrs);
@@ -333,14 +347,28 @@ NSString *const kGPUImageJFAVoroniFragmentShaderString = SHADER_STRING
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
         
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, CVOpenGLESTextureGetName(renderTexture), 0);
+        
+        [self notifyTargetsAboutNewOutputTexture];
     }
     else
     {
+        [self initializeOutputTextureIfNeeded];
+
         glBindTexture(GL_TEXTURE_2D, secondFilterOutputTexture);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (int)currentFBOSize.width, (int)currentFBOSize.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, secondFilterOutputTexture, 0);
+        
+        [self notifyTargetsAboutNewOutputTexture];
     }
 
+    glBindTexture(GL_TEXTURE_2D, outputTexture);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    
+    glBindTexture(GL_TEXTURE_2D, secondFilterOutputTexture);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    
 	GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
     
     NSAssert(status == GL_FRAMEBUFFER_COMPLETE, @"Incomplete filter FBO: %d", status);
@@ -360,7 +388,7 @@ NSString *const kGPUImageJFAVoroniFragmentShaderString = SHADER_STRING
 
 - (void)setOutputFBO;
 {
-    if (numPasses % 2 == 1) {
+    if (currentPass % 2 == 1) {
         [self setSecondFilterFBO];
     } else {
         [self setFilterFBO];
@@ -372,57 +400,51 @@ NSString *const kGPUImageJFAVoroniFragmentShaderString = SHADER_STRING
 - (void)renderToTextureWithVertices:(const GLfloat *)vertices textureCoordinates:(const GLfloat *)textureCoordinates sourceTexture:(GLuint)sourceTexture;
 {
     // Run the first stage of the two-pass filter
-    [GPUImageOpenGLESContext useImageProcessingContext];
-    [filterProgram use];
+    [GPUImageOpenGLESContext setActiveShaderProgram:filterProgram];
+    currentPass = 0;
+    [self setFilterFBO];
+    
+    glActiveTexture(GL_TEXTURE2);
+    
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
+    
     glUniform1f(sampleStepUniform, 0.5);
     
     glUniform2f(sizeUniform, _sizeInPixels.width, _sizeInPixels.height);
     
-    [super renderToTextureWithVertices:vertices textureCoordinates:textureCoordinates sourceTexture:sourceTexture];
+    glBindTexture(GL_TEXTURE_2D, sourceTexture);
+    
+    glUniform1i(filterInputTextureUniform, 2);
+    
+    glVertexAttribPointer(filterPositionAttribute, 2, GL_FLOAT, 0, 0, vertices);
+    glVertexAttribPointer(filterTextureCoordinateAttribute, 2, GL_FLOAT, 0, 0, textureCoordinates);
+    
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
     
     for (int pass = 1; pass <= numPasses + 1; pass++) {
+        currentPass = pass;
+        [self setOutputFBO];
         
+        //glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
+        
+        glActiveTexture(GL_TEXTURE2);
         if (pass % 2 == 0) {
-            
-            [GPUImageOpenGLESContext useImageProcessingContext];
-            [filterProgram use];
-            
-            float step = pow(2.0, numPasses - pass) / pow(2.0, numPasses);
-            glUniform1f(sampleStepUniform, step);
-            glUniform2f(sizeUniform, _sizeInPixels.width, _sizeInPixels.height);
-            
-            [super renderToTextureWithVertices:vertices textureCoordinates:textureCoordinates sourceTexture:secondFilterOutputTexture];
+            glBindTexture(GL_TEXTURE_2D, secondFilterOutputTexture);
         } else {
-            // Run the second stage of the two-pass filter
-            [self setSecondFilterFBO];
-            
-            [filterProgram use];
-            
-            glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-            glClear(GL_COLOR_BUFFER_BIT);
-            
-            glActiveTexture(GL_TEXTURE3);
             glBindTexture(GL_TEXTURE_2D, outputTexture);
-            
-            glUniform1i(filterInputTextureUniform, 3);	
-            
-            float step = pow(2.0, numPasses - pass) / pow(2.0, numPasses);
-            glUniform1f(sampleStepUniform, step);
-            glUniform2f(sizeUniform, _sizeInPixels.width, _sizeInPixels.height);
-            
-            if (filterSourceTexture2 != 0)
-            {
-                glActiveTexture(GL_TEXTURE4);
-                glBindTexture(GL_TEXTURE_2D, filterSourceTexture2);
-                
-                glUniform1i(filterInputTextureUniform2, 4);
-            }
-            
-            glVertexAttribPointer(filterPositionAttribute, 2, GL_FLOAT, 0, 0, vertices);
-            glVertexAttribPointer(filterTextureCoordinateAttribute, 2, GL_FLOAT, 0, 0, textureCoordinates);
-            
-            glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
         }
+        glUniform1i(filterInputTextureUniform, 2);
+        
+        float step = pow(2.0, numPasses - pass) / pow(2.0, numPasses);
+        glUniform1f(sampleStepUniform, step);
+        glUniform2f(sizeUniform, _sizeInPixels.width, _sizeInPixels.height);
+        
+        glVertexAttribPointer(filterPositionAttribute, 2, GL_FLOAT, 0, 0, vertices);
+        glVertexAttribPointer(filterTextureCoordinateAttribute, 2, GL_FLOAT, 0, 0, textureCoordinates);
+        
+        glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
     }
 }
 
