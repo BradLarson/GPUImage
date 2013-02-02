@@ -69,7 +69,7 @@ NSString *const kGPUImagePixellationPositionFragmentShaderString = SHADER_STRING
     
     self.fractionalWidthOfAPixel = 0.05;
     self.center = CGPointMake(0.5f, 0.5f);
-    self.radius = 1.0f;
+    self.radius = 0.25f;
     
     return self;
 }

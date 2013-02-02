@@ -104,6 +104,7 @@
 		case GPUIMAGE_AMATORKA: cell.textLabel.text = @"Amatorka (Lookup)"; break;
 		case GPUIMAGE_PIXELLATE: cell.textLabel.text = @"Pixellate"; break;
 		case GPUIMAGE_POLARPIXELLATE: cell.textLabel.text = @"Polar pixellate"; break;
+		case GPUIMAGE_PIXELLATE_POSITION: cell.textLabel.text = @"Pixellate (position)"; break;
 		case GPUIMAGE_POLKADOT: cell.textLabel.text = @"Polka dot"; break;
 		case GPUIMAGE_HALFTONE: cell.textLabel.text = @"Halftone"; break;
 		case GPUIMAGE_CROSSHATCH: cell.textLabel.text = @"Crosshatch"; break;
@@ -148,6 +149,7 @@
 		case GPUIMAGE_SCREENBLEND: cell.textLabel.text = @"Screen blend"; break;
 		case GPUIMAGE_COLORBURN: cell.textLabel.text = @"Color burn blend"; break;
 		case GPUIMAGE_COLORDODGE: cell.textLabel.text = @"Color dodge blend"; break;
+		case GPUIMAGE_LINEARBURN: cell.textLabel.text = @"Linear burn blend"; break;
 		case GPUIMAGE_ADD: cell.textLabel.text = @"Add blend"; break;
 		case GPUIMAGE_DIVIDE: cell.textLabel.text = @"Divide blend"; break;
 		case GPUIMAGE_MULTIPLY: cell.textLabel.text = @"Multiply blend"; break;
@@ -164,6 +166,7 @@
 	    case GPUIMAGE_SATURATIONBLEND: cell.textLabel.text = @"Saturation blend"; break;
 	    case GPUIMAGE_LUMINOSITYBLEND: cell.textLabel.text = @"Luminosity blend"; break;
 	    case GPUIMAGE_NORMALBLEND: cell.textLabel.text = @"Normal blend"; break;
+        case GPUIMAGE_POISSONBLEND: cell.textLabel.text = @"Poisson blend"; break;
 	    case GPUIMAGE_OPACITY: cell.textLabel.text = @"Opacity adjustment"; break;
         case GPUIMAGE_KUWAHARA: cell.textLabel.text = @"Kuwahara"; break;
         case GPUIMAGE_VIGNETTE: cell.textLabel.text = @"Vignette"; break;
@@ -173,6 +176,7 @@
         case GPUIMAGE_BILATERAL: cell.textLabel.text = @"Bilateral blur"; break;
         case GPUIMAGE_BOXBLUR: cell.textLabel.text = @"Box blur"; break;
         case GPUIMAGE_GAUSSIAN_SELECTIVE: cell.textLabel.text = @"Gaussian selective blur"; break;
+        case GPUIMAGE_GAUSSIAN_POSITION: cell.textLabel.text = @"Gaussian (centered)"; break;
         case GPUIMAGE_UIELEMENT: cell.textLabel.text = @"UI element"; break;
 		case GPUIMAGE_CUSTOM: cell.textLabel.text = @"Custom"; break;
         case GPUIMAGE_FILECONFIG: cell.textLabel.text = @"Filter Chain"; break;

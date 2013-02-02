@@ -271,9 +271,10 @@
 
 - (void)setFilterFBO;
 {
+    CGSize currentFBOSize = [self sizeOfFBO];
+
     if (!filterFramebuffer)
     {
-        CGSize currentFBOSize = [self sizeOfFBO];
         if ([GPUImageOpenGLESContext supportsFastTextureUpload] && preparedToCaptureImage)
         {
             preparedToCaptureImage = NO;
@@ -284,12 +285,11 @@
         {
             [super createFilterFBOofSize:currentFBOSize];
         }
-        [super setupFilterForSize:currentFBOSize];
+        [self setupFilterForSize:currentFBOSize];
     }
     
     glBindFramebuffer(GL_FRAMEBUFFER, filterFramebuffer);
     
-    CGSize currentFBOSize = [self sizeOfFBO];
     glViewport(0, 0, (int)currentFBOSize.width, (int)currentFBOSize.height);
 }
 
@@ -305,9 +305,6 @@
     glBindFramebuffer(GL_FRAMEBUFFER, secondFilterFramebuffer);
     CGSize currentFBOSize = [self sizeOfFBO];
     glViewport(0, 0, (int)currentFBOSize.width, (int)currentFBOSize.height);
-
-//    CGSize currentFBOSize = [self sizeOfFBO];
-//    glViewport(0, 0, (int)currentFBOSize.width, (int)currentFBOSize.height);
 }
 
 - (void)setOutputFBO;
@@ -408,6 +405,7 @@
 
 - (void)setAndExecuteUniformStateCallbackAtIndex:(GLint)uniform forProgram:(GLProgram *)shaderProgram toBlock:(dispatch_block_t)uniformStateBlock;
 {
+// TODO: Deal with the fact that two-pass filters may have the same shader program identifier
     if (shaderProgram == filterProgram)
     {
         [uniformStateRestorationBlocks setObject:[uniformStateBlock copy] forKey:[NSNumber numberWithInt:uniform]];
