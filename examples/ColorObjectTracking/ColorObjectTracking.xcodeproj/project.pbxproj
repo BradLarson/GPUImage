@@ -13,6 +13,11 @@
 		BC245DE914DDC959009FE7EB /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = BC245DE714DDC959009FE7EB /* InfoPlist.strings */; };
 		BC245DEB14DDC959009FE7EB /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = BC245DEA14DDC959009FE7EB /* main.m */; };
 		BC245DEF14DDC959009FE7EB /* ColorTrackingAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = BC245DEE14DDC959009FE7EB /* ColorTrackingAppDelegate.m */; };
+		BCB3C3DF16BCA51E003D26B0 /* Icon-72.png in Resources */ = {isa = PBXBuildFile; fileRef = BCB3C3DA16BCA51E003D26B0 /* Icon-72.png */; };
+		BCB3C3E016BCA51E003D26B0 /* Icon-72@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BCB3C3DB16BCA51E003D26B0 /* Icon-72@2x.png */; };
+		BCB3C3E116BCA51E003D26B0 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = BCB3C3DC16BCA51E003D26B0 /* Icon.png */; };
+		BCB3C3E216BCA51E003D26B0 /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BCB3C3DD16BCA51E003D26B0 /* Icon@2x.png */; };
+		BCB3C3E316BCA51E003D26B0 /* iTunesArtwork.png in Resources */ = {isa = PBXBuildFile; fileRef = BCB3C3DE16BCA51E003D26B0 /* iTunesArtwork.png */; };
 		BCB5DD8314E85CB0000AF3C2 /* PositionColor.fsh in Resources */ = {isa = PBXBuildFile; fileRef = BCB5DD8214E85CB0000AF3C2 /* PositionColor.fsh */; };
 		BCB5E74614DDCF4F00701302 /* ColorTrackingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = BCB5E74514DDCF4F00701302 /* ColorTrackingViewController.m */; };
 		BCB5E74814DDD1B300701302 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCB5E74714DDD1B300701302 /* QuartzCore.framework */; };
@@ -60,6 +65,11 @@
 		BC245DED14DDC959009FE7EB /* ColorTrackingAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ColorTrackingAppDelegate.h; sourceTree = "<group>"; };
 		BC245DEE14DDC959009FE7EB /* ColorTrackingAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ColorTrackingAppDelegate.m; sourceTree = "<group>"; };
 		BC245E0C14DDCA1F009FE7EB /* GPUImage.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = GPUImage.xcodeproj; path = ../../framework/GPUImage.xcodeproj; sourceTree = "<group>"; };
+		BCB3C3DA16BCA51E003D26B0 /* Icon-72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-72.png"; path = "../../SharedIcons/Icon-72.png"; sourceTree = "<group>"; };
+		BCB3C3DB16BCA51E003D26B0 /* Icon-72@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-72@2x.png"; path = "../../SharedIcons/Icon-72@2x.png"; sourceTree = "<group>"; };
+		BCB3C3DC16BCA51E003D26B0 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Icon.png; path = ../../SharedIcons/Icon.png; sourceTree = "<group>"; };
+		BCB3C3DD16BCA51E003D26B0 /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon@2x.png"; path = "../../SharedIcons/Icon@2x.png"; sourceTree = "<group>"; };
+		BCB3C3DE16BCA51E003D26B0 /* iTunesArtwork.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = iTunesArtwork.png; path = ../../SharedIcons/iTunesArtwork.png; sourceTree = "<group>"; };
 		BCB5DD8214E85CB0000AF3C2 /* PositionColor.fsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = PositionColor.fsh; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.glsl; };
 		BCB5E74414DDCF4F00701302 /* ColorTrackingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColorTrackingViewController.h; sourceTree = "<group>"; };
 		BCB5E74514DDCF4F00701302 /* ColorTrackingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColorTrackingViewController.m; sourceTree = "<group>"; };
@@ -140,6 +150,11 @@
 		BC245DE514DDC959009FE7EB /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				BCB3C3DA16BCA51E003D26B0 /* Icon-72.png */,
+				BCB3C3DB16BCA51E003D26B0 /* Icon-72@2x.png */,
+				BCB3C3DC16BCA51E003D26B0 /* Icon.png */,
+				BCB3C3DD16BCA51E003D26B0 /* Icon@2x.png */,
+				BCB3C3DE16BCA51E003D26B0 /* iTunesArtwork.png */,
 				BC245DE614DDC959009FE7EB /* ColorObjectTracking-Info.plist */,
 				BC245DE714DDC959009FE7EB /* InfoPlist.strings */,
 				BC245DEA14DDC959009FE7EB /* main.m */,
@@ -244,6 +259,11 @@
 				BC245DE914DDC959009FE7EB /* InfoPlist.strings in Resources */,
 				BCB5E7B214E460D300701302 /* Threshold.fsh in Resources */,
 				BCB5DD8314E85CB0000AF3C2 /* PositionColor.fsh in Resources */,
+				BCB3C3DF16BCA51E003D26B0 /* Icon-72.png in Resources */,
+				BCB3C3E016BCA51E003D26B0 /* Icon-72@2x.png in Resources */,
+				BCB3C3E116BCA51E003D26B0 /* Icon.png in Resources */,
+				BCB3C3E216BCA51E003D26B0 /* Icon@2x.png in Resources */,
+				BCB3C3E316BCA51E003D26B0 /* iTunesArtwork.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
