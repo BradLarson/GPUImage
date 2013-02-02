@@ -35,7 +35,7 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 }
 
 // Movie recording
-- (void)initializeMovie;
+- (void)initializeMovieWithOutputSettings:(NSMutableDictionary *)outputSettings;
 
 // Frame rendering
 - (void)createDataFBO;
@@ -55,6 +55,7 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 @synthesize failureBlock;
 @synthesize videoInputReadyCallback;
 @synthesize audioInputReadyCallback;
+@synthesize enabled;
 
 @synthesize delegate = _delegate;
 
@@ -63,53 +64,68 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 
 - (id)initWithMovieURL:(NSURL *)newMovieURL size:(CGSize)newSize;
 {
+    return [self initWithMovieURL:newMovieURL size:newSize fileType:AVFileTypeQuickTimeMovie outputSettings:nil];
+}
+
+- (id)initWithMovieURL:(NSURL *)newMovieURL size:(CGSize)newSize fileType:(NSString *)newFileType outputSettings:(NSMutableDictionary *)outputSettings;
+{
     if (!(self = [super init]))
     {
 		return nil;
     }
 
+    self.enabled = YES;
+    
     videoSize = newSize;
     movieURL = newMovieURL;
+    fileType = newFileType;
     startTime = kCMTimeInvalid;
     _encodingLiveVideo = YES;
     previousFrameTime = kCMTimeNegativeInfinity;
     inputRotation = kGPUImageNoRotation;
 
-    [GPUImageOpenGLESContext useImageProcessingContext];
-    
-    if ([GPUImageOpenGLESContext supportsFastTextureUpload])
-    {
-        colorSwizzlingProgram = [[GLProgram alloc] initWithVertexShaderString:kGPUImageVertexShaderString fragmentShaderString:kGPUImagePassthroughFragmentShaderString];
-    }
-    else
-    {
-        colorSwizzlingProgram = [[GLProgram alloc] initWithVertexShaderString:kGPUImageVertexShaderString fragmentShaderString:kGPUImageColorSwizzlingFragmentShaderString];
-    }
-    
-    [colorSwizzlingProgram addAttribute:@"position"];
-	[colorSwizzlingProgram addAttribute:@"inputTextureCoordinate"];
-    
-    if (![colorSwizzlingProgram link])
-	{
-		NSString *progLog = [colorSwizzlingProgram programLog];
-		NSLog(@"Program link log: %@", progLog); 
-		NSString *fragLog = [colorSwizzlingProgram fragmentShaderLog];
-		NSLog(@"Fragment shader compile log: %@", fragLog);
-		NSString *vertLog = [colorSwizzlingProgram vertexShaderLog];
-		NSLog(@"Vertex shader compile log: %@", vertLog);
-		colorSwizzlingProgram = nil;
-        NSAssert(NO, @"Filter shader link failed");
-	}
-    
-    colorSwizzlingPositionAttribute = [colorSwizzlingProgram attributeIndex:@"position"];
-    colorSwizzlingTextureCoordinateAttribute = [colorSwizzlingProgram attributeIndex:@"inputTextureCoordinate"];
-    colorSwizzlingInputTextureUniform = [colorSwizzlingProgram uniformIndex:@"inputImageTexture"];
-    
-    [colorSwizzlingProgram use];    
-	glEnableVertexAttribArray(colorSwizzlingPositionAttribute);
-	glEnableVertexAttribArray(colorSwizzlingTextureCoordinateAttribute);
-    
-    [self initializeMovie];
+    runSynchronouslyOnVideoProcessingQueue(^{
+        [GPUImageOpenGLESContext useImageProcessingContext];
+        
+        if ([GPUImageOpenGLESContext supportsFastTextureUpload])
+        {
+            colorSwizzlingProgram = [[GPUImageOpenGLESContext sharedImageProcessingOpenGLESContext] programForVertexShaderString:kGPUImageVertexShaderString fragmentShaderString:kGPUImagePassthroughFragmentShaderString];
+        }
+        else
+        {
+            colorSwizzlingProgram = [[GPUImageOpenGLESContext sharedImageProcessingOpenGLESContext] programForVertexShaderString:kGPUImageVertexShaderString fragmentShaderString:kGPUImageColorSwizzlingFragmentShaderString];
+        }
+        
+        if (!colorSwizzlingProgram.initialized)
+        {
+            [colorSwizzlingProgram addAttribute:@"position"];
+            [colorSwizzlingProgram addAttribute:@"inputTextureCoordinate"];
+            
+            if (![colorSwizzlingProgram link])
+            {
+                NSString *progLog = [colorSwizzlingProgram programLog];
+                NSLog(@"Program link log: %@", progLog);
+                NSString *fragLog = [colorSwizzlingProgram fragmentShaderLog];
+                NSLog(@"Fragment shader compile log: %@", fragLog);
+                NSString *vertLog = [colorSwizzlingProgram vertexShaderLog];
+                NSLog(@"Vertex shader compile log: %@", vertLog);
+                colorSwizzlingProgram = nil;
+                NSAssert(NO, @"Filter shader link failed");
+            }
+        }        
+        
+        colorSwizzlingPositionAttribute = [colorSwizzlingProgram attributeIndex:@"position"];
+        colorSwizzlingTextureCoordinateAttribute = [colorSwizzlingProgram attributeIndex:@"inputTextureCoordinate"];
+        colorSwizzlingInputTextureUniform = [colorSwizzlingProgram uniformIndex:@"inputImageTexture"];
+        
+        // REFACTOR: Wrap this in a block for the image processing queue
+        [GPUImageOpenGLESContext setActiveShaderProgram:colorSwizzlingProgram];
+        
+        glEnableVertexAttribArray(colorSwizzlingPositionAttribute);
+        glEnableVertexAttribArray(colorSwizzlingTextureCoordinateAttribute);
+    });
+        
+    [self initializeMovieWithOutputSettings:outputSettings];
 
     return self;
 }
@@ -127,15 +143,16 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 #pragma mark -
 #pragma mark Movie recording
 
-- (void)initializeMovie;
+- (void)initializeMovieWithOutputSettings:(NSMutableDictionary *)outputSettings;
 {
     isRecording = NO;
     
+    self.enabled = YES;
     frameData = (GLubyte *) malloc((int)videoSize.width * (int)videoSize.height * 4);
 
 //    frameData = (GLubyte *) calloc(videoSize.width * videoSize.height * 4, sizeof(GLubyte));
     NSError *error = nil;
-    assetWriter = [[AVAssetWriter alloc] initWithURL:movieURL fileType:AVFileTypeQuickTimeMovie error:&error];
+    assetWriter = [[AVAssetWriter alloc] initWithURL:movieURL fileType:fileType error:&error];
     if (error != nil)
     {
         NSLog(@"Error: %@", error);
@@ -155,11 +172,24 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
     // Set this to make sure that a functional movie is produced, even if the recording is cut off mid-stream. Only the last second should be lost in that case.
     assetWriter.movieFragmentInterval = CMTimeMakeWithSeconds(1.0, 1000);
     
-    NSMutableDictionary * outputSettings = [[NSMutableDictionary alloc] init];
-    [outputSettings setObject:AVVideoCodecH264 forKey:AVVideoCodecKey];
-    [outputSettings setObject:[NSNumber numberWithInt:videoSize.width] forKey:AVVideoWidthKey];
-    [outputSettings setObject:[NSNumber numberWithInt:videoSize.height] forKey:AVVideoHeightKey];
-
+    // use default output settings if none specified
+    if (outputSettings == nil) 
+    {
+        outputSettings = [[NSMutableDictionary alloc] init];
+        [outputSettings setObject:AVVideoCodecH264 forKey:AVVideoCodecKey];
+        [outputSettings setObject:[NSNumber numberWithInt:videoSize.width] forKey:AVVideoWidthKey];
+        [outputSettings setObject:[NSNumber numberWithInt:videoSize.height] forKey:AVVideoHeightKey];
+    }
+    // custom output settings specified
+    else 
+    {
+		NSString *videoCodec = [outputSettings objectForKey:AVVideoCodecKey];
+		NSNumber *width = [outputSettings objectForKey:AVVideoWidthKey];
+		NSNumber *height = [outputSettings objectForKey:AVVideoHeightKey];
+		
+		NSAssert(videoCodec && width && height, @"OutputSettings is missing required parameters.");
+    }
+    
     /*
     NSDictionary *videoCleanApertureSettings = [NSDictionary dictionaryWithObjectsAndKeys:
                                                 [NSNumber numberWithInt:videoSize.width], AVVideoCleanApertureWidthKey,
@@ -203,16 +233,50 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 {
     isRecording = YES;
     startTime = kCMTimeInvalid;
-//    [assetWriter startWriting];
+	//    [assetWriter startWriting];
     
-//    [assetWriter startSessionAtSourceTime:kCMTimeZero];
+	//    [assetWriter startSessionAtSourceTime:kCMTimeZero];
+}
+
+- (void)startRecordingInOrientation:(CGAffineTransform)orientationTransform;
+{
+	assetWriterVideoInput.transform = orientationTransform;
+
+	[self startRecording];
+}
+
+- (void)cancelRecording;
+{
+    if (assetWriter.status == AVAssetWriterStatusCompleted)
+    {
+        return;
+    }
+    
+    isRecording = NO;
+    runOnMainQueueWithoutDeadlocking(^{
+        [assetWriterVideoInput markAsFinished];
+        [assetWriterAudioInput markAsFinished];
+        [assetWriter cancelWriting];
+    });
 }
 
 - (void)finishRecording;
 {
+    if (assetWriter.status == AVAssetWriterStatusCompleted)
+    {
+        return;
+    }
+
     isRecording = NO;
-//    [assetWriterVideoInput markAsFinished];
-    [assetWriter finishWriting];    
+    runOnMainQueueWithoutDeadlocking(^{
+        [assetWriterVideoInput markAsFinished];
+        [assetWriterAudioInput markAsFinished];
+#if ( (__IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_6_0) || (!defined(__IPHONE_6_0)) )
+        [assetWriter finishWriting];
+#else
+        [assetWriter finishWritingWithCompletionHandler:NULL];
+#endif
+    });
 }
 
 - (void)processAudioBuffer:(CMSampleBufferRef)audioBuffer;
@@ -252,12 +316,12 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
     if (videoInputReadyCallback != NULL)
     {
         [assetWriter startWriting];
-        [assetWriterVideoInput requestMediaDataWhenReadyOnQueue:dispatch_get_main_queue() usingBlock:videoInputReadyCallback];
+        [assetWriterVideoInput requestMediaDataWhenReadyOnQueue:[GPUImageOpenGLESContext sharedOpenGLESQueue] usingBlock:videoInputReadyCallback];
     }
     
     if (audioInputReadyCallback != NULL)
     {
-        [assetWriterAudioInput requestMediaDataWhenReadyOnQueue:dispatch_get_main_queue() usingBlock:audioInputReadyCallback];
+        [assetWriterAudioInput requestMediaDataWhenReadyOnQueue:[GPUImageOpenGLESContext sharedOpenGLESQueue] usingBlock:audioInputReadyCallback];
     }        
     
 }
@@ -273,10 +337,15 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
     
     if ([GPUImageOpenGLESContext supportsFastTextureUpload])
     {
+#if defined(__IPHONE_6_0)
+        CVReturn err = CVOpenGLESTextureCacheCreate(kCFAllocatorDefault, NULL, [[GPUImageOpenGLESContext sharedImageProcessingOpenGLESContext] context], NULL, &coreVideoTextureCache);
+#else
         CVReturn err = CVOpenGLESTextureCacheCreate(kCFAllocatorDefault, NULL, (__bridge void *)[[GPUImageOpenGLESContext sharedImageProcessingOpenGLESContext] context], NULL, &coreVideoTextureCache);
+#endif
+
         if (err) 
         {
-            NSAssert(NO, @"Error at CVOpenGLESTextureCacheCreate %d");
+            NSAssert(NO, @"Error at CVOpenGLESTextureCacheCreate %d", err);
         }
 
         // Code originally sourced from http://allmybrain.com/2011/12/08/rendering-to-a-texture-with-ios-5-texture-cache-api/
@@ -367,7 +436,7 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
     [GPUImageOpenGLESContext useImageProcessingContext];
     [self setFilterFBO];
     
-    [colorSwizzlingProgram use];
+    [GPUImageOpenGLESContext setActiveShaderProgram:colorSwizzlingProgram];
     
     glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -396,13 +465,13 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
     
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
     
-    glFlush();
+    glFinish();
 }
 
 #pragma mark -
 #pragma mark GPUImageInput protocol
 
-- (void)newFrameReadyAtTime:(CMTime)frameTime;
+- (void)newFrameReadyAtTime:(CMTime)frameTime atIndex:(NSInteger)textureIndex;
 {
     if (!isRecording)
     {
@@ -411,7 +480,7 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 
     // Drop frames forced by images and other things with no time constants
     // Also, if two consecutive times with the same value are added to the movie, it aborts recording, so I bail on that case
-    if ( (CMTIME_IS_INVALID(frameTime)) || (CMTIME_COMPARE_INLINE(frameTime, ==, previousFrameTime)) ) 
+    if ( (CMTIME_IS_INVALID(frameTime)) || (CMTIME_COMPARE_INLINE(frameTime, ==, previousFrameTime)) || (CMTIME_IS_INDEFINITE(frameTime)) ) 
     {
         return;
     }
@@ -523,42 +592,46 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
     return NO;
 }
 
+- (void)setTextureDelegate:(id<GPUImageTextureDelegate>)newTextureDelegate atIndex:(NSInteger)textureIndex;
+{
+    textureDelegate = newTextureDelegate;
+}
+
+- (void)conserveMemoryForNextFrame;
+{
+    
+}
+
+- (BOOL)wantsMonochromeInput;
+{
+    return NO;
+}
+
+- (void)setCurrentlyReceivingMonochromeInput:(BOOL)newValue;
+{
+    
+}
+
 #pragma mark -
 #pragma mark Accessors
 
 - (void)setHasAudioTrack:(BOOL)newValue
 {
+	[self setHasAudioTrack:newValue audioSettings:nil];
+}
+
+- (void)setHasAudioTrack:(BOOL)newValue audioSettings:(NSDictionary *)audioOutputSettings;
+{
     _hasAudioTrack = newValue;
     
     if (_hasAudioTrack)
     {
-        NSDictionary *audioOutputSettings = nil;
         if (_shouldPassthroughAudio)
         {
-//            float ver = [[[UIDevice currentDevice] systemVersion] floatValue];
-//            if (ver < 4.3) // Older iOS versions complain about using nil settings for passthrough audio, so I need to check for that
-//            {
-//                double preferredHardwareSampleRate = [[AVAudioSession sharedInstance] currentHardwareSampleRate];
-//                
-//                AudioChannelLayout acl;
-//                bzero( &acl, sizeof(acl));
-//                acl.mChannelLayoutTag = kAudioChannelLayoutTag_Mono;
-//                
-//                audioOutputSettings = [NSDictionary dictionaryWithObjectsAndKeys:
-//                                       [ NSNumber numberWithInt: kAudioFormatMPEG4AAC], AVFormatIDKey,
-//                                       [ NSNumber numberWithInt: 1 ], AVNumberOfChannelsKey,
-//                                       [ NSNumber numberWithFloat: preferredHardwareSampleRate ], AVSampleRateKey,
-//                                       [ NSData dataWithBytes: &acl length: sizeof( acl ) ], AVChannelLayoutKey,
-//                                       //[ NSNumber numberWithInt:AVAudioQualityLow], AVEncoderAudioQualityKey,
-//                                       [ NSNumber numberWithInt: 64000 ], AVEncoderBitRateKey,
-//                                       nil];
-//            }
-//            else
-//            {
-                audioOutputSettings = nil;                
-//            }
+			// Do not set any settings so audio will be the same as passthrough
+			audioOutputSettings = nil;
         }
-        else
+        else if (audioOutputSettings == nil)
         {
             double preferredHardwareSampleRate = [[AVAudioSession sharedInstance] currentHardwareSampleRate];
             

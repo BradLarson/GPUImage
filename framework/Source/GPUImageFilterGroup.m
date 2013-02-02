@@ -1,5 +1,4 @@
 #import "GPUImageFilterGroup.h"
-#import "GPUImageFilter.h"
 #import "GPUImagePicture.h"
 
 @implementation GPUImageFilterGroup
@@ -17,8 +16,6 @@
     
     filters = [[NSMutableArray alloc] init];
     
-    [self deleteOutputTexture];
-    
     return self;
 }
 
@@ -35,25 +32,17 @@
     return [filters objectAtIndex:filterIndex];
 }
 
+- (int)filterCount;
+{
+    return [filters count];
+}
+
 #pragma mark -
 #pragma mark Still image processing
 
-- (UIImage *)imageFromCurrentlyProcessedOutputWithOrientation:(UIImageOrientation)imageOrientation;
+- (CGImageRef)newCGImageFromCurrentlyProcessedOutputWithOrientation:(UIImageOrientation)imageOrientation;
 {
-    return [self.terminalFilter imageFromCurrentlyProcessedOutputWithOrientation:imageOrientation];
-}
-
-- (UIImage *)imageByFilteringImage:(UIImage *)imageToFilter;
-{
-    GPUImagePicture *stillImageSource = [[GPUImagePicture alloc] initWithImage:imageToFilter];
-    
-    [stillImageSource addTarget:self];
-    [stillImageSource processImage];
-    
-    UIImage *processedImage = [self.terminalFilter imageFromCurrentlyProcessedOutput];
-    
-    [stillImageSource removeTarget:self];
-    return processedImage;
+    return [self.terminalFilter newCGImageFromCurrentlyProcessedOutputWithOrientation:imageOrientation];
 }
 
 - (void)prepareForImageCapture;
@@ -84,17 +73,39 @@
     [_terminalFilter removeAllTargets];
 }
 
+- (void)setFrameProcessingCompletionBlock:(void (^)(GPUImageOutput *, CMTime))frameProcessingCompletionBlock;
+{
+    [_terminalFilter setFrameProcessingCompletionBlock:frameProcessingCompletionBlock];
+}
+
+- (void (^)(GPUImageOutput *, CMTime))frameProcessingCompletionBlock;
+{
+    return [_terminalFilter frameProcessingCompletionBlock];
+}
+
 #pragma mark -
 #pragma mark GPUImageInput protocol
 
-- (void)newFrameReadyAtTime:(CMTime)frameTime;
+- (void)newFrameReadyAtTime:(CMTime)frameTime atIndex:(NSInteger)textureIndex;
 {
+    outputTextureRetainCount = [_initialFilters count];
+    
     for (GPUImageOutput<GPUImageInput> *currentFilter in _initialFilters)
     {
         if (currentFilter != self.inputFilterToIgnoreForUpdates)
         {
-            [currentFilter newFrameReadyAtTime:frameTime];
+            [currentFilter newFrameReadyAtTime:frameTime atIndex:textureIndex];
         }
+    }
+}
+
+- (void)setTextureDelegate:(id<GPUImageTextureDelegate>)newTextureDelegate atIndex:(NSInteger)textureIndex;
+{
+    firstTextureDelegate = newTextureDelegate;
+    
+    for (GPUImageOutput<GPUImageInput> *currentFilter in _initialFilters)
+    {
+        [currentFilter setTextureDelegate:self atIndex:textureIndex];
     }
 }
 
@@ -108,10 +119,10 @@
 
 - (NSInteger)nextAvailableTextureIndex;
 {
-    if ([_initialFilters count] > 0)
-    {
-        return [[_initialFilters objectAtIndex:0] nextAvailableTextureIndex];
-    }
+//    if ([_initialFilters count] > 0)
+//    {
+//        return [[_initialFilters objectAtIndex:0] nextAvailableTextureIndex];
+//    }
     
     return 0;
 }
@@ -167,6 +178,45 @@
     for (GPUImageOutput<GPUImageInput> *currentFilter in _initialFilters)
     {
         [currentFilter endProcessing];
+    }
+}
+
+- (void)conserveMemoryForNextFrame;
+{
+    for (GPUImageOutput<GPUImageInput> *currentFilter in _initialFilters)
+    {
+        [currentFilter conserveMemoryForNextFrame];
+    }
+}
+
+- (BOOL)wantsMonochromeInput;
+{
+    BOOL allInputsWantMonochromeInput = YES;
+    for (GPUImageOutput<GPUImageInput> *currentFilter in _initialFilters)
+    {
+        allInputsWantMonochromeInput = allInputsWantMonochromeInput && [currentFilter wantsMonochromeInput];
+    }
+    
+    return allInputsWantMonochromeInput;
+}
+
+- (void)setCurrentlyReceivingMonochromeInput:(BOOL)newValue;
+{
+    for (GPUImageOutput<GPUImageInput> *currentFilter in _initialFilters)
+    {
+        [currentFilter setCurrentlyReceivingMonochromeInput:newValue];
+    }
+}
+
+#pragma mark -
+#pragma mark GPUImageTextureDelegate methods
+
+- (void)textureNoLongerNeededForTarget:(id<GPUImageInput>)textureTarget;
+{
+    outputTextureRetainCount--;
+    if (outputTextureRetainCount < 1)
+    {
+        [firstTextureDelegate textureNoLongerNeededForTarget:self];
     }
 }
 

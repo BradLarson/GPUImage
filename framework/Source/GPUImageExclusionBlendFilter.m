@@ -10,9 +10,12 @@ NSString *const kGPUImageExclusionBlendFragmentShaderString = SHADER_STRING
  
  void main()
  {
-     mediump vec4 textureColor = texture2D(inputImageTexture, textureCoordinate);
-     mediump vec4 textureColor2 = texture2D(inputImageTexture2, textureCoordinate2);
-     gl_FragColor = vec4(textureColor.rgb + textureColor2.rgb - (2.0 * textureColor.rgb * textureColor2.rgb), textureColor.a);
+     mediump vec4 base = texture2D(inputImageTexture, textureCoordinate);
+     mediump vec4 overlay = texture2D(inputImageTexture2, textureCoordinate2);
+     
+     //     Dca = (Sca.Da + Dca.Sa - 2.Sca.Dca) + Sca.(1 - Da) + Dca.(1 - Sa)
+     
+     gl_FragColor = vec4((overlay.rgb * base.a + base.rgb * overlay.a - 2.0 * overlay.rgb * base.rgb) + overlay.rgb * (1.0 - base.a) + base.rgb * (1.0 - overlay.a), base.a);
  }
 );
 

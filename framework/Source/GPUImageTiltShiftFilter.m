@@ -53,7 +53,7 @@ NSString *const kGPUImageTiltShiftFragmentShaderString = SHADER_STRING
     [blurFilter addTarget:tiltShiftFilter atTextureLocation:1];
     
     // To prevent double updating of this filter, disable updates from the sharp image side
-    self.inputFilterToIgnoreForUpdates = tiltShiftFilter;
+//    self.inputFilterToIgnoreForUpdates = tiltShiftFilter;
     
     self.initialFilters = [NSArray arrayWithObjects:blurFilter, tiltShiftFilter, nil];
     self.terminalFilter = tiltShiftFilter;
@@ -82,19 +82,19 @@ NSString *const kGPUImageTiltShiftFragmentShaderString = SHADER_STRING
 - (void)setTopFocusLevel:(CGFloat)newValue;
 {
     _topFocusLevel = newValue;
-    [tiltShiftFilter setFloat:newValue forUniform:@"topFocusLevel"];
+    [tiltShiftFilter setFloat:newValue forUniformName:@"topFocusLevel"];
 }
 
 - (void)setBottomFocusLevel:(CGFloat)newValue;
 {
     _bottomFocusLevel = newValue;
-    [tiltShiftFilter setFloat:newValue forUniform:@"bottomFocusLevel"];
+    [tiltShiftFilter setFloat:newValue forUniformName:@"bottomFocusLevel"];
 }
 
 - (void)setFocusFallOffRate:(CGFloat)newValue;
 {
     _focusFallOffRate = newValue;
-    [tiltShiftFilter setFloat:newValue forUniform:@"focusFallOffRate"];
+    [tiltShiftFilter setFloat:newValue forUniformName:@"focusFallOffRate"];
 }
 
 @end

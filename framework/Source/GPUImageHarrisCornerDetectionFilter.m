@@ -1,14 +1,14 @@
 #import "GPUImageHarrisCornerDetectionFilter.h"
-#import "GPUImageFilter.h"
 #import "GPUImageGaussianBlurFilter.h"
 #import "GPUImageXYDerivativeFilter.h"
 #import "GPUImageGrayscaleFilter.h"
 #import "GPUImageFastBlurFilter.h"
-#import "GPUImageNonMaximumSuppressionFilter.h"
+#import "GPUImageThresholdedNonMaximumSuppressionFilter.h"
+#import "GPUImageColorPackingFilter.h"
 
 @interface GPUImageHarrisCornerDetectionFilter()
 
-- (void)extractCornerLocationsFromImage;
+- (void)extractCornerLocationsFromImageAtFrameTime:(CMTime)frameTime;
 
 @end
 
@@ -32,32 +32,12 @@ NSString *const kGPUImageHarrisCornerDetectionFragmentShaderString = SHADER_STRI
      
      mediump float derivativeSum = derivativeElements.x + derivativeElements.y;
      
-     // This is the Noble variant on the Harris detector, from 
-     // Alison Noble, "Descriptions of Image Surfaces", PhD thesis, Department of Engineering Science, Oxford University 1989, p45.     
-     mediump float harrisIntensity = (derivativeElements.x * derivativeElements.y - (derivativeElements.z * derivativeElements.z)) / (derivativeSum);
+     mediump float zElement = (derivativeElements.z * 2.0) - 1.0;
 
-     // Original Harris detector
-//     highp float harrisIntensity = derivativeElements.x * derivativeElements.y - (derivativeElements.z * derivativeElements.z) - harrisConstant * derivativeSum * derivativeSum;
+     // R = Ix^2 * Iy^2 - Ixy * Ixy - k * (Ix^2 + Iy^2)^2
+     mediump float cornerness = derivativeElements.x * derivativeElements.y - (zElement * zElement) - harrisConstant * derivativeSum * derivativeSum;
      
-//     gl_FragColor = vec4(vec3(harrisIntensity * 7.0), 1.0);
-     gl_FragColor = vec4(vec3(harrisIntensity * sensitivity), 1.0);
- }
-);
-
-NSString *const kGPUImageSimpleThresholdFragmentShaderString = SHADER_STRING
-( 
- varying highp vec2 textureCoordinate;
- 
- uniform sampler2D inputImageTexture;
- uniform lowp float threshold;
- 
- void main()
- {
-     lowp float intensity = texture2D(inputImageTexture, textureCoordinate).r;
-
-     lowp float thresholdValue = step(threshold, intensity);
-     
-     gl_FragColor = vec4(thresholdValue, 0.0, 0.0, 1.0);
+     gl_FragColor = vec4(vec3(cornerness * sensitivity), 1.0);
  }
 );
 
@@ -65,103 +45,175 @@ NSString *const kGPUImageSimpleThresholdFragmentShaderString = SHADER_STRING
 @synthesize cornersDetectedBlock;
 @synthesize sensitivity = _sensitivity;
 @synthesize threshold = _threshold;
+@synthesize intermediateImages = _intermediateImages;
 
-//@synthesize intensity = _intensity;
+#pragma mark -
+#pragma mark Initialization and teardown
 
 - (id)init;
+{
+    if (!(self = [self initWithCornerDetectionFragmentShader:kGPUImageHarrisCornerDetectionFragmentShaderString]))
+    {
+        return nil;
+    }
+    
+    return self;
+}
+
+- (id)initWithCornerDetectionFragmentShader:(NSString *)cornerDetectionFragmentShader;
 {
     if (!(self = [super init]))
     {
 		return nil;
     }
 
+#ifdef DEBUGFEATUREDETECTION
+    _intermediateImages = [[NSMutableArray alloc] init];
+#endif
+    
     // First pass: reduce to luminance and take the derivative of the luminance texture
     derivativeFilter = [[GPUImageXYDerivativeFilter alloc] init];
-//    derivativeFilter.imageWidthFactor = 256.0;
-//    derivativeFilter.imageHeightFactor = 256.0;
     [self addFilter:derivativeFilter];
-    
+
+#ifdef DEBUGFEATUREDETECTION
+    __unsafe_unretained NSMutableArray *weakIntermediateImages = _intermediateImages;
+    __unsafe_unretained GPUImageFilter *weakFilter = derivativeFilter;
+    [derivativeFilter setFrameProcessingCompletionBlock:^(GPUImageOutput *filter, CMTime frameTime){
+        UIImage *intermediateImage = [weakFilter imageFromCurrentlyProcessedOutput];
+        [weakIntermediateImages addObject:intermediateImage];
+    }];
+#endif
+
     // Second pass: blur the derivative
-//    blurFilter = [[GPUImageGaussianBlurFilter alloc] init];
     blurFilter = [[GPUImageFastBlurFilter alloc] init];
     [self addFilter:blurFilter];
     
-    // Third pass: apply the Harris corner detection calculation
-    harrisCornerDetectionFilter = [[GPUImageFilter alloc] initWithFragmentShaderFromString:kGPUImageHarrisCornerDetectionFragmentShaderString];
-    [self addFilter:harrisCornerDetectionFilter];
-    
-    // Fourth pass: apply non-maximum suppression to find the local maxima
-    nonMaximumSuppressionFilter = [[GPUImageNonMaximumSuppressionFilter alloc] init];
-    [self addFilter:nonMaximumSuppressionFilter];
-    
-    // Fifth pass: threshold the result
-    simpleThresholdFilter = [[GPUImageFilter alloc] initWithFragmentShaderFromString:kGPUImageSimpleThresholdFragmentShaderString];
-    [self addFilter:simpleThresholdFilter];
-    
-    __unsafe_unretained GPUImageHarrisCornerDetectionFilter *weakSelf = self;
-    
-    [simpleThresholdFilter setFrameProcessingCompletionBlock:^(GPUImageOutput *filter) {
-        [weakSelf extractCornerLocationsFromImage];
+#ifdef DEBUGFEATUREDETECTION
+    weakFilter = blurFilter;
+    [blurFilter setFrameProcessingCompletionBlock:^(GPUImageOutput *filter, CMTime frameTime){
+        UIImage *intermediateImage = [weakFilter imageFromCurrentlyProcessedOutput];
+        [weakIntermediateImages addObject:intermediateImage];
     }];
+#endif
+    
+    // Third pass: apply the Harris corner detection calculation
+    harrisCornerDetectionFilter = [[GPUImageFilter alloc] initWithFragmentShaderFromString:cornerDetectionFragmentShader];
+    [self addFilter:harrisCornerDetectionFilter];
+
+#ifdef DEBUGFEATUREDETECTION
+    weakFilter = harrisCornerDetectionFilter;
+    [harrisCornerDetectionFilter setFrameProcessingCompletionBlock:^(GPUImageOutput *filter, CMTime frameTime){
+        UIImage *intermediateImage = [weakFilter imageFromCurrentlyProcessedOutput];
+        [weakIntermediateImages addObject:intermediateImage];
+    }];
+#endif
+
+    // Fourth pass: apply non-maximum suppression and thresholding to find the local maxima
+    nonMaximumSuppressionFilter = [[GPUImageThresholdedNonMaximumSuppressionFilter alloc] init];
+    [self addFilter:nonMaximumSuppressionFilter];
+
+    __unsafe_unretained GPUImageHarrisCornerDetectionFilter *weakSelf = self;
+#ifdef DEBUGFEATUREDETECTION
+    weakFilter = nonMaximumSuppressionFilter;
+    [nonMaximumSuppressionFilter setFrameProcessingCompletionBlock:^(GPUImageOutput *filter, CMTime frameTime){
+        UIImage *intermediateImage = [weakFilter imageFromCurrentlyProcessedOutput];
+        [weakIntermediateImages addObject:intermediateImage];
+        
+        [weakSelf extractCornerLocationsFromImageAtFrameTime:frameTime];
+    }];
+#else
+    [nonMaximumSuppressionFilter setFrameProcessingCompletionBlock:^(GPUImageOutput *filter, CMTime frameTime) {
+        [weakSelf extractCornerLocationsFromImageAtFrameTime:frameTime];
+    }];
+#endif
+    
+// Sixth pass: compress the thresholded points into the RGBA channels
+//    colorPackingFilter = [[GPUImageColorPackingFilter alloc] init];
+//    [self addFilter:colorPackingFilter];
+//
+//    
+//#ifdef DEBUGFEATUREDETECTION
+//    __unsafe_unretained GPUImageHarrisCornerDetectionFilter *weakSelf = self;
+//    weakFilter = colorPackingFilter;
+//    [colorPackingFilter setFrameProcessingCompletionBlock:^(GPUImageOutput *filter, CMTime frameTime){
+//        NSLog(@"Triggered response from compaction filter");
+//        
+//        UIImage *intermediateImage = [weakFilter imageFromCurrentlyProcessedOutput];
+//        [weakIntermediateImages addObject:intermediateImage];
+//        
+//        [weakSelf extractCornerLocationsFromImageAtFrameTime:frameTime];
+//    }];
+//#else
+//    __unsafe_unretained GPUImageHarrisCornerDetectionFilter *weakSelf = self;
+//    [colorPackingFilter setFrameProcessingCompletionBlock:^(GPUImageOutput *filter, CMTime frameTime) {
+//        [weakSelf extractCornerLocationsFromImageAtFrameTime:frameTime];
+//    }];
+//#endif
     
     [derivativeFilter addTarget:blurFilter];    
     [blurFilter addTarget:harrisCornerDetectionFilter];
     [harrisCornerDetectionFilter addTarget:nonMaximumSuppressionFilter];
-    [nonMaximumSuppressionFilter addTarget:simpleThresholdFilter];
+//    [simpleThresholdFilter addTarget:colorPackingFilter];
     
     self.initialFilters = [NSArray arrayWithObjects:derivativeFilter, nil];
-//    self.terminalFilter = harrisCornerDetectionFilter;
-//    self.terminalFilter = nonMaximumSuppressionFilter;
-    self.terminalFilter = simpleThresholdFilter;
+//    self.terminalFilter = colorPackingFilter;
+    self.terminalFilter = nonMaximumSuppressionFilter;
     
     self.blurSize = 1.0;
-    self.sensitivity = 10.0;
-    self.threshold = 0.05;
+    self.sensitivity = 5.0;
+    self.threshold = 0.20;
     
     return self;
 }
      
 - (void)dealloc;
 {
-    free(rawImagePixels);    
+    free(rawImagePixels);
+    free(cornersArray);
 }
 
 #pragma mark -
 #pragma mark Corner extraction
 
-- (void)extractCornerLocationsFromImage;
+- (void)extractCornerLocationsFromImageAtFrameTime:(CMTime)frameTime;
 {
 
     NSUInteger numberOfCorners = 0;
-    CGSize imageSize = simpleThresholdFilter.outputFrameSize;
+    CGSize imageSize = nonMaximumSuppressionFilter.outputFrameSize;
+    
+    unsigned int imageByteSize = imageSize.width * imageSize.height * 4;
     
     if (rawImagePixels == NULL)
     {
-        rawImagePixels = (GLubyte *)malloc(imageSize.width * imageSize.height * 4);
-    }
-    
-    cornersArray = calloc(512 * 2, sizeof(GLfloat));
+        rawImagePixels = (GLubyte *)malloc(imageByteSize);
+        cornersArray = calloc(512 * 2, sizeof(GLfloat));
+    }    
     
     glReadPixels(0, 0, (int)imageSize.width, (int)imageSize.height, GL_RGBA, GL_UNSIGNED_BYTE, rawImagePixels);
 
     CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
 
-    for (unsigned int yCoordinate = 0; yCoordinate < imageSize.height; yCoordinate++)
+    unsigned int imageWidth = imageSize.width * 4;
+    
+    unsigned int currentByte = 0;
+    unsigned int cornerStorageIndex = 0;
+    while (currentByte < imageByteSize)
     {
-        for (unsigned int xCoordinate = 0; xCoordinate < imageSize.width; xCoordinate++)
-        {            
-            GLubyte redByte = rawImagePixels[(yCoordinate * (int)imageSize.width + xCoordinate) * 4];
-            if (redByte > 100)
-            {
-                cornersArray[numberOfCorners * 2] = (CGFloat)xCoordinate / imageSize.width;
-                cornersArray[numberOfCorners * 2 + 1] = (CGFloat)(yCoordinate + 1) / imageSize.height;
-                numberOfCorners++;
-                if (numberOfCorners > 511)
-                {
-                    numberOfCorners = 511;
-                }
-            }
+        GLubyte colorByte = rawImagePixels[currentByte];
+        
+        if (colorByte > 0)
+        {
+            unsigned int xCoordinate = currentByte % imageWidth;
+            unsigned int yCoordinate = currentByte / imageWidth;
+            
+            cornersArray[cornerStorageIndex++] = (CGFloat)(xCoordinate / 4) / imageSize.width;
+            cornersArray[cornerStorageIndex++] = (CGFloat)(yCoordinate) / imageSize.height;
+            numberOfCorners++;
+            
+            numberOfCorners = MIN(numberOfCorners, 511);
+            cornerStorageIndex = MIN(cornerStorageIndex, 1021);
         }
+        currentByte +=4;
     }
     
     CFAbsoluteTime currentFrameTime = (CFAbsoluteTimeGetCurrent() - startTime);
@@ -169,10 +221,8 @@ NSString *const kGPUImageSimpleThresholdFragmentShaderString = SHADER_STRING
 
     if (cornersDetectedBlock != NULL)
     {
-        cornersDetectedBlock(cornersArray, numberOfCorners);
+        cornersDetectedBlock(cornersArray, numberOfCorners, frameTime);
     }
-    
-    free(cornersArray);
 }
 
 #pragma mark -
@@ -191,13 +241,17 @@ NSString *const kGPUImageSimpleThresholdFragmentShaderString = SHADER_STRING
 - (void)setSensitivity:(CGFloat)newValue;
 {
     _sensitivity = newValue;
-    [harrisCornerDetectionFilter setFloat:newValue forUniform:@"sensitivity"];
+    [harrisCornerDetectionFilter setFloat:newValue forUniformName:@"sensitivity"];
 }
 
 - (void)setThreshold:(CGFloat)newValue;
 {
-    _threshold = newValue;
-    [simpleThresholdFilter setFloat:newValue forUniform:@"threshold"];
+    nonMaximumSuppressionFilter.threshold = newValue;
+}
+
+- (CGFloat)threshold;
+{
+    return nonMaximumSuppressionFilter.threshold;
 }
 
 @end

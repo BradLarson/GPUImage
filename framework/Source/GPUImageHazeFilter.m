@@ -60,18 +60,14 @@ NSString *const kGPUImageHazeFragmentShaderString = SHADER_STRING
 {
     _distance = newValue;
     
-    [GPUImageOpenGLESContext useImageProcessingContext];
-    [filterProgram use];
-    glUniform1f(distanceUniform, _distance);
+    [self setFloat:_distance forUniform:distanceUniform program:filterProgram];
 }
 
 - (void)setSlope:(CGFloat)newValue;
 {
     _slope = newValue;
     
-    [GPUImageOpenGLESContext useImageProcessingContext];
-    [filterProgram use];
-    glUniform1f(slopeUniform, _slope);
+    [self setFloat:_slope forUniform:slopeUniform program:filterProgram];
 }
 
 @end

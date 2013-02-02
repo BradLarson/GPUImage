@@ -10,14 +10,31 @@ NSString *const kGPUImageOverlayBlendFragmentShaderString = SHADER_STRING
  
  void main()
  {
-     lowp vec4 base = texture2D(inputImageTexture, textureCoordinate);
-     lowp vec4 overlay = texture2D(inputImageTexture2, textureCoordinate2);
-     gl_FragColor = vec4(
-                         (base.r < 0.5 ? (2.0 * base.r * overlay.r) : (1.0 - 2.0 * (1.0 - base.r) * (1.0 - overlay.r))), 
-                         (base.g < 0.5 ? (2.0 * base.g * overlay.g) : (1.0 - 2.0 * (1.0 - base.g) * (1.0 - overlay.g))), 
-                         (base.b < 0.5 ? (2.0 * base.b * overlay.b) : (1.0 - 2.0 * (1.0 - base.b) * (1.0 - overlay.b))), 
-                         1.0
-                         );
+     mediump vec4 base = texture2D(inputImageTexture, textureCoordinate);
+     mediump vec4 overlay = texture2D(inputImageTexture2, textureCoordinate2);
+     
+     mediump float ra;
+     if (2.0 * base.r < base.a) {
+         ra = 2.0 * overlay.r * base.r + overlay.r * (1.0 - base.a) + base.r * (1.0 - overlay.a);
+     } else {
+         ra = overlay.a * base.a - 2.0 * (base.a - base.r) * (overlay.a - overlay.r) + overlay.r * (1.0 - base.a) + base.r * (1.0 - overlay.a);
+     }
+     
+     mediump float ga;
+     if (2.0 * base.g < base.a) {
+         ga = 2.0 * overlay.g * base.g + overlay.g * (1.0 - base.a) + base.g * (1.0 - overlay.a);
+     } else {
+         ga = overlay.a * base.a - 2.0 * (base.a - base.g) * (overlay.a - overlay.g) + overlay.g * (1.0 - base.a) + base.g * (1.0 - overlay.a);
+     }
+     
+     mediump float ba;
+     if (2.0 * base.b < base.a) {
+         ba = 2.0 * overlay.b * base.b + overlay.b * (1.0 - base.a) + base.b * (1.0 - overlay.a);
+     } else {
+         ba = overlay.a * base.a - 2.0 * (base.a - base.b) * (overlay.a - overlay.b) + overlay.b * (1.0 - base.a) + base.b * (1.0 - overlay.a);
+     }
+     
+     gl_FragColor = vec4(ra, ga, ba, 1.0);
  }
 );
 

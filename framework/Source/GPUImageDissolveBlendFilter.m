@@ -45,9 +45,7 @@ NSString *const kGPUImageDissolveBlendFragmentShaderString = SHADER_STRING
 {
     _mix = newValue;
     
-    [GPUImageOpenGLESContext useImageProcessingContext];
-    [filterProgram use];
-    glUniform1f(mixUniform, _mix);
+    [self setFloat:_mix forUniform:mixUniform program:filterProgram];
 }
 
 @end

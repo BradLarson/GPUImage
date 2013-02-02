@@ -42,9 +42,7 @@ NSString *const kGPUImageGammaFragmentShaderString = SHADER_STRING
 {
     _gamma = newValue;
     
-    [GPUImageOpenGLESContext useImageProcessingContext];
-    [filterProgram use];
-    glUniform1f(gammaUniform, _gamma);
+    [self setFloat:_gamma forUniform:gammaUniform program:filterProgram];
 }
 
 @end

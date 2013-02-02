@@ -7,7 +7,8 @@ NSString *const kGPUImageBoxBlurVertexShaderString = SHADER_STRING
 
  uniform float texelWidthOffset; 
  uniform float texelHeightOffset; 
- 
+ uniform highp float blurSize;
+
  varying vec2 centerTextureCoordinate;
  varying vec2 oneStepLeftTextureCoordinate;
  varying vec2 twoStepsLeftTextureCoordinate;
@@ -18,8 +19,8 @@ NSString *const kGPUImageBoxBlurVertexShaderString = SHADER_STRING
  {
      gl_Position = position;
           
-     vec2 firstOffset = vec2(1.5 * texelWidthOffset, 1.5 * texelHeightOffset);
-     vec2 secondOffset = vec2(3.5 * texelWidthOffset, 3.5 * texelHeightOffset);
+     vec2 firstOffset = vec2(1.5 * texelWidthOffset, 1.5 * texelHeightOffset) * blurSize;
+     vec2 secondOffset = vec2(3.5 * texelWidthOffset, 3.5 * texelHeightOffset) * blurSize;
      
      centerTextureCoordinate = inputTextureCoordinate;
      oneStepLeftTextureCoordinate = inputTextureCoordinate - firstOffset;
@@ -56,6 +57,8 @@ NSString *const kGPUImageBoxBlurFragmentShaderString = SHADER_STRING
 
 @implementation GPUImageBoxBlurFilter
 
+@synthesize blurSize = _blurSize;
+
 #pragma mark -
 #pragma mark Initialization and teardown
 
@@ -66,33 +69,23 @@ NSString *const kGPUImageBoxBlurFragmentShaderString = SHADER_STRING
 		return nil;
     }
     
-    verticalPassTexelWidthOffsetUniform = [filterProgram uniformIndex:@"texelWidthOffset"];
-    verticalPassTexelHeightOffsetUniform = [filterProgram uniformIndex:@"texelHeightOffset"];
-    
-    horizontalPassTexelWidthOffsetUniform = [secondFilterProgram uniformIndex:@"texelWidthOffset"];
-    horizontalPassTexelHeightOffsetUniform = [secondFilterProgram uniformIndex:@"texelHeightOffset"];
+    firstBlurSizeUniform = [filterProgram uniformIndex:@"blurSize"];
+    secondBlurSizeUniform = [secondFilterProgram uniformIndex:@"blurSize"];
 
+    self.blurSize = 1.0;
+    
     return self;
 }
 
-- (void)setupFilterForSize:(CGSize)filterFrameSize;
-{
-    [GPUImageOpenGLESContext useImageProcessingContext];
-    [filterProgram use];
-    if (GPUImageRotationSwapsWidthAndHeight(inputRotation))
-    {
-        glUniform1f(verticalPassTexelWidthOffsetUniform, 1.0 / filterFrameSize.height);
-        glUniform1f(verticalPassTexelHeightOffsetUniform, 0.0);
-    }
-    else
-    {
-        glUniform1f(verticalPassTexelWidthOffsetUniform, 0.0);
-        glUniform1f(verticalPassTexelHeightOffsetUniform, 1.0 / filterFrameSize.height);
-    }
+#pragma mark -
+#pragma mark Accessors
 
-    [secondFilterProgram use];
-    glUniform1f(horizontalPassTexelWidthOffsetUniform, 1.0 / filterFrameSize.width);
-    glUniform1f(horizontalPassTexelHeightOffsetUniform, 0.0);
+- (void)setBlurSize:(CGFloat)newValue;
+{
+    _blurSize = newValue;
+    
+    [self setFloat:_blurSize forUniform:firstBlurSizeUniform program:filterProgram];
+    [self setFloat:_blurSize forUniform:secondBlurSizeUniform program:secondFilterProgram];
 }
 
 @end

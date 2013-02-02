@@ -42,9 +42,7 @@ NSString *const kGPUImageExposureFragmentShaderString = SHADER_STRING
 {
     _exposure = newValue;
     
-    [GPUImageOpenGLESContext useImageProcessingContext];
-    [filterProgram use];
-    glUniform1f(exposureUniform, _exposure);
+    [self setFloat:_exposure forUniform:exposureUniform program:filterProgram];
 }
 
 @end

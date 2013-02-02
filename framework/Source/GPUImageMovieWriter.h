@@ -2,6 +2,8 @@
 #import <AVFoundation/AVFoundation.h>
 #import "GPUImageOpenGLESContext.h"
 
+extern NSString *const kGPUImageColorSwizzlingFragmentShaderString;
+
 @protocol GPUImageMovieWriterDelegate <NSObject>
 
 @optional
@@ -16,6 +18,7 @@
 	CMVideoCodecType videoType;
 
     NSURL *movieURL;
+    NSString *fileType;
 	AVAssetWriter *assetWriter;
 	AVAssetWriterInput *assetWriterAudioInput;
 	AVAssetWriterInput *assetWriterVideoInput;
@@ -28,6 +31,8 @@
 
     CGSize videoSize;
     GPUImageRotationMode inputRotation;
+    
+    __unsafe_unretained id<GPUImageTextureDelegate> textureDelegate;
 }
 
 @property(readwrite, nonatomic) BOOL hasAudioTrack;
@@ -38,13 +43,19 @@
 @property(readwrite, nonatomic) BOOL encodingLiveVideo;
 @property(nonatomic, copy) void(^videoInputReadyCallback)(void);
 @property(nonatomic, copy) void(^audioInputReadyCallback)(void);
+@property(nonatomic) BOOL enabled;
 
 // Initialization and teardown
 - (id)initWithMovieURL:(NSURL *)newMovieURL size:(CGSize)newSize;
+- (id)initWithMovieURL:(NSURL *)newMovieURL size:(CGSize)newSize fileType:(NSString *)newFileType outputSettings:(NSMutableDictionary *)outputSettings;
+
+- (void)setHasAudioTrack:(BOOL)hasAudioTrack audioSettings:(NSDictionary *)audioOutputSettings;
 
 // Movie recording
 - (void)startRecording;
+- (void)startRecordingInOrientation:(CGAffineTransform)orientationTransform;
 - (void)finishRecording;
+- (void)cancelRecording;
 - (void)processAudioBuffer:(CMSampleBufferRef)audioBuffer;
 - (void)enableSynchronizationCallbacks;
 

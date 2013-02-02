@@ -128,44 +128,54 @@ NSString *const kGPUImageHistogramAccumulationFragmentShaderString = SHADER_STRI
                 return nil;
             }
             
-            secondFilterProgram = [[GLProgram alloc] initWithVertexShaderString:kGPUImageGreenHistogramSamplingVertexShaderString fragmentShaderString:kGPUImageHistogramAccumulationFragmentShaderString];
-            thirdFilterProgram = [[GLProgram alloc] initWithVertexShaderString:kGPUImageBlueHistogramSamplingVertexShaderString fragmentShaderString:kGPUImageHistogramAccumulationFragmentShaderString];
-            
-            [self initializeAttributes];
-            
-            if (![secondFilterProgram link])
-            {
-                NSString *progLog = [secondFilterProgram programLog];
-                NSLog(@"Program link log: %@", progLog); 
-                NSString *fragLog = [secondFilterProgram fragmentShaderLog];
-                NSLog(@"Fragment shader compile log: %@", fragLog);
-                NSString *vertLog = [secondFilterProgram vertexShaderLog];
-                NSLog(@"Vertex shader compile log: %@", vertLog);
-                filterProgram = nil;
-                NSAssert(NO, @"Filter shader link failed");
-            }
+            runSynchronouslyOnVideoProcessingQueue(^{
+                [GPUImageOpenGLESContext useImageProcessingContext];
+                
+                secondFilterProgram = [[GPUImageOpenGLESContext sharedImageProcessingOpenGLESContext] programForVertexShaderString:kGPUImageGreenHistogramSamplingVertexShaderString fragmentShaderString:kGPUImageHistogramAccumulationFragmentShaderString];
+                thirdFilterProgram = [[GPUImageOpenGLESContext sharedImageProcessingOpenGLESContext] programForVertexShaderString:kGPUImageBlueHistogramSamplingVertexShaderString fragmentShaderString:kGPUImageHistogramAccumulationFragmentShaderString];
+                
+                if (!secondFilterProgram.initialized)
+                {
+                    [self initializeSecondaryAttributes];
+                    
+                    if (![secondFilterProgram link])
+                    {
+                        NSString *progLog = [secondFilterProgram programLog];
+                        NSLog(@"Program link log: %@", progLog);
+                        NSString *fragLog = [secondFilterProgram fragmentShaderLog];
+                        NSLog(@"Fragment shader compile log: %@", fragLog);
+                        NSString *vertLog = [secondFilterProgram vertexShaderLog];
+                        NSLog(@"Vertex shader compile log: %@", vertLog);
+                        filterProgram = nil;
+                        NSAssert(NO, @"Filter shader link failed");
 
-            secondFilterPositionAttribute = [secondFilterProgram attributeIndex:@"position"];
-            
-            [secondFilterProgram use];    
-            glEnableVertexAttribArray(secondFilterPositionAttribute);
+                    }
 
-            if (![thirdFilterProgram link])
-            {
-                NSString *progLog = [secondFilterProgram programLog];
-                NSLog(@"Program link log: %@", progLog); 
-                NSString *fragLog = [secondFilterProgram fragmentShaderLog];
-                NSLog(@"Fragment shader compile log: %@", fragLog);
-                NSString *vertLog = [secondFilterProgram vertexShaderLog];
-                NSLog(@"Vertex shader compile log: %@", vertLog);
-                filterProgram = nil;
-                NSAssert(NO, @"Filter shader link failed");
-            }
-
-            thirdFilterPositionAttribute = [secondFilterProgram attributeIndex:@"position"];
-            
-            [thirdFilterProgram use];    
-            glEnableVertexAttribArray(thirdFilterPositionAttribute);
+                    [GPUImageOpenGLESContext setActiveShaderProgram:secondFilterProgram];
+                    
+                    glEnableVertexAttribArray(secondFilterPositionAttribute);
+                    
+                    if (![thirdFilterProgram link])
+                    {
+                        NSString *progLog = [secondFilterProgram programLog];
+                        NSLog(@"Program link log: %@", progLog);
+                        NSString *fragLog = [secondFilterProgram fragmentShaderLog];
+                        NSLog(@"Fragment shader compile log: %@", fragLog);
+                        NSString *vertLog = [secondFilterProgram vertexShaderLog];
+                        NSLog(@"Vertex shader compile log: %@", vertLog);
+                        filterProgram = nil;
+                        NSAssert(NO, @"Filter shader link failed");
+                    }
+                }
+                
+                secondFilterPositionAttribute = [secondFilterProgram attributeIndex:@"position"];
+                
+                
+                thirdFilterPositionAttribute = [thirdFilterProgram attributeIndex:@"position"];
+                [GPUImageOpenGLESContext setActiveShaderProgram:thirdFilterProgram];
+                
+                glEnableVertexAttribArray(thirdFilterPositionAttribute);
+            });
         }; break;
     }
 
@@ -176,9 +186,8 @@ NSString *const kGPUImageHistogramAccumulationFragmentShaderString = SHADER_STRI
     return self;
 }
 
-- (void)initializeAttributes;
+- (void)initializeSecondaryAttributes;
 {
-    [super initializeAttributes];
     [secondFilterProgram addAttribute:@"position"];
 	[thirdFilterProgram addAttribute:@"position"];
 }
@@ -188,7 +197,6 @@ NSString *const kGPUImageHistogramAccumulationFragmentShaderString = SHADER_STRI
     if (vertexSamplingCoordinates != NULL)
     {
         free(vertexSamplingCoordinates);
-        free(textureSamplingCoordinates);
     }
 }
 
@@ -205,14 +213,16 @@ NSString *const kGPUImageHistogramAccumulationFragmentShaderString = SHADER_STRI
     return CGSizeMake(256.0, 3.0);
 }
 
-- (void)newFrameReadyAtTime:(CMTime)frameTime;
+- (void)newFrameReadyAtTime:(CMTime)frameTime atIndex:(NSInteger)textureIndex;
 {
+    outputTextureRetainCount = [targets count];
+
     if (vertexSamplingCoordinates == NULL)
     {
         [self generatePointCoordinates];
     }
     
-    [self renderToTextureWithVertices:vertexSamplingCoordinates textureCoordinates:textureSamplingCoordinates sourceTexture:filterSourceTexture];
+    [self renderToTextureWithVertices:NULL textureCoordinates:NULL sourceTexture:filterSourceTexture];
     
     [self informTargetsAboutNewFrameAtTime:frameTime];
 }
@@ -250,7 +260,7 @@ NSString *const kGPUImageHistogramAccumulationFragmentShaderString = SHADER_STRI
 
     [self setFilterFBO];
         
-    [filterProgram use];
+    [GPUImageOpenGLESContext setActiveShaderProgram:filterProgram];
     
     glClearColor(0.0, 0.0, 0.0, 1.0);
     glClear(GL_COLOR_BUFFER_BIT);
@@ -264,12 +274,12 @@ NSString *const kGPUImageHistogramAccumulationFragmentShaderString = SHADER_STRI
 
     if (histogramType == kGPUImageHistogramRGB)
     {
-        [secondFilterProgram use];
+        [GPUImageOpenGLESContext setActiveShaderProgram:secondFilterProgram];
         
         glVertexAttribPointer(secondFilterPositionAttribute, 4, GL_UNSIGNED_BYTE, 0, (_downsamplingFactor - 1) * 4, vertexSamplingCoordinates);
         glDrawArrays(GL_POINTS, 0, inputTextureSize.width * inputTextureSize.height / (CGFloat)_downsamplingFactor);
 
-        [thirdFilterProgram use];
+        [GPUImageOpenGLESContext setActiveShaderProgram:thirdFilterProgram];
         
         glVertexAttribPointer(thirdFilterPositionAttribute, 4, GL_UNSIGNED_BYTE, 0, (_downsamplingFactor - 1) * 4, vertexSamplingCoordinates);
         glDrawArrays(GL_POINTS, 0, inputTextureSize.width * inputTextureSize.height / (CGFloat)_downsamplingFactor);

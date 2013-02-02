@@ -61,6 +61,32 @@ NSString *const kGPUImageFastBlurFragmentShaderString = SHADER_STRING
  }
 );
 
+NSString *const kGPUImageFastBlurIgnoringAlphaFragmentShaderString = SHADER_STRING
+(
+ precision highp float;
+ 
+ uniform sampler2D inputImageTexture;
+ 
+ varying highp vec2 centerTextureCoordinate;
+ varying highp vec2 oneStepLeftTextureCoordinate;
+ varying highp vec2 twoStepsLeftTextureCoordinate;
+ varying highp vec2 oneStepRightTextureCoordinate;
+ varying highp vec2 twoStepsRightTextureCoordinate;
+ 
+ // const float weight[3] = float[]( 0.2270270270, 0.3162162162, 0.0702702703 );
+ 
+ void main()
+ {
+     lowp vec3 fragmentColor = texture2D(inputImageTexture, centerTextureCoordinate).rgb * 0.2270270270;
+     fragmentColor += texture2D(inputImageTexture, oneStepLeftTextureCoordinate).rgb * 0.3162162162;
+     fragmentColor += texture2D(inputImageTexture, oneStepRightTextureCoordinate).rgb * 0.3162162162;
+     fragmentColor += texture2D(inputImageTexture, twoStepsLeftTextureCoordinate).rgb * 0.0702702703;
+     fragmentColor += texture2D(inputImageTexture, twoStepsRightTextureCoordinate).rgb * 0.0702702703;
+     
+     gl_FragColor = vec4(fragmentColor, 1.0);
+ }
+);
+
 @implementation GPUImageFastBlurFilter
 
 @synthesize blurPasses = _blurPasses;
@@ -71,42 +97,27 @@ NSString *const kGPUImageFastBlurFragmentShaderString = SHADER_STRING
 
 - (id)init;
 {
-    if (!(self = [super initWithFirstStageVertexShaderFromString:kGPUImageFastBlurVertexShaderString firstStageFragmentShaderFromString:kGPUImageFastBlurFragmentShaderString secondStageVertexShaderFromString:kGPUImageFastBlurVertexShaderString secondStageFragmentShaderFromString:kGPUImageFastBlurFragmentShaderString]))
+    if (!(self = [self initWithFragmentShaderFromString:kGPUImageFastBlurFragmentShaderString]))
+    {
+		return nil;
+    }
+
+    return self;
+}
+
+- (id)initWithFragmentShaderFromString:(NSString *)fragmentShaderString;
+{
+    if (!(self = [super initWithFirstStageVertexShaderFromString:kGPUImageFastBlurVertexShaderString firstStageFragmentShaderFromString:fragmentShaderString secondStageVertexShaderFromString:kGPUImageFastBlurVertexShaderString secondStageFragmentShaderFromString:fragmentShaderString]))
     {
 		return nil;
     }
     
-    verticalPassTexelWidthOffsetUniform = [filterProgram uniformIndex:@"texelWidthOffset"];
-    verticalPassTexelHeightOffsetUniform = [filterProgram uniformIndex:@"texelHeightOffset"];
-    firstBlurSizeUniform = [filterProgram uniformIndex:@"blurSize"];
-    
-    horizontalPassTexelWidthOffsetUniform = [secondFilterProgram uniformIndex:@"texelWidthOffset"];
-    horizontalPassTexelHeightOffsetUniform = [secondFilterProgram uniformIndex:@"texelHeightOffset"];
+    firstBlurSizeUniform = [filterProgram uniformIndex:@"blurSize"];    
     secondBlurSizeUniform = [secondFilterProgram uniformIndex:@"blurSize"];
 
     self.blurSize = 1.0;
 
     return self;
-}
-
-- (void)setupFilterForSize:(CGSize)filterFrameSize;
-{
-    [GPUImageOpenGLESContext useImageProcessingContext];
-    [filterProgram use];
-    if (GPUImageRotationSwapsWidthAndHeight(inputRotation))
-    {
-        glUniform1f(verticalPassTexelWidthOffsetUniform, 1.0 / filterFrameSize.height);
-        glUniform1f(verticalPassTexelHeightOffsetUniform, 0.0);
-    }
-    else
-    {
-        glUniform1f(verticalPassTexelWidthOffsetUniform, 0.0);
-        glUniform1f(verticalPassTexelHeightOffsetUniform, 1.0 / filterFrameSize.height);
-    }
-
-    [secondFilterProgram use];
-    glUniform1f(horizontalPassTexelWidthOffsetUniform, 1.0 / filterFrameSize.width);
-    glUniform1f(horizontalPassTexelHeightOffsetUniform, 0.0);
 }
 
 #pragma mark -
@@ -129,12 +140,8 @@ NSString *const kGPUImageFastBlurFragmentShaderString = SHADER_STRING
 {
     _blurSize = newValue;
     
-    [GPUImageOpenGLESContext useImageProcessingContext];
-    [filterProgram use];
-    glUniform1f(firstBlurSizeUniform, _blurSize);
-
-    [secondFilterProgram use];
-    glUniform1f(secondBlurSizeUniform, _blurSize);
+    [self setFloat:_blurSize forUniform:firstBlurSizeUniform program:filterProgram];
+    [self setFloat:_blurSize forUniform:secondBlurSizeUniform program:secondFilterProgram];
 }
 
 @end

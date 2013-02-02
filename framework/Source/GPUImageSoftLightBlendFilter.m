@@ -10,9 +10,10 @@ NSString *const kGPUImageSoftLightBlendFragmentShaderString = SHADER_STRING
  
  void main()
  {
-     mediump vec4 textureColor = texture2D(inputImageTexture, textureCoordinate);
-     mediump vec4 textureColor2 = texture2D(inputImageTexture2, textureCoordinate2);
-     gl_FragColor = 2.0 * textureColor2 * textureColor + textureColor * textureColor - 2.0 * textureColor * textureColor *textureColor2;
+     mediump vec4 base = texture2D(inputImageTexture, textureCoordinate);
+     mediump vec4 overlay = texture2D(inputImageTexture2, textureCoordinate2);
+     
+     gl_FragColor = base * (overlay.a * (base / base.a) + (2.0 * overlay * (1.0 - (base / base.a)))) + overlay * (1.0 - base.a) + base * (1.0 - overlay.a);
  }
 );
 

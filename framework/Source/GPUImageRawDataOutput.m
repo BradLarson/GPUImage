@@ -1,10 +1,11 @@
-#import "GPUImageRawData.h"
+#import "GPUImageRawDataOutput.h"
 
 #import "GPUImageOpenGLESContext.h"
 #import "GLProgram.h"
 #import "GPUImageFilter.h"
+#import "GPUImageMovieWriter.h"
 
-@interface GPUImageRawData ()
+@interface GPUImageRawDataOutput ()
 {
     
     BOOL hasReadFromTheCurrentFrame;
@@ -29,49 +30,64 @@
 
 @end
 
-@implementation GPUImageRawData
+@implementation GPUImageRawDataOutput
 
 @synthesize rawBytesForImage = _rawBytesForImage;
-@synthesize delegate = _delegate;
+@synthesize newFrameAvailableBlock = _newFrameAvailableBlock;
+@synthesize enabled;
 
 #pragma mark -
 #pragma mark Initialization and teardown
 
-- (id)initWithImageSize:(CGSize)newImageSize;
+- (id)initWithImageSize:(CGSize)newImageSize resultsInBGRAFormat:(BOOL)resultsInBGRAFormat;
 {
     if (!(self = [super init]))
     {
 		return nil;
     }
 
+    self.enabled = YES;
+    outputBGRA = resultsInBGRAFormat;
     imageSize = newImageSize;
     hasReadFromTheCurrentFrame = NO;
     _rawBytesForImage = NULL;
     inputRotation = kGPUImageNoRotation;
 
     [GPUImageOpenGLESContext useImageProcessingContext];
-    dataProgram = [[GLProgram alloc] initWithVertexShaderString:kGPUImageVertexShaderString fragmentShaderString:kGPUImagePassthroughFragmentShaderString];
-    
-    [dataProgram addAttribute:@"position"];
-	[dataProgram addAttribute:@"inputTextureCoordinate"];
-    
-    if (![dataProgram link])
-	{
-		NSString *progLog = [dataProgram programLog];
-		NSLog(@"Program link log: %@", progLog); 
-		NSString *fragLog = [dataProgram fragmentShaderLog];
-		NSLog(@"Fragment shader compile log: %@", fragLog);
-		NSString *vertLog = [dataProgram vertexShaderLog];
-		NSLog(@"Vertex shader compile log: %@", vertLog);
-		dataProgram = nil;
-        NSAssert(NO, @"Filter shader link failed");
-	}
+    if ( (outputBGRA && ![GPUImageOpenGLESContext supportsFastTextureUpload]) || (!outputBGRA && [GPUImageOpenGLESContext supportsFastTextureUpload]) )
+    {
+        dataProgram = [[GPUImageOpenGLESContext sharedImageProcessingOpenGLESContext] programForVertexShaderString:kGPUImageVertexShaderString fragmentShaderString:kGPUImageColorSwizzlingFragmentShaderString];
+    }
+    else
+    {
+        dataProgram = [[GPUImageOpenGLESContext sharedImageProcessingOpenGLESContext] programForVertexShaderString:kGPUImageVertexShaderString fragmentShaderString:kGPUImagePassthroughFragmentShaderString];
+    }
+ 
+    if (!dataProgram.initialized)
+    {
+        [dataProgram addAttribute:@"position"];
+        [dataProgram addAttribute:@"inputTextureCoordinate"];
+        
+        if (![dataProgram link])
+        {
+            NSString *progLog = [dataProgram programLog];
+            NSLog(@"Program link log: %@", progLog);
+            NSString *fragLog = [dataProgram fragmentShaderLog];
+            NSLog(@"Fragment shader compile log: %@", fragLog);
+            NSString *vertLog = [dataProgram vertexShaderLog];
+            NSLog(@"Vertex shader compile log: %@", vertLog);
+            dataProgram = nil;
+            NSAssert(NO, @"Filter shader link failed");
+        }
+    }
     
     dataPositionAttribute = [dataProgram attributeIndex:@"position"];
     dataTextureCoordinateAttribute = [dataProgram attributeIndex:@"inputTextureCoordinate"];
     dataInputTextureUniform = [dataProgram uniformIndex:@"inputImageTexture"];
     
-    [dataProgram use];    
+    // REFACTOR: Wrap this in a block for the image processing queue
+    [GPUImageOpenGLESContext setActiveShaderProgram:dataProgram];
+
 	glEnableVertexAttribArray(dataPositionAttribute);
 	glEnableVertexAttribArray(dataTextureCoordinateAttribute);
 
@@ -82,7 +98,7 @@
 {
     [self destroyDataFBO];
     
-    if (_rawBytesForImage != NULL)
+    if (_rawBytesForImage != NULL && (![GPUImageOpenGLESContext supportsFastTextureUpload])) 
     {
         free(_rawBytesForImage);
         _rawBytesForImage = NULL;
@@ -100,10 +116,14 @@
 
     if ([GPUImageOpenGLESContext supportsFastTextureUpload])
     {
+#if defined(__IPHONE_6_0)
+        CVReturn err = CVOpenGLESTextureCacheCreate(kCFAllocatorDefault, NULL, [[GPUImageOpenGLESContext sharedImageProcessingOpenGLESContext] context], NULL, &rawDataTextureCache);
+#else
         CVReturn err = CVOpenGLESTextureCacheCreate(kCFAllocatorDefault, NULL, (__bridge void *)[[GPUImageOpenGLESContext sharedImageProcessingOpenGLESContext] context], NULL, &rawDataTextureCache);
+#endif
         if (err) 
         {
-            NSAssert(NO, @"Error at CVOpenGLESTextureCacheCreate %d");
+            NSAssert(NO, @"Error at CVOpenGLESTextureCacheCreate %d", err);
         }
         
         // Code originally sourced from http://allmybrain.com/2011/12/08/rendering-to-a-texture-with-ios-5-texture-cache-api/
@@ -134,7 +154,6 @@
                             attrs,
                             &renderTarget);
         
-        CVOpenGLESTextureRef renderTexture;
         CVOpenGLESTextureCacheCreateTextureFromImage (kCFAllocatorDefault,
                                                       rawDataTextureCache, renderTarget,
                                                       NULL, // texture attributes
@@ -172,6 +191,12 @@
 {
     [GPUImageOpenGLESContext useImageProcessingContext];
 
+    if (renderTexture)
+    {
+        CFRelease(renderTexture);
+        renderTexture = NULL;
+    }
+
     if (dataFramebuffer)
 	{
 		glDeleteFramebuffers(1, &dataFramebuffer);
@@ -202,10 +227,8 @@
 
 - (void)renderAtInternalSize;
 {
-    [GPUImageOpenGLESContext useImageProcessingContext];
-    [self setFilterFBO];
-    
-    [dataProgram use];
+    [GPUImageOpenGLESContext setActiveShaderProgram:dataProgram];
+    [self setFilterFBO];    
     
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -218,10 +241,10 @@
     };
     
     static const GLfloat textureCoordinates[] = {
-        0.0f, 1.0f,
-        1.0f, 1.0f,
         0.0f, 0.0f,
         1.0f, 0.0f,
+        0.0f, 1.0f,
+        1.0f, 1.0f,
     };
     
 	glActiveTexture(GL_TEXTURE4);
@@ -254,10 +277,8 @@
     locationToPickFrom.x = MIN(MAX(locationInImage.x, 0.0), (imageSize.width - 1.0));
     locationToPickFrom.y = MIN(MAX((imageSize.height - locationInImage.y), 0.0), (imageSize.height - 1.0));
     
-    if ([GPUImageOpenGLESContext supportsFastTextureUpload])    
+    if (outputBGRA)    
     {
-        // When reading directly from the texture using the fast texture cache, values are in BGRA, not RGBA
-        
         GPUByteColorVector flippedColor = imageColorBytes[(int)(round((locationToPickFrom.y * imageSize.width) + locationToPickFrom.x))];
         GLubyte temporaryRed = flippedColor.red;
         
@@ -275,10 +296,14 @@
 #pragma mark -
 #pragma mark GPUImageInput protocol
 
-- (void)newFrameReadyAtTime:(CMTime)frameTime;
+- (void)newFrameReadyAtTime:(CMTime)frameTime atIndex:(NSInteger)textureIndex;
 {
     hasReadFromTheCurrentFrame = NO;
-    [self.delegate newImageFrameAvailableFromDataSource:self];
+    
+    if (_newFrameAvailableBlock != NULL)
+    {
+        _newFrameAvailableBlock();
+    }
 }
 
 - (NSInteger)nextAvailableTextureIndex;
@@ -314,6 +339,26 @@
     return NO;
 }
 
+- (void)setTextureDelegate:(id<GPUImageTextureDelegate>)newTextureDelegate atIndex:(NSInteger)textureIndex;
+{
+    textureDelegate = newTextureDelegate;
+}
+
+- (void)conserveMemoryForNextFrame;
+{
+    
+}
+
+- (BOOL)wantsMonochromeInput;
+{
+    return NO;
+}
+
+- (void)setCurrentlyReceivingMonochromeInput:(BOOL)newValue;
+{
+    
+}
+
 #pragma mark -
 #pragma mark Accessors
 
@@ -324,37 +369,53 @@
         _rawBytesForImage = (GLubyte *) calloc(imageSize.width * imageSize.height * 4, sizeof(GLubyte));
         hasReadFromTheCurrentFrame = NO;
     }
- 
+        
     if (hasReadFromTheCurrentFrame)
     {
         return _rawBytesForImage;
     }
     else
     {
-        // Note: the fast texture caches speed up 640x480 frame reads from 9.6 ms to 3.1 ms on iPhone 4S
-        
-        [GPUImageOpenGLESContext useImageProcessingContext];
-        if ([GPUImageOpenGLESContext supportsFastTextureUpload]) 
-        {
-            CVPixelBufferUnlockBaseAddress(renderTarget, 0);
-//            CVOpenGLESTextureCacheFlush(rawDataTextureCache, 0);
-        }
-        
-        [self renderAtInternalSize];
-        
-        if ([GPUImageOpenGLESContext supportsFastTextureUpload]) 
-        {
-            CVPixelBufferLockBaseAddress(renderTarget, 0);
-            _rawBytesForImage = (GLubyte *)CVPixelBufferGetBaseAddress(renderTarget);
-        } 
-        else 
-        {
-            glReadPixels(0, 0, imageSize.width, imageSize.height, GL_RGBA, GL_UNSIGNED_BYTE, _rawBytesForImage);
-        }
+        runSynchronouslyOnVideoProcessingQueue(^{
+            // Note: the fast texture caches speed up 640x480 frame reads from 9.6 ms to 3.1 ms on iPhone 4S
+            
+            [GPUImageOpenGLESContext useImageProcessingContext];
+            if ([GPUImageOpenGLESContext supportsFastTextureUpload])
+            {
+                CVPixelBufferUnlockBaseAddress(renderTarget, 0);
+                //            CVOpenGLESTextureCacheFlush(rawDataTextureCache, 0);
+            }
+            
+            [self renderAtInternalSize];
+            
+            if ([GPUImageOpenGLESContext supportsFastTextureUpload])
+            {
+                glFinish();
+                CVPixelBufferLockBaseAddress(renderTarget, 0);
+                _rawBytesForImage = (GLubyte *)CVPixelBufferGetBaseAddress(renderTarget);
+            }
+            else
+            {
+                glReadPixels(0, 0, imageSize.width, imageSize.height, GL_RGBA, GL_UNSIGNED_BYTE, _rawBytesForImage);
+                // GL_EXT_read_format_bgra
+                //            glReadPixels(0, 0, imageSize.width, imageSize.height, GL_BGRA_EXT, GL_UNSIGNED_BYTE, _rawBytesForImage);
+            }
+        });
         
         return _rawBytesForImage;
     }
-    
+}
+
+- (NSUInteger)bytesPerRowInOutput;
+{
+    if ([GPUImageOpenGLESContext supportsFastTextureUpload]) 
+    {
+        return CVPixelBufferGetBytesPerRow(renderTarget);
+    }
+    else
+    {
+        return imageSize.width * 4;
+    }
 }
 
 @end

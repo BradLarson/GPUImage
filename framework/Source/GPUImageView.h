@@ -13,6 +13,7 @@ typedef enum {
 @interface GPUImageView : UIView <GPUImageInput>
 {
     GPUImageRotationMode inputRotation;
+    __unsafe_unretained id<GPUImageTextureDelegate> textureDelegate;
 }
 
 /** The fill mode dictates how images are fit in the view, with the default being kGPUImageFillModePreserveAspectRatio
@@ -23,6 +24,8 @@ typedef enum {
  */
 @property(readonly, nonatomic) CGSize sizeInPixels;
 
+@property(nonatomic) BOOL enabled;
+
 /** Handling fill mode
  
  @param redComponent Red component for background color
@@ -31,5 +34,7 @@ typedef enum {
  @param alphaComponent Alpha component for background color
  */
 - (void)setBackgroundColorRed:(GLfloat)redComponent green:(GLfloat)greenComponent blue:(GLfloat)blueComponent alpha:(GLfloat)alphaComponent;
+
+- (void)setCurrentlyReceivingMonochromeInput:(BOOL)newValue;
 
 @end

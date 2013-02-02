@@ -100,18 +100,14 @@ NSString *const kGPUImageCrosshatchFragmentShaderString = SHADER_STRING
         _crossHatchSpacing = newValue;
     }
     
-    [GPUImageOpenGLESContext useImageProcessingContext];
-    [filterProgram use];
-    glUniform1f(crossHatchSpacingUniform, _crossHatchSpacing);
+    [self setFloat:_crossHatchSpacing forUniform:crossHatchSpacingUniform program:filterProgram];
 }
 
 - (void)setLineWidth:(CGFloat)newValue;
 {
     _lineWidth = newValue;
     
-    [GPUImageOpenGLESContext useImageProcessingContext];
-    [filterProgram use];
-    glUniform1f(lineWidthUniform, _lineWidth);
+    [self setFloat:_lineWidth forUniform:lineWidthUniform program:filterProgram];
 }
 
 @end

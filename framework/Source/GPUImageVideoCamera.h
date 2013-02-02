@@ -4,6 +4,14 @@
 #import "GPUImageOpenGLESContext.h"
 #import "GPUImageOutput.h"
 
+//Delegate Protocal for Face Detection.
+@protocol GPUImageVideoCameraDelegate <NSObject>
+
+@optional
+- (void)willOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer;
+@end
+
+
 /**
  A GPUImageOutput that provides frames from either camera
 */
@@ -18,13 +26,32 @@
     AVCaptureDevice *_inputCamera;
     AVCaptureDevice *_microphone;
     AVCaptureDeviceInput *videoInput;
+	AVCaptureVideoDataOutput *videoOutput;
 
     BOOL capturePaused;
     GPUImageRotationMode outputRotation;
+    dispatch_semaphore_t frameRenderingSemaphore;
+        
+    BOOL captureAsYUV;
+    GLuint luminanceTexture, chrominanceTexture;
+
+    __unsafe_unretained id<GPUImageVideoCameraDelegate> _delegate;
 }
 
 /// The AVCaptureSession used to capture from the camera
-@property(readonly, retain) AVCaptureSession *captureSession;
+@property(readonly, retain, nonatomic) AVCaptureSession *captureSession;
+
+/// This enables the capture session preset to be changed on the fly
+@property (readwrite, nonatomic, copy) NSString *captureSessionPreset;
+
+/// This sets the frame rate of the camera (iOS 5 and above only)
+/**
+ Setting this to 0 or below will set the frame rate back to the default setting for a particular preset.
+ */
+@property (readwrite) NSInteger frameRate;
+
+/// Easy way to tell if front-facing camera is present on device
+@property (readonly, getter = isFrontFacingCameraPresent) BOOL frontFacingCameraPresent;
 
 /// This enables the benchmarking mode, which logs out instantaneous and average frame times to the console
 @property(readwrite, nonatomic) BOOL runBenchmark;
@@ -34,6 +61,11 @@
 
 /// This determines the rotation applied to the output image, based on the source material
 @property(readwrite, nonatomic) UIInterfaceOrientation outputImageOrientation;
+
+/// These properties determine whether or not the two camera orientations should be mirrored. By default, both are NO.
+@property(readwrite, nonatomic) BOOL horizontallyMirrorFrontFacingCamera, horizontallyMirrorRearFacingCamera;
+
+@property(nonatomic, assign) id<GPUImageVideoCameraDelegate> delegate;
 
 /// @name Initialization and teardown
 
@@ -81,6 +113,10 @@
 /** Get the position (front, rear) of the source camera
  */
 - (AVCaptureDevicePosition)cameraPosition;
+
+/** Get the AVCaptureConnection of the source camera
+ */
+- (AVCaptureConnection *)videoCaptureConnection;
 
 /** This flips between the front and rear cameras
  */

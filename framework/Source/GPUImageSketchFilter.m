@@ -5,7 +5,7 @@
 // Invert the colorspace for a sketch
 NSString *const kGPUImageSketchFragmentShaderString = SHADER_STRING
 (
- precision highp float;
+ precision mediump float;
  
  varying vec2 textureCoordinate;
  varying vec2 leftTextureCoordinate;

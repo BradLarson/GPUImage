@@ -24,7 +24,16 @@ NSString *const kGPUImageAdaptiveThresholdFragmentShaderString = SHADER_STRING
  }
  );
 
+@interface GPUImageAdaptiveThresholdFilter()
+{
+    GPUImageBoxBlurFilter *boxBlurFilter;
+}
+@end
+
 @implementation GPUImageAdaptiveThresholdFilter
+
+#pragma mark -
+#pragma mark Initialization and teardown
 
 - (id)init;
 {
@@ -38,7 +47,7 @@ NSString *const kGPUImageAdaptiveThresholdFragmentShaderString = SHADER_STRING
     [self addFilter:luminanceFilter];
     
     // Second pass: perform a box blur
-    GPUImageBoxBlurFilter *boxBlurFilter = [[GPUImageBoxBlurFilter alloc] init];
+    boxBlurFilter = [[GPUImageBoxBlurFilter alloc] init];
     [self addFilter:boxBlurFilter];
     
     // Third pass: compare the blurred background luminance to the local value
@@ -49,13 +58,25 @@ NSString *const kGPUImageAdaptiveThresholdFragmentShaderString = SHADER_STRING
     
     [boxBlurFilter addTarget:adaptiveThresholdFilter];
     // To prevent double updating of this filter, disable updates from the sharp luminance image side
-    adaptiveThresholdFilter.shouldIgnoreUpdatesToThisTarget = YES;
     [luminanceFilter addTarget:adaptiveThresholdFilter];
     
     self.initialFilters = [NSArray arrayWithObject:luminanceFilter];
     self.terminalFilter = adaptiveThresholdFilter;
     
     return self;
+}
+
+#pragma mark -
+#pragma mark Accessors
+
+- (void)setBlurSize:(CGFloat)newValue;
+{
+    boxBlurFilter.blurSize = newValue;
+}
+
+- (CGFloat)blurSize;
+{
+    return boxBlurFilter.blurSize;
 }
 
 @end

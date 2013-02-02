@@ -46,9 +46,7 @@ NSString *const kGPUImageLuminanceThresholdFragmentShaderString = SHADER_STRING
 {
     _threshold = newValue;
     
-    [GPUImageOpenGLESContext useImageProcessingContext];
-    [filterProgram use];
-    glUniform1f(thresholdUniform, _threshold);
+    [self setFloat:_threshold forUniform:thresholdUniform program:filterProgram];
 }
 
 @end

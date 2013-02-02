@@ -1,6 +1,7 @@
 #import "GPUImageXYDerivativeFilter.h"
 
 // I'm using the Prewitt operator to obtain the derivative, then squaring the X and Y components and placing the product of the two in Z.
+// In tests, Prewitt seemed to be tied with Sobel for the best, and it's just a little cheaper to compute.
 // This is primarily intended to be used with corner detection filters.
 
 @implementation GPUImageXYDerivativeFilter
@@ -34,12 +35,13 @@ NSString *const kGPUImageGradientFragmentShaderString = SHADER_STRING
      float leftIntensity = texture2D(inputImageTexture, leftTextureCoordinate).r;
      float rightIntensity = texture2D(inputImageTexture, rightTextureCoordinate).r;
      
-//     float verticalDerivative = abs(-topLeftIntensity - topIntensity - topRightIntensity + bottomLeftIntensity + bottomIntensity + bottomRightIntensity);
-//     float horizontalDerivative = abs(-bottomLeftIntensity - leftIntensity - topLeftIntensity + bottomRightIntensity + rightIntensity + topRightIntensity);
-     float verticalDerivative = abs(-topIntensity + bottomIntensity);
-     float horizontalDerivative = abs(-leftIntensity + rightIntensity);
+     float verticalDerivative = -topLeftIntensity - topIntensity - topRightIntensity + bottomLeftIntensity + bottomIntensity + bottomRightIntensity;
+     float horizontalDerivative = -bottomLeftIntensity - leftIntensity - topLeftIntensity + bottomRightIntensity + rightIntensity + topRightIntensity;
+//     float verticalDerivative = -topIntensity + bottomIntensity;
+//     float horizontalDerivative = -leftIntensity + rightIntensity;
      
-     gl_FragColor = vec4(horizontalDerivative * horizontalDerivative, verticalDerivative * verticalDerivative, verticalDerivative * horizontalDerivative, 1.0);
+     // Scaling the X * Y operation so that negative numbers are not clipped in the 0..1 range. This will be expanded in the corner detection filter
+     gl_FragColor = vec4(horizontalDerivative * horizontalDerivative, verticalDerivative * verticalDerivative, ((verticalDerivative * horizontalDerivative) + 1.0) / 2.0, 1.0);
  }
 );
 

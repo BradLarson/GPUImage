@@ -50,28 +50,21 @@ NSString *const kGPUImageRGBFragmentShaderString = SHADER_STRING
 {
     _red = newValue;
     
-    [GPUImageOpenGLESContext useImageProcessingContext];
-    [filterProgram use];
-    glUniform1f(redUniform, _red);
+    [self setFloat:_red forUniform:redUniform program:filterProgram];
 }
 
 - (void)setGreen:(CGFloat)newValue;
 {
     _green = newValue;
-    
-    [GPUImageOpenGLESContext useImageProcessingContext];
-    [filterProgram use];
-    glUniform1f(greenUniform, _green);
-}
 
+    [self setFloat:_green forUniform:greenUniform program:filterProgram];
+}
 
 - (void)setBlue:(CGFloat)newValue;
 {
     _blue = newValue;
-    
-    [GPUImageOpenGLESContext useImageProcessingContext];
-    [filterProgram use];
-    glUniform1f(blueUniform, _blue);
+
+    [self setFloat:_blue forUniform:blueUniform program:filterProgram];
 }
 
 @end

@@ -51,11 +51,13 @@ NSString *const kGPUImageCrosshairFragmentShaderString = SHADER_STRING
         return nil;
     }
     
-    crosshairWidthUniform = [filterProgram uniformIndex:@"crosshairWidth"];
-    crosshairColorUniform = [filterProgram uniformIndex:@"crosshairColor"];
-    
-    self.crosshairWidth = 5.0;
-    [self setCrosshairColorRed:0.0 green:1.0 blue:0.0];
+    runSynchronouslyOnVideoProcessingQueue(^{
+        crosshairWidthUniform = [filterProgram uniformIndex:@"crosshairWidth"];
+        crosshairColorUniform = [filterProgram uniformIndex:@"crosshairColor"];
+        
+        self.crosshairWidth = 5.0;
+        [self setCrosshairColorRed:0.0 green:1.0 blue:0.0];
+    });
     
     return self;
 }
@@ -63,27 +65,27 @@ NSString *const kGPUImageCrosshairFragmentShaderString = SHADER_STRING
 #pragma mark -
 #pragma mark Rendering
 
-- (void)renderCrosshairsFromArray:(GLfloat *)crosshairCoordinates count:(NSUInteger)numberOfCrosshairs;
+- (void)renderCrosshairsFromArray:(GLfloat *)crosshairCoordinates count:(NSUInteger)numberOfCrosshairs frameTime:(CMTime)frameTime;
 {
     if (self.preventRendering)
     {
         return;
     }
     
-    [GPUImageOpenGLESContext useImageProcessingContext];
-    
-    [self setFilterFBO];
-    
-    [filterProgram use];
-    
-    glClearColor(0.0, 0.0, 0.0, 0.0);
-    glClear(GL_COLOR_BUFFER_BIT);
-    
-    glVertexAttribPointer(filterPositionAttribute, 2, GL_FLOAT, 0, 0, crosshairCoordinates);
-    
-    glDrawArrays(GL_POINTS, 0, numberOfCrosshairs);
-    
-    [self informTargetsAboutNewFrameAtTime:kCMTimeInvalid];
+    runSynchronouslyOnVideoProcessingQueue(^{
+        [GPUImageOpenGLESContext setActiveShaderProgram:filterProgram];
+        
+        [self setFilterFBO];
+        
+        glClearColor(0.0, 0.0, 0.0, 0.0);
+        glClear(GL_COLOR_BUFFER_BIT);
+        
+        glVertexAttribPointer(filterPositionAttribute, 2, GL_FLOAT, 0, 0, crosshairCoordinates);
+        
+        glDrawArrays(GL_POINTS, 0, numberOfCrosshairs);
+        
+        [self informTargetsAboutNewFrameAtTime:frameTime];
+    });
 }
 
 - (void)renderToTextureWithVertices:(const GLfloat *)vertices textureCoordinates:(const GLfloat *)textureCoordinates sourceTexture:(GLuint)sourceTexture;
@@ -98,21 +100,14 @@ NSString *const kGPUImageCrosshairFragmentShaderString = SHADER_STRING
 {
     _crosshairWidth = newValue;
     
-    [GPUImageOpenGLESContext useImageProcessingContext];
-    [filterProgram use];
-    glUniform1f(crosshairWidthUniform, _crosshairWidth);
+    [self setFloat:_crosshairWidth forUniform:crosshairWidthUniform program:filterProgram];
 }
 
 - (void)setCrosshairColorRed:(GLfloat)redComponent green:(GLfloat)greenComponent blue:(GLfloat)blueComponent;
 {
-    GLfloat colorToReplace[3];
-    colorToReplace[0] = redComponent;
-    colorToReplace[1] = greenComponent;    
-    colorToReplace[2] = blueComponent;
+    GPUVector3 crosshairColor = {redComponent, greenComponent, blueComponent};
     
-    [GPUImageOpenGLESContext useImageProcessingContext];
-    [filterProgram use];
-    glUniform3fv(crosshairColorUniform, 1, colorToReplace);    
+    [self setVec3:crosshairColor forUniform:crosshairColorUniform program:filterProgram];
 }
 
 @end

@@ -5,7 +5,7 @@
 //   Code from "Graphics Shaders: Theory and Practice" by M. Bailey and S. Cunningham 
 NSString *const kGPUImageSobelEdgeDetectionFragmentShaderString = SHADER_STRING
 (
- precision highp float;
+ precision mediump float;
 
  varying vec2 textureCoordinate;
  varying vec2 leftTextureCoordinate;
@@ -83,11 +83,21 @@ NSString *const kGPUImageSobelEdgeDetectionFragmentShaderString = SHADER_STRING
         _texelWidth = 1.0 / filterFrameSize.width;
         _texelHeight = 1.0 / filterFrameSize.height;
 
-        [GPUImageOpenGLESContext useImageProcessingContext];
-        [secondFilterProgram use];
-        glUniform1f(texelWidthUniform, _texelWidth);
-        glUniform1f(texelHeightUniform, _texelHeight);
+        runSynchronouslyOnVideoProcessingQueue(^{
+            [self setFloat:_texelWidth forUniform:texelWidthUniform program:secondFilterProgram];
+            [self setFloat:_texelHeight forUniform:texelHeightUniform program:secondFilterProgram];
+        });
     }
+}
+
+- (BOOL)wantsMonochromeInput;
+{
+    return YES;
+}
+
+- (BOOL)providesMonochromeOutput;
+{
+    return YES;
 }
 
 #pragma mark -
@@ -98,19 +108,15 @@ NSString *const kGPUImageSobelEdgeDetectionFragmentShaderString = SHADER_STRING
     hasOverriddenImageSizeFactor = YES;
     _texelWidth = newValue;
     
-    [GPUImageOpenGLESContext useImageProcessingContext];
-    [secondFilterProgram use];
-    glUniform1f(texelWidthUniform, _texelWidth);
+    [self setFloat:_texelWidth forUniform:texelWidthUniform program:secondFilterProgram];
 }
 
 - (void)setTexelHeight:(CGFloat)newValue;
 {
     hasOverriddenImageSizeFactor = YES;
     _texelHeight = newValue;
-    
-    [GPUImageOpenGLESContext useImageProcessingContext];
-    [secondFilterProgram use];
-    glUniform1f(texelHeightUniform, _texelHeight);
+
+    [self setFloat:_texelHeight forUniform:texelHeightUniform program:secondFilterProgram];
 }
 
 @end

@@ -6,7 +6,7 @@ typedef enum { kGPUImageHistogramRed, kGPUImageHistogramGreen, kGPUImageHistogra
 {
     GPUImageHistogramType histogramType;
     
-    GLfloat *vertexSamplingCoordinates, *textureSamplingCoordinates;
+    GLubyte *vertexSamplingCoordinates;
     
     GLProgram *secondFilterProgram, *thirdFilterProgram;
     GLint secondFilterPositionAttribute, thirdFilterPositionAttribute;
@@ -17,6 +17,7 @@ typedef enum { kGPUImageHistogramRed, kGPUImageHistogramGreen, kGPUImageHistogra
 
 // Initialization and teardown
 - (id)initWithHistogramType:(GPUImageHistogramType)newHistogramType;
+- (void)initializeSecondaryAttributes;
 
 // Rendering
 - (void)generatePointCoordinates;

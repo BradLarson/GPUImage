@@ -60,10 +60,15 @@ typedef struct GPUMatrix3x3 GPUMatrix3x3;
     
     CGSize currentFilterSize;
     GPUImageRotationMode inputRotation;
+    
+    BOOL currentlyReceivingMonochromeInput;
+    
+    NSMutableDictionary *uniformStateRestorationBlocks;
 }
 
 @property(readonly) CVPixelBufferRef renderTarget;
 @property(readwrite, nonatomic) BOOL preventRendering;
+@property(readwrite, nonatomic) BOOL currentlyReceivingMonochromeInput;
 
 /// @name Initialization and teardown
 
@@ -106,6 +111,7 @@ typedef struct GPUMatrix3x3 GPUMatrix3x3;
 - (void)destroyFilterFBO;
 - (void)setFilterFBO;
 - (void)setOutputFBO;
+- (void)releaseInputTexturesIfNeeded;
 
 /// @name Rendering
 + (const GLfloat *)textureCoordinatesForRotation:(GPUImageRotationMode)rotationMode;
@@ -115,12 +121,25 @@ typedef struct GPUMatrix3x3 GPUMatrix3x3;
 
 /// @name Input parameters
 - (void)setBackgroundColorRed:(GLfloat)redComponent green:(GLfloat)greenComponent blue:(GLfloat)blueComponent alpha:(GLfloat)alphaComponent;
-- (void)setInteger:(GLint)newInteger forUniform:(NSString *)uniformName;
-- (void)setFloat:(GLfloat)newFloat forUniform:(NSString *)uniformName;
-- (void)setSize:(CGSize)newSize forUniform:(NSString *)uniformName;
-- (void)setPoint:(CGPoint)newPoint forUniform:(NSString *)uniformName;
-- (void)setFloatVec3:(GLfloat *)newVec3 forUniform:(NSString *)uniformName;
-- (void)setFloatVec4:(GLfloat *)newVec4 forUniform:(NSString *)uniformName;
+- (void)setInteger:(GLint)newInteger forUniformName:(NSString *)uniformName;
+- (void)setFloat:(GLfloat)newFloat forUniformName:(NSString *)uniformName;
+- (void)setSize:(CGSize)newSize forUniformName:(NSString *)uniformName;
+- (void)setPoint:(CGPoint)newPoint forUniformName:(NSString *)uniformName;
+- (void)setFloatVec3:(GPUVector3)newVec3 forUniformName:(NSString *)uniformName;
+- (void)setFloatVec4:(GPUVector4)newVec4 forUniform:(NSString *)uniformName;
 - (void)setFloatArray:(GLfloat *)array length:(GLsizei)count forUniform:(NSString*)uniformName;
+
+- (void)setMatrix3f:(GPUMatrix3x3)matrix forUniform:(GLint)uniform program:(GLProgram *)shaderProgram;
+- (void)setMatrix4f:(GPUMatrix4x4)matrix forUniform:(GLint)uniform program:(GLProgram *)shaderProgram;
+- (void)setFloat:(GLfloat)floatValue forUniform:(GLint)uniform program:(GLProgram *)shaderProgram;
+- (void)setPoint:(CGPoint)pointValue forUniform:(GLint)uniform program:(GLProgram *)shaderProgram;
+- (void)setSize:(CGSize)sizeValue forUniform:(GLint)uniform program:(GLProgram *)shaderProgram;
+- (void)setVec3:(GPUVector3)vectorValue forUniform:(GLint)uniform program:(GLProgram *)shaderProgram;
+- (void)setVec4:(GPUVector4)vectorValue forUniform:(GLint)uniform program:(GLProgram *)shaderProgram;
+- (void)setFloatArray:(GLfloat *)arrayValue length:(GLsizei)arrayLength forUniform:(GLint)uniform program:(GLProgram *)shaderProgram;
+- (void)setInteger:(GLint)intValue forUniform:(GLint)uniform program:(GLProgram *)shaderProgram;
+
+- (void)setAndExecuteUniformStateCallbackAtIndex:(GLint)uniform forProgram:(GLProgram *)shaderProgram toBlock:(dispatch_block_t)uniformStateBlock;
+- (void)setUniformsForProgramAtIndex:(NSUInteger)programIndex;
 
 @end

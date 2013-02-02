@@ -2,8 +2,9 @@
 
 @interface GPUImageFilterPipeline ()
 
-- (BOOL) _parseConfiguration:(NSDictionary *)configuration;
-- (void) _refreshFilters;
+- (BOOL)_parseConfiguration:(NSDictionary *)configuration;
+
+- (void)_refreshFilters;
 
 @end
 
@@ -13,7 +14,7 @@
 
 #pragma mark Config file init
 
-- (id) initWithConfiguration:(NSDictionary*) configuration input:(GPUImageOutput*)input output:(id <GPUImageInput>)output {
+- (id)initWithConfiguration:(NSDictionary *)configuration input:(GPUImageOutput *)input output:(id <GPUImageInput>)output {
     self = [super init];
     if (self) {
         self.input = input;
@@ -27,16 +28,18 @@
     return self;
 }
 
-- (id) initWithConfigurationFile:(NSURL*) configuration input:(GPUImageOutput*)input output:(id <GPUImageInput>)output {
+- (id)initWithConfigurationFile:(NSURL *)configuration input:(GPUImageOutput *)input output:(id <GPUImageInput>)output {
     return [self initWithConfiguration:[NSDictionary dictionaryWithContentsOfURL:configuration] input:input output:output];
 }
 
-- (BOOL) _parseConfiguration:(NSDictionary *)configuration {
+- (BOOL)_parseConfiguration:(NSDictionary *)configuration {
     NSArray *filters = [configuration objectForKey:@"Filters"];
-    if (!filters) return NO;
+    if (!filters) {
+        return NO;
+    }
     
     NSError *regexError = nil;
-    NSRegularExpression *parsingRegex = [NSRegularExpression regularExpressionWithPattern:@"(float|CGPoint)\\((.*?)(?:,\\s*(.*?))*\\)"
+    NSRegularExpression *parsingRegex = [NSRegularExpression regularExpressionWithPattern:@"(float|CGPoint|NSString)\\((.*?)(?:,\\s*(.*?))*\\)"
                                                                                   options:0
                                                                                     error:&regexError];
     
@@ -56,28 +59,72 @@
                 [inv setSelector:theSelector];
                 [inv setTarget:genericFilter];
                 
-                // Parse the argument
-                
-                NSString *string = [filterAttributes objectForKey:propertyKey];
-                NSTextCheckingResult *parse = [parsingRegex firstMatchInString:string
-                                                                       options:0
-                                                                         range:NSMakeRange(0, [string length])];
-                NSLog(@"Ranges: %d", parse.numberOfRanges);
-                NSString *modifier = [string substringWithRange:[parse rangeAtIndex:1]];
-                if ([modifier isEqualToString:@"float"]) {
-                    // Float modifier, one argument
-                    CGFloat value = [[string substringWithRange:[parse rangeAtIndex:2]] floatValue];
-                    [inv setArgument:&value atIndex:2];
-                } else if ([modifier isEqualToString:@"CGPoint"]) {
-                    // CGPoint modifier, two float arguments
-                    CGFloat x = [[string substringWithRange:[parse rangeAtIndex:2]] floatValue];
-                    CGFloat y = [[string substringWithRange:[parse rangeAtIndex:3]] floatValue];
-                    CGPoint value = CGPointMake(x, y);
-                    [inv setArgument:&value atIndex:2];
-                } else {
-                    return NO;
+                // check selector given with parameter
+                if ([propertyKey hasSuffix:@":"]) {
+                    
+                    stringValue = nil;
+                    
+                    // Then parse the arguments
+                    NSMutableArray *parsedArray;
+                    if ([[filterAttributes objectForKey:propertyKey] isKindOfClass:[NSArray class]]) {
+                        NSArray *array = [filterAttributes objectForKey:propertyKey];
+                        parsedArray = [NSMutableArray arrayWithCapacity:[array count]];
+                        for (NSString *string in array) {
+                            NSTextCheckingResult *parse = [parsingRegex firstMatchInString:string
+                                                                                   options:0
+                                                                                     range:NSMakeRange(0, [string length])];
+
+                            NSString *modifier = [string substringWithRange:[parse rangeAtIndex:1]];
+                            if ([modifier isEqualToString:@"float"]) {
+                                // Float modifier, one argument
+                                CGFloat value = [[string substringWithRange:[parse rangeAtIndex:2]] floatValue];
+                                [parsedArray addObject:[NSNumber numberWithFloat:value]];
+                                [inv setArgument:&value atIndex:2];
+                            } else if ([modifier isEqualToString:@"CGPoint"]) {
+                                // CGPoint modifier, two float arguments
+                                CGFloat x = [[string substringWithRange:[parse rangeAtIndex:2]] floatValue];
+                                CGFloat y = [[string substringWithRange:[parse rangeAtIndex:3]] floatValue];
+                                CGPoint value = CGPointMake(x, y);
+                                [parsedArray addObject:[NSValue valueWithCGPoint:value]];
+                            } else if ([modifier isEqualToString:@"NSString"]) {
+                                // NSString modifier, one string argument
+                                stringValue = [[string substringWithRange:[parse rangeAtIndex:2]] copy];
+                                [inv setArgument:&stringValue atIndex:2];
+                                
+                            } else {
+                                return NO;
+                            }
+                        }
+                        [inv setArgument:&parsedArray atIndex:2];
+                    } else {
+                        NSString *string = [filterAttributes objectForKey:propertyKey];
+                        NSTextCheckingResult *parse = [parsingRegex firstMatchInString:string
+                                                                               options:0
+                                                                                 range:NSMakeRange(0, [string length])];
+                        
+                        NSString *modifier = [string substringWithRange:[parse rangeAtIndex:1]];
+                        if ([modifier isEqualToString:@"float"]) {
+                            // Float modifier, one argument
+                            CGFloat value = [[string substringWithRange:[parse rangeAtIndex:2]] floatValue];
+                            [inv setArgument:&value atIndex:2];
+                        } else if ([modifier isEqualToString:@"CGPoint"]) {
+                            // CGPoint modifier, two float arguments
+                            CGFloat x = [[string substringWithRange:[parse rangeAtIndex:2]] floatValue];
+                            CGFloat y = [[string substringWithRange:[parse rangeAtIndex:3]] floatValue];
+                            CGPoint value = CGPointMake(x, y);
+                            [inv setArgument:&value atIndex:2];
+                        } else if ([modifier isEqualToString:@"NSString"]) {
+                            // NSString modifier, one string argument
+                            stringValue = [[string substringWithRange:[parse rangeAtIndex:2]] copy];
+                            [inv setArgument:&stringValue atIndex:2];
+                            
+                        } else {
+                            return NO;
+                        }
+                    }
                 }
                 
+
                 [inv invoke];
             }
         }
@@ -90,7 +137,7 @@
 
 #pragma mark Regular init
 
-- (id) initWithOrderedFilters:(NSArray*) filters input:(GPUImageOutput*)input output:(id <GPUImageInput>)output {
+- (id)initWithOrderedFilters:(NSArray *)filters input:(GPUImageOutput *)input output:(id <GPUImageInput>)output {
     self = [super init];
     if (self) {
         self.input = input;
@@ -101,37 +148,37 @@
     return self;
 }
 
-- (void) addFilter:(GPUImageFilter*)filter atIndex:(NSUInteger)insertIndex {
+- (void)addFilter:(GPUImageFilter *)filter atIndex:(NSUInteger)insertIndex {
     [self.filters insertObject:filter atIndex:insertIndex];
     [self _refreshFilters];
 }
 
-- (void) addFilter:(GPUImageFilter*)filter {
+- (void)addFilter:(GPUImageFilter *)filter {
     [self.filters addObject:filter];
     [self _refreshFilters];
 }
 
-- (void) replaceFilterAtIndex:(NSUInteger)index withFilter:(GPUImageFilter*)filter {
+- (void)replaceFilterAtIndex:(NSUInteger)index withFilter:(GPUImageFilter *)filter {
     [self.filters replaceObjectAtIndex:index withObject:filter];
     [self _refreshFilters];
 }
 
-- (void) removeFilterAtIndex:(NSUInteger)index {
+- (void)removeFilterAtIndex:(NSUInteger)index {
     [self.filters removeObjectAtIndex:index];
     [self _refreshFilters];
 }
 
-- (void) removeAllFilters {
+- (void)removeAllFilters {
     [self.filters removeAllObjects];
     [self _refreshFilters];
 }
 
-- (void) replaceAllFilters:(NSArray*) newFilters {
+- (void)replaceAllFilters:(NSArray *)newFilters {
     self.filters = [NSMutableArray arrayWithArray:newFilters];
     [self _refreshFilters];
 }
 
-- (void) _refreshFilters {
+- (void)_refreshFilters {
     
     id prevFilter = self.input;
     GPUImageFilter *theFilter = nil;
@@ -144,11 +191,23 @@
     }
     
     [prevFilter removeAllTargets];
-    [prevFilter addTarget:self.output];
+    
+    if (self.output != nil) {
+        [prevFilter addTarget:self.output];
+    }
 }
 
-- (UIImage *) currentFilteredFrame {
-    return [(GPUImageFilter*)[_filters lastObject] imageFromCurrentlyProcessedOutput];
+- (UIImage *)currentFilteredFrame {
+    return [(GPUImageFilter *)[_filters lastObject] imageFromCurrentlyProcessedOutput];
 }
+
+- (CGImageRef)newCGImageFromCurrentFilteredFrame {
+    return [(GPUImageFilter *)[_filters lastObject] newCGImageFromCurrentlyProcessedOutput];
+}
+
+- (CGImageRef)newCGImageFromCurrentFilteredFrameWithOrientation:(UIImageOrientation)imageOrientation {
+    return [(GPUImageFilter *)[_filters lastObject] newCGImageFromCurrentlyProcessedOutputWithOrientation:imageOrientation];
+}
+
 
 @end

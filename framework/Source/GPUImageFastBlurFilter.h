@@ -1,9 +1,9 @@
-#import "GPUImageTwoPassFilter.h"
+#import "GPUImageTwoPassTextureSamplingFilter.h"
 
 /// A hardware-accelerated 9-hit Gaussian blur of an image
-@interface GPUImageFastBlurFilter : GPUImageTwoPassFilter
+@interface GPUImageFastBlurFilter : GPUImageTwoPassTextureSamplingFilter
 {
-    GLint verticalPassTexelWidthOffsetUniform, verticalPassTexelHeightOffsetUniform, horizontalPassTexelWidthOffsetUniform, horizontalPassTexelHeightOffsetUniform, firstBlurSizeUniform, secondBlurSizeUniform;
+    GLint firstBlurSizeUniform, secondBlurSizeUniform;
 }
 
 /// The number of times to sequentially blur the incoming image. The more passes, the slower the filter.
@@ -11,5 +11,8 @@
 
 /// A scaling for the size of the applied blur, default of 1.0
 @property(readwrite, nonatomic) CGFloat blurSize;
+
+- (id)initWithFragmentShaderFromString:(NSString *)fragmentShaderString;
+
 
 @end

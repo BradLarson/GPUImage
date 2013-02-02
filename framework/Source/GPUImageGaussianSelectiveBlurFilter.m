@@ -13,15 +13,17 @@ NSString *const kGPUImageGaussianSelectiveBlurFragmentShaderString = SHADER_STRI
  uniform lowp float excludeCircleRadius;
  uniform lowp vec2 excludeCirclePoint;
  uniform lowp float excludeBlurSize;
- 
+ uniform highp float aspectRatio;
+
  void main()
  {
      lowp vec4 sharpImageColor = texture2D(inputImageTexture, textureCoordinate);
      lowp vec4 blurredImageColor = texture2D(inputImageTexture2, textureCoordinate2);
      
-     lowp float d = distance(textureCoordinate2, excludeCirclePoint);
+     highp vec2 textureCoordinateToUse = vec2(textureCoordinate2.x, (textureCoordinate2.y * aspectRatio + 0.5 - 0.5 * aspectRatio));
+     highp float distanceFromCenter = distance(excludeCirclePoint, textureCoordinateToUse);
      
-     gl_FragColor = mix(sharpImageColor, blurredImageColor, smoothstep(excludeCircleRadius - excludeBlurSize, excludeCircleRadius, d));
+     gl_FragColor = mix(sharpImageColor, blurredImageColor, smoothstep(excludeCircleRadius - excludeBlurSize, excludeCircleRadius, distanceFromCenter));
  }
 );
 
@@ -29,6 +31,7 @@ NSString *const kGPUImageGaussianSelectiveBlurFragmentShaderString = SHADER_STRI
 
 @synthesize excludeCirclePoint = _excludeCirclePoint, excludeCircleRadius = _excludeCircleRadius, excludeBlurSize = _excludeBlurSize;
 @synthesize blurSize = _blurSize;
+@synthesize aspectRatio = _aspectRatio;
 
 - (id)init;
 {
@@ -36,6 +39,8 @@ NSString *const kGPUImageGaussianSelectiveBlurFragmentShaderString = SHADER_STRI
     {
 		return nil;
     }
+    
+    hasOverriddenAspectRatio = NO;
     
     // First pass: apply a variable Gaussian blur
     blurFilter = [[GPUImageGaussianBlurFilter alloc] init];
@@ -48,9 +53,7 @@ NSString *const kGPUImageGaussianSelectiveBlurFragmentShaderString = SHADER_STRI
     // Texture location 0 needs to be the sharp image for both the blur and the second stage processing
     [blurFilter addTarget:selectiveFocusFilter atTextureLocation:1];
     
-    // To prevent double updating of this filter, disable updates from the sharp image side
-    self.inputFilterToIgnoreForUpdates = selectiveFocusFilter;
-    
+    // To prevent double updating of this filter, disable updates from the sharp image side    
     self.initialFilters = [NSArray arrayWithObjects:blurFilter, selectiveFocusFilter, nil];
     self.terminalFilter = selectiveFocusFilter;
     
@@ -61,6 +64,19 @@ NSString *const kGPUImageGaussianSelectiveBlurFragmentShaderString = SHADER_STRI
     self.excludeBlurSize = 30.0/320.0;
     
     return self;
+}
+
+- (void)setInputSize:(CGSize)newSize atIndex:(NSInteger)textureIndex;
+{
+    CGSize oldInputSize = inputTextureSize;
+    [super setInputSize:newSize atIndex:textureIndex];
+    inputTextureSize = newSize;
+    
+    if ( (!CGSizeEqualToSize(oldInputSize, inputTextureSize)) && (!hasOverriddenAspectRatio) && (!CGSizeEqualToSize(newSize, CGSizeZero)) )
+    {
+        _aspectRatio = (inputTextureSize.width / inputTextureSize.height);
+        [selectiveFocusFilter setFloat:_aspectRatio forUniformName:@"aspectRatio"];
+    }
 }
 
 #pragma mark -
@@ -79,19 +95,26 @@ NSString *const kGPUImageGaussianSelectiveBlurFragmentShaderString = SHADER_STRI
 - (void)setExcludeCirclePoint:(CGPoint)newValue;
 {
     _excludeCirclePoint = newValue;
-    [selectiveFocusFilter setPoint:newValue forUniform:@"excludeCirclePoint"];
+    [selectiveFocusFilter setPoint:newValue forUniformName:@"excludeCirclePoint"];
 }
 
 - (void)setExcludeCircleRadius:(CGFloat)newValue;
 {
     _excludeCircleRadius = newValue;
-    [selectiveFocusFilter setFloat:newValue forUniform:@"excludeCircleRadius"];
+    [selectiveFocusFilter setFloat:newValue forUniformName:@"excludeCircleRadius"];
 }
 
 - (void)setExcludeBlurSize:(CGFloat)newValue;
 {
     _excludeBlurSize = newValue;
-    [selectiveFocusFilter setFloat:newValue forUniform:@"excludeBlurSize"];
+    [selectiveFocusFilter setFloat:newValue forUniformName:@"excludeBlurSize"];
+}
+
+- (void)setAspectRatio:(CGFloat)newValue;
+{
+    hasOverriddenAspectRatio = YES;
+    _aspectRatio = newValue;    
+    [selectiveFocusFilter setFloat:_aspectRatio forUniformName:@"aspectRatio"];
 }
 
 @end
