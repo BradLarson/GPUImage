@@ -401,7 +401,6 @@ NSString *const kGPUImageJFAVoroniFragmentShaderString = SHADER_STRING
 {
     // Run the first stage of the two-pass filter
     [GPUImageOpenGLESContext setActiveShaderProgram:filterProgram];
-<<<<<<< HEAD
     currentPass = 0;
     [self setFilterFBO];
     
@@ -410,8 +409,6 @@ NSString *const kGPUImageJFAVoroniFragmentShaderString = SHADER_STRING
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
     
-=======
->>>>>>> bde8ee034d6d737ebd18a4c62fe09d3c22af94c3
     glUniform1f(sampleStepUniform, 0.5);
     
     glUniform2f(sizeUniform, _sizeInPixels.width, _sizeInPixels.height);
@@ -434,29 +431,8 @@ NSString *const kGPUImageJFAVoroniFragmentShaderString = SHADER_STRING
         
         glActiveTexture(GL_TEXTURE2);
         if (pass % 2 == 0) {
-<<<<<<< HEAD
             glBindTexture(GL_TEXTURE_2D, secondFilterOutputTexture);
         } else {
-=======
-            
-            [GPUImageOpenGLESContext setActiveShaderProgram:filterProgram];
-            
-            float step = pow(2.0, numPasses - pass) / pow(2.0, numPasses);
-            glUniform1f(sampleStepUniform, step);
-            glUniform2f(sizeUniform, _sizeInPixels.width, _sizeInPixels.height);
-            
-            [super renderToTextureWithVertices:vertices textureCoordinates:textureCoordinates sourceTexture:secondFilterOutputTexture];
-        } else {
-            // Run the second stage of the two-pass filter
-            [self setSecondFilterFBO];
-            
-            [GPUImageOpenGLESContext setActiveShaderProgram:filterProgram];
-            
-            glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-            glClear(GL_COLOR_BUFFER_BIT);
-            
-            glActiveTexture(GL_TEXTURE3);
->>>>>>> bde8ee034d6d737ebd18a4c62fe09d3c22af94c3
             glBindTexture(GL_TEXTURE_2D, outputTexture);
         }
         glUniform1i(filterInputTextureUniform, 2);
