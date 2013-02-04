@@ -23,8 +23,7 @@ NSString *const kGPUImageVoroniConsumerFragmentShaderString = SHADER_STRING
  void main(void) {
      vec4 colorLoc = texture2D(inputImageTexture2, textureCoordinate);
      vec4 color = texture2D(inputImageTexture, getCoordFromColor(colorLoc));
-     
-     gl_FragColor = color;
+     gl_FragColor = color;	
  }
 
  

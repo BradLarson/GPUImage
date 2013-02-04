@@ -1,11 +1,9 @@
-#import "GPUImageFilter.h"
+#import "GPUImageTwoInputFilter.h"
 
-@interface GPUImageJFAVoroniFilter : GPUImageFilter 
+@interface GPUImageJFAVoroniFilter : GPUImageTwoInputFilter 
 {
     GLuint secondFilterOutputTexture;
     GLuint secondFilterFramebuffer;
-    
-    
     GLint sampleStepUniform;
     GLint sizeUniform;
     NSUInteger numPasses;
