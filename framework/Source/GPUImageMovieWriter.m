@@ -284,7 +284,7 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
         // iOS 6 SDK
         if ([assetWriter respondsToSelector:@selector(finishWritingWithCompletionHandler:)]) {
             // Running iOS 6
-            [assetWriter finishWritingWithCompletionHandler:handler];
+            [assetWriter finishWritingWithCompletionHandler:(handler ?: ^{ })];
         }
         else {
             // Not running iOS 6
