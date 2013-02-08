@@ -265,15 +265,21 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
 
 - (CGSize)sizeOfFBO;
 {
-    CGSize outputSize = [self maximumOutputSize];
-    if ( (CGSizeEqualToSize(outputSize, CGSizeZero)) || (inputTextureSize.width < outputSize.width) )
-    {
-        return inputTextureSize;
+    //CGSize outputSize = [self maximumOutputSize];
+    //if ( (CGSizeEqualToSize(outputSize, CGSizeZero)) || (inputTextureSize.width < outputSize.width) )
+    //{
+    //    return inputTextureSize;
+    //}
+    //else
+    //{
+    //    return outputSize;
+    //}
+
+    if ( (CGSizeEqualToSize(inputTextureSize, CGSizeZero)) || (inputTextureSize.width < inputTextureSize.width) ) {
+        return CGSizeMake(720.f, 1280.f);
     }
-    else
-    {
-        return outputSize;
-    }
+    
+    return inputTextureSize;
 }
 
 - (void)createFilterFBOofSize:(CGSize)currentFBOSize;
