@@ -21,6 +21,11 @@
 		BC01CAB514E763FC00967264 /* MultiViewViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = BC01CAB414E763FC00967264 /* MultiViewViewController.m */; };
 		BC3145C814E76BA700824EA0 /* Shader1.fsh in Resources */ = {isa = PBXBuildFile; fileRef = BC3145C614E76BA700824EA0 /* Shader1.fsh */; };
 		BC3145C914E76BA700824EA0 /* Shader2.fsh in Resources */ = {isa = PBXBuildFile; fileRef = BC3145C714E76BA700824EA0 /* Shader2.fsh */; };
+		BCB3C40616BCA69F003D26B0 /* Icon-72.png in Resources */ = {isa = PBXBuildFile; fileRef = BCB3C40116BCA69F003D26B0 /* Icon-72.png */; };
+		BCB3C40716BCA69F003D26B0 /* Icon-72@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BCB3C40216BCA69F003D26B0 /* Icon-72@2x.png */; };
+		BCB3C40816BCA69F003D26B0 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = BCB3C40316BCA69F003D26B0 /* Icon.png */; };
+		BCB3C40916BCA69F003D26B0 /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BCB3C40416BCA69F003D26B0 /* Icon@2x.png */; };
+		BCB3C40A16BCA69F003D26B0 /* iTunesArtwork.png in Resources */ = {isa = PBXBuildFile; fileRef = BCB3C40516BCA69F003D26B0 /* iTunesArtwork.png */; };
 		BCB5DD6614E76CD2000AF3C2 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCB5DD6514E76CD2000AF3C2 /* AVFoundation.framework */; };
 /* End PBXBuildFile section */
 
@@ -68,6 +73,11 @@
 		BC01CAB414E763FC00967264 /* MultiViewViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MultiViewViewController.m; sourceTree = "<group>"; };
 		BC3145C614E76BA700824EA0 /* Shader1.fsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = Shader1.fsh; sourceTree = "<group>"; };
 		BC3145C714E76BA700824EA0 /* Shader2.fsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = Shader2.fsh; sourceTree = "<group>"; };
+		BCB3C40116BCA69F003D26B0 /* Icon-72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-72.png"; path = "../../SharedIcons/Icon-72.png"; sourceTree = "<group>"; };
+		BCB3C40216BCA69F003D26B0 /* Icon-72@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-72@2x.png"; path = "../../SharedIcons/Icon-72@2x.png"; sourceTree = "<group>"; };
+		BCB3C40316BCA69F003D26B0 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Icon.png; path = ../../SharedIcons/Icon.png; sourceTree = "<group>"; };
+		BCB3C40416BCA69F003D26B0 /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon@2x.png"; path = "../../SharedIcons/Icon@2x.png"; sourceTree = "<group>"; };
+		BCB3C40516BCA69F003D26B0 /* iTunesArtwork.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = iTunesArtwork.png; path = ../../SharedIcons/iTunesArtwork.png; sourceTree = "<group>"; };
 		BCB5DD6514E76CD2000AF3C2 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -141,6 +151,11 @@
 		BC01CA8C14E7620600967264 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				BCB3C40116BCA69F003D26B0 /* Icon-72.png */,
+				BCB3C40216BCA69F003D26B0 /* Icon-72@2x.png */,
+				BCB3C40316BCA69F003D26B0 /* Icon.png */,
+				BCB3C40416BCA69F003D26B0 /* Icon@2x.png */,
+				BCB3C40516BCA69F003D26B0 /* iTunesArtwork.png */,
 				BC01CA8D14E7620600967264 /* MultiViewFilterExample-Info.plist */,
 				BC01CA8E14E7620600967264 /* InfoPlist.strings */,
 				BC01CA9114E7620600967264 /* main.m */,
@@ -236,6 +251,11 @@
 				BC01CA9014E7620600967264 /* InfoPlist.strings in Resources */,
 				BC3145C814E76BA700824EA0 /* Shader1.fsh in Resources */,
 				BC3145C914E76BA700824EA0 /* Shader2.fsh in Resources */,
+				BCB3C40616BCA69F003D26B0 /* Icon-72.png in Resources */,
+				BCB3C40716BCA69F003D26B0 /* Icon-72@2x.png in Resources */,
+				BCB3C40816BCA69F003D26B0 /* Icon.png in Resources */,
+				BCB3C40916BCA69F003D26B0 /* Icon@2x.png in Resources */,
+				BCB3C40A16BCA69F003D26B0 /* iTunesArtwork.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

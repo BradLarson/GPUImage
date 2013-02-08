@@ -9,6 +9,11 @@
 /* Begin PBXBuildFile section */
 		BC18E03D156B352E00AB8026 /* libGPUImage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BCF1E62F1569D454006B155F /* libGPUImage.a */; };
 		BC18E03F156B354000AB8026 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC18E03E156B354000AB8026 /* CoreMedia.framework */; };
+		BCB3C41116BCA74F003D26B0 /* Icon-72.png in Resources */ = {isa = PBXBuildFile; fileRef = BCB3C40E16BCA74F003D26B0 /* Icon-72.png */; };
+		BCB3C41216BCA74F003D26B0 /* Icon-72@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BCB3C40F16BCA74F003D26B0 /* Icon-72@2x.png */; };
+		BCB3C41316BCA74F003D26B0 /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BCB3C41016BCA74F003D26B0 /* Icon@2x.png */; };
+		BCB3C41816BCA75A003D26B0 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = BCB3C41616BCA75A003D26B0 /* Icon.png */; };
+		BCB3C41916BCA75A003D26B0 /* iTunesArtwork.png in Resources */ = {isa = PBXBuildFile; fileRef = BCB3C41716BCA75A003D26B0 /* iTunesArtwork.png */; };
 		BCF1E6071569D372006B155F /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCF1E6061569D372006B155F /* UIKit.framework */; };
 		BCF1E6091569D372006B155F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCF1E6081569D372006B155F /* Foundation.framework */; };
 		BCF1E60B1569D372006B155F /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCF1E60A1569D372006B155F /* CoreGraphics.framework */; };
@@ -48,6 +53,11 @@
 
 /* Begin PBXFileReference section */
 		BC18E03E156B354000AB8026 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
+		BCB3C40E16BCA74F003D26B0 /* Icon-72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-72.png"; path = "../../SharedIcons/Icon-72.png"; sourceTree = "<group>"; };
+		BCB3C40F16BCA74F003D26B0 /* Icon-72@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-72@2x.png"; path = "../../SharedIcons/Icon-72@2x.png"; sourceTree = "<group>"; };
+		BCB3C41016BCA74F003D26B0 /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon@2x.png"; path = "../../SharedIcons/Icon@2x.png"; sourceTree = "<group>"; };
+		BCB3C41616BCA75A003D26B0 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Icon.png; path = ../../SharedIcons/Icon.png; sourceTree = "<group>"; };
+		BCB3C41716BCA75A003D26B0 /* iTunesArtwork.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = iTunesArtwork.png; path = ../../SharedIcons/iTunesArtwork.png; sourceTree = "<group>"; };
 		BCF1E6021569D372006B155F /* RawDataTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RawDataTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BCF1E6061569D372006B155F /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		BCF1E6081569D372006B155F /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -133,6 +143,11 @@
 		BCF1E60D1569D372006B155F /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				BCB3C41616BCA75A003D26B0 /* Icon.png */,
+				BCB3C41716BCA75A003D26B0 /* iTunesArtwork.png */,
+				BCB3C40E16BCA74F003D26B0 /* Icon-72.png */,
+				BCB3C40F16BCA74F003D26B0 /* Icon-72@2x.png */,
+				BCB3C41016BCA74F003D26B0 /* Icon@2x.png */,
 				BCF1E60E1569D372006B155F /* RawDataTest-Info.plist */,
 				BCF1E60F1569D372006B155F /* InfoPlist.strings */,
 				BCF1E6121569D372006B155F /* main.m */,
@@ -228,6 +243,11 @@
 			files = (
 				BCF1E6111569D372006B155F /* InfoPlist.strings in Resources */,
 				BCF1E63F156AAB4E006B155F /* CalculationShader.fsh in Resources */,
+				BCB3C41116BCA74F003D26B0 /* Icon-72.png in Resources */,
+				BCB3C41216BCA74F003D26B0 /* Icon-72@2x.png in Resources */,
+				BCB3C41316BCA74F003D26B0 /* Icon@2x.png in Resources */,
+				BCB3C41816BCA75A003D26B0 /* Icon.png in Resources */,
+				BCB3C41916BCA75A003D26B0 /* iTunesArtwork.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
