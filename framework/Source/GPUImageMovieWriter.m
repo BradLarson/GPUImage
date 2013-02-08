@@ -262,6 +262,11 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 
 - (void)finishRecording;
 {
+    [self finishRecordingWithCompletionHandler:nil];
+}
+
+- (void)finishRecordingWithCompletionHandler:(void (^)(void))handler;
+{
     if (assetWriter.status == AVAssetWriterStatusCompleted)
     {
         return;
@@ -271,10 +276,21 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
     runOnMainQueueWithoutDeadlocking(^{
         [assetWriterVideoInput markAsFinished];
         [assetWriterAudioInput markAsFinished];
-#if ( (__IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_6_0) || (!defined(__IPHONE_6_0)) )
+#if (!defined(__IPHONE_6_0) || (__IPHONE_OS_VERSION_MAX_ALLOWED < __IPHONE_6_0))
+        // Not iOS 6 SDK
         [assetWriter finishWriting];
+        if (handler) handler();
 #else
-        [assetWriter finishWritingWithCompletionHandler:NULL];
+        // iOS 6 SDK
+        if ([assetWriter respondsToSelector:@selector(finishWritingWithCompletionHandler:)]) {
+            // Running iOS 6
+            [assetWriter finishWritingWithCompletionHandler:(handler ?: ^{ })];
+        }
+        else {
+            // Not running iOS 6
+            [assetWriter finishWriting];
+            if (handler) handler();
+        }
 #endif
     });
 }
