@@ -1,5 +1,7 @@
 # GPUImage framework #
 
+<div style="float: right"><img src="http://sunsetlakesoftware.com/sites/default/files/GPUImageLogo.png" /></div>
+
 Brad Larson
 
 http://www.sunsetlakesoftware.com

@@ -91,6 +91,37 @@
     return maxTextureUnits;
 }
 
++ (BOOL)deviceSupportsOpenGLESExtension:(NSString *)extension;
+{
+    static dispatch_once_t pred;
+    static NSArray *extensionNames = nil;
+
+    // Cache extensions for later quick reference, since this won't change for a given device
+    dispatch_once(&pred, ^{
+        [GPUImageOpenGLESContext useImageProcessingContext];
+        NSString *extensionsString = [NSString stringWithCString:(const char *)glGetString(GL_EXTENSIONS) encoding:NSASCIIStringEncoding];
+        extensionNames = [extensionsString componentsSeparatedByString:@" "];
+    });
+
+    return [extensionNames containsObject:extension];
+}
+
+
+// http://www.khronos.org/registry/gles/extensions/EXT/EXT_texture_rg.txt
+
++ (BOOL)deviceSupportsRedTextures;
+{
+    static dispatch_once_t pred;
+    static BOOL supportsRedTextures = NO;
+    
+    dispatch_once(&pred, ^{
+        supportsRedTextures = [GPUImageOpenGLESContext deviceSupportsOpenGLESExtension:@"GL_EXT_texture_rg"];
+    });
+    
+    return supportsRedTextures;
+}
+
+
 + (CGSize)sizeThatFitsWithinATextureForSize:(CGSize)inputSize;
 {
     GLint maxTextureSize = [self maximumTextureSizeForThisDevice]; 
