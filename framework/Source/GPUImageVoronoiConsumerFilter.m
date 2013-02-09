@@ -1,6 +1,6 @@
-#import "GPUImageVoroniConsumerFilter.h"
+#import "GPUImageVoronoiConsumerFilter.h"
 
-NSString *const kGPUImageVoroniConsumerFragmentShaderString = SHADER_STRING
+NSString *const kGPUImageVoronoiConsumerFragmentShaderString = SHADER_STRING
 (
  
  precision highp float;
@@ -19,23 +19,24 @@ NSString *const kGPUImageVoroniConsumerFragmentShaderString = SHADER_STRING
     float y = color.y*256.0 + yoff*256.0;
     return vec2(x,y) / size;
 }
-
+ 
  void main(void) {
      vec4 colorLoc = texture2D(inputImageTexture2, textureCoordinate);
      vec4 color = texture2D(inputImageTexture, getCoordFromColor(colorLoc));
-     gl_FragColor = color;	
+     
+     gl_FragColor = color;
  }
-
+ 
  
  );
 
-@implementation GPUImageVoroniConsumerFilter
+@implementation GPUImageVoronoiConsumerFilter
 
 @synthesize sizeInPixels = _sizeInPixels;
 
 - (id)init;
 {
-    if (!(self = [super initWithFragmentShaderFromString:kGPUImageVoroniConsumerFragmentShaderString]))
+    if (!(self = [super initWithFragmentShaderFromString:kGPUImageVoronoiConsumerFragmentShaderString]))
     {
 		return nil;
     }
@@ -54,11 +55,11 @@ NSString *const kGPUImageVoroniConsumerFragmentShaderString = SHADER_STRING
     float height = log2(sizeInPixels.height);
     
     if (width != height) {
-        NSLog(@"Voroni point texture must be square");
+        NSLog(@"Voronoi point texture must be square");
         return;
     }
     if (width != floor(width) || height != floor(height)) {
-        NSLog(@"Voroni point texture must be a power of 2.  Texture size %f, %f", sizeInPixels.width, sizeInPixels.height);
+        NSLog(@"Voronoi point texture must be a power of 2.  Texture size %f, %f", sizeInPixels.width, sizeInPixels.height);
         return;
     }
     glUniform2f(sizeUniform, _sizeInPixels.width, _sizeInPixels.height);

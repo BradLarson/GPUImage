@@ -141,7 +141,7 @@
 		case GPUIMAGE_OPENING: cell.textLabel.text = @"Opening"; break;
 		case GPUIMAGE_CLOSING: cell.textLabel.text = @"Closing"; break;
         case GPUIMAGE_PERLINNOISE: cell.textLabel.text = @"Perlin noise"; break;
-        case GPUIMAGE_VORONI: cell.textLabel.text = @"Voroni"; break;
+        case GPUIMAGE_VORONOI: cell.textLabel.text = @"Voronoi"; break;
         case GPUIMAGE_MOSAIC: cell.textLabel.text = @"Mosaic"; break;
 		case GPUIMAGE_LOCALBINARYPATTERN: cell.textLabel.text = @"Local binary pattern"; break;
 		case GPUIMAGE_CHROMAKEY: cell.textLabel.text = @"Chroma key blend (green)"; break;

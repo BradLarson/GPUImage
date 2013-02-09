@@ -1,6 +1,6 @@
 #import "GPUImageTwoInputFilter.h"
 
-@interface GPUImageVoroniConsumerFilter : GPUImageTwoInputFilter 
+@interface GPUImageVoronoiConsumerFilter : GPUImageTwoInputFilter 
 {
     GLint sizeUniform;
 }
