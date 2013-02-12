@@ -149,3 +149,4 @@
 #import "GPUImageTwoInputCrossTextureSamplingFilter.h"
 #import "GPUImagePoissonBlendFilter.h"
 #import "GPUImageMotionBlurFilter.h"
+#import "GPUImageZoomBlurFilter.h"

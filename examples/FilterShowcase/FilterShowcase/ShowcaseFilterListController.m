@@ -175,6 +175,7 @@
         case GPUIMAGE_MEDIAN: cell.textLabel.text = @"Median (3x3)"; break;
         case GPUIMAGE_BILATERAL: cell.textLabel.text = @"Bilateral blur"; break;
         case GPUIMAGE_MOTIONBLUR: cell.textLabel.text = @"Motion blur"; break;
+        case GPUIMAGE_ZOOMBLUR: cell.textLabel.text = @"Zoom blur"; break;
         case GPUIMAGE_BOXBLUR: cell.textLabel.text = @"Box blur"; break;
         case GPUIMAGE_GAUSSIAN_SELECTIVE: cell.textLabel.text = @"Gaussian selective blur"; break;
         case GPUIMAGE_GAUSSIAN_POSITION: cell.textLabel.text = @"Gaussian (centered)"; break;

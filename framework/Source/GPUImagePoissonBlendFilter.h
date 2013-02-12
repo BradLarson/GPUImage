@@ -1,11 +1,3 @@
-//
-//  GPUImagePoissonBlendFilter.h
-//  GPUImage
-//
-//  Created by Ian Simon on 1/29/13.
-//  Copyright (c) 2013 Brad Larson. All rights reserved.
-//
-
 #import "GPUImageTwoInputCrossTextureSamplingFilter.h"
 #import "GPUImageFilterGroup.h"
 
