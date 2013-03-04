@@ -1,5 +1,4 @@
 #import "GPUImagePicture.h"
-#import "stb_image.c"
 
 @implementation GPUImagePicture
 
@@ -20,54 +19,13 @@
 
 - (id)initWithData:(NSData *)imageData;
 {
-    if (!(self = [self init]))
+    UIImage *inputImage = [[UIImage alloc] initWithData:imageData];
+    
+    if (!(self = [self initWithImage:inputImage]))
     {
 		return nil;
     }
     
-    hasProcessedImage = NO;
-    self.shouldSmoothlyScaleOutput = NO;
-    imageUpdateSemaphore = dispatch_semaphore_create(1);
-    
-    int widthOfImage = 0;
-    int heightOfImage = 0;
-    int componentsOfImage = 0;
-
-//    unsigned char *data = stbi_load([[url absoluteString] UTF8String], &x, &y, &n, 0);
-    
-    unsigned char *imageBytes = stbi_load_from_memory([imageData bytes], [imageData length], &widthOfImage, &heightOfImage, &componentsOfImage, 0);
-    pixelSizeOfImage = CGSizeMake(widthOfImage, heightOfImage);
-    
-    GLenum format = GL_RGBA;
-    if (componentsOfImage == 3)
-    {
-        format = GL_RGB;
-    }
-    else if (componentsOfImage == 4)
-    {
-        format = GL_RGBA;
-    }
-
-    runSynchronouslyOnVideoProcessingQueue(^{
-        [GPUImageOpenGLESContext useImageProcessingContext];
-        
-        [self initializeOutputTextureIfNeeded];
-        
-        glBindTexture(GL_TEXTURE_2D, outputTexture);
-        if (self.shouldSmoothlyScaleOutput)
-        {
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-        }
-        glTexImage2D(GL_TEXTURE_2D, 0, format, widthOfImage, heightOfImage, 0, format, GL_UNSIGNED_BYTE, imageBytes);
-        
-        if (self.shouldSmoothlyScaleOutput)
-        {
-            glGenerateMipmap(GL_TEXTURE_2D);
-        }
-    });
-    
-    stbi_image_free(imageBytes);
-
     return self;
 }
 

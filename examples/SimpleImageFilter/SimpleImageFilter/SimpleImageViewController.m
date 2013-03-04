@@ -80,11 +80,11 @@
 - (void)setupImageFilteringToDisk;
 {
     // Set up a manual image filtering chain
-//    NSURL *inputImageURL = [[NSBundle mainBundle] URLForResource:@"Lambeau" withExtension:@"jpg"];
+    NSURL *inputImageURL = [[NSBundle mainBundle] URLForResource:@"Lambeau" withExtension:@"jpg"];
     UIImage *inputImage = [UIImage imageNamed:@"Lambeau.jpg"];
 
-    GPUImagePicture *stillImageSource = [[GPUImagePicture alloc] initWithImage:inputImage];
-//    GPUImagePicture *stillImageSource = [[GPUImagePicture alloc] initWithURL:inputImageURL];
+//    GPUImagePicture *stillImageSource = [[GPUImagePicture alloc] initWithImage:inputImage];
+    GPUImagePicture *stillImageSource = [[GPUImagePicture alloc] initWithURL:inputImageURL];
 
     
     GPUImageSepiaFilter *stillImageFilter = [[GPUImageSepiaFilter alloc] init];

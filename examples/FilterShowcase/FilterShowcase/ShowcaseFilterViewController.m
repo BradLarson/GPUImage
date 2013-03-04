@@ -1112,7 +1112,13 @@
             
             filter = [[GPUImageKuwaharaFilter alloc] init];
         }; break;
+        case GPUIMAGE_KUWAHARARADIUS3:
+        {
+            self.title = @"Kuwahara (Radius 3)";
+            self.filterSettingsSlider.hidden = YES;
             
+            filter = [[GPUImageKuwaharaRadius3Filter alloc] init];
+        }; break;
         case GPUIMAGE_VIGNETTE:
         {
              self.title = @"Vignette";

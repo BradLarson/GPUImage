@@ -169,6 +169,7 @@
         case GPUIMAGE_POISSONBLEND: cell.textLabel.text = @"Poisson blend"; break;
 	    case GPUIMAGE_OPACITY: cell.textLabel.text = @"Opacity adjustment"; break;
         case GPUIMAGE_KUWAHARA: cell.textLabel.text = @"Kuwahara"; break;
+        case GPUIMAGE_KUWAHARARADIUS3: cell.textLabel.text = @"Kuwahara (fixed radius)"; break;
         case GPUIMAGE_VIGNETTE: cell.textLabel.text = @"Vignette"; break;
         case GPUIMAGE_GAUSSIAN: cell.textLabel.text = @"Gaussian blur"; break;
         case GPUIMAGE_FASTBLUR: cell.textLabel.text = @"Fast blur"; break;
