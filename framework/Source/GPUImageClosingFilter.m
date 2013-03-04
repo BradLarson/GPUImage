@@ -4,6 +4,9 @@
 
 @implementation GPUImageClosingFilter
 
+@synthesize verticalTexelSpacing = _verticalTexelSpacing;
+@synthesize horizontalTexelSpacing = _horizontalTexelSpacing;
+
 - (id)init;
 {
     if (!(self = [self initWithRadius:1]))
@@ -35,6 +38,20 @@
     self.terminalFilter = erosionFilter;
     
     return self;
+}
+
+- (void)setVerticalTexelSpacing:(CGFloat)newValue;
+{
+    _verticalTexelSpacing = newValue;
+    erosionFilter.verticalTexelSpacing = newValue;
+    dilationFilter.verticalTexelSpacing = newValue;
+}
+
+- (void)setHorizontalTexelSpacing:(CGFloat)newValue;
+{
+    _horizontalTexelSpacing = newValue;
+    erosionFilter.horizontalTexelSpacing = newValue;
+    dilationFilter.horizontalTexelSpacing = newValue;
 }
 
 @end

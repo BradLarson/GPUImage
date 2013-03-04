@@ -12,6 +12,8 @@
     GPUImageDilationFilter *dilationFilter;
 }
 
+@property(readwrite, nonatomic) CGFloat verticalTexelSpacing, horizontalTexelSpacing;
+
 - (id)initWithRadius:(NSUInteger)radius;
 
 @end
