@@ -141,7 +141,7 @@
 		case GPUIMAGE_OPENING: cell.textLabel.text = @"Opening"; break;
 		case GPUIMAGE_CLOSING: cell.textLabel.text = @"Closing"; break;
         case GPUIMAGE_PERLINNOISE: cell.textLabel.text = @"Perlin noise"; break;
-        case GPUIMAGE_VORONI: cell.textLabel.text = @"Voroni"; break;
+        case GPUIMAGE_VORONOI: cell.textLabel.text = @"Voronoi"; break;
         case GPUIMAGE_MOSAIC: cell.textLabel.text = @"Mosaic"; break;
 		case GPUIMAGE_LOCALBINARYPATTERN: cell.textLabel.text = @"Local binary pattern"; break;
 		case GPUIMAGE_CHROMAKEY: cell.textLabel.text = @"Chroma key blend (green)"; break;
@@ -169,11 +169,14 @@
         case GPUIMAGE_POISSONBLEND: cell.textLabel.text = @"Poisson blend"; break;
 	    case GPUIMAGE_OPACITY: cell.textLabel.text = @"Opacity adjustment"; break;
         case GPUIMAGE_KUWAHARA: cell.textLabel.text = @"Kuwahara"; break;
+        case GPUIMAGE_KUWAHARARADIUS3: cell.textLabel.text = @"Kuwahara (fixed radius)"; break;
         case GPUIMAGE_VIGNETTE: cell.textLabel.text = @"Vignette"; break;
         case GPUIMAGE_GAUSSIAN: cell.textLabel.text = @"Gaussian blur"; break;
         case GPUIMAGE_FASTBLUR: cell.textLabel.text = @"Fast blur"; break;
         case GPUIMAGE_MEDIAN: cell.textLabel.text = @"Median (3x3)"; break;
         case GPUIMAGE_BILATERAL: cell.textLabel.text = @"Bilateral blur"; break;
+        case GPUIMAGE_MOTIONBLUR: cell.textLabel.text = @"Motion blur"; break;
+        case GPUIMAGE_ZOOMBLUR: cell.textLabel.text = @"Zoom blur"; break;
         case GPUIMAGE_BOXBLUR: cell.textLabel.text = @"Box blur"; break;
         case GPUIMAGE_GAUSSIAN_SELECTIVE: cell.textLabel.text = @"Gaussian selective blur"; break;
         case GPUIMAGE_GAUSSIAN_POSITION: cell.textLabel.text = @"Gaussian (centered)"; break;

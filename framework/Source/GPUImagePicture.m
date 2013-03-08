@@ -5,6 +5,30 @@
 #pragma mark -
 #pragma mark Initialization and teardown
 
+- (id)initWithURL:(NSURL *)url;
+{
+    NSData *imageData = [[NSData alloc] initWithContentsOfURL:url];
+    
+    if (!(self = [self initWithData:imageData]))
+    {
+        return nil;
+    }
+
+    return self;
+}
+
+- (id)initWithData:(NSData *)imageData;
+{
+    UIImage *inputImage = [[UIImage alloc] initWithData:imageData];
+    
+    if (!(self = [self initWithImage:inputImage]))
+    {
+		return nil;
+    }
+    
+    return self;
+}
+
 - (id)initWithImage:(UIImage *)newImageSource;
 {
     if (!(self = [self initWithImage:newImageSource smoothlyScaleOutput:NO]))

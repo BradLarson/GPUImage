@@ -9,7 +9,6 @@ NSString *const kGPUImageFastBlurVertexShaderString = SHADER_STRING
 
  uniform highp float texelWidthOffset; 
  uniform highp float texelHeightOffset; 
- uniform highp float blurSize;
  
  varying highp vec2 centerTextureCoordinate;
  varying highp vec2 oneStepLeftTextureCoordinate;
@@ -23,8 +22,8 @@ NSString *const kGPUImageFastBlurVertexShaderString = SHADER_STRING
  {
      gl_Position = position;
           
-     vec2 firstOffset = vec2(1.3846153846 * texelWidthOffset, 1.3846153846 * texelHeightOffset) * blurSize;
-     vec2 secondOffset = vec2(3.2307692308 * texelWidthOffset, 3.2307692308 * texelHeightOffset) * blurSize;
+     vec2 firstOffset = vec2(1.3846153846 * texelWidthOffset, 1.3846153846 * texelHeightOffset);
+     vec2 secondOffset = vec2(3.2307692308 * texelWidthOffset, 3.2307692308 * texelHeightOffset);
      
      centerTextureCoordinate = inputTextureCoordinate;
      oneStepLeftTextureCoordinate = inputTextureCoordinate - firstOffset;
@@ -112,9 +111,6 @@ NSString *const kGPUImageFastBlurIgnoringAlphaFragmentShaderString = SHADER_STRI
 		return nil;
     }
     
-    firstBlurSizeUniform = [filterProgram uniformIndex:@"blurSize"];    
-    secondBlurSizeUniform = [secondFilterProgram uniformIndex:@"blurSize"];
-
     self.blurSize = 1.0;
 
     return self;
@@ -140,8 +136,10 @@ NSString *const kGPUImageFastBlurIgnoringAlphaFragmentShaderString = SHADER_STRI
 {
     _blurSize = newValue;
     
-    [self setFloat:_blurSize forUniform:firstBlurSizeUniform program:filterProgram];
-    [self setFloat:_blurSize forUniform:secondBlurSizeUniform program:secondFilterProgram];
+    _verticalTexelSpacing = _blurSize;
+    _horizontalTexelSpacing = _blurSize;
+    
+    [self setupFilterForSize:[self sizeOfFBO]];
 }
 
 @end

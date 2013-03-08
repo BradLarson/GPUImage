@@ -4,7 +4,7 @@
  */
 @interface GPUImageGaussianBlurPositionFilter : GPUImageTwoPassTextureSamplingFilter 
 {
-    GLint horizontalBlurSizeUniform, verticalBlurSizeUniform, blurCenterUniform, blurRadiusUniform, aspectRatioUniform;
+    GLint blurCenterUniform, blurRadiusUniform, aspectRatioUniform;
 }
 
 /** A multiplier for the blur size, ranging from 0.0 on up, with a default of 1.0

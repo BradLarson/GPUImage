@@ -9,7 +9,6 @@ NSString *const kGPUImageGaussianBlurVertexShaderString = SHADER_STRING
  
  uniform highp float texelWidthOffset; 
  uniform highp float texelHeightOffset;
- uniform highp float blurSize;
  
  varying highp vec2 textureCoordinate;
  varying highp vec2 blurCoordinates[GAUSSIAN_SAMPLES];
@@ -21,7 +20,7 @@ NSString *const kGPUImageGaussianBlurVertexShaderString = SHADER_STRING
  	// Calculate the positions for the blur
  	int multiplier = 0;
  	highp vec2 blurStep;
-    highp vec2 singleStepOffset = vec2(texelHeightOffset, texelWidthOffset) * blurSize;
+    highp vec2 singleStepOffset = vec2(texelHeightOffset, texelWidthOffset);
      
  	for (lowp int i = 0; i < GAUSSIAN_SAMPLES; i++) {
  		multiplier = (i - ((GAUSSIAN_SAMPLES - 1) / 2));
@@ -74,9 +73,6 @@ NSString *const kGPUImageGaussianBlurFragmentShaderString = SHADER_STRING
         return nil;
     }
     
-    horizontalBlurSizeUniform = [filterProgram uniformIndex:@"blurSize"];
-    verticalBlurSizeUniform = [secondFilterProgram uniformIndex:@"blurSize"];
-
     self.blurSize = 1.0;
     
     return self;
@@ -90,13 +86,18 @@ NSString *const kGPUImageGaussianBlurFragmentShaderString = SHADER_STRING
                       secondStageFragmentShaderFromString:nil];
 }
 
-#pragma mark Getters and Setters
+#pragma mark -
+#pragma mark Accessors
 
-- (void) setBlurSize:(CGFloat)blurSize {
-    _blurSize = blurSize;
-
-    [self setFloat:_blurSize forUniform:horizontalBlurSizeUniform program:filterProgram];
-    [self setFloat:_blurSize forUniform:verticalBlurSizeUniform program:secondFilterProgram];
+- (void)setBlurSize:(CGFloat)newValue;
+{
+    _blurSize = newValue;
+    
+    _verticalTexelSpacing = _blurSize;
+    _horizontalTexelSpacing = _blurSize;
+    
+    [self setupFilterForSize:[self sizeOfFBO]];
 }
+
 
 @end

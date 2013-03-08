@@ -1,4 +1,4 @@
-# GPUImage framework #
+# GPUImage #
 
 <div style="float: right"><img src="http://sunsetlakesoftware.com/sites/default/files/GPUImageLogo.png" /></div>
 
@@ -54,6 +54,8 @@ Documentation is generated from header comments using appledoc. To build the doc
 
 ## Built-in filters ##
 
+There are currently 125 built-in filters, divided into the following categories:
+
 ### Color adjustments ###
 
 - **GPUImageBrightnessFilter**: Adjusts the brightness of the image
@@ -71,6 +73,8 @@ Documentation is generated from header comments using appledoc. To build the doc
 - **GPUImageGammaFilter**: Adjusts the gamma of an image
   - *gamma*: The gamma adjustment to apply (0.0 - 3.0, with 1.0 as the default)
 
+- **GPUImageLevelsFilter**: Photoshop-like levels adjustment. The min, max, minOut and maxOut parameters are floats in the range [0, 1]. If you have parameters from Photoshop in the range [0, 255] you must first convert them to be [0, 1]. The gamma/mid parameter is a float >= 0. This matches the value from Photoshop. If you want to apply levels to RGB as well as individual channels you need to use this filter twice - first for the individual channels and then for all channels.
+
 - **GPUImageColorMatrixFilter**: Transforms the colors of an image by applying a matrix to them
   - *colorMatrix*: A 4x4 matrix used to transform each color in an image
   - *intensity*: The degree to which the new transformed color replaces the original color for each pixel
@@ -86,7 +90,8 @@ Documentation is generated from header comments using appledoc. To build the doc
 - **GPUImageToneCurveFilter**: Adjusts the colors of an image based on spline curves for each color channel.
   - *redControlPoints*:
   - *greenControlPoints*:
-  - *blueControlPoints*: The tone curve takes in a series of control points that define the spline curve for each color component. These are stored as NSValue-wrapped CGPoints in an NSArray, with normalized X and Y coordinates from 0 - 1. The defaults are (0,0), (0.5,0.5), (1,1).
+  - *blueControlPoints*: 
+  - *rgbCompositeControlPoints*: The tone curve takes in a series of control points that define the spline curve for each color component, or for all three in the composite. These are stored as NSValue-wrapped CGPoints in an NSArray, with normalized X and Y coordinates from 0 - 1. The defaults are (0,0), (0.5,0.5), (1,1).
 
 - **GPUImageHighlightShadowFilter**: Adjusts the shadows and highlights of an image
   - *shadows*: Increase to lighten shadows, from 0.0 to 1.0, with 0.0 as the default.
@@ -111,6 +116,10 @@ Documentation is generated from header comments using appledoc. To build the doc
 - **GPUImageFalseColorFilter**: Uses the luminance of the image to mix between two user-specified colors
   - *firstColor*: The first and second colors specify what colors replace the dark and light areas of the image, respectively. The defaults are (0.0, 0.0, 0.5) amd (1.0, 0.0, 0.0).
   - *secondColor*: 
+
+- **GPUImageHazeFilter**: Used to add or remove haze (similar to a UV filter)
+  - *distance*: Strength of the color applied. Default 0. Values between -.3 and .3 are best.
+  - *slope*: Amount of color change. Default 0. Values between -.3 and .3 are best.
 
 - **GPUImageSepiaFilter**: Simple sepia tone filter
   - *intensity*: The degree to which the sepia tone replaces the normal image color (0.0 - 1.0, with 1.0 as the default)
@@ -164,7 +173,13 @@ Documentation is generated from header comments using appledoc. To build the doc
 - **GPUImageFastBlurFilter**: A hardware-accelerated 9-hit Gaussian blur of an image
   - *blurPasses*: The number of times to re-apply this blur on an image. More passes lead to a blurrier image, yet they require more processing power. The default is 1.
 
+- **GPUImageSingleComponentFastBlurFilter**: A modification of the GPUImageFastBlurFilter to only operate on the red component
+  - *blurPasses*: The number of times to re-apply this blur on an image. More passes lead to a blurrier image, yet they require more processing power. The default is 1.
+
 - **GPUImageGaussianBlurFilter**: A more generalized 9x9 Gaussian blur filter
+  - *blurSize*: A multiplier for the size of the blur, ranging from 0.0 on up, with a default of 1.0
+
+- **GPUImageSingleComponentGaussianBlurFilter**: A modification of the GPUImageGaussianBlurFilter that operates only on the red component
   - *blurSize*: A multiplier for the size of the blur, ranging from 0.0 on up, with a default of 1.0
 
 - **GPUImageGaussianSelectiveBlurFilter**: A Gaussian blur that preserves focus within a circular region
@@ -173,6 +188,17 @@ Documentation is generated from header comments using appledoc. To build the doc
   - *excludeCirclePoint*: The center of the circular area being excluded from the blur
   - *excludeBlurSize*: The size of the area between the blurred portion and the clear circle 
   - *aspectRatio*: The aspect ratio of the image, used to adjust the circularity of the in-focus region. By default, this matches the image aspect ratio, but you can override this value.
+
+- **GPUImageGaussianBlurPositionFilter**: The inverse of the GPUImageGaussianSelectiveBlurFilter, applying the blur only within a certain circle
+  - *blurSize*: A multiplier for the size of the blur, ranging from 0.0 on up, with a default of 1.0
+  - *blurCenter*: Center for the blur, defaults to 0.5, 0.5
+  - *blurRadius*: Radius for the blur, defaults to 1.0
+
+- **GPUImageMedianFilter**: Takes the median value of the three color components, over a 3x3 area
+
+- **GPUImageBilateralFilter**: A bilateral blur, which tries to blur similar color values while preserving sharp edges
+  - *blurSize*: A multiplier for the size of the blur, ranging from 0.0 on up, with a default of 4.0
+  - *distanceNormalizationFactor*: A normalization factor for the distance between central color and sample color, with a default of 8.0.
 
 - **GPUImageTiltShiftFilter**: A simulated tilt shift lens effect
   - *blurSize*: A multiplier for the size of the out-of-focus blur, ranging from 0.0 on up, with a default of 2.0
@@ -188,6 +214,11 @@ Documentation is generated from header comments using appledoc. To build the doc
 - **GPUImageSobelEdgeDetectionFilter**: Sobel edge detection, with edges highlighted in white
   - *texelWidth*: 
   - *texelHeight*: These parameters affect the visibility of the detected edges
+
+- **GPUImageThresholdEdgeDetectionFilter**: Performs Sobel edge detection, but applies a threshold instead of giving gradual strength values
+  - *texelWidth*: 
+  - *texelHeight*: These parameters affect the visibility of the detected edges
+  - *threshold*: Any edge above this threshold will be black, and anything below white. Ranges from 0.0 to 1.0, with 0.8 as the default
 
 - **GPUImageCannyEdgeDetectionFilter**: This uses the full Canny process to highlight one-pixel-wide edges
   - *texelWidth*: 
@@ -234,6 +265,8 @@ Documentation is generated from header comments using appledoc. To build the doc
 
 - **GPUImageRGBClosingFilter**: This is the same as the GPUImageClosingFilter, except that this acts on all color channels, not just the red channel.
 
+- **GPUImageLocalBinaryPatternFilter**: This performs a comparison of intensity of the red channel of the 8 surrounding pixels and that of the central one, encoding the comparison results in a bit string that becomes this pixel intensity. The least-significant bit is the top-right comparison, going counterclockwise to end at the right comparison as the most significant bit.
+
 - **GPUImageLowPassFilter**: This applies a low pass filter to incoming video frames. This basically accumulates a weighted rolling average of previous frames with the current ones as they come in. This can be used to denoise video, add motion blur, or be used to create a high pass filter.
   - *filterStrength*: This controls the degree by which the previous accumulated frames are blended with the current one. This ranges from 0.0 to 1.0, with a default of 0.5.
 
@@ -243,6 +276,21 @@ Documentation is generated from header comments using appledoc. To build the doc
 - **GPUImageMotionDetector**: This is a motion detector based on a high-pass filter. You set the motionDetectionBlock and on every incoming frame it will give you the centroid of any detected movement in the scene (in normalized X,Y coordinates) as well as an intensity of motion for the scene.
   - *lowPassFilterStrength*: This controls the strength of the low pass filter used behind the scenes to establish the baseline that incoming frames are compared with. This ranges from 0.0 to 1.0, with a default of 0.5.
 
+- **GPUImageHoughTransformLineDetector**: Detects lines in the image using a Hough transform into parallel coordinate space. This approach is based entirely on the PC lines process developed by the Graph@FIT research group at the Brno University of Technology and described in their publications: M. Dubská, J. Havel, and A. Herout. Real-Time Detection of Lines using Parallel Coordinates and OpenGL. Proceedings of SCCG 2011, Bratislava, SK, p. 7 (http://medusa.fit.vutbr.cz/public/data/papers/2011-SCCG-Dubska-Real-Time-Line-Detection-Using-PC-and-OpenGL.pdf) and M. Dubská, J. Havel, and A. Herout. PClines — Line detection using parallel coordinates. 2011 IEEE Conference on Computer Vision and Pattern Recognition (CVPR), p. 1489- 1494 (http://medusa.fit.vutbr.cz/public/data/papers/2011-CVPR-Dubska-PClines.pdf).
+  - *edgeThreshold*: A threshold value for which a point is detected as belonging to an edge for determining lines. Default is 0.9.
+  - *lineDetectionThreshold*: A threshold value for which a local maximum is detected as belonging to a line in parallel coordinate space. Default is 0.20.
+  - *linesDetectedBlock*: This block is called on the detection of lines, usually on every processed frame. A C array containing normalized slopes and intercepts in m, b pairs (y=mx+b) is passed in, along with a count of the number of lines detected and the current timestamp of the video frame.
+
+- **GPUImageLineGenerator**: A helper class that generates lines which can overlay the scene. The color of these lines can be adjusted using -setLineColorRed:green:blue:
+  - *lineWidth*: The width of the lines, in pixels, with a default of 1.0.
+
+- **GPUImageMotionBlurFilter**: Applies a directional motion blur to an image
+  - *blurSize*: A multiplier for the blur size, ranging from 0.0 on up, with a default of 1.0
+  - *blurAngle*: The angular direction of the blur, in degrees. 0 degrees by default.
+
+- **GPUImageZoomBlurFilter**: Applies a directional motion blur to an image
+  - *blurSize*: A multiplier for the blur size, ranging from 0.0 on up, with a default of 1.0
+  - *blurCenter*: The normalized center of the blur. (0.5, 0.5) by default
 
 ### Blending modes ###
 
@@ -256,6 +304,8 @@ Documentation is generated from header comments using appledoc. To build the doc
 - **GPUImageMultiplyBlendFilter**: Applies a multiply blend of two images
 
 - **GPUImageAddBlendFilter**: Applies an additive blend of two images
+
+- **GPUImageSubtractBlendFilter**: Applies a subtractive blend of two images
 
 - **GPUImageDivideBlendFilter**: Applies a division blend of two images
 
@@ -282,6 +332,30 @@ Documentation is generated from header comments using appledoc. To build the doc
 - **GPUImageAlphaBlendFilter**: Blends the second image over the first, based on the second's alpha channel
   - *mix*: The degree with which the second image overrides the first (0.0 - 1.0, with 1.0 as the default)
 
+- **GPUImageSourceOverBlendFilter**: Applies a source over blend of two images
+
+- **GPUImageColorBurnBlendFilter**: Applies a color burn blend of two images
+
+- **GPUImageColorDodgeBlendFilter**: Applies a color dodge blend of two images
+
+- **GPUImageNormalBlendFilter**: Applies a normal blend of two images
+
+- **GPUImageColorBlendFilter**: Applies a color blend of two images
+
+- **GPUImageHueBlendFilter**: Applies a hue blend of two images
+
+- **GPUImageSaturationBlendFilter**: Applies a saturation blend of two images
+
+- **GPUImageLuminosityBlendFilter**: Applies a luminosity blend of two images
+
+- **GPUImageLinearBurnBlendFilter**: Applies a linear burn blend of two images
+
+- **GPUImagePoissonBlendFilter**: Applies a Poisson blend of two images
+  - *mix*: Mix ranges from 0.0 (only image 1) to 1.0 (only image 2 gradients), with 1.0 as the normal level
+  - *numIterations*: The number of times to propagate the gradients. Crank this up to 100 or even 1000 if you want to get anywhere near convergence.  Yes, this will be slow.
+
+- **GPUImageMaskFilter**: Masks one image using another
+
 ### Visual effects ###
 
 - **GPUImagePixellateFilter**: Applies a pixellation effect on an image or video
@@ -303,6 +377,10 @@ Documentation is generated from header comments using appledoc. To build the doc
   - *lineWidth*: A relative width for the crosshatch lines. The default is 0.003.
 
 - **GPUImageSketchFilter**: Converts video to look like a sketch. This is just the Sobel edge detection filter with the colors inverted
+  - *texelWidth*: 
+  - *texelHeight*: These parameters affect the visibility of the detected edges
+
+- **GPUImageThresholdSketchFilter**: Same as the sketch filter, only the edges are thresholded instead of being grayscale
   - *texelWidth*: 
   - *texelHeight*: These parameters affect the visibility of the detected edges
 
@@ -343,6 +421,16 @@ Documentation is generated from header comments using appledoc. To build the doc
 - **GPUImageStretchDistortionFilter**: Creates a stretch distortion of the image
   - *center*: The center of the image (in normalized coordinates from 0 - 1.0) about which to distort, with a default of (0.5, 0.5)
 
+- **GPUImageSphereRefractionFilter**: Simulates the refraction through a glass sphere
+  - *center*: The center about which to apply the distortion, with a default of (0.5, 0.5)
+  - *radius*: The radius of the distortion, ranging from 0.0 to 1.0, with a default of 0.25
+  - *refractiveIndex*: The index of refraction for the sphere, with a default of 0.71
+
+- **GPUImageGlassSphereFilter**: Same as the GPUImageSphereRefractionFilter, only the image is not inverted and there's a little bit of frosting at the edges of the glass
+  - *center*: The center about which to apply the distortion, with a default of (0.5, 0.5)
+  - *radius*: The radius of the distortion, ranging from 0.0 to 1.0, with a default of 0.25
+  - *refractiveIndex*: The index of refraction for the sphere, with a default of 0.71
+
 - **GPUImageVignetteFilter**: Performs a vignetting effect, fading out the image at the edges
   - *x*:
   - *y*: The directional intensity of the vignetting, with a default of x = 0.75, y = 0.5
@@ -350,6 +438,26 @@ Documentation is generated from header comments using appledoc. To build the doc
 - **GPUImageKuwaharaFilter**: Kuwahara image abstraction, drawn from the work of Kyprianidis, et. al. in their publication "Anisotropic Kuwahara Filtering on the GPU" within the GPU Pro collection. This produces an oil-painting-like image, but it is extremely computationally expensive, so it can take seconds to render a frame on an iPad 2. This might be best used for still images.
   - *radius*: In integer specifying the number of pixels out from the center pixel to test when applying the filter, with a default of 4. A higher value creates a more abstracted image, but at the cost of much greater processing time.
 
+- **GPUImageKuwaharaRadius3Filter**: A modified version of the Kuwahara filter, optimized to work over just a radius of three pixels
+
+- **GPUImagePerlinNoiseFilter**: Generates an image full of Perlin noise
+  - *colorStart*:
+  - *colorFinish*: The color range for the noise being generated
+  - *scale*: The scaling of the noise being generated
+
+- **GPUImageCGAColorspaceFilter**: Simulates the colorspace of a CGA monitor
+
+- **GPUImageMosaicFilter**: This filter takes an input tileset, the tiles must ascend in luminance. It looks at the input image and replaces each display tile with an input tile according to the luminance of that tile.  The idea was to replicate the ASCII video filters seen in other apps, but the tileset can be anything.
+  - *inputTileSize*:
+  - *numTiles*: 
+  - *displayTileSize*:
+  - *colorOn*:
+
+- **GPUImageJFAVoronoiFilter**: Generates a Voronoi map, for use in a later stage.
+  - *sizeInPixels*: Size of the individual elements
+
+- **GPUImageVoronoiConsumerFilter**: Takes in the Voronoi map, and uses that to filter an incoming image.
+  - *sizeInPixels*: Size of the individual elements
 
 You can also easily write your own custom filters using the C-like OpenGL Shading Language, as described below.
 
