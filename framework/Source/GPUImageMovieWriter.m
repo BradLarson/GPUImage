@@ -30,8 +30,11 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
     GLubyte *frameData;
     
     CMTime startTime, previousFrameTime;
-    
+
+    CMTime pausingTimeDiff, previousFrameTimeWhilePausing;
+
     BOOL isRecording;
+    BOOL isPausing;
 }
 
 // Movie recording
@@ -146,6 +149,7 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 - (void)initializeMovieWithOutputSettings:(NSMutableDictionary *)outputSettings;
 {
     isRecording = NO;
+    isPausing = NO;
     
     self.enabled = YES;
     frameData = (GLubyte *) malloc((int)videoSize.width * (int)videoSize.height * 4);
@@ -232,10 +236,22 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 - (void)startRecording;
 {
     isRecording = YES;
+    isPausing = NO;
     startTime = kCMTimeInvalid;
+    pausingTimeDiff = kCMTimeInvalid;
 	//    [assetWriter startWriting];
     
 	//    [assetWriter startSessionAtSourceTime:kCMTimeZero];
+}
+
+- (void)pauseRecording;
+{
+    isPausing = YES;
+}
+
+- (void)resumeRecording;
+{
+    isPausing = NO;
 }
 
 - (void)startRecordingInOrientation:(CGAffineTransform)orientationTransform;
@@ -253,6 +269,7 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
     }
     
     isRecording = NO;
+    isPausing = NO;
     runOnMainQueueWithoutDeadlocking(^{
         [assetWriterVideoInput markAsFinished];
         [assetWriterAudioInput markAsFinished];
@@ -273,6 +290,7 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
     }
 
     isRecording = NO;
+    isPausing = NO;
     runOnMainQueueWithoutDeadlocking(^{
         [assetWriterVideoInput markAsFinished];
         [assetWriterAudioInput markAsFinished];
@@ -298,6 +316,11 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 - (void)processAudioBuffer:(CMSampleBufferRef)audioBuffer;
 {
     if (!isRecording)
+    {
+        return;
+    }
+
+    if (isPausing)
     {
         return;
     }
@@ -499,6 +522,34 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
     if ( (CMTIME_IS_INVALID(frameTime)) || (CMTIME_COMPARE_INLINE(frameTime, ==, previousFrameTime)) || (CMTIME_IS_INDEFINITE(frameTime)) ) 
     {
         return;
+    }
+
+    if (isPausing)
+    {
+        if (CMTIME_IS_INVALID(previousFrameTimeWhilePausing))
+        {
+            if (CMTIME_IS_INVALID(pausingTimeDiff))
+            {
+                pausingTimeDiff = kCMTimeZero;
+            }
+
+            previousFrameTimeWhilePausing = frameTime;
+        }
+
+        pausingTimeDiff = CMTimeAdd(pausingTimeDiff, CMTimeSubtract(frameTime, previousFrameTimeWhilePausing));
+        previousFrameTimeWhilePausing = frameTime;
+        return;
+    }
+    else
+    {
+        if (CMTIME_IS_VALID(previousFrameTimeWhilePausing))
+        {
+            previousFrameTimeWhilePausing = kCMTimeInvalid;
+        }
+        if (CMTIME_IS_VALID(pausingTimeDiff))
+        {
+            frameTime = CMTimeSubtract(frameTime, pausingTimeDiff);
+        }
     }
 
     if (CMTIME_IS_INVALID(startTime))
