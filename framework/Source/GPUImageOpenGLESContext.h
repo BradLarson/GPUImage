@@ -16,6 +16,7 @@ typedef enum { kGPUImageNoRotation, kGPUImageRotateLeft, kGPUImageRotateRight, k
 @property(readonly, nonatomic) dispatch_queue_t contextQueue;
 @property(readwrite, retain, nonatomic) GLProgram *currentShaderProgram;
 
++ (void *)contextKey;
 + (GPUImageOpenGLESContext *)sharedImageProcessingOpenGLESContext;
 + (dispatch_queue_t)sharedOpenGLESQueue;
 + (void)useImageProcessingContext;

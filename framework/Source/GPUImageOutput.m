@@ -19,11 +19,10 @@ void runSynchronouslyOnVideoProcessingQueue(void (^block)(void))
 {
     dispatch_queue_t videoProcessingQueue = [GPUImageOpenGLESContext sharedOpenGLESQueue];
     
-	if (dispatch_get_current_queue() == videoProcessingQueue)
+	if(dispatch_get_specific([GPUImageOpenGLESContext contextKey]))
 	{
 		block();
-	}
-	else
+	}else
 	{
 		dispatch_sync(videoProcessingQueue, block);
 	}
@@ -33,11 +32,10 @@ void runAsynchronouslyOnVideoProcessingQueue(void (^block)(void))
 {
     dispatch_queue_t videoProcessingQueue = [GPUImageOpenGLESContext sharedOpenGLESQueue];
     
-	if (dispatch_get_current_queue() == videoProcessingQueue)
+	if(dispatch_get_specific([GPUImageOpenGLESContext contextKey]))
 	{
 		block();
-	}
-	else
+	}else
 	{
 		dispatch_async(videoProcessingQueue, block);
 	}
