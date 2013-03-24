@@ -16,17 +16,25 @@
 @synthesize currentShaderProgram = _currentShaderProgram;
 @synthesize contextQueue = _contextQueue;
 
+static void *openGLESContextQueueKey;
+
 - (id)init;
 {
     if (!(self = [super init]))
     {
 		return nil;
     }
-        
+
+	openGLESContextQueueKey = &openGLESContextQueueKey;
     _contextQueue = dispatch_queue_create("com.sunsetlakesoftware.GPUImage.openGLESContextQueue", NULL);
+	dispatch_queue_set_specific(_contextQueue, openGLESContextQueueKey, (__bridge void *)self, NULL);
     shaderProgramCache = [[NSMutableDictionary alloc] init];
     
     return self;
+}
+
++ (void *)contextKey {
+	return openGLESContextQueueKey;
 }
 
 // Based on Colin Wheeler's example here: http://cocoasamurai.blogspot.com/2011/04/singletons-your-doing-them-wrong.html
