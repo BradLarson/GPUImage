@@ -25,6 +25,9 @@
         horizontalPassTexelHeightOffsetUniform = [secondFilterProgram uniformIndex:@"texelHeightOffset"];
     });
     
+    self.verticalTexelSpacing = 1.0;
+    self.horizontalTexelSpacing = 1.0;
+    
     return self;
 }
 
