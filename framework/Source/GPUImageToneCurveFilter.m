@@ -24,40 +24,33 @@
 @property(strong,nonatomic) NSArray *greenCurvePoints;    
 @property(strong,nonatomic) NSArray *blueCurvePoints;
 
-- (id) initWithCurveFilePathURL:(NSURL*)curveFilePathURL;
+- (id) initWithACVFileData:(NSData*)data;
 
+
+unsigned short int16WithBytes(Byte* bytes);
 @end
 
 @implementation GPUImageACVFile
 
 @synthesize rgbCompositeCurvePoints, redCurvePoints, greenCurvePoints, blueCurvePoints;
 
-- (id) initWithCurveFilePathURL:(NSURL*)curveFilePathURL
-{
+- (id) initWithACVFileData:(NSData *)data {
     self = [super init];
-	if (self != nil)
-	{
-        NSError* error = nil;
-        NSFileHandle* file = [NSFileHandle fileHandleForReadingFromURL:curveFilePathURL
-                                                                 error:&error];
-        
-        if ((file == nil) || (error != nil))
+    if (self != nil)
+    {
+        if (data.length == 0)
         {
-            NSLog(@"Failed to open file: %@", error);
+            NSLog(@"failed to init ACVFile with data:%@", data);
             
             return self;
         }
         
-        NSData *databuffer;
+        Byte* rawBytes = (Byte*) [data bytes];
+        version        = int16WithBytes(rawBytes);
+        rawBytes+=2;
         
-        // 2 bytes, Version ( = 1 or = 4)
-        databuffer = [file readDataOfLength: 2];
-        version = CFSwapInt16BigToHost(*(int*)([databuffer bytes]));
-        
-        // 2 bytes, Count of curves in the file.
-        [file seekToFileOffset:2];
-        databuffer = [file readDataOfLength:2];
-        totalCurves = CFSwapInt16BigToHost(*(int*)([databuffer bytes]));
+        totalCurves    = int16WithBytes(rawBytes);
+        rawBytes+=2;
         
         NSMutableArray *curves = [NSMutableArray new];
         
@@ -65,40 +58,37 @@
         // The following is the data for each curve specified by count above
         for (NSInteger x = 0; x<totalCurves; x++)
         {
-            // 2 bytes, Count of points in the curve (short integer from 2...19)
-            databuffer = [file readDataOfLength:2];            
-            short pointCount = CFSwapInt16BigToHost(*(int*)([databuffer bytes]));
+            unsigned short pointCount = int16WithBytes(rawBytes);
+            rawBytes+=2;
             
             NSMutableArray *points = [NSMutableArray new];
             // point count * 4
-            // Curve points. Each curve point is a pair of short integers where 
-            // the first number is the output value (vertical coordinate on the 
-            // Curves dialog graph) and the second is the input value. All coordinates have range 0 to 255. 
+            // Curve points. Each curve point is a pair of short integers where
+            // the first number is the output value (vertical coordinate on the
+            // Curves dialog graph) and the second is the input value. All coordinates have range 0 to 255.
             for (NSInteger y = 0; y<pointCount; y++)
             {
-                databuffer = [file readDataOfLength:2];
-                short y = CFSwapInt16BigToHost(*(int*)([databuffer bytes]));
-                databuffer = [file readDataOfLength:2];
-                short x = CFSwapInt16BigToHost(*(int*)([databuffer bytes]));
-                
+                unsigned short y = int16WithBytes(rawBytes);
+                rawBytes+=2;
+                unsigned short x = int16WithBytes(rawBytes);
+                rawBytes+=2;
                 [points addObject:[NSValue valueWithCGSize:CGSizeMake(x * pointRate, y * pointRate)]];
-            }
-            
+            }    
             [curves addObject:points];
         }
-        
-        [file closeFile];
-        
         rgbCompositeCurvePoints = [curves objectAtIndex:0];
         redCurvePoints = [curves objectAtIndex:1];
         greenCurvePoints = [curves objectAtIndex:2];
         blueCurvePoints = [curves objectAtIndex:3];
-	}
-	
-	return self;
-    
+    }
+    return self;
 }
 
+unsigned short int16WithBytes(Byte* bytes) {
+    uint16_t result;
+    memcpy(&result, bytes, sizeof(result));
+    return CFSwapInt16BigToHost(result);
+}
 @end
 
 #pragma mark -
@@ -162,14 +152,7 @@ NSString *const kGPUImageToneCurveFragmentShaderString = SHADER_STRING
 }
 
 // This pulls in Adobe ACV curve files to specify the tone curve
-- (id)initWithACV:(NSString*)curveFilename
-{
-    return [self initWithACVURL:[[NSBundle mainBundle] URLForResource:curveFilename
-                                                        withExtension:@"acv"]];
-}
-
-- (id)initWithACVURL:(NSURL*)curveFileURL
-{
+- (id)initWithACVData:(NSData *)data {
     if (!(self = [super initWithFragmentShaderFromString:kGPUImageToneCurveFragmentShaderString]))
     {
 		return nil;
@@ -177,8 +160,7 @@ NSString *const kGPUImageToneCurveFragmentShaderString = SHADER_STRING
     
     toneCurveTextureUniform = [filterProgram uniformIndex:@"toneCurveTexture"];
     
-    
-    GPUImageACVFile *curve = [[GPUImageACVFile alloc] initWithCurveFilePathURL:curveFileURL];
+    GPUImageACVFile *curve = [[GPUImageACVFile alloc] initWithACVFileData:data];
     
     [self setRgbCompositeControlPoints:curve.rgbCompositeCurvePoints];
     [self setRedControlPoints:curve.redCurvePoints];
@@ -188,7 +170,18 @@ NSString *const kGPUImageToneCurveFragmentShaderString = SHADER_STRING
     curve = nil;
     
     return self;
-    
+}
+
+- (id)initWithACV:(NSString*)curveFilename
+{
+    return [self initWithACVURL:[[NSBundle mainBundle] URLForResource:curveFilename
+                                                        withExtension:@"acv"]];
+}
+
+- (id)initWithACVURL:(NSURL*)curveFileURL
+{
+    NSData* fileData = [NSData dataWithContentsOfURL:curveFileURL];
+    return [self initWithACVData:fileData];
 }
 
 - (void)setPointsWithACV:(NSString*)curveFilename
@@ -198,7 +191,8 @@ NSString *const kGPUImageToneCurveFragmentShaderString = SHADER_STRING
 
 - (void)setPointsWithACVURL:(NSURL*)curveFileURL
 {
-    GPUImageACVFile *curve = [[GPUImageACVFile alloc] initWithCurveFilePathURL:curveFileURL];
+    NSData* fileData = [NSData dataWithContentsOfURL:curveFileURL];
+    GPUImageACVFile *curve = [[GPUImageACVFile alloc] initWithACVFileData:fileData];
     
     [self setRgbCompositeControlPoints:curve.rgbCompositeCurvePoints];
     [self setRedControlPoints:curve.redCurvePoints];
