@@ -49,7 +49,7 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size);
     }
 
     uniformStateRestorationBlocks = [NSMutableDictionary dictionaryWithCapacity:10];
-    preparedToCaptureImage = NO;
+    prepareToCaptureImage = preparedToCaptureImage = NO;
     _preventRendering = NO;
     currentlyReceivingMonochromeInput = NO;
     inputRotation = kGPUImageNoRotation;
@@ -287,7 +287,7 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
         glGenFramebuffers(1, &filterFramebuffer);
         glBindFramebuffer(GL_FRAMEBUFFER, filterFramebuffer);
         
-        if ([GPUImageOpenGLESContext supportsFastTextureUpload] && preparedToCaptureImage)
+        if ([GPUImageOpenGLESContext supportsFastTextureUpload] && prepareToCaptureImage)
         {
 #if defined(__IPHONE_6_0)
             CVReturn err = CVOpenGLESTextureCacheCreate(kCFAllocatorDefault, NULL, [[GPUImageOpenGLESContext sharedImageProcessingOpenGLESContext] context], NULL, &filterTextureCache);
@@ -340,6 +340,8 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
             glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
             
             glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, CVOpenGLESTextureGetName(renderTexture), 0);
+            
+            preparedToCaptureImage = YES;
             
             [self notifyTargetsAboutNewOutputTexture];
         }
@@ -555,17 +557,18 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
 
 - (void)prepareForImageCapture;
 {
-    if (preparedToCaptureImage)
+    if (prepareToCaptureImage || preparedToCaptureImage)
     {
         return;
     }
 
-    preparedToCaptureImage = YES;
+    prepareToCaptureImage = YES;
     
     if ([GPUImageOpenGLESContext supportsFastTextureUpload])
     {
         if (outputTexture)
         {
+            NSLog(@"WARN: GPUImageFilter: prepareForImageCapture called after the image pipeline has reached %@. This is possibly a race condition. Please call prepareForImageCapture on this filter before the image pipeline is started.", self);
             runSynchronouslyOnVideoProcessingQueue(^{
                 [GPUImageOpenGLESContext useImageProcessingContext];
                 
