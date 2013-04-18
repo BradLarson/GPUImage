@@ -265,7 +265,7 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
     [self finishRecordingWithCompletionHandler:nil];
 }
 
-- (void)finishRecordingWithCompletionHandler:(void (^)(void))handler;
+- (void)finishRecordingWithCompletionHandler:(void(^)(NSError *error))handler;
 {
     if (assetWriter.status == AVAssetWriterStatusCompleted)
     {
@@ -279,17 +279,19 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 #if (!defined(__IPHONE_6_0) || (__IPHONE_OS_VERSION_MAX_ALLOWED < __IPHONE_6_0))
         // Not iOS 6 SDK
         [assetWriter finishWriting];
-        if (handler) handler();
+        if (handler) handler(assetWriter.error);
 #else
         // iOS 6 SDK
         if ([assetWriter respondsToSelector:@selector(finishWritingWithCompletionHandler:)]) {
             // Running iOS 6
-            [assetWriter finishWritingWithCompletionHandler:(handler ?: ^{ })];
+            [assetWriter finishWritingWithCompletionHandler:^{
+                if (handler) handler(assetWriter.error);
+            }];
         }
         else {
             // Not running iOS 6
             [assetWriter finishWriting];
-            if (handler) handler();
+            if (handler) handler(assetWriter.error);
         }
 #endif
     });
