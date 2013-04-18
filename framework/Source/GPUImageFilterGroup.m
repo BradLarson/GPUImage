@@ -151,6 +151,14 @@
     }
 }
 
+- (void)forceProcessingAtSizeRespectingAspectRatio:(CGSize)frameSize;
+{
+    for (GPUImageOutput<GPUImageInput> *currentFilter in filters)
+    {
+        [currentFilter forceProcessingAtSizeRespectingAspectRatio:frameSize];
+    }
+}
+
 
 - (CGSize)maximumOutputSize;
 {
