@@ -811,7 +811,6 @@ NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = SHAD
 
 - (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection
 {
-    __unsafe_unretained GPUImageVideoCamera *weakSelf = self;
     if (captureOutput == audioOutput)
     {
 //        if (dispatch_semaphore_wait(frameRenderingSemaphore, DISPATCH_TIME_NOW) != 0)
@@ -821,7 +820,7 @@ NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = SHAD
 
         CFRetain(sampleBuffer);
         runAsynchronouslyOnVideoProcessingQueue(^{
-            [weakSelf processAudioSampleBuffer:sampleBuffer];
+            [self processAudioSampleBuffer:sampleBuffer];
             CFRelease(sampleBuffer);
 //            dispatch_semaphore_signal(frameRenderingSemaphore);
         });
@@ -836,12 +835,12 @@ NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = SHAD
         CFRetain(sampleBuffer);
         runAsynchronouslyOnVideoProcessingQueue(^{
             //Feature Detection Hook.
-            if (weakSelf.delegate)
+            if (self.delegate)
             {
-                [weakSelf.delegate willOutputSampleBuffer:sampleBuffer];
+                [self.delegate willOutputSampleBuffer:sampleBuffer];
             }
             
-            [weakSelf processVideoSampleBuffer:sampleBuffer];
+            [self processVideoSampleBuffer:sampleBuffer];
             
             CFRelease(sampleBuffer);
             dispatch_semaphore_signal(frameRenderingSemaphore);
