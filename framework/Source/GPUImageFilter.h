@@ -52,6 +52,7 @@ typedef struct GPUMatrix3x3 GPUMatrix3x3;
     GLint filterInputTextureUniform;
     GLfloat backgroundColorRed, backgroundColorGreen, backgroundColorBlue, backgroundColorAlpha;
     
+    BOOL prepareToCaptureImage;
     BOOL preparedToCaptureImage;
     
     CVOpenGLESTextureCacheRef filterTextureCache;
