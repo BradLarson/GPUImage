@@ -1,6 +1,7 @@
 Pod::Spec.new do |s|
   s.name     = 'GPUImage'
   s.license  = 'BSD'
+  s.version  = '0.1.0'
   s.summary  = 'An open source iOS framework for GPU-based image and video processing.'
   s.homepage = 'https://github.com/BradLarson/GPUImage'
   s.authors  = { 'Brad Larson' => 'contact@sunsetlakesoftware.com' }
