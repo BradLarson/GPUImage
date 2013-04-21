@@ -143,7 +143,7 @@ NSString *const kGPUImageTwoInputTextureVertexShaderString = SHADER_STRING
     if (textureIndex == 0)
     {
         filterSourceTexture = newInputTexture;
-        hasSetFirstTexture = (newInputTexture != 0);
+        hasSetFirstTexture = YES;
     }
     else
     {
