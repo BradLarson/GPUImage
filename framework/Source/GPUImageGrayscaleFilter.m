@@ -76,7 +76,7 @@ NSString *const kGPUImageLuminanceFragmentShaderString = SHADER_STRING
             NSInteger indexOfObject = [targets indexOfObject:currentTarget];
             NSInteger textureIndex = [[targetTextureIndices objectAtIndex:indexOfObject] integerValue];
             
-            if ([GPUImageOpenGLESContext supportsFastTextureUpload] && preparedToCaptureImage)
+            if ([GPUImageContext supportsFastTextureUpload] && preparedToCaptureImage)
             {
                 [self setInputTextureForTarget:currentTarget atIndex:textureIndex];
             }

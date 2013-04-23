@@ -1,7 +1,7 @@
 #import <Foundation/Foundation.h>
 #import <AVFoundation/AVFoundation.h>
 #import <CoreMedia/CoreMedia.h>
-#import "GPUImageOpenGLESContext.h"
+#import "GPUImageContext.h"
 #import "GPUImageOutput.h"
 
 //Delegate Protocal for Face Detection.

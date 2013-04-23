@@ -1,5 +1,5 @@
 #import <Foundation/Foundation.h>
-#import "GPUImageOpenGLESContext.h"
+#import "GPUImageContext.h"
 
 struct GPUByteColorVector {
     GLubyte red;

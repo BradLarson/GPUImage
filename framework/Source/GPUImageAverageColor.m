@@ -98,7 +98,7 @@ NSString *const kGPUImageColorAveragingFragmentShaderString = SHADER_STRING
     
     // Create textures for each level
     runSynchronouslyOnVideoProcessingQueue(^{
-        [GPUImageOpenGLESContext useImageProcessingContext];
+        [GPUImageContext useImageProcessingContext];
 
         NSUInteger numberOfReductionsInX = floor(log(inputTextureSize.width) / log(4.0));
         NSUInteger numberOfReductionsInY = floor(log(inputTextureSize.height) / log(4.0));
@@ -141,7 +141,7 @@ NSString *const kGPUImageColorAveragingFragmentShaderString = SHADER_STRING
     }
     
     runSynchronouslyOnVideoProcessingQueue(^{
-        [GPUImageOpenGLESContext useImageProcessingContext];
+        [GPUImageContext useImageProcessingContext];
         
         NSUInteger numberOfStageTextures = [stageTextures count];
         for (NSUInteger currentStage = 0; currentStage < numberOfStageTextures; currentStage++)
@@ -172,7 +172,7 @@ NSString *const kGPUImageColorAveragingFragmentShaderString = SHADER_STRING
 {
     // Create framebuffers for each level
     runSynchronouslyOnVideoProcessingQueue(^{
-        [GPUImageOpenGLESContext useImageProcessingContext];
+        [GPUImageContext useImageProcessingContext];
         glActiveTexture(GL_TEXTURE1);
         
         NSUInteger numberOfStageFramebuffers = [stageTextures count];
@@ -203,7 +203,7 @@ NSString *const kGPUImageColorAveragingFragmentShaderString = SHADER_STRING
 - (void)destroyFilterFBO;
 {
     runSynchronouslyOnVideoProcessingQueue(^{
-        [GPUImageOpenGLESContext useImageProcessingContext];
+        [GPUImageContext useImageProcessingContext];
         
         NSUInteger numberOfStageFramebuffers = [stageFramebuffers count];
         for (NSUInteger currentStage = 0; currentStage < numberOfStageFramebuffers; currentStage++)
@@ -223,7 +223,7 @@ NSString *const kGPUImageColorAveragingFragmentShaderString = SHADER_STRING
         return;
     }
     
-    [GPUImageOpenGLESContext setActiveShaderProgram:filterProgram];
+    [GPUImageContext setActiveShaderProgram:filterProgram];
 
     glVertexAttribPointer(filterPositionAttribute, 2, GL_FLOAT, 0, 0, vertices);
     glVertexAttribPointer(filterTextureCoordinateAttribute, 2, GL_FLOAT, 0, 0, textureCoordinates);

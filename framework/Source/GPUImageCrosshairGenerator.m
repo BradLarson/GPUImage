@@ -73,7 +73,7 @@ NSString *const kGPUImageCrosshairFragmentShaderString = SHADER_STRING
     }
     
     runSynchronouslyOnVideoProcessingQueue(^{
-        [GPUImageOpenGLESContext setActiveShaderProgram:filterProgram];
+        [GPUImageContext setActiveShaderProgram:filterProgram];
         
         [self setFilterFBO];
         

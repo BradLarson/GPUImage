@@ -1,6 +1,6 @@
 #import "GPUImageRawDataOutput.h"
 
-#import "GPUImageOpenGLESContext.h"
+#import "GPUImageContext.h"
 #import "GLProgram.h"
 #import "GPUImageFilter.h"
 #import "GPUImageMovieWriter.h"
@@ -53,14 +53,14 @@
     _rawBytesForImage = NULL;
     inputRotation = kGPUImageNoRotation;
 
-    [GPUImageOpenGLESContext useImageProcessingContext];
-    if ( (outputBGRA && ![GPUImageOpenGLESContext supportsFastTextureUpload]) || (!outputBGRA && [GPUImageOpenGLESContext supportsFastTextureUpload]) )
+    [GPUImageContext useImageProcessingContext];
+    if ( (outputBGRA && ![GPUImageContext supportsFastTextureUpload]) || (!outputBGRA && [GPUImageContext supportsFastTextureUpload]) )
     {
-        dataProgram = [[GPUImageOpenGLESContext sharedImageProcessingOpenGLESContext] programForVertexShaderString:kGPUImageVertexShaderString fragmentShaderString:kGPUImageColorSwizzlingFragmentShaderString];
+        dataProgram = [[GPUImageContext sharedImageProcessingContext] programForVertexShaderString:kGPUImageVertexShaderString fragmentShaderString:kGPUImageColorSwizzlingFragmentShaderString];
     }
     else
     {
-        dataProgram = [[GPUImageOpenGLESContext sharedImageProcessingOpenGLESContext] programForVertexShaderString:kGPUImageVertexShaderString fragmentShaderString:kGPUImagePassthroughFragmentShaderString];
+        dataProgram = [[GPUImageContext sharedImageProcessingContext] programForVertexShaderString:kGPUImageVertexShaderString fragmentShaderString:kGPUImagePassthroughFragmentShaderString];
     }
  
     if (!dataProgram.initialized)
@@ -86,7 +86,7 @@
     dataInputTextureUniform = [dataProgram uniformIndex:@"inputImageTexture"];
     
     // REFACTOR: Wrap this in a block for the image processing queue
-    [GPUImageOpenGLESContext setActiveShaderProgram:dataProgram];
+    [GPUImageContext setActiveShaderProgram:dataProgram];
 
 	glEnableVertexAttribArray(dataPositionAttribute);
 	glEnableVertexAttribArray(dataTextureCoordinateAttribute);
@@ -98,7 +98,7 @@
 {
     [self destroyDataFBO];
     
-    if (_rawBytesForImage != NULL && (![GPUImageOpenGLESContext supportsFastTextureUpload])) 
+    if (_rawBytesForImage != NULL && (![GPUImageContext supportsFastTextureUpload])) 
     {
         free(_rawBytesForImage);
         _rawBytesForImage = NULL;
@@ -114,12 +114,12 @@
     glGenFramebuffers(1, &dataFramebuffer);
     glBindFramebuffer(GL_FRAMEBUFFER, dataFramebuffer);
 
-    if ([GPUImageOpenGLESContext supportsFastTextureUpload])
+    if ([GPUImageContext supportsFastTextureUpload])
     {
 #if defined(__IPHONE_6_0)
-        CVReturn err = CVOpenGLESTextureCacheCreate(kCFAllocatorDefault, NULL, [[GPUImageOpenGLESContext sharedImageProcessingOpenGLESContext] context], NULL, &rawDataTextureCache);
+        CVReturn err = CVOpenGLESTextureCacheCreate(kCFAllocatorDefault, NULL, [[GPUImageContext sharedImageProcessingContext] context], NULL, &rawDataTextureCache);
 #else
-        CVReturn err = CVOpenGLESTextureCacheCreate(kCFAllocatorDefault, NULL, (__bridge void *)[[GPUImageOpenGLESContext sharedImageProcessingOpenGLESContext] context], NULL, &rawDataTextureCache);
+        CVReturn err = CVOpenGLESTextureCacheCreate(kCFAllocatorDefault, NULL, (__bridge void *)[[GPUImageContext sharedImageProcessingContext] context], NULL, &rawDataTextureCache);
 #endif
         if (err) 
         {
@@ -189,7 +189,7 @@
 
 - (void)destroyDataFBO;
 {
-    [GPUImageOpenGLESContext useImageProcessingContext];
+    [GPUImageContext useImageProcessingContext];
 
     if (renderTexture)
     {
@@ -227,7 +227,7 @@
 
 - (void)renderAtInternalSize;
 {
-    [GPUImageOpenGLESContext setActiveShaderProgram:dataProgram];
+    [GPUImageContext setActiveShaderProgram:dataProgram];
     [self setFilterFBO];    
     
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -364,7 +364,7 @@
 
 - (GLubyte *)rawBytesForImage;
 {
-    if ( (_rawBytesForImage == NULL) && (![GPUImageOpenGLESContext supportsFastTextureUpload]) )
+    if ( (_rawBytesForImage == NULL) && (![GPUImageContext supportsFastTextureUpload]) )
     {
         _rawBytesForImage = (GLubyte *) calloc(imageSize.width * imageSize.height * 4, sizeof(GLubyte));
         hasReadFromTheCurrentFrame = NO;
@@ -379,8 +379,8 @@
         runSynchronouslyOnVideoProcessingQueue(^{
             // Note: the fast texture caches speed up 640x480 frame reads from 9.6 ms to 3.1 ms on iPhone 4S
             
-            [GPUImageOpenGLESContext useImageProcessingContext];
-            if ([GPUImageOpenGLESContext supportsFastTextureUpload])
+            [GPUImageContext useImageProcessingContext];
+            if ([GPUImageContext supportsFastTextureUpload])
             {
                 CVPixelBufferUnlockBaseAddress(renderTarget, 0);
                 //            CVOpenGLESTextureCacheFlush(rawDataTextureCache, 0);
@@ -388,7 +388,7 @@
             
             [self renderAtInternalSize];
             
-            if ([GPUImageOpenGLESContext supportsFastTextureUpload])
+            if ([GPUImageContext supportsFastTextureUpload])
             {
                 glFinish();
                 CVPixelBufferLockBaseAddress(renderTarget, 0);
@@ -408,7 +408,7 @@
 
 - (NSUInteger)bytesPerRowInOutput;
 {
-    if ([GPUImageOpenGLESContext supportsFastTextureUpload]) 
+    if ([GPUImageContext supportsFastTextureUpload]) 
     {
         return CVPixelBufferGetBytesPerRow(renderTarget);
     }

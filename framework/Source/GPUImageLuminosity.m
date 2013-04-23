@@ -79,9 +79,9 @@ NSString *const kGPUImageLuminosityFragmentShaderString = SHADER_STRING
     }];
 
     runSynchronouslyOnVideoProcessingQueue(^{
-        [GPUImageOpenGLESContext useImageProcessingContext];
+        [GPUImageContext useImageProcessingContext];
         
-        secondFilterProgram = [[GPUImageOpenGLESContext sharedImageProcessingOpenGLESContext] programForVertexShaderString:kGPUImageColorAveragingVertexShaderString fragmentShaderString:kGPUImageLuminosityFragmentShaderString];
+        secondFilterProgram = [[GPUImageContext sharedImageProcessingContext] programForVertexShaderString:kGPUImageColorAveragingVertexShaderString fragmentShaderString:kGPUImageLuminosityFragmentShaderString];
         
         if (!secondFilterProgram.initialized)
         {
@@ -108,7 +108,7 @@ NSString *const kGPUImageLuminosityFragmentShaderString = SHADER_STRING
         secondFilterTexelWidthUniform = [secondFilterProgram uniformIndex:@"texelWidth"];
         secondFilterTexelHeightUniform = [secondFilterProgram uniformIndex:@"texelHeight"];
 
-        [GPUImageOpenGLESContext setActiveShaderProgram:secondFilterProgram];
+        [GPUImageContext setActiveShaderProgram:secondFilterProgram];
         
         glEnableVertexAttribArray(secondFilterPositionAttribute);
         glEnableVertexAttribArray(secondFilterTextureCoordinateAttribute);
@@ -131,7 +131,7 @@ NSString *const kGPUImageLuminosityFragmentShaderString = SHADER_STRING
     }
     
     // Do an initial render pass that both convert to luminance and reduces
-    [GPUImageOpenGLESContext setActiveShaderProgram:filterProgram];
+    [GPUImageContext setActiveShaderProgram:filterProgram];
     
     glVertexAttribPointer(filterPositionAttribute, 2, GL_FLOAT, 0, 0, vertices);
     glVertexAttribPointer(filterTextureCoordinateAttribute, 2, GL_FLOAT, 0, 0, textureCoordinates);
@@ -160,7 +160,7 @@ NSString *const kGPUImageLuminosityFragmentShaderString = SHADER_STRING
     currentTexture = [[stageTextures objectAtIndex:0] intValue];
 
     // Just perform reductions from this point on
-    [GPUImageOpenGLESContext setActiveShaderProgram:secondFilterProgram];
+    [GPUImageContext setActiveShaderProgram:secondFilterProgram];
     glVertexAttribPointer(secondFilterPositionAttribute, 2, GL_FLOAT, 0, 0, vertices);
     glVertexAttribPointer(secondFilterTextureCoordinateAttribute, 2, GL_FLOAT, 0, 0, textureCoordinates);
 

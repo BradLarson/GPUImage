@@ -410,7 +410,7 @@ NSString *const kGPUImageToneCurveFragmentShaderString = SHADER_STRING
 - (void)updateToneCurveTexture;
 {
     runSynchronouslyOnVideoProcessingQueue(^{
-        [GPUImageOpenGLESContext useImageProcessingContext];
+        [GPUImageContext useImageProcessingContext];
         if (!toneCurveTexture)
         {
             glActiveTexture(GL_TEXTURE3);
@@ -455,7 +455,7 @@ NSString *const kGPUImageToneCurveFragmentShaderString = SHADER_STRING
         return;
     }
     
-    [GPUImageOpenGLESContext setActiveShaderProgram:filterProgram];
+    [GPUImageContext setActiveShaderProgram:filterProgram];
     [self setFilterFBO];
     
     glClearColor(backgroundColorRed, backgroundColorGreen, backgroundColorBlue, backgroundColorAlpha);

@@ -76,13 +76,13 @@ NSString *const kGPUImagePoissonBlendFragmentShaderString = SHADER_STRING
 
 - (void)initializeSecondOutputTextureIfNeeded;
 {
-    if ([GPUImageOpenGLESContext supportsFastTextureUpload] && preparedToCaptureImage)
+    if ([GPUImageContext supportsFastTextureUpload] && preparedToCaptureImage)
     {
         return;
     }
     
     runSynchronouslyOnVideoProcessingQueue(^{
-        [GPUImageOpenGLESContext useImageProcessingContext];
+        [GPUImageContext useImageProcessingContext];
         
         if (!secondFilterOutputTexture)
         {
@@ -105,7 +105,7 @@ NSString *const kGPUImagePoissonBlendFragmentShaderString = SHADER_STRING
         outputTexture = 0;
     }
     
-    if (!([GPUImageOpenGLESContext supportsFastTextureUpload] && preparedToCaptureImage))
+    if (!([GPUImageContext supportsFastTextureUpload] && preparedToCaptureImage))
     {
         if (secondFilterOutputTexture)
         {
@@ -118,11 +118,11 @@ NSString *const kGPUImagePoissonBlendFragmentShaderString = SHADER_STRING
 - (void)createFilterFBOofSize:(CGSize)currentFBOSize
 {    
     runSynchronouslyOnVideoProcessingQueue(^{
-        [GPUImageOpenGLESContext useImageProcessingContext];
+        [GPUImageContext useImageProcessingContext];
         
         if (!filterFramebuffer)
         {
-            if ([GPUImageOpenGLESContext supportsFastTextureUpload] && preparedToCaptureImage)
+            if ([GPUImageContext supportsFastTextureUpload] && preparedToCaptureImage)
             {
                 preparedToCaptureImage = NO;
                 [super createFilterFBOofSize:currentFBOSize];
@@ -137,12 +137,12 @@ NSString *const kGPUImagePoissonBlendFragmentShaderString = SHADER_STRING
         glGenFramebuffers(1, &secondFilterFramebuffer);
         glBindFramebuffer(GL_FRAMEBUFFER, secondFilterFramebuffer);
         
-        if ([GPUImageOpenGLESContext supportsFastTextureUpload] && preparedToCaptureImage)
+        if ([GPUImageContext supportsFastTextureUpload] && preparedToCaptureImage)
         {
 #if defined(__IPHONE_6_0)
-            CVReturn err = CVOpenGLESTextureCacheCreate(kCFAllocatorDefault, NULL, [[GPUImageOpenGLESContext sharedImageProcessingOpenGLESContext] context], NULL, &filterTextureCache);
+            CVReturn err = CVOpenGLESTextureCacheCreate(kCFAllocatorDefault, NULL, [[GPUImageContext sharedImageProcessingContext] context], NULL, &filterTextureCache);
 #else
-            CVReturn err = CVOpenGLESTextureCacheCreate(kCFAllocatorDefault, NULL, (__bridge void *)[[GPUImageOpenGLESContext sharedImageProcessingOpenGLESContext] context], NULL, &filterTextureCache);
+            CVReturn err = CVOpenGLESTextureCacheCreate(kCFAllocatorDefault, NULL, (__bridge void *)[[GPUImageContext sharedImageProcessingContext] context], NULL, &filterTextureCache);
 #endif
             
             if (err)
@@ -196,7 +196,7 @@ NSString *const kGPUImagePoissonBlendFragmentShaderString = SHADER_STRING
         {
             [self initializeSecondOutputTextureIfNeeded];
             glBindTexture(GL_TEXTURE_2D, secondFilterOutputTexture);
-            //            if ([self providesMonochromeOutput] && [GPUImageOpenGLESContext deviceSupportsRedTextures])
+            //            if ([self providesMonochromeOutput] && [GPUImageContext deviceSupportsRedTextures])
             //            {
             //                glTexImage2D(GL_TEXTURE_2D, 0, GL_RG_EXT, (int)currentFBOSize.width, (int)currentFBOSize.height, 0, GL_RG_EXT, GL_UNSIGNED_BYTE, 0);
             //            }
@@ -228,7 +228,7 @@ NSString *const kGPUImagePoissonBlendFragmentShaderString = SHADER_STRING
 - (void)destroyFilterFBO;
 {
     runSynchronouslyOnVideoProcessingQueue(^{
-        [GPUImageOpenGLESContext useImageProcessingContext];
+        [GPUImageContext useImageProcessingContext];
         
         if (filterFramebuffer)
         {
@@ -277,7 +277,7 @@ NSString *const kGPUImagePoissonBlendFragmentShaderString = SHADER_STRING
 - (void)renderToTextureWithVertices:(const GLfloat *)vertices textureCoordinates:(const GLfloat *)textureCoordinates sourceTexture:(GLuint)sourceTexture;
 {
     // Run the first stage of the two-pass filter
-    [GPUImageOpenGLESContext setActiveShaderProgram:filterProgram];
+    [GPUImageContext setActiveShaderProgram:filterProgram];
     
     [super renderToTextureWithVertices:vertices textureCoordinates:textureCoordinates sourceTexture:sourceTexture];
     
@@ -285,14 +285,14 @@ NSString *const kGPUImagePoissonBlendFragmentShaderString = SHADER_STRING
         
         if (pass % 2 == 0) {
             
-            [GPUImageOpenGLESContext setActiveShaderProgram:filterProgram];
+            [GPUImageContext setActiveShaderProgram:filterProgram];
             
             [super renderToTextureWithVertices:vertices textureCoordinates:[[self class] textureCoordinatesForRotation:kGPUImageNoRotation] sourceTexture:secondFilterOutputTexture];
         } else {
             // Run the second stage of the two-pass filter
             [self setSecondFilterFBO];
             
-            [GPUImageOpenGLESContext setActiveShaderProgram:filterProgram];
+            [GPUImageContext setActiveShaderProgram:filterProgram];
             
             glClearColor(backgroundColorRed, backgroundColorGreen, backgroundColorBlue, backgroundColorAlpha);
             glClear(GL_COLOR_BUFFER_BIT);

@@ -1,5 +1,6 @@
 #import "GPUImageBrightnessFilter.h"
 
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
 NSString *const kGPUImageBrightnessFragmentShaderString = SHADER_STRING
 (
  varying highp vec2 textureCoordinate;
@@ -14,6 +15,22 @@ NSString *const kGPUImageBrightnessFragmentShaderString = SHADER_STRING
      gl_FragColor = vec4((textureColor.rgb + vec3(brightness)), textureColor.w);
  }
 );
+#else
+NSString *const kGPUImageBrightnessFragmentShaderString = SHADER_STRING
+(
+ varying vec2 textureCoordinate;
+ 
+ uniform sampler2D inputImageTexture;
+ uniform float brightness;
+ 
+ void main()
+ {
+     vec4 textureColor = texture2D(inputImageTexture, textureCoordinate);
+     
+     gl_FragColor = vec4((textureColor.rgb + vec3(brightness)), textureColor.w);
+ }
+ );
+#endif
 
 @implementation GPUImageBrightnessFilter
 

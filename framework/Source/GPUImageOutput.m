@@ -17,9 +17,9 @@ void runOnMainQueueWithoutDeadlocking(void (^block)(void))
 
 void runSynchronouslyOnVideoProcessingQueue(void (^block)(void))
 {
-    dispatch_queue_t videoProcessingQueue = [GPUImageOpenGLESContext sharedOpenGLESQueue];
+    dispatch_queue_t videoProcessingQueue = [GPUImageContext sharedContextQueue];
     
-	if(dispatch_get_specific([GPUImageOpenGLESContext contextKey]))
+	if(dispatch_get_specific([GPUImageContext contextKey]))
 	{
 		block();
 	}else
@@ -30,9 +30,9 @@ void runSynchronouslyOnVideoProcessingQueue(void (^block)(void))
 
 void runAsynchronouslyOnVideoProcessingQueue(void (^block)(void))
 {
-    dispatch_queue_t videoProcessingQueue = [GPUImageOpenGLESContext sharedOpenGLESQueue];
+    dispatch_queue_t videoProcessingQueue = [GPUImageContext sharedContextQueue];
     
-	if(dispatch_get_specific([GPUImageOpenGLESContext contextKey]))
+	if(dispatch_get_specific([GPUImageContext contextKey]))
 	{
 		block();
 	}else
@@ -217,7 +217,7 @@ void reportAvailableMemoryForGPUImage(NSString *tag)
     runSynchronouslyOnVideoProcessingQueue(^{
         if (!outputTexture)
         {
-            [GPUImageOpenGLESContext useImageProcessingContext];
+            [GPUImageContext useImageProcessingContext];
             
             glActiveTexture(GL_TEXTURE0);
             glGenTextures(1, &outputTexture);
@@ -258,81 +258,6 @@ void reportAvailableMemoryForGPUImage(NSString *tag)
 #pragma mark -
 #pragma mark Still image processing
 
-/**
- Retreive the currently processed output image as an UIImage.
- 
- The image's orientation will be the device's current orientation.
- See also: [GPUImageOutput imageFromCurrentlyProcessedOutputWithOrientation:]
- */
-- (UIImage *)imageFromCurrentlyProcessedOutput;
-{
-	UIDeviceOrientation deviceOrientation = [[UIDevice currentDevice] orientation];
-    UIImageOrientation imageOrientation = UIImageOrientationLeft;
-	switch (deviceOrientation)
-    {
-		case UIDeviceOrientationPortrait:
-			imageOrientation = UIImageOrientationUp;
-			break;
-		case UIDeviceOrientationPortraitUpsideDown:
-			imageOrientation = UIImageOrientationDown;
-			break;
-		case UIDeviceOrientationLandscapeLeft:
-			imageOrientation = UIImageOrientationLeft;
-			break;
-		case UIDeviceOrientationLandscapeRight:
-			imageOrientation = UIImageOrientationRight;
-			break;
-		default:
-			imageOrientation = UIImageOrientationUp;
-			break;
-	}
-    
-    return [self imageFromCurrentlyProcessedOutputWithOrientation:imageOrientation];
-}
-
-- (CGImageRef)newCGImageFromCurrentlyProcessedOutput;
-{
-	UIDeviceOrientation deviceOrientation = [[UIDevice currentDevice] orientation];
-    UIImageOrientation imageOrientation = UIImageOrientationLeft;
-	switch (deviceOrientation)
-    {
-		case UIDeviceOrientationPortrait:
-			imageOrientation = UIImageOrientationUp;
-			break;
-		case UIDeviceOrientationPortraitUpsideDown:
-			imageOrientation = UIImageOrientationDown;
-			break;
-		case UIDeviceOrientationLandscapeLeft:
-			imageOrientation = UIImageOrientationLeft;
-			break;
-		case UIDeviceOrientationLandscapeRight:
-			imageOrientation = UIImageOrientationRight;
-			break;
-		default:
-			imageOrientation = UIImageOrientationUp;
-			break;
-	}
-    
-    return [self newCGImageFromCurrentlyProcessedOutputWithOrientation:imageOrientation];
-}
-
-- (UIImage *)imageFromCurrentlyProcessedOutputWithOrientation:(UIImageOrientation)imageOrientation;
-{
-    CGImageRef cgImageFromBytes = [self newCGImageFromCurrentlyProcessedOutputWithOrientation:imageOrientation];
-    UIImage *finalImage = [UIImage imageWithCGImage:cgImageFromBytes scale:1.0 orientation:imageOrientation];
-    CGImageRelease(cgImageFromBytes);
-    
-    return finalImage;
-}
-
-- (UIImage *)imageByFilteringImage:(UIImage *)imageToFilter;
-{
-    CGImageRef image = [self newCGImageByFilteringCGImage:[imageToFilter CGImage] orientation:[imageToFilter imageOrientation]];
-    UIImage *processedImage = [UIImage imageWithCGImage:image scale:[imageToFilter scale] orientation:[imageToFilter imageOrientation]];
-    CGImageRelease(image);
-    return processedImage;
-}
-
 - (CGImageRef)newCGImageFromCurrentlyProcessedOutputWithOrientation:(UIImageOrientation)imageOrientation;
 {
     return nil;
@@ -341,11 +266,6 @@ void reportAvailableMemoryForGPUImage(NSString *tag)
 - (CGImageRef)newCGImageByFilteringCGImage:(CGImageRef)imageToFilter
 {
     return [self newCGImageByFilteringCGImage:imageToFilter orientation:UIImageOrientationUp];
-}
-
-- (CGImageRef)newCGImageByFilteringImage:(UIImage *)imageToFilter
-{
-    return [self newCGImageByFilteringCGImage:[imageToFilter CGImage] orientation:[imageToFilter imageOrientation]];
 }
 
 - (CGImageRef)newCGImageByFilteringCGImage:(CGImageRef)imageToFilter orientation:(UIImageOrientation)orientation;
@@ -385,6 +305,121 @@ void reportAvailableMemoryForGPUImage(NSString *tag)
         }
     }
 }
+
+#pragma mark -
+#pragma mark Platform-specific image output methods
+
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+
+- (CGImageRef)newCGImageFromCurrentlyProcessedOutput;
+{
+	UIDeviceOrientation deviceOrientation = [[UIDevice currentDevice] orientation];
+    UIImageOrientation imageOrientation = UIImageOrientationLeft;
+	switch (deviceOrientation)
+    {
+		case UIDeviceOrientationPortrait:
+			imageOrientation = UIImageOrientationUp;
+			break;
+		case UIDeviceOrientationPortraitUpsideDown:
+			imageOrientation = UIImageOrientationDown;
+			break;
+		case UIDeviceOrientationLandscapeLeft:
+			imageOrientation = UIImageOrientationLeft;
+			break;
+		case UIDeviceOrientationLandscapeRight:
+			imageOrientation = UIImageOrientationRight;
+			break;
+		default:
+			imageOrientation = UIImageOrientationUp;
+			break;
+	}
+    
+    return [self newCGImageFromCurrentlyProcessedOutputWithOrientation:imageOrientation];
+}
+
+- (UIImage *)imageFromCurrentlyProcessedOutput;
+{
+	UIDeviceOrientation deviceOrientation = [[UIDevice currentDevice] orientation];
+    UIImageOrientation imageOrientation = UIImageOrientationLeft;
+	switch (deviceOrientation)
+    {
+		case UIDeviceOrientationPortrait:
+			imageOrientation = UIImageOrientationUp;
+			break;
+		case UIDeviceOrientationPortraitUpsideDown:
+			imageOrientation = UIImageOrientationDown;
+			break;
+		case UIDeviceOrientationLandscapeLeft:
+			imageOrientation = UIImageOrientationLeft;
+			break;
+		case UIDeviceOrientationLandscapeRight:
+			imageOrientation = UIImageOrientationRight;
+			break;
+		default:
+			imageOrientation = UIImageOrientationUp;
+			break;
+	}
+    
+    return [self imageFromCurrentlyProcessedOutputWithOrientation:imageOrientation];
+}
+
+- (UIImage *)imageFromCurrentlyProcessedOutputWithOrientation:(UIImageOrientation)imageOrientation;
+{
+    CGImageRef cgImageFromBytes = [self newCGImageFromCurrentlyProcessedOutputWithOrientation:imageOrientation];
+    UIImage *finalImage = [UIImage imageWithCGImage:cgImageFromBytes scale:1.0 orientation:imageOrientation];
+    CGImageRelease(cgImageFromBytes);
+    
+    return finalImage;
+}
+
+- (UIImage *)imageByFilteringImage:(UIImage *)imageToFilter;
+{
+    CGImageRef image = [self newCGImageByFilteringCGImage:[imageToFilter CGImage] orientation:[imageToFilter imageOrientation]];
+    UIImage *processedImage = [UIImage imageWithCGImage:image scale:[imageToFilter scale] orientation:[imageToFilter imageOrientation]];
+    CGImageRelease(image);
+    return processedImage;
+}
+
+- (CGImageRef)newCGImageByFilteringImage:(UIImage *)imageToFilter
+{
+    return [self newCGImageByFilteringCGImage:[imageToFilter CGImage] orientation:[imageToFilter imageOrientation]];
+}
+
+#else
+
+- (CGImageRef)newCGImageFromCurrentlyProcessedOutput;
+{
+    return [self newCGImageFromCurrentlyProcessedOutputWithOrientation:UIImageOrientationLeft];
+}
+
+- (NSImage *)imageFromCurrentlyProcessedOutput;
+{
+    return [self imageFromCurrentlyProcessedOutputWithOrientation:UIImageOrientationLeft];
+}
+
+- (NSImage *)imageFromCurrentlyProcessedOutputWithOrientation:(UIImageOrientation)imageOrientation;
+{
+    CGImageRef cgImageFromBytes = [self newCGImageFromCurrentlyProcessedOutputWithOrientation:imageOrientation];
+    NSImage *finalImage = [[NSImage alloc] initWithCGImage:cgImageFromBytes size:NSZeroSize];
+    CGImageRelease(cgImageFromBytes);
+    
+    return finalImage;
+}
+
+- (NSImage *)imageByFilteringImage:(NSImage *)imageToFilter;
+{
+    CGImageRef image = [self newCGImageByFilteringCGImage:[imageToFilter CGImageForProposedRect:NULL context:[NSGraphicsContext currentContext] hints:nil] orientation:UIImageOrientationLeft];
+    NSImage *processedImage = [[NSImage alloc] initWithCGImage:image size:NSZeroSize];
+    CGImageRelease(image);
+    return processedImage;
+}
+
+- (CGImageRef)newCGImageByFilteringImage:(NSImage *)imageToFilter
+{
+    return [self newCGImageByFilteringCGImage:[imageToFilter CGImageForProposedRect:NULL context:[NSGraphicsContext currentContext] hints:nil] orientation:UIImageOrientationLeft];
+}
+
+#endif
 
 #pragma mark -
 #pragma mark GPUImageTextureDelegate methods

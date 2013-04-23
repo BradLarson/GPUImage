@@ -81,7 +81,7 @@
         return;
     }
     
-    [GPUImageOpenGLESContext setActiveShaderProgram:filterProgram];
+    [GPUImageContext setActiveShaderProgram:filterProgram];
     [self setFilterFBO];
     
     glBindTexture(GL_TEXTURE_2D, [[bufferedTextures lastObject] intValue]);
