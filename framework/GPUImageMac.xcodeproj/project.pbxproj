@@ -29,6 +29,8 @@
 		BCF867591725AF9300912E34 /* GPUImagePicture.m in Sources */ = {isa = PBXBuildFile; fileRef = BCF867551725AF9300912E34 /* GPUImagePicture.m */; };
 		BCF8675B1725BBE300912E34 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCF8675A1725BBE300912E34 /* AVFoundation.framework */; };
 		BCF8675D1725BBE900912E34 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCF8675C1725BBE900912E34 /* CoreMedia.framework */; };
+		BCF8679D1727585D00912E34 /* GPUImageAVCamera.h in Headers */ = {isa = PBXBuildFile; fileRef = BCF8679B1727585D00912E34 /* GPUImageAVCamera.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		BCF8679E1727585D00912E34 /* GPUImageAVCamera.m in Sources */ = {isa = PBXBuildFile; fileRef = BCF8679C1727585D00912E34 /* GPUImageAVCamera.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -60,6 +62,8 @@
 		BCF867551725AF9300912E34 /* GPUImagePicture.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GPUImagePicture.m; path = Source/Mac/GPUImagePicture.m; sourceTree = SOURCE_ROOT; };
 		BCF8675A1725BBE300912E34 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		BCF8675C1725BBE900912E34 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
+		BCF8679B1727585D00912E34 /* GPUImageAVCamera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GPUImageAVCamera.h; path = Source/Mac/GPUImageAVCamera.h; sourceTree = SOURCE_ROOT; };
+		BCF8679C1727585D00912E34 /* GPUImageAVCamera.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GPUImageAVCamera.m; path = Source/Mac/GPUImageAVCamera.m; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -148,6 +152,8 @@
 			children = (
 				BCF40F191724829B005AE36A /* GPUImageOutput.h */,
 				BCF40F1A1724829B005AE36A /* GPUImageOutput.m */,
+				BCF8679B1727585D00912E34 /* GPUImageAVCamera.h */,
+				BCF8679C1727585D00912E34 /* GPUImageAVCamera.m */,
 				BCF867541725AF9300912E34 /* GPUImagePicture.h */,
 				BCF867551725AF9300912E34 /* GPUImagePicture.m */,
 			);
@@ -192,6 +198,7 @@
 				BCF40F29172488D3005AE36A /* GPUImageBrightnessFilter.h in Headers */,
 				BCF867561725AF9300912E34 /* GPUImageMovieWriter.h in Headers */,
 				BCF867581725AF9300912E34 /* GPUImagePicture.h in Headers */,
+				BCF8679D1727585D00912E34 /* GPUImageAVCamera.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -265,6 +272,7 @@
 				BCF40F2A172488D3005AE36A /* GPUImageBrightnessFilter.m in Sources */,
 				BCF867571725AF9300912E34 /* GPUImageMovieWriter.m in Sources */,
 				BCF867591725AF9300912E34 /* GPUImagePicture.m in Sources */,
+				BCF8679E1727585D00912E34 /* GPUImageAVCamera.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

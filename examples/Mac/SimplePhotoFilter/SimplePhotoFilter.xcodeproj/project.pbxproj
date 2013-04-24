@@ -118,10 +118,10 @@
 		BCA3F3461723A2E800E28AEC /* SimplePhotoFilter */ = {
 			isa = PBXGroup;
 			children = (
+				BCA3F3581723A2E800E28AEC /* MainMenu.xib */,
 				BCA3F3521723A2E800E28AEC /* SLSDocument.h */,
 				BCA3F3531723A2E800E28AEC /* SLSDocument.m */,
 				BCA3F3551723A2E800E28AEC /* SLSDocument.xib */,
-				BCA3F3581723A2E800E28AEC /* MainMenu.xib */,
 				BCA3F3471723A2E800E28AEC /* Supporting Files */,
 			);
 			path = SimplePhotoFilter;

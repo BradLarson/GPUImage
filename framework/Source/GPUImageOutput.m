@@ -58,7 +58,7 @@ void reportAvailableMemoryForGPUImage(NSString *tag)
                                    
                                    &size);    
     if( kerr == KERN_SUCCESS ) {        
-        NSLog(@"%@ - Memory used: %u", tag, info.resident_size); //in bytes        
+        NSLog(@"%@ - Memory used: %lu", tag, info.resident_size); //in bytes        
     } else {        
         NSLog(@"%@ - Error: %s", tag, mach_error_string(kerr));        
     }    
