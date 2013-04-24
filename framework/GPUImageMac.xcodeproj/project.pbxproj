@@ -7,6 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4217C13517283CCD00FECE98 /* GPUImageBilateralFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = 4217C13317283CCD00FECE98 /* GPUImageBilateralFilter.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		4217C13617283CCD00FECE98 /* GPUImageBilateralFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 4217C13417283CCD00FECE98 /* GPUImageBilateralFilter.m */; };
+		4217C13917283D6400FECE98 /* GPUImageGaussianBlurFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = 4217C13717283D6300FECE98 /* GPUImageGaussianBlurFilter.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		4217C13A17283D6400FECE98 /* GPUImageGaussianBlurFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 4217C13817283D6400FECE98 /* GPUImageGaussianBlurFilter.m */; };
+		4217C13D17283DA800FECE98 /* GPUImageTwoPassTextureSamplingFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = 4217C13B17283DA700FECE98 /* GPUImageTwoPassTextureSamplingFilter.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		4217C13E17283DA800FECE98 /* GPUImageTwoPassTextureSamplingFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 4217C13C17283DA700FECE98 /* GPUImageTwoPassTextureSamplingFilter.m */; };
 		BCA3F32017239B6500E28AEC /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCA3F31F17239B6500E28AEC /* Cocoa.framework */; };
 		BCA3F3621723A8FA00E28AEC /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCA3F3601723A8FA00E28AEC /* OpenGL.framework */; };
 		BCA3F3631723A8FA00E28AEC /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCA3F3611723A8FA00E28AEC /* QuartzCore.framework */; };
@@ -66,6 +72,12 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		4217C13317283CCD00FECE98 /* GPUImageBilateralFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GPUImageBilateralFilter.h; path = Source/GPUImageBilateralFilter.h; sourceTree = SOURCE_ROOT; };
+		4217C13417283CCD00FECE98 /* GPUImageBilateralFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GPUImageBilateralFilter.m; path = Source/GPUImageBilateralFilter.m; sourceTree = SOURCE_ROOT; };
+		4217C13717283D6300FECE98 /* GPUImageGaussianBlurFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GPUImageGaussianBlurFilter.h; path = Source/GPUImageGaussianBlurFilter.h; sourceTree = SOURCE_ROOT; };
+		4217C13817283D6400FECE98 /* GPUImageGaussianBlurFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GPUImageGaussianBlurFilter.m; path = Source/GPUImageGaussianBlurFilter.m; sourceTree = SOURCE_ROOT; };
+		4217C13B17283DA700FECE98 /* GPUImageTwoPassTextureSamplingFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GPUImageTwoPassTextureSamplingFilter.h; path = Source/GPUImageTwoPassTextureSamplingFilter.h; sourceTree = SOURCE_ROOT; };
+		4217C13C17283DA700FECE98 /* GPUImageTwoPassTextureSamplingFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GPUImageTwoPassTextureSamplingFilter.m; path = Source/GPUImageTwoPassTextureSamplingFilter.m; sourceTree = SOURCE_ROOT; };
 		BCA3F31C17239B6500E28AEC /* GPUImage.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = GPUImage.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BCA3F31F17239B6500E28AEC /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		BCA3F32217239B6500E28AEC /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -231,6 +243,8 @@
 				BCF40F1F17248322005AE36A /* GPUImageFilter.m */,
 				BCF867DA17278C5800912E34 /* GPUImageTwoPassFilter.h */,
 				BCF867DB17278C5900912E34 /* GPUImageTwoPassFilter.m */,
+				4217C13B17283DA700FECE98 /* GPUImageTwoPassTextureSamplingFilter.h */,
+				4217C13C17283DA700FECE98 /* GPUImageTwoPassTextureSamplingFilter.m */,
 				BCF867C9172788F100912E34 /* GPUImage3x3TextureSamplingFilter.h */,
 				BCF867CA172788F100912E34 /* GPUImage3x3TextureSamplingFilter.m */,
 				BCF867C31727820100912E34 /* Color processing */,
@@ -281,6 +295,10 @@
 		BCF867C4172786BA00912E34 /* Effects */ = {
 			isa = PBXGroup;
 			children = (
+				4217C13317283CCD00FECE98 /* GPUImageBilateralFilter.h */,
+				4217C13417283CCD00FECE98 /* GPUImageBilateralFilter.m */,
+				4217C13717283D6300FECE98 /* GPUImageGaussianBlurFilter.h */,
+				4217C13817283D6400FECE98 /* GPUImageGaussianBlurFilter.m */,
 				BCF867C51727872D00912E34 /* GPUImagePixellateFilter.h */,
 				BCF867C61727872D00912E34 /* GPUImagePixellateFilter.m */,
 				BCF867CD172789B200912E34 /* GPUImageSketchFilter.h */,
@@ -335,6 +353,9 @@
 				BCF867DC17278C5A00912E34 /* GPUImageTwoPassFilter.h in Headers */,
 				BCF867E017278D1900912E34 /* GPUImageGrayscaleFilter.h in Headers */,
 				BCF867E41727903D00912E34 /* GPUImageKuwaharaFilter.h in Headers */,
+				4217C13517283CCD00FECE98 /* GPUImageBilateralFilter.h in Headers */,
+				4217C13917283D6400FECE98 /* GPUImageGaussianBlurFilter.h in Headers */,
+				4217C13D17283DA800FECE98 /* GPUImageTwoPassTextureSamplingFilter.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -425,6 +446,9 @@
 				BCF867DD17278C5A00912E34 /* GPUImageTwoPassFilter.m in Sources */,
 				BCF867E117278D1900912E34 /* GPUImageGrayscaleFilter.m in Sources */,
 				BCF867E51727903D00912E34 /* GPUImageKuwaharaFilter.m in Sources */,
+				4217C13617283CCD00FECE98 /* GPUImageBilateralFilter.m in Sources */,
+				4217C13A17283D6400FECE98 /* GPUImageGaussianBlurFilter.m in Sources */,
+				4217C13E17283DA800FECE98 /* GPUImageTwoPassTextureSamplingFilter.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

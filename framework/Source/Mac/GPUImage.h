@@ -28,6 +28,8 @@
 #import <GPUImage/GPUImageToonFilter.h>
 #import <GPUImage/GPUImageGrayscaleFilter.h>
 #import <GPUImage/GPUImageKuwaharaFilter.h>
+#import <GPUImage/GPUImageGaussianBlurFilter.h>
+#import <GPUImage/GPUImageBilateralFilter.h>
 
 // Outputs
 #import <GPUImage/GPUImageView.h>
