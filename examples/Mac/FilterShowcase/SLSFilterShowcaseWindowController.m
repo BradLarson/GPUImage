@@ -177,6 +177,24 @@
             self.currentSliderValue = 3.0;
             self.enableSlider = YES;
         }; break;
+        case GPUIMAGE_GAUSSIANBLUR:
+        {
+            currentlySelectedFilter = [[GPUImageGaussianBlurFilter alloc] init];
+
+            self.minimumSliderValue = 0.0;
+            self.maximumSliderValue = 1.0;
+            self.currentSliderValue = 1.0;
+            self.enableSlider = YES;
+        }; break;
+        case GPUIMAGE_BILATERAL:
+        {
+            currentlySelectedFilter = [[GPUImageBilateralFilter alloc] init];
+
+            self.minimumSliderValue = 0.0;
+            self.maximumSliderValue = 5.0;
+            self.currentSliderValue = 1.0;
+            self.enableSlider = YES;
+        }; break;
     }
 
     [inputCamera addTarget:currentlySelectedFilter];
@@ -206,6 +224,8 @@
         case GPUIMAGE_MONOCHROME: [(GPUImageMonochromeFilter *)currentlySelectedFilter setIntensity:_currentSliderValue]; break;
         case GPUIMAGE_PIXELLATE: [(GPUImagePixellateFilter *)currentlySelectedFilter setFractionalWidthOfAPixel:_currentSliderValue]; break;
         case GPUIMAGE_KUWAHARA: [(GPUImageKuwaharaFilter *)currentlySelectedFilter setRadius:round(_currentSliderValue)]; break;
+        case GPUIMAGE_GAUSSIANBLUR: [(GPUImageGaussianBlurFilter *)currentlySelectedFilter setBlurSize:_currentSliderValue]; break;
+        case GPUIMAGE_BILATERAL: [(GPUImageBilateralFilter *)currentlySelectedFilter setDistanceNormalizationFactor:_currentSliderValue]; break;
     }
 }
 
@@ -238,6 +258,8 @@
         case GPUIMAGE_SKETCH: tableRowTitle = @"Sketch"; break;
         case GPUIMAGE_TOON: tableRowTitle = @"Toon"; break;
         case GPUIMAGE_KUWAHARA: tableRowTitle = @"Kuwahara"; break;
+        case GPUIMAGE_GAUSSIANBLUR: tableRowTitle = @"Gaussian Blur"; break;
+        case GPUIMAGE_BILATERAL: tableRowTitle = @"Bilateral"; break;
     }
 	
 	return tableRowTitle;
