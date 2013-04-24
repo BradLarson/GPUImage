@@ -28,6 +28,23 @@
 #import <GPUImage/GPUImageToonFilter.h>
 #import <GPUImage/GPUImageGrayscaleFilter.h>
 #import <GPUImage/GPUImageKuwaharaFilter.h>
+#import <GPUImage/GPUImageFalseColorFilter.h>
+#import <GPUImage/GPUImageSharpenFilter.h>
+#import <GPUImage/GPUImageUnsharpMaskFilter.h>
+#import <GPUImage/GPUImageTwoInputFilter.h>
+#import <GPUImage/GPUImageGaussianBlurFilter.h>
+#import <GPUImage/GPUImageTwoPassTextureSamplingFilter.h>
+#import <GPUImage/GPUImageFilterGroup.h>
+#import <GPUImage/GPUImageTransformFilter.h>
+#import <GPUImage/GPUImageCropFilter.h>
+#import <GPUImage/GPUImageGaussianBlurPositionFilter.h>
+#import <GPUImage/GPUImageGaussianSelectiveBlurFilter.h>
+#import <GPUImage/GPUImageBilateralFilter.h>
+#import <GPUImage/GPUImageBoxBlurFilter.h>
+#import <GPUImage/GPUImageFastBlurFilter.h>
+#import <GPUImage/GPUImageMedianFilter.h>
+#import <GPUImage/GPUImageMotionBlurFilter.h>
+#import <GPUImage/GPUImageZoomBlurFilter.h>
 
 // Outputs
 #import <GPUImage/GPUImageView.h>

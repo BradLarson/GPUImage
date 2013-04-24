@@ -17,6 +17,7 @@
 		BCF8679717263FCF00912E34 /* SLSFilterShowcaseWindowController.xib in Resources */ = {isa = PBXBuildFile; fileRef = BCF8679517263FCF00912E34 /* SLSFilterShowcaseWindowController.xib */; };
 		BCF8679A1726410E00912E34 /* GPUImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCF8678F17263F3500912E34 /* GPUImage.framework */; };
 		BCF867A1172762B500912E34 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCF867A0172762B500912E34 /* AVFoundation.framework */; };
+		BCF8680B17284D6A00912E34 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCF8680A17284D6A00912E34 /* QuartzCore.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -55,6 +56,7 @@
 		BCF8679417263FCF00912E34 /* SLSFilterShowcaseWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SLSFilterShowcaseWindowController.m; path = ../SLSFilterShowcaseWindowController.m; sourceTree = "<group>"; };
 		BCF8679517263FCF00912E34 /* SLSFilterShowcaseWindowController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = SLSFilterShowcaseWindowController.xib; path = ../SLSFilterShowcaseWindowController.xib; sourceTree = "<group>"; };
 		BCF867A0172762B500912E34 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		BCF8680A17284D6A00912E34 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,6 +64,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BCF8680B17284D6A00912E34 /* QuartzCore.framework in Frameworks */,
 				BCF867A1172762B500912E34 /* AVFoundation.framework in Frameworks */,
 				BCF8679A1726410E00912E34 /* GPUImage.framework in Frameworks */,
 				BCF8676E17263EAC00912E34 /* Cocoa.framework in Frameworks */,
@@ -74,7 +77,6 @@
 		BCF8676117263EAC00912E34 = {
 			isa = PBXGroup;
 			children = (
-				BCF867A0172762B500912E34 /* AVFoundation.framework */,
 				BCF8677317263EAC00912E34 /* FilterShowcase */,
 				BCF8676C17263EAC00912E34 /* Frameworks */,
 				BCF8676B17263EAC00912E34 /* Products */,
@@ -94,6 +96,8 @@
 			children = (
 				BCF8678A17263F3400912E34 /* GPUImageMac.xcodeproj */,
 				BCF8676D17263EAC00912E34 /* Cocoa.framework */,
+				BCF8680A17284D6A00912E34 /* QuartzCore.framework */,
+				BCF867A0172762B500912E34 /* AVFoundation.framework */,
 				BCF8676F17263EAC00912E34 /* Other Frameworks */,
 			);
 			name = Frameworks;

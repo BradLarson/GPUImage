@@ -2,6 +2,7 @@
 #import "GPUImageGaussianBlurFilter.h"
 #import "GPUImageTwoInputFilter.h"
 
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
 NSString *const kGPUImageGaussianSelectiveBlurFragmentShaderString = SHADER_STRING
 ( 
  varying highp vec2 textureCoordinate;
@@ -26,6 +27,32 @@ NSString *const kGPUImageGaussianSelectiveBlurFragmentShaderString = SHADER_STRI
      gl_FragColor = mix(sharpImageColor, blurredImageColor, smoothstep(excludeCircleRadius - excludeBlurSize, excludeCircleRadius, distanceFromCenter));
  }
 );
+#else
+NSString *const kGPUImageGaussianSelectiveBlurFragmentShaderString = SHADER_STRING
+(
+ varying vec2 textureCoordinate;
+ varying vec2 textureCoordinate2;
+ 
+ uniform sampler2D inputImageTexture;
+ uniform sampler2D inputImageTexture2;
+ 
+ uniform float excludeCircleRadius;
+ uniform vec2 excludeCirclePoint;
+ uniform float excludeBlurSize;
+ uniform float aspectRatio;
+ 
+ void main()
+ {
+     vec4 sharpImageColor = texture2D(inputImageTexture, textureCoordinate);
+     vec4 blurredImageColor = texture2D(inputImageTexture2, textureCoordinate2);
+     
+     vec2 textureCoordinateToUse = vec2(textureCoordinate2.x, (textureCoordinate2.y * aspectRatio + 0.5 - 0.5 * aspectRatio));
+     float distanceFromCenter = distance(excludeCirclePoint, textureCoordinateToUse);
+     
+     gl_FragColor = mix(sharpImageColor, blurredImageColor, smoothstep(excludeCircleRadius - excludeBlurSize, excludeCircleRadius, distanceFromCenter));
+ }
+);
+#endif
 
 @implementation GPUImageGaussianSelectiveBlurFilter
 

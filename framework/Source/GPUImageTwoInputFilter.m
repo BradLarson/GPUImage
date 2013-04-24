@@ -15,7 +15,7 @@ NSString *const kGPUImageTwoInputTextureVertexShaderString = SHADER_STRING
      textureCoordinate = inputTextureCoordinate.xy;
      textureCoordinate2 = inputTextureCoordinate2.xy;
  }
- );
+);
 
 
 @implementation GPUImageTwoInputFilter
