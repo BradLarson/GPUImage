@@ -182,7 +182,9 @@ NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = SHAD
 	NSArray *devices = [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];
 	for (AVCaptureDevice *device in devices) 
 	{
-		if ([device position] == cameraPosition)
+        NSLog(@"Device: %@, %ld", device, [device position]);
+        
+		if (([device position] == cameraPosition) && (![device isSuspended]) )
 		{
 			_inputCamera = device;
 		}

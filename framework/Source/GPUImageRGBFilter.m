@@ -1,5 +1,6 @@
 #import "GPUImageRGBFilter.h"
 
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
 NSString *const kGPUImageRGBFragmentShaderString = SHADER_STRING
 (
  varying highp vec2 textureCoordinate;
@@ -15,7 +16,25 @@ NSString *const kGPUImageRGBFragmentShaderString = SHADER_STRING
      
      gl_FragColor = vec4(textureColor.r * red, textureColor.g * green, textureColor.b * blue, 1.0);
  }
+);
+#else
+NSString *const kGPUImageRGBFragmentShaderString = SHADER_STRING
+(
+ varying vec2 textureCoordinate;
+ 
+ uniform sampler2D inputImageTexture;
+ uniform float red;
+ uniform float green;
+ uniform float blue;
+ 
+ void main()
+ {
+     vec4 textureColor = texture2D(inputImageTexture, textureCoordinate);
+     
+     gl_FragColor = vec4(textureColor.r * red, textureColor.g * green, textureColor.b * blue, 1.0);
+ }
  );
+#endif
 
 @implementation GPUImageRGBFilter
 

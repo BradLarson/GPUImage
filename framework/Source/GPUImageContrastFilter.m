@@ -1,5 +1,6 @@
 #import "GPUImageContrastFilter.h"
 
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
 NSString *const kGPUImageContrastFragmentShaderString = SHADER_STRING
 ( 
  varying highp vec2 textureCoordinate;
@@ -14,6 +15,22 @@ NSString *const kGPUImageContrastFragmentShaderString = SHADER_STRING
      gl_FragColor = vec4(((textureColor.rgb - vec3(0.5)) * contrast + vec3(0.5)), textureColor.w);
  }
 );
+#else
+NSString *const kGPUImageContrastFragmentShaderString = SHADER_STRING
+(
+ varying vec2 textureCoordinate;
+ 
+ uniform sampler2D inputImageTexture;
+ uniform float contrast;
+ 
+ void main()
+ {
+     vec4 textureColor = texture2D(inputImageTexture, textureCoordinate);
+     
+     gl_FragColor = vec4(((textureColor.rgb - vec3(0.5)) * contrast + vec3(0.5)), textureColor.w);
+ }
+ );
+#endif
 
 @implementation GPUImageContrastFilter
 

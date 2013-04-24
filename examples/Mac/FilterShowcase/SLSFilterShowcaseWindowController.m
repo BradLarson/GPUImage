@@ -57,6 +57,24 @@
     
     switch(currentlySelectedRow)
     {
+        case GPUIMAGE_SATURATION:
+        {
+            currentlySelectedFilter = [[GPUImageSaturationFilter alloc] init];
+
+            self.minimumSliderValue = 0.0;
+            self.maximumSliderValue = 2.0;
+            self.currentSliderValue = 1.0;
+            self.enableSlider = YES;
+        }; break;
+        case GPUIMAGE_CONTRAST:
+        {
+            currentlySelectedFilter = [[GPUImageContrastFilter alloc] init];
+            
+            self.minimumSliderValue = 0.0;
+            self.maximumSliderValue = 4.0;
+            self.currentSliderValue = 1.0;
+            self.enableSlider = YES;
+        }; break;
         case GPUIMAGE_BRIGHTNESS:
         {
             currentlySelectedFilter = [[GPUImageBrightnessFilter alloc] init];
@@ -64,6 +82,99 @@
             self.minimumSliderValue = -1.0;
             self.maximumSliderValue = 1.0;
             self.currentSliderValue = 0.0;
+            self.enableSlider = YES;
+        }; break;
+        case GPUIMAGE_LEVELS:
+        {
+            currentlySelectedFilter = [[GPUImageLevelsFilter alloc] init];
+            
+            self.minimumSliderValue = 0.0;
+            self.maximumSliderValue = 1.0;
+            self.currentSliderValue = 0.0;
+            self.enableSlider = YES;
+        }; break;
+        case GPUIMAGE_EXPOSURE:
+        {
+            currentlySelectedFilter = [[GPUImageExposureFilter alloc] init];
+            
+            self.minimumSliderValue = -4.0;
+            self.maximumSliderValue = 4.0;
+            self.currentSliderValue = 0.0;
+            self.enableSlider = YES;
+        }; break;
+        case GPUIMAGE_RGB:
+        {
+            currentlySelectedFilter = [[GPUImageRGBFilter alloc] init];
+            
+            self.minimumSliderValue = 0.0;
+            self.maximumSliderValue = 2.0;
+            self.currentSliderValue = 1.0;
+            self.enableSlider = YES;
+        }; break;
+        case GPUIMAGE_HUE:
+        {
+            currentlySelectedFilter = [[GPUImageHueFilter alloc] init];
+            
+            self.minimumSliderValue = 0.0;
+            self.maximumSliderValue = 360.0;
+            self.currentSliderValue = 90.0;
+            self.enableSlider = YES;
+        }; break;
+        case GPUIMAGE_WHITEBALANCE:
+        {
+            currentlySelectedFilter = [[GPUImageWhiteBalanceFilter alloc] init];
+            
+            self.minimumSliderValue = 2500.0;
+            self.maximumSliderValue = 7500.0;
+            self.currentSliderValue = 5000.0;
+            self.enableSlider = YES;
+        }; break;
+        case GPUIMAGE_MONOCHROME:
+        {
+            currentlySelectedFilter = [[GPUImageMonochromeFilter alloc] init];
+            [(GPUImageMonochromeFilter *)currentlySelectedFilter setColor:(GPUVector4){0.0f, 0.0f, 1.0f, 1.f}];
+
+            self.minimumSliderValue = 0.0;
+            self.maximumSliderValue = 1.0;
+            self.currentSliderValue = 1.0;
+            self.enableSlider = YES;
+        }; break;
+        case GPUIMAGE_GRAYSCALE:
+        {
+            currentlySelectedFilter = [[GPUImageGrayscaleFilter alloc] init];
+            self.enableSlider = NO;
+        }; break;
+        case GPUIMAGE_PIXELLATE:
+        {
+            currentlySelectedFilter = [[GPUImagePixellateFilter alloc] init];
+            
+            self.minimumSliderValue = 0.0;
+            self.maximumSliderValue = 0.3;
+            self.currentSliderValue = 0.05;
+            self.enableSlider = YES;
+        }; break;
+        case GPUIMAGE_SOBELEDGEDETECTION:
+        {
+            currentlySelectedFilter = [[GPUImageSobelEdgeDetectionFilter alloc] init];
+            self.enableSlider = NO;
+        }; break;
+        case GPUIMAGE_SKETCH:
+        {
+            currentlySelectedFilter = [[GPUImageSketchFilter alloc] init];
+            self.enableSlider = NO;
+        }; break;
+        case GPUIMAGE_TOON:
+        {
+            currentlySelectedFilter = [[GPUImageToonFilter alloc] init];
+            self.enableSlider = NO;
+        }; break;
+        case GPUIMAGE_KUWAHARA:
+        {
+            currentlySelectedFilter = [[GPUImageKuwaharaFilter alloc] init];
+            
+            self.minimumSliderValue = 3.0;
+            self.maximumSliderValue = 8.0;
+            self.currentSliderValue = 3.0;
             self.enableSlider = YES;
         }; break;
     }
@@ -80,7 +191,21 @@
     _currentSliderValue = newValue;
     switch(currentlySelectedRow)
     {
+        case GPUIMAGE_SATURATION: [(GPUImageSaturationFilter *)currentlySelectedFilter setSaturation:_currentSliderValue]; break;
+        case GPUIMAGE_CONTRAST: [(GPUImageContrastFilter *)currentlySelectedFilter setContrast:_currentSliderValue]; break;
         case GPUIMAGE_BRIGHTNESS: [(GPUImageBrightnessFilter *)currentlySelectedFilter setBrightness:_currentSliderValue]; break;
+        case GPUIMAGE_LEVELS: {
+            [(GPUImageLevelsFilter *)currentlySelectedFilter setRedMin:_currentSliderValue gamma:1.0 max:1.0 minOut:0.0 maxOut:1.0];
+            [(GPUImageLevelsFilter *)currentlySelectedFilter setGreenMin:_currentSliderValue gamma:1.0 max:1.0 minOut:0.0 maxOut:1.0];
+            [(GPUImageLevelsFilter *)currentlySelectedFilter setBlueMin:_currentSliderValue gamma:1.0 max:1.0 minOut:0.0 maxOut:1.0];
+        }; break;
+        case GPUIMAGE_EXPOSURE: [(GPUImageExposureFilter *)currentlySelectedFilter setExposure:_currentSliderValue]; break;
+        case GPUIMAGE_RGB: [(GPUImageRGBFilter *)currentlySelectedFilter setGreen:_currentSliderValue]; break;
+        case GPUIMAGE_HUE: [(GPUImageHueFilter *)currentlySelectedFilter setHue:_currentSliderValue]; break;
+        case GPUIMAGE_WHITEBALANCE: [(GPUImageWhiteBalanceFilter *)currentlySelectedFilter setTemperature:_currentSliderValue]; break;
+        case GPUIMAGE_MONOCHROME: [(GPUImageMonochromeFilter *)currentlySelectedFilter setIntensity:_currentSliderValue]; break;
+        case GPUIMAGE_PIXELLATE: [(GPUImagePixellateFilter *)currentlySelectedFilter setFractionalWidthOfAPixel:_currentSliderValue]; break;
+        case GPUIMAGE_KUWAHARA: [(GPUImageKuwaharaFilter *)currentlySelectedFilter setRadius:round(_currentSliderValue)]; break;
     }
 }
 
@@ -98,7 +223,21 @@
     
     switch(rowIndex)
     {
+        case GPUIMAGE_SATURATION: tableRowTitle = @"Saturation"; break;
+        case GPUIMAGE_CONTRAST: tableRowTitle = @"Contrast"; break;
         case GPUIMAGE_BRIGHTNESS: tableRowTitle = @"Brightness"; break;
+        case GPUIMAGE_LEVELS: tableRowTitle = @"Levels"; break;
+        case GPUIMAGE_EXPOSURE: tableRowTitle = @"Exposure"; break;
+        case GPUIMAGE_RGB: tableRowTitle = @"RGB"; break;
+        case GPUIMAGE_HUE: tableRowTitle = @"Hue"; break;
+        case GPUIMAGE_WHITEBALANCE: tableRowTitle = @"White balance"; break;
+        case GPUIMAGE_MONOCHROME: tableRowTitle = @"Monochrome"; break;
+        case GPUIMAGE_PIXELLATE: tableRowTitle = @"Pixellate"; break;
+        case GPUIMAGE_GRAYSCALE: tableRowTitle = @"Grayscale"; break;
+        case GPUIMAGE_SOBELEDGEDETECTION: tableRowTitle = @"Sobel edge detection"; break;
+        case GPUIMAGE_SKETCH: tableRowTitle = @"Sketch"; break;
+        case GPUIMAGE_TOON: tableRowTitle = @"Toon"; break;
+        case GPUIMAGE_KUWAHARA: tableRowTitle = @"Kuwahara"; break;
     }
 	
 	return tableRowTitle;
