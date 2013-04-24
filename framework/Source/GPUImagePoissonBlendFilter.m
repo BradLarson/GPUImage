@@ -1,5 +1,6 @@
 #import "GPUImagePoissonBlendFilter.h"
 
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
 NSString *const kGPUImagePoissonBlendFragmentShaderString = SHADER_STRING
 (
  precision mediump float;
@@ -46,6 +47,52 @@ NSString *const kGPUImagePoissonBlendFragmentShaderString = SHADER_STRING
 	 gl_FragColor = vec4(mix(centerColor.rgb, gradColor, centerColor2.a * mixturePercent), centerColor.a);
  }
 );
+#else
+NSString *const kGPUImagePoissonBlendFragmentShaderString = SHADER_STRING
+(
+ varying vec2 textureCoordinate;
+ varying vec2 leftTextureCoordinate;
+ varying vec2 rightTextureCoordinate;
+ varying vec2 topTextureCoordinate;
+ varying vec2 bottomTextureCoordinate;
+ 
+ varying vec2 textureCoordinate2;
+ varying vec2 leftTextureCoordinate2;
+ varying vec2 rightTextureCoordinate2;
+ varying vec2 topTextureCoordinate2;
+ varying vec2 bottomTextureCoordinate2;
+ 
+ uniform sampler2D inputImageTexture;
+ uniform sampler2D inputImageTexture2;
+ 
+ uniform float mixturePercent;
+ 
+ void main()
+ {
+     vec4 centerColor = texture2D(inputImageTexture, textureCoordinate);
+     vec3 bottomColor = texture2D(inputImageTexture, bottomTextureCoordinate).rgb;
+     vec3 leftColor = texture2D(inputImageTexture, leftTextureCoordinate).rgb;
+     vec3 rightColor = texture2D(inputImageTexture, rightTextureCoordinate).rgb;
+     vec3 topColor = texture2D(inputImageTexture, topTextureCoordinate).rgb;
+     
+     vec4 centerColor2 = texture2D(inputImageTexture2, textureCoordinate2);
+     vec3 bottomColor2 = texture2D(inputImageTexture2, bottomTextureCoordinate2).rgb;
+     vec3 leftColor2 = texture2D(inputImageTexture2, leftTextureCoordinate2).rgb;
+     vec3 rightColor2 = texture2D(inputImageTexture2, rightTextureCoordinate2).rgb;
+     vec3 topColor2 = texture2D(inputImageTexture2, topTextureCoordinate2).rgb;
+     
+     vec3 meanColor = (bottomColor + leftColor + rightColor + topColor) / 4.0;
+     vec3 diffColor = centerColor.rgb - meanColor;
+     
+     vec3 meanColor2 = (bottomColor2 + leftColor2 + rightColor2 + topColor2) / 4.0;
+     vec3 diffColor2 = centerColor2.rgb - meanColor2;
+     
+     vec3 gradColor = (meanColor + diffColor2);
+     
+	 gl_FragColor = vec4(mix(centerColor.rgb, gradColor, centerColor2.a * mixturePercent), centerColor.a);
+ }
+);
+#endif
 
 @implementation GPUImagePoissonBlendFilter
 
@@ -139,6 +186,8 @@ NSString *const kGPUImagePoissonBlendFragmentShaderString = SHADER_STRING
         
         if ([GPUImageContext supportsFastTextureUpload] && preparedToCaptureImage)
         {
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+
 #if defined(__IPHONE_6_0)
             CVReturn err = CVOpenGLESTextureCacheCreate(kCFAllocatorDefault, NULL, [[GPUImageContext sharedImageProcessingContext] context], NULL, &filterTextureCache);
 #else
@@ -191,6 +240,7 @@ NSString *const kGPUImagePoissonBlendFragmentShaderString = SHADER_STRING
             glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, CVOpenGLESTextureGetName(renderTexture), 0);
             
             [self notifyTargetsAboutNewOutputTexture];
+#endif
         }
         else
         {
@@ -242,6 +292,7 @@ NSString *const kGPUImagePoissonBlendFragmentShaderString = SHADER_STRING
             secondFilterFramebuffer = 0;
         }
         
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
         if (filterTextureCache != NULL)
         {
             CFRelease(renderTarget);
@@ -257,6 +308,7 @@ NSString *const kGPUImagePoissonBlendFragmentShaderString = SHADER_STRING
             CFRelease(filterTextureCache);
             filterTextureCache = NULL;
         }
+#endif
     });
 }
  

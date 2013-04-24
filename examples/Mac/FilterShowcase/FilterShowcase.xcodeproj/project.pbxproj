@@ -18,6 +18,8 @@
 		BCF8679A1726410E00912E34 /* GPUImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCF8678F17263F3500912E34 /* GPUImage.framework */; };
 		BCF867A1172762B500912E34 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCF867A0172762B500912E34 /* AVFoundation.framework */; };
 		BCF8680B17284D6A00912E34 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCF8680A17284D6A00912E34 /* QuartzCore.framework */; };
+		BCF868881728790500912E34 /* Lambeau.jpg in Resources */ = {isa = PBXBuildFile; fileRef = BCF868871728790500912E34 /* Lambeau.jpg */; };
+		BCF8688A1728791300912E34 /* mask.png in Resources */ = {isa = PBXBuildFile; fileRef = BCF868891728791300912E34 /* mask.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -57,6 +59,8 @@
 		BCF8679517263FCF00912E34 /* SLSFilterShowcaseWindowController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = SLSFilterShowcaseWindowController.xib; path = ../SLSFilterShowcaseWindowController.xib; sourceTree = "<group>"; };
 		BCF867A0172762B500912E34 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		BCF8680A17284D6A00912E34 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		BCF868871728790500912E34 /* Lambeau.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Lambeau.jpg; path = ../../../iOS/SimpleImageFilter/SimpleImageFilter/Lambeau.jpg; sourceTree = "<group>"; };
+		BCF868891728791300912E34 /* mask.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mask.png; path = ../../../iOS/FilterShowcase/FilterShowcase/mask.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -130,6 +134,8 @@
 		BCF8677417263EAC00912E34 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				BCF868891728791300912E34 /* mask.png */,
+				BCF868871728790500912E34 /* Lambeau.jpg */,
 				BCF8677517263EAC00912E34 /* FilterShowcase-Info.plist */,
 				BCF8677617263EAC00912E34 /* InfoPlist.strings */,
 				BCF8677917263EAC00912E34 /* main.m */,
@@ -220,6 +226,8 @@
 				BCF8677E17263EAC00912E34 /* Credits.rtf in Resources */,
 				BCF8678417263EAD00912E34 /* MainMenu.xib in Resources */,
 				BCF8679717263FCF00912E34 /* SLSFilterShowcaseWindowController.xib in Resources */,
+				BCF868881728790500912E34 /* Lambeau.jpg in Resources */,
+				BCF8688A1728791300912E34 /* mask.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

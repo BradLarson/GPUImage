@@ -1081,7 +1081,6 @@
 
             filter = [[GPUImagePoissonBlendFilter alloc] init];
         }; break;
-
         case GPUIMAGE_OPACITY:
         {
             self.title = @"Opacity Adjustment";
