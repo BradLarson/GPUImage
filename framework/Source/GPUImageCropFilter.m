@@ -1,5 +1,18 @@
 #import "GPUImageCropFilter.h"
 
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+NSString *const kGPUImageCropFragmentShaderString =  SHADER_STRING
+(
+ varying highp vec2 textureCoordinate;
+ 
+ uniform sampler2D inputImageTexture;
+ 
+ void main()
+ {
+     gl_FragColor = texture2D(inputImageTexture, textureCoordinate);
+ }
+);
+#else
 NSString *const kGPUImageCropFragmentShaderString =  SHADER_STRING
 (
  varying vec2 textureCoordinate;
@@ -11,6 +24,7 @@ NSString *const kGPUImageCropFragmentShaderString =  SHADER_STRING
      gl_FragColor = texture2D(inputImageTexture, textureCoordinate);
  }
 );
+#endif
 
 @interface GPUImageCropFilter ()
 
