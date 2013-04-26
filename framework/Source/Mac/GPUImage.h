@@ -72,6 +72,12 @@
 #import <GPUImage/GPUImageMaskFilter.h>
 #import <GPUImage/GPUImageOpacityFilter.h>
 #import <GPUImage/GPUImageAlphaBlendFilter.h>
+#import <GPUImage/GPUImageColorMatrixFilter.h>
+#import <GPUImage/GPUImageSepiaFilter.h>
+#import <GPUImage/GPUImageGammaFilter.h>
+#import <GPUImage/GPUImageHazeFilter.h>
+#import <GPUImage/GPUImageToneCurveFilter.h>
+#import <GPUImage/GPUImageHighlightShadowFilter.h>
 
 // Outputs
 #import <GPUImage/GPUImageView.h>

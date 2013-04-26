@@ -32,7 +32,7 @@
     return [filters objectAtIndex:filterIndex];
 }
 
-- (int)filterCount;
+- (NSUInteger)filterCount;
 {
     return [filters count];
 }

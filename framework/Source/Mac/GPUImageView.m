@@ -151,14 +151,22 @@
 - (void)setDisplayFramebuffer;
 {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glBindRenderbuffer(GL_RENDERBUFFER, 0);
     
     glViewport(0, 0, (GLint)_sizeInPixels.width, (GLint)_sizeInPixels.height);
 }
 
 - (void)presentFramebuffer;
 {
-    glBindRenderbuffer(GL_RENDERBUFFER, 0);
     [[GPUImageContext sharedImageProcessingContext] presentBufferForDisplay];
+}
+
+- (void)reshape;
+{
+    _sizeInPixels.width = self.bounds.size.width;
+    _sizeInPixels.height = self.bounds.size.height;
+    [self recalculateViewGeometry];
+    [self newFrameReadyAtTime:kCMTimeInvalid atIndex:0];
 }
 
 #pragma mark -

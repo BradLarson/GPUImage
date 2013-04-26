@@ -155,9 +155,9 @@
 			buildConfigurationList = BCA3F35D1723A2E800E28AEC /* Build configuration list for PBXNativeTarget "SimplePhotoFilter" */;
 			buildPhases = (
 				BCA3F3391723A2E800E28AEC /* Sources */,
-				BCF40F341724AF95005AE36A /* CopyFiles */,
 				BCA3F33A1723A2E800E28AEC /* Frameworks */,
 				BCA3F33B1723A2E800E28AEC /* Resources */,
+				BCF40F341724AF95005AE36A /* CopyFiles */,
 			);
 			buildRules = (
 			);

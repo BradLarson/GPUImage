@@ -207,6 +207,51 @@
             self.enableSlider = NO;
             needsSecondImage = YES;
         }; break;
+        case GPUIMAGE_GAMMA:
+        {
+            currentlySelectedFilter = [[GPUImageGammaFilter alloc] init];
+            
+            self.minimumSliderValue = 0.0;
+            self.maximumSliderValue = 3.0;
+            self.currentSliderValue = 1.0;
+            self.enableSlider = YES;
+        }; break;
+        case GPUIMAGE_TONECURVE:
+        {
+            currentlySelectedFilter = [[GPUImageToneCurveFilter alloc] init];
+            
+            self.minimumSliderValue = 0.0;
+            self.maximumSliderValue = 1.0;
+            self.currentSliderValue = 0.5;
+            self.enableSlider = YES;
+        }; break;
+        case GPUIMAGE_HIGHLIGHTSHADOW:
+        {
+            currentlySelectedFilter = [[GPUImageHighlightShadowFilter alloc] init];
+            
+            self.minimumSliderValue = 0.0;
+            self.maximumSliderValue = 1.0;
+            self.currentSliderValue = 1.0;
+            self.enableSlider = YES;
+        }; break;
+        case GPUIMAGE_HAZE:
+        {
+            currentlySelectedFilter = [[GPUImageHazeFilter alloc] init];
+            
+            self.minimumSliderValue = -0.2;
+            self.maximumSliderValue = 0.2;
+            self.currentSliderValue = 0.2;
+            self.enableSlider = YES;
+        }; break;
+        case GPUIMAGE_SEPIA:
+        {
+            currentlySelectedFilter = [[GPUImageSepiaFilter alloc] init];
+            
+            self.minimumSliderValue = 0.0;
+            self.maximumSliderValue = 1.0;
+            self.currentSliderValue = 1.0;
+            self.enableSlider = YES;
+        }; break;
         case GPUIMAGE_GRAYSCALE:
         {
             currentlySelectedFilter = [[GPUImageGrayscaleFilter alloc] init];
@@ -573,6 +618,11 @@
         case GPUIMAGE_HUE: [(GPUImageHueFilter *)currentlySelectedFilter setHue:_currentSliderValue]; break;
         case GPUIMAGE_WHITEBALANCE: [(GPUImageWhiteBalanceFilter *)currentlySelectedFilter setTemperature:_currentSliderValue]; break;
         case GPUIMAGE_MONOCHROME: [(GPUImageMonochromeFilter *)currentlySelectedFilter setIntensity:_currentSliderValue]; break;
+        case GPUIMAGE_GAMMA: [(GPUImageGammaFilter *)currentlySelectedFilter setGamma:_currentSliderValue]; break;
+        case GPUIMAGE_TONECURVE: [(GPUImageToneCurveFilter *)currentlySelectedFilter setBlueControlPoints:[NSArray arrayWithObjects:[NSValue valueWithPoint:NSMakePoint(0.0, 0.0)], [NSValue valueWithPoint:NSMakePoint(0.5, _currentSliderValue)], [NSValue valueWithPoint:NSMakePoint(1.0, 0.75)], nil]]; break;
+        case GPUIMAGE_HIGHLIGHTSHADOW: [(GPUImageHighlightShadowFilter *)currentlySelectedFilter setHighlights:_currentSliderValue]; break;
+        case GPUIMAGE_HAZE: [(GPUImageHazeFilter *)currentlySelectedFilter setDistance:_currentSliderValue]; break;
+        case GPUIMAGE_SEPIA: [(GPUImageSepiaFilter *)currentlySelectedFilter setIntensity:_currentSliderValue]; break;
         case GPUIMAGE_PIXELLATE: [(GPUImagePixellateFilter *)currentlySelectedFilter setFractionalWidthOfAPixel:_currentSliderValue]; break;
         case GPUIMAGE_KUWAHARA: [(GPUImageKuwaharaFilter *)currentlySelectedFilter setRadius:round(_currentSliderValue)]; break;
         case GPUIMAGE_SHARPEN: [(GPUImageSharpenFilter *)currentlySelectedFilter setSharpness:_currentSliderValue]; break;
@@ -639,6 +689,11 @@
         case GPUIMAGE_TRANSFORM3D: tableRowTitle = @"Transform (3-D)"; break;
         case GPUIMAGE_CROP: tableRowTitle = @"Crop"; break;
         case GPUIMAGE_MASK: tableRowTitle = @"Mask"; break;
+        case GPUIMAGE_GAMMA: tableRowTitle = @"Gamma"; break;
+        case GPUIMAGE_TONECURVE: tableRowTitle = @"Tone curve"; break;
+        case GPUIMAGE_HIGHLIGHTSHADOW: tableRowTitle = @"Highlights and shadows"; break;
+        case GPUIMAGE_HAZE: tableRowTitle = @"Haze"; break;
+        case GPUIMAGE_SEPIA: tableRowTitle = @"Sepia tone"; break;
         case GPUIMAGE_GAUSSIAN: tableRowTitle = @"Gaussian blur"; break;
         case GPUIMAGE_GAUSSIAN_SELECTIVE: tableRowTitle = @"Gaussian selective blur"; break;
         case GPUIMAGE_GAUSSIAN_POSITION: tableRowTitle = @"Gaussian (centered)"; break;
