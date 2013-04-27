@@ -89,7 +89,7 @@ NSString *const kGPUImageHoughAccumulationFragmentShaderString = SHADER_STRING
         return;
     }
     
-    [GPUImageOpenGLESContext useImageProcessingContext];
+    [GPUImageContext useImageProcessingContext];
     
     // Grab the edge points from the previous frame and create the parallel coordinate lines for them
     // This would be a great place to have a working histogram pyramid implementation
@@ -163,7 +163,7 @@ NSString *const kGPUImageHoughAccumulationFragmentShaderString = SHADER_STRING
 
     [self setFilterFBO];
     
-    [GPUImageOpenGLESContext setActiveShaderProgram:filterProgram];
+    [GPUImageContext setActiveShaderProgram:filterProgram];
     
     glClearColor(0.0, 0.0, 0.0, 1.0);
     glClear(GL_COLOR_BUFFER_BIT);

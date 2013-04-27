@@ -1,5 +1,6 @@
 #import "GPUImageColorMatrixFilter.h"
 
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
 NSString *const kGPUImageColorMatrixFragmentShaderString = SHADER_STRING
 (
  varying highp vec2 textureCoordinate;
@@ -16,7 +17,26 @@ NSString *const kGPUImageColorMatrixFragmentShaderString = SHADER_STRING
      
      gl_FragColor = (intensity * outputColor) + ((1.0 - intensity) * textureColor);
  }
-);                                                                         
+);
+#else
+NSString *const kGPUImageColorMatrixFragmentShaderString = SHADER_STRING
+(
+ varying vec2 textureCoordinate;
+ 
+ uniform sampler2D inputImageTexture;
+ 
+ uniform mat4 colorMatrix;
+ uniform float intensity;
+ 
+ void main()
+ {
+     vec4 textureColor = texture2D(inputImageTexture, textureCoordinate);
+     vec4 outputColor = textureColor * colorMatrix;
+     
+     gl_FragColor = (intensity * outputColor) + ((1.0 - intensity) * textureColor);
+ }
+);
+#endif
 
 @implementation GPUImageColorMatrixFilter
 

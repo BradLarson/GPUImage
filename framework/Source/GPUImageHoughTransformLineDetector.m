@@ -191,8 +191,10 @@
     }
 }
 
-#pragma mark -
-#pragma mark Accessors
+- (BOOL)wantsMonochromeInput;
+{
+    return YES;
+}
 
 #pragma mark -
 #pragma mark Accessors

@@ -1,6 +1,6 @@
 #import <Foundation/Foundation.h>
 #import <AVFoundation/AVFoundation.h>
-#import "GPUImageOpenGLESContext.h"
+#import "GPUImageContext.h"
 #import "GPUImageOutput.h"
 
 /** Protocol for getting Movie played callback.

@@ -66,7 +66,7 @@
 
 - (void)uploadBytes:(GLubyte *)bytesToUpload;
 {
-    [GPUImageOpenGLESContext useImageProcessingContext];
+    [GPUImageContext useImageProcessingContext];
     
 	[self initializeOutputTextureIfNeeded];
 

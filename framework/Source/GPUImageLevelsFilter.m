@@ -17,6 +17,7 @@
 #define LevelsControlOutputRange(color, minOutput, maxOutput) 			mix(minOutput, maxOutput, color)
 #define LevelsControl(color, minInput, gamma, maxInput, minOutput, maxOutput) 	LevelsControlOutputRange(LevelsControlInput(color, minInput, gamma, maxInput), minOutput, maxOutput)
 
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
 NSString *const kGPUImageLevelsFragmentShaderString = SHADER_STRING
 (
  varying highp vec2 textureCoordinate;
@@ -34,7 +35,27 @@ NSString *const kGPUImageLevelsFragmentShaderString = SHADER_STRING
      
      gl_FragColor = vec4(LevelsControl(textureColor.rgb, min, mid, max, minOutput, maxOutput), textureColor.a);
  }
- );
+);
+#else
+NSString *const kGPUImageLevelsFragmentShaderString = SHADER_STRING
+(
+ varying vec2 textureCoordinate;
+ 
+ uniform sampler2D inputImageTexture;
+ uniform vec3 min;
+ uniform vec3 mid;
+ uniform vec3 max;
+ uniform vec3 minOutput;
+ uniform vec3 maxOutput;
+ 
+ void main()
+ {
+     vec4 textureColor = texture2D(inputImageTexture, textureCoordinate);
+     
+     gl_FragColor = vec4(LevelsControl(textureColor.rgb, min, mid, max, minOutput, maxOutput), textureColor.a);
+ }
+);
+#endif
 
 @implementation GPUImageLevelsFilter
 

@@ -74,7 +74,7 @@ NSString *const kGPUImageColorPackingFragmentShaderString = SHADER_STRING
     texelHeight = 0.5 / inputTextureSize.height;
 
     runSynchronouslyOnVideoProcessingQueue(^{
-        [GPUImageOpenGLESContext setActiveShaderProgram:filterProgram];
+        [GPUImageContext setActiveShaderProgram:filterProgram];
         glUniform1f(texelWidthUniform, texelWidth);
         glUniform1f(texelHeightUniform, texelHeight);
     });

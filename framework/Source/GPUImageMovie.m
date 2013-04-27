@@ -58,14 +58,14 @@
 
 - (void)textureCacheSetup;
 {
-    if ([GPUImageOpenGLESContext supportsFastTextureUpload])
+    if ([GPUImageContext supportsFastTextureUpload])
     {
         runSynchronouslyOnVideoProcessingQueue(^{
-            [GPUImageOpenGLESContext useImageProcessingContext];
+            [GPUImageContext useImageProcessingContext];
 #if defined(__IPHONE_6_0)
-            CVReturn err = CVOpenGLESTextureCacheCreate(kCFAllocatorDefault, NULL, [[GPUImageOpenGLESContext sharedImageProcessingOpenGLESContext] context], NULL, &coreVideoTextureCache);
+            CVReturn err = CVOpenGLESTextureCacheCreate(kCFAllocatorDefault, NULL, [[GPUImageContext sharedImageProcessingContext] context], NULL, &coreVideoTextureCache);
 #else
-            CVReturn err = CVOpenGLESTextureCacheCreate(kCFAllocatorDefault, NULL, (__bridge void *)[[GPUImageOpenGLESContext sharedImageProcessingOpenGLESContext] context], NULL, &coreVideoTextureCache);
+            CVReturn err = CVOpenGLESTextureCacheCreate(kCFAllocatorDefault, NULL, (__bridge void *)[[GPUImageContext sharedImageProcessingContext] context], NULL, &coreVideoTextureCache);
 #endif
             if (err)
             {
@@ -80,7 +80,7 @@
 
 - (void)dealloc
 {
-    if ([GPUImageOpenGLESContext supportsFastTextureUpload])
+    if ([GPUImageContext supportsFastTextureUpload])
     {
         CFRelease(coreVideoTextureCache);
     }
@@ -106,7 +106,10 @@
     previousActualFrameTime = CFAbsoluteTimeGetCurrent();
   
     NSDictionary *inputOptions = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES] forKey:AVURLAssetPreferPreciseDurationAndTimingKey];
-    AVURLAsset *inputAsset = [[AVURLAsset alloc] initWithURL:self.url options:inputOptions];    
+    AVURLAsset *inputAsset = [[AVURLAsset alloc] initWithURL:self.url options:inputOptions];
+    
+    GPUImageMovie __block *blockSelf = self;
+    
     [inputAsset loadValuesAsynchronouslyForKeys:[NSArray arrayWithObject:@"tracks"] completionHandler: ^{
         NSError *error = nil;
         AVKeyValueStatus tracksStatus = [inputAsset statusOfValueForKey:@"tracks" error:&error];
@@ -114,8 +117,9 @@
         {
             return;
         }
-        self.asset = inputAsset;
-        [self processAsset];
+        blockSelf.asset = inputAsset;
+        [blockSelf processAsset];
+        blockSelf = nil;
     }];
 }
 
@@ -275,11 +279,11 @@
 
     CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
 
-    if ([GPUImageOpenGLESContext supportsFastTextureUpload])
+    if ([GPUImageContext supportsFastTextureUpload])
     {
         CVPixelBufferLockBaseAddress(movieFrame, 0);
         
-        [GPUImageOpenGLESContext useImageProcessingContext];
+        [GPUImageContext useImageProcessingContext];
         CVOpenGLESTextureRef texture = NULL;
         CVReturn err = CVOpenGLESTextureCacheCreateTextureFromImage(kCFAllocatorDefault, coreVideoTextureCache, movieFrame, NULL, GL_TEXTURE_2D, GL_RGBA, bufferWidth, bufferHeight, GL_BGRA, GL_UNSIGNED_BYTE, 0, &texture);
         

@@ -1,5 +1,6 @@
 #import "GPUImageExposureFilter.h"
 
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
 NSString *const kGPUImageExposureFragmentShaderString = SHADER_STRING
 (
  varying highp vec2 textureCoordinate;
@@ -14,6 +15,22 @@ NSString *const kGPUImageExposureFragmentShaderString = SHADER_STRING
      gl_FragColor = vec4(textureColor.rgb * pow(2.0, exposure), textureColor.w);
  }
 );
+#else
+NSString *const kGPUImageExposureFragmentShaderString = SHADER_STRING
+(
+ varying vec2 textureCoordinate;
+ 
+ uniform sampler2D inputImageTexture;
+ uniform float exposure;
+ 
+ void main()
+ {
+     vec4 textureColor = texture2D(inputImageTexture, textureCoordinate);
+     
+     gl_FragColor = vec4(textureColor.rgb * pow(2.0, exposure), textureColor.w);
+ }
+);
+#endif
 
 @implementation GPUImageExposureFilter
 

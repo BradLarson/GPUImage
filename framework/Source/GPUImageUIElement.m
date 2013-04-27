@@ -60,7 +60,7 @@
 
 - (void)update;
 {
-    [GPUImageOpenGLESContext useImageProcessingContext];
+    [GPUImageContext useImageProcessingContext];
     [self initializeOutputTextureIfNeeded];
     
     if(CMTIME_IS_INVALID(time)) {

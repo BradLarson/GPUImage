@@ -15,9 +15,9 @@
     secondProgramUniformStateRestorationBlocks = [NSMutableDictionary dictionaryWithCapacity:10];
 
     runSynchronouslyOnVideoProcessingQueue(^{
-        [GPUImageOpenGLESContext useImageProcessingContext];
+        [GPUImageContext useImageProcessingContext];
 
-        secondFilterProgram = [[GPUImageOpenGLESContext sharedImageProcessingOpenGLESContext] programForVertexShaderString:secondStageVertexShaderString fragmentShaderString:secondStageFragmentShaderString];
+        secondFilterProgram = [[GPUImageContext sharedImageProcessingContext] programForVertexShaderString:secondStageVertexShaderString fragmentShaderString:secondStageFragmentShaderString];
         
         if (!secondFilterProgram.initialized)
         {
@@ -41,7 +41,7 @@
         secondFilterInputTextureUniform = [secondFilterProgram uniformIndex:@"inputImageTexture"]; // This does assume a name of "inputImageTexture" for the fragment shader
         secondFilterInputTextureUniform2 = [secondFilterProgram uniformIndex:@"inputImageTexture2"]; // This does assume a name of "inputImageTexture2" for second input texture in the fragment shader
         
-        [GPUImageOpenGLESContext setActiveShaderProgram:secondFilterProgram];
+        [GPUImageContext setActiveShaderProgram:secondFilterProgram];
         
         glEnableVertexAttribArray(secondFilterPositionAttribute);
         glEnableVertexAttribArray(secondFilterTextureCoordinateAttribute);
@@ -79,13 +79,13 @@
 
 - (void)initializeSecondOutputTextureIfNeeded;
 {
-    if ([GPUImageOpenGLESContext supportsFastTextureUpload] && preparedToCaptureImage)
+    if ([GPUImageContext supportsFastTextureUpload] && preparedToCaptureImage)
     {
         return;
     }
     
     runSynchronouslyOnVideoProcessingQueue(^{
-        [GPUImageOpenGLESContext useImageProcessingContext];
+        [GPUImageContext useImageProcessingContext];
         
         if (!secondFilterOutputTexture)
         {
@@ -108,7 +108,7 @@
         outputTexture = 0;
     }
 
-    if (!([GPUImageOpenGLESContext supportsFastTextureUpload] && preparedToCaptureImage))
+    if (!([GPUImageContext supportsFastTextureUpload] && preparedToCaptureImage))
     {
         if (secondFilterOutputTexture)
         {
@@ -124,11 +124,11 @@
 - (void)createFilterFBOofSize:(CGSize)currentFBOSize;
 {
     runSynchronouslyOnVideoProcessingQueue(^{
-        [GPUImageOpenGLESContext useImageProcessingContext];
+        [GPUImageContext useImageProcessingContext];
 
         if (!filterFramebuffer)
         {
-            if ([GPUImageOpenGLESContext supportsFastTextureUpload] && preparedToCaptureImage)
+            if ([GPUImageContext supportsFastTextureUpload] && preparedToCaptureImage)
             {
                 preparedToCaptureImage = NO;
                 [super createFilterFBOofSize:currentFBOSize];
@@ -143,12 +143,14 @@
         glGenFramebuffers(1, &secondFilterFramebuffer);
         glBindFramebuffer(GL_FRAMEBUFFER, secondFilterFramebuffer);
 
-        if ([GPUImageOpenGLESContext supportsFastTextureUpload] && preparedToCaptureImage)
+        if ([GPUImageContext supportsFastTextureUpload] && preparedToCaptureImage)
         {
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+
     #if defined(__IPHONE_6_0)
-            CVReturn err = CVOpenGLESTextureCacheCreate(kCFAllocatorDefault, NULL, [[GPUImageOpenGLESContext sharedImageProcessingOpenGLESContext] context], NULL, &filterTextureCache);
+            CVReturn err = CVOpenGLESTextureCacheCreate(kCFAllocatorDefault, NULL, [[GPUImageContext sharedImageProcessingContext] context], NULL, &filterTextureCache);
     #else
-            CVReturn err = CVOpenGLESTextureCacheCreate(kCFAllocatorDefault, NULL, (__bridge void *)[[GPUImageOpenGLESContext sharedImageProcessingOpenGLESContext] context], NULL, &filterTextureCache);
+            CVReturn err = CVOpenGLESTextureCacheCreate(kCFAllocatorDefault, NULL, (__bridge void *)[[GPUImageContext sharedImageProcessingContext] context], NULL, &filterTextureCache);
     #endif
 
             if (err) 
@@ -197,12 +199,13 @@
             glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, CVOpenGLESTextureGetName(renderTexture), 0);
             
             [self notifyTargetsAboutNewOutputTexture];
+#endif
         }
         else
         {
             [self initializeSecondOutputTextureIfNeeded];
             glBindTexture(GL_TEXTURE_2D, secondFilterOutputTexture);
-//            if ([self providesMonochromeOutput] && [GPUImageOpenGLESContext deviceSupportsRedTextures])
+//            if ([self providesMonochromeOutput] && [GPUImageContext deviceSupportsRedTextures])
 //            {
 //                glTexImage2D(GL_TEXTURE_2D, 0, GL_RG_EXT, (int)currentFBOSize.width, (int)currentFBOSize.height, 0, GL_RG_EXT, GL_UNSIGNED_BYTE, 0);
 //            }
@@ -237,7 +240,7 @@
 - (void)destroyFilterFBO;
 {
     runSynchronouslyOnVideoProcessingQueue(^{
-        [GPUImageOpenGLESContext useImageProcessingContext];
+        [GPUImageContext useImageProcessingContext];
         
         if (filterFramebuffer)
         {
@@ -251,6 +254,7 @@
             secondFilterFramebuffer = 0;
         }	
         
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
         if (filterTextureCache != NULL)
         {
             CFRelease(renderTarget);
@@ -266,6 +270,7 @@
             CFRelease(filterTextureCache);
             filterTextureCache = NULL;
         }
+#endif
     });
 }
 
@@ -275,7 +280,7 @@
 
     if (!filterFramebuffer)
     {
-        if ([GPUImageOpenGLESContext supportsFastTextureUpload] && preparedToCaptureImage)
+        if ([GPUImageContext supportsFastTextureUpload] && preparedToCaptureImage)
         {
             preparedToCaptureImage = NO;
             [super createFilterFBOofSize:currentFBOSize];
@@ -332,7 +337,7 @@
     // Run the second stage of the two-pass filter
     [self setSecondFilterFBO];
     
-    [GPUImageOpenGLESContext setActiveShaderProgram:secondFilterProgram];
+    [GPUImageContext setActiveShaderProgram:secondFilterProgram];
     [self setUniformsForProgramAtIndex:1];
 
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -390,11 +395,11 @@
     runSynchronouslyOnVideoProcessingQueue(^{
         preparedToCaptureImage = YES;
         
-        if ([GPUImageOpenGLESContext supportsFastTextureUpload])
+        if ([GPUImageContext supportsFastTextureUpload])
         {
             if (secondFilterOutputTexture)
             {
-                [GPUImageOpenGLESContext useImageProcessingContext];
+                [GPUImageContext useImageProcessingContext];
 
                 glDeleteTextures(1, &secondFilterOutputTexture);
                 secondFilterOutputTexture = 0;

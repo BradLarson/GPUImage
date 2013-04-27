@@ -105,7 +105,7 @@ NSString *const kGPUImageLineGeneratorFragmentShaderString = SHADER_STRING
     }
     
     runSynchronouslyOnVideoProcessingQueue(^{
-        [GPUImageOpenGLESContext setActiveShaderProgram:filterProgram];
+        [GPUImageContext setActiveShaderProgram:filterProgram];
         
         [self setFilterFBO];
         
@@ -136,7 +136,7 @@ NSString *const kGPUImageLineGeneratorFragmentShaderString = SHADER_STRING
 - (void)setLineWidth:(CGFloat)newValue;
 {
     _lineWidth = newValue;
-    [GPUImageOpenGLESContext setActiveShaderProgram:filterProgram];
+    [GPUImageContext setActiveShaderProgram:filterProgram];
     glLineWidth(newValue);
 }
 

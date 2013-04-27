@@ -138,16 +138,7 @@ NSString *const kGPUImageLanczosFragmentShaderString = SHADER_STRING
 
     if (!filterFramebuffer)
     {
-        if ([GPUImageOpenGLESContext supportsFastTextureUpload] && preparedToCaptureImage)
-        {
-            preparedToCaptureImage = NO;
-            [super createFilterFBOofSize:currentFBOSize];
-            preparedToCaptureImage = YES;
-        }
-        else
-        {
-            [super createFilterFBOofSize:currentFBOSize];
-        }
+        [super createFilterFBOofSize:currentFBOSize];
         [self setupFilterForSize:currentFBOSize];
     }
     

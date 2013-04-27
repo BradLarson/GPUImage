@@ -1,6 +1,20 @@
-#import <UIKit/UIKit.h>
+#import "GPUImageContext.h"
 
-#import "GPUImageOpenGLESContext.h"
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+#import <UIKit/UIKit.h>
+#else
+// For now, just redefine this on the Mac
+typedef NS_ENUM(NSInteger, UIImageOrientation) {
+    UIImageOrientationUp,            // default orientation
+    UIImageOrientationDown,          // 180 deg rotation
+    UIImageOrientationLeft,          // 90 deg CCW
+    UIImageOrientationRight,         // 90 deg CW
+    UIImageOrientationUpMirrored,    // as above but image mirrored along other axis. horizontal flip
+    UIImageOrientationDownMirrored,  // horizontal flip
+    UIImageOrientationLeftMirrored,  // vertical flip
+    UIImageOrientationRightMirrored, // vertical flip
+};
+#endif
 
 void runOnMainQueueWithoutDeadlocking(void (^block)(void));
 void runSynchronouslyOnVideoProcessingQueue(void (^block)(void));
@@ -92,27 +106,23 @@ void reportAvailableMemoryForGPUImage(NSString *tag);
 
 /// @name Still image processing
 
-/** Retreives the currently processed image as a UIImage.
- */
-- (UIImage *)imageFromCurrentlyProcessedOutput;
 - (CGImageRef)newCGImageFromCurrentlyProcessedOutput;
-
-/** Convenience method to retreive the currently processed image with a different orientation.
- @param imageOrientation Orientation for image
- */
-- (UIImage *)imageFromCurrentlyProcessedOutputWithOrientation:(UIImageOrientation)imageOrientation;
 - (CGImageRef)newCGImageFromCurrentlyProcessedOutputWithOrientation:(UIImageOrientation)imageOrientation;
-
-/** Convenience method to process an image with a filter.
- 
- This method is useful for using filters on still images without building a full pipeline.
- 
- @param imageToFilter Image to be filtered
- */
-- (UIImage *)imageByFilteringImage:(UIImage *)imageToFilter;
-- (CGImageRef)newCGImageByFilteringImage:(UIImage *)imageToFilter;
 - (CGImageRef)newCGImageByFilteringCGImage:(CGImageRef)imageToFilter;
 - (CGImageRef)newCGImageByFilteringCGImage:(CGImageRef)imageToFilter orientation:(UIImageOrientation)orientation;
+
+// Platform-specific image output methods
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+- (UIImage *)imageFromCurrentlyProcessedOutput;
+- (UIImage *)imageFromCurrentlyProcessedOutputWithOrientation:(UIImageOrientation)imageOrientation;
+- (UIImage *)imageByFilteringImage:(UIImage *)imageToFilter;
+- (CGImageRef)newCGImageByFilteringImage:(UIImage *)imageToFilter;
+#else
+- (NSImage *)imageFromCurrentlyProcessedOutput;
+- (NSImage *)imageFromCurrentlyProcessedOutputWithOrientation:(UIImageOrientation)imageOrientation;
+- (NSImage *)imageByFilteringImage:(NSImage *)imageToFilter;
+- (CGImageRef)newCGImageByFilteringImage:(NSImage *)imageToFilter;
+#endif
 
 - (BOOL)providesMonochromeOutput;
 

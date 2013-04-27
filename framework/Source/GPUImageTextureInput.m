@@ -13,7 +13,7 @@
     }
 
     runSynchronouslyOnVideoProcessingQueue(^{
-        [GPUImageOpenGLESContext useImageProcessingContext];
+        [GPUImageContext useImageProcessingContext];
 
         [self deleteOutputTexture];
     });

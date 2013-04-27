@@ -3,6 +3,7 @@
 #import "GPUImageTwoInputFilter.h"
 #import "GPUImageGaussianBlurFilter.h"
 
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
 NSString *const kGPUImageUnsharpMaskFragmentShaderString = SHADER_STRING
 ( 
  varying highp vec2 textureCoordinate;
@@ -23,6 +24,28 @@ NSString *const kGPUImageUnsharpMaskFragmentShaderString = SHADER_STRING
 //     gl_FragColor = vec4(sharpImageColor.rgb - (blurredImageColor.rgb * intensity), 1.0);
  }
 );
+#else
+NSString *const kGPUImageUnsharpMaskFragmentShaderString = SHADER_STRING
+(
+ varying vec2 textureCoordinate;
+ varying vec2 textureCoordinate2;
+ 
+ uniform sampler2D inputImageTexture;
+ uniform sampler2D inputImageTexture2;
+ 
+ uniform float intensity;
+ 
+ void main()
+ {
+     vec4 sharpImageColor = texture2D(inputImageTexture, textureCoordinate);
+     vec3 blurredImageColor = texture2D(inputImageTexture2, textureCoordinate2).rgb;
+     
+     gl_FragColor = vec4(sharpImageColor.rgb * intensity + blurredImageColor * (1.0 - intensity), sharpImageColor.a);
+     //     gl_FragColor = mix(blurredImageColor, sharpImageColor, intensity);
+     //     gl_FragColor = vec4(sharpImageColor.rgb - (blurredImageColor.rgb * intensity), 1.0);
+ }
+);
+#endif
 
 @implementation GPUImageUnsharpMaskFilter
 

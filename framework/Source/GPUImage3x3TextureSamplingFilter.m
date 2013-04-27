@@ -6,8 +6,8 @@ NSString *const kGPUImageNearbyTexelSamplingVertexShaderString = SHADER_STRING
  attribute vec4 position;
  attribute vec4 inputTextureCoordinate;
  
- uniform highp float texelWidth; 
- uniform highp float texelHeight; 
+ uniform float texelWidth;
+ uniform float texelHeight; 
  
  varying vec2 textureCoordinate;
  varying vec2 leftTextureCoordinate;
@@ -84,7 +84,7 @@ NSString *const kGPUImageNearbyTexelSamplingVertexShaderString = SHADER_STRING
         _texelHeight = 1.0 / filterFrameSize.height;
         
         runSynchronouslyOnVideoProcessingQueue(^{
-            [GPUImageOpenGLESContext setActiveShaderProgram:filterProgram];
+            [GPUImageContext setActiveShaderProgram:filterProgram];
             if (GPUImageRotationSwapsWidthAndHeight(inputRotation))
             {
                 glUniform1f(texelWidthUniform, _texelHeight);

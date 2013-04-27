@@ -29,7 +29,7 @@ NSString *const kGPUImageBoxBlurVertexShaderString = SHADER_STRING
  }
 );
 
-
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
 NSString *const kGPUImageBoxBlurFragmentShaderString = SHADER_STRING
 (
  precision highp float;
@@ -53,6 +53,29 @@ NSString *const kGPUImageBoxBlurFragmentShaderString = SHADER_STRING
      gl_FragColor = fragmentColor;
  }
 );
+#else
+NSString *const kGPUImageBoxBlurFragmentShaderString = SHADER_STRING
+(
+ uniform sampler2D inputImageTexture;
+ 
+ varying vec2 centerTextureCoordinate;
+ varying vec2 oneStepLeftTextureCoordinate;
+ varying vec2 twoStepsLeftTextureCoordinate;
+ varying vec2 oneStepRightTextureCoordinate;
+ varying vec2 twoStepsRightTextureCoordinate;
+ 
+ void main()
+ {
+     vec4 fragmentColor = texture2D(inputImageTexture, centerTextureCoordinate) * 0.2;
+     fragmentColor += texture2D(inputImageTexture, oneStepLeftTextureCoordinate) * 0.2;
+     fragmentColor += texture2D(inputImageTexture, oneStepRightTextureCoordinate) * 0.2;
+     fragmentColor += texture2D(inputImageTexture, twoStepsLeftTextureCoordinate) * 0.2;
+     fragmentColor += texture2D(inputImageTexture, twoStepsRightTextureCoordinate) * 0.2;
+     
+     gl_FragColor = fragmentColor;
+ }
+);
+#endif
 
 @implementation GPUImageBoxBlurFilter
 

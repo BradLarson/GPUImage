@@ -2,13 +2,13 @@
 
 NSString *const kGPUImageTransformVertexShaderString = SHADER_STRING
 (
- attribute highp vec4 position;
- attribute highp vec4 inputTextureCoordinate;
+ attribute vec4 position;
+ attribute vec4 inputTextureCoordinate;
  
  uniform mat4 transformMatrix;
  uniform mat4 orthographicMatrix;
  
- varying highp vec2 textureCoordinate;
+ varying vec2 textureCoordinate;
  
  void main()
  {

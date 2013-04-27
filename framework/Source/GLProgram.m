@@ -138,7 +138,7 @@ typedef void (*GLLogFunction) (GLuint program,
     {
         [attributes addObject:attributeName];
         glBindAttribLocation(program, 
-                             [attributes indexOfObject:attributeName], 
+                             (GLuint)[attributes indexOfObject:attributeName],
                              [attributeName UTF8String]);
     }
 }
@@ -146,7 +146,7 @@ typedef void (*GLLogFunction) (GLuint program,
 // START:indexmethods
 - (GLuint)attributeIndex:(NSString *)attributeName
 {
-    return [attributes indexOfObject:attributeName];
+    return (GLuint)[attributes indexOfObject:attributeName];
 }
 - (GLuint)uniformIndex:(NSString *)uniformName
 {

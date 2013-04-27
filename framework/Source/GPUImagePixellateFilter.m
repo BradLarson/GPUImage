@@ -1,5 +1,6 @@
 #import "GPUImagePixellateFilter.h"
 
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
 NSString *const kGPUImagePixellationFragmentShaderString = SHADER_STRING
 (
  varying highp vec2 textureCoordinate;
@@ -17,6 +18,25 @@ NSString *const kGPUImagePixellationFragmentShaderString = SHADER_STRING
      gl_FragColor = texture2D(inputImageTexture, samplePos );
  }
 );
+#else
+NSString *const kGPUImagePixellationFragmentShaderString = SHADER_STRING
+(
+ varying vec2 textureCoordinate;
+ 
+ uniform sampler2D inputImageTexture;
+ 
+ uniform float fractionalWidthOfPixel;
+ uniform float aspectRatio;
+ 
+ void main()
+ {
+     vec2 sampleDivisor = vec2(fractionalWidthOfPixel, fractionalWidthOfPixel / aspectRatio);
+     
+     vec2 samplePos = textureCoordinate - mod(textureCoordinate, sampleDivisor) + 0.5 * sampleDivisor;
+     gl_FragColor = texture2D(inputImageTexture, samplePos );
+ }
+);
+#endif
 
 @interface GPUImagePixellateFilter ()
 

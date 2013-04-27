@@ -7,14 +7,14 @@ NSString *const kGPUImageFastBlurVertexShaderString = SHADER_STRING
  attribute vec4 position;
  attribute vec2 inputTextureCoordinate;
 
- uniform highp float texelWidthOffset; 
- uniform highp float texelHeightOffset; 
+ uniform float texelWidthOffset;
+ uniform float texelHeightOffset;
  
- varying highp vec2 centerTextureCoordinate;
- varying highp vec2 oneStepLeftTextureCoordinate;
- varying highp vec2 twoStepsLeftTextureCoordinate;
- varying highp vec2 oneStepRightTextureCoordinate;
- varying highp vec2 twoStepsRightTextureCoordinate;
+ varying vec2 centerTextureCoordinate;
+ varying vec2 oneStepLeftTextureCoordinate;
+ varying vec2 twoStepsLeftTextureCoordinate;
+ varying vec2 oneStepRightTextureCoordinate;
+ varying vec2 twoStepsRightTextureCoordinate;
 
 // const float offset[3] = float[]( 0.0, 1.3846153846, 3.2307692308 );
 
@@ -33,7 +33,7 @@ NSString *const kGPUImageFastBlurVertexShaderString = SHADER_STRING
  }
 );
 
-
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
 NSString *const kGPUImageFastBlurFragmentShaderString = SHADER_STRING
 (
  precision highp float;
@@ -85,6 +85,55 @@ NSString *const kGPUImageFastBlurIgnoringAlphaFragmentShaderString = SHADER_STRI
      gl_FragColor = vec4(fragmentColor, 1.0);
  }
 );
+#else
+NSString *const kGPUImageFastBlurFragmentShaderString = SHADER_STRING
+(
+ uniform sampler2D inputImageTexture;
+ 
+ varying vec2 centerTextureCoordinate;
+ varying vec2 oneStepLeftTextureCoordinate;
+ varying vec2 twoStepsLeftTextureCoordinate;
+ varying vec2 oneStepRightTextureCoordinate;
+ varying vec2 twoStepsRightTextureCoordinate;
+ 
+ // const float weight[3] = float[]( 0.2270270270, 0.3162162162, 0.0702702703 );
+ 
+ void main()
+ {
+     vec4 fragmentColor = texture2D(inputImageTexture, centerTextureCoordinate) * 0.2270270270;
+     fragmentColor += texture2D(inputImageTexture, oneStepLeftTextureCoordinate) * 0.3162162162;
+     fragmentColor += texture2D(inputImageTexture, oneStepRightTextureCoordinate) * 0.3162162162;
+     fragmentColor += texture2D(inputImageTexture, twoStepsLeftTextureCoordinate) * 0.0702702703;
+     fragmentColor += texture2D(inputImageTexture, twoStepsRightTextureCoordinate) * 0.0702702703;
+     
+     gl_FragColor = fragmentColor;
+ }
+);
+
+NSString *const kGPUImageFastBlurIgnoringAlphaFragmentShaderString = SHADER_STRING
+(
+ uniform sampler2D inputImageTexture;
+ 
+ varying vec2 centerTextureCoordinate;
+ varying vec2 oneStepLeftTextureCoordinate;
+ varying vec2 twoStepsLeftTextureCoordinate;
+ varying vec2 oneStepRightTextureCoordinate;
+ varying vec2 twoStepsRightTextureCoordinate;
+ 
+ // const float weight[3] = float[]( 0.2270270270, 0.3162162162, 0.0702702703 );
+ 
+ void main()
+ {
+     vec3 fragmentColor = texture2D(inputImageTexture, centerTextureCoordinate).rgb * 0.2270270270;
+     fragmentColor += texture2D(inputImageTexture, oneStepLeftTextureCoordinate).rgb * 0.3162162162;
+     fragmentColor += texture2D(inputImageTexture, oneStepRightTextureCoordinate).rgb * 0.3162162162;
+     fragmentColor += texture2D(inputImageTexture, twoStepsLeftTextureCoordinate).rgb * 0.0702702703;
+     fragmentColor += texture2D(inputImageTexture, twoStepsRightTextureCoordinate).rgb * 0.0702702703;
+     
+     gl_FragColor = vec4(fragmentColor, 1.0);
+ }
+);
+#endif
 
 @implementation GPUImageFastBlurFilter
 

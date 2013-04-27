@@ -8,6 +8,8 @@
 @property(readwrite, nonatomic, copy) NSArray *rgbCompositeControlPoints;
 
 // Initialization and teardown
+- (id)initWithACVData:(NSData*)data;
+
 - (id)initWithACV:(NSString*)curveFilename;
 - (id)initWithACVURL:(NSURL*)curveFileURL;
 

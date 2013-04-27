@@ -234,7 +234,7 @@ NSString *const kGPUImageJFAVoronoiFragmentShaderString = SHADER_STRING
 
 - (void)initializeOutputTextureIfNeeded;
 {
-    [GPUImageOpenGLESContext useImageProcessingContext];
+    [GPUImageContext useImageProcessingContext];
     
     glActiveTexture(GL_TEXTURE2);
     glGenTextures(1, &outputTexture);
@@ -279,7 +279,7 @@ NSString *const kGPUImageJFAVoronoiFragmentShaderString = SHADER_STRING
     [self prepareForImageCapture];
     numPasses = (int)log2([self nextPowerOfTwo:CGPointMake(currentFBOSize.width, currentFBOSize.height)]);
     
-    if ([GPUImageOpenGLESContext supportsFastTextureUpload] && preparedToCaptureImage)
+    if ([GPUImageContext supportsFastTextureUpload] && preparedToCaptureImage)
     {
         //preparedToCaptureImage = NO;
         [super createFilterFBOofSize:currentFBOSize];
@@ -295,12 +295,12 @@ NSString *const kGPUImageJFAVoronoiFragmentShaderString = SHADER_STRING
     glGenFramebuffers(1, &secondFilterFramebuffer);
     glBindFramebuffer(GL_FRAMEBUFFER, secondFilterFramebuffer);
     
-    if ([GPUImageOpenGLESContext supportsFastTextureUpload] && preparedToCaptureImage)
+    if ([GPUImageContext supportsFastTextureUpload] && preparedToCaptureImage)
     {
 #if defined(__IPHONE_6_0)
-        CVReturn err = CVOpenGLESTextureCacheCreate(kCFAllocatorDefault, NULL, [[GPUImageOpenGLESContext sharedImageProcessingOpenGLESContext] context], NULL, &filterTextureCache);
+        CVReturn err = CVOpenGLESTextureCacheCreate(kCFAllocatorDefault, NULL, [[GPUImageContext sharedImageProcessingContext] context], NULL, &filterTextureCache);
 #else
-        CVReturn err = CVOpenGLESTextureCacheCreate(kCFAllocatorDefault, NULL, (__bridge void *)[[GPUImageOpenGLESContext sharedImageProcessingOpenGLESContext] context], NULL, &filterTextureCache);
+        CVReturn err = CVOpenGLESTextureCacheCreate(kCFAllocatorDefault, NULL, (__bridge void *)[[GPUImageContext sharedImageProcessingContext] context], NULL, &filterTextureCache);
 #endif
         
         if (err)
@@ -400,7 +400,7 @@ NSString *const kGPUImageJFAVoronoiFragmentShaderString = SHADER_STRING
 - (void)renderToTextureWithVertices:(const GLfloat *)vertices textureCoordinates:(const GLfloat *)textureCoordinates sourceTexture:(GLuint)sourceTexture;
 {
     // Run the first stage of the two-pass filter
-    [GPUImageOpenGLESContext setActiveShaderProgram:filterProgram];
+    [GPUImageContext setActiveShaderProgram:filterProgram];
     currentPass = 0;
     [self setFilterFBO];
     
