@@ -252,6 +252,21 @@
             self.currentSliderValue = 1.0;
             self.enableSlider = YES;
         }; break;
+        case GPUIMAGE_AMATORKA:
+        {
+            currentlySelectedFilter = [[GPUImageAmatorkaFilter alloc] init];
+            self.enableSlider = NO;
+        }; break;
+        case GPUIMAGE_MISSETIKATE:
+        {
+            currentlySelectedFilter = [[GPUImageMissEtikateFilter alloc] init];
+            self.enableSlider = NO;
+        }; break;
+        case GPUIMAGE_SOFTELEGANCE:
+        {
+            currentlySelectedFilter = [[GPUImageSoftEleganceFilter alloc] init];
+            self.enableSlider = NO;
+        }; break;
         case GPUIMAGE_GRAYSCALE:
         {
             currentlySelectedFilter = [[GPUImageGrayscaleFilter alloc] init];
@@ -594,7 +609,6 @@
         
         [blendFilter addTarget:self.glView];
     }
-
 }
 
 #pragma mark -
@@ -694,6 +708,9 @@
         case GPUIMAGE_HIGHLIGHTSHADOW: tableRowTitle = @"Highlights and shadows"; break;
         case GPUIMAGE_HAZE: tableRowTitle = @"Haze"; break;
         case GPUIMAGE_SEPIA: tableRowTitle = @"Sepia tone"; break;
+        case GPUIMAGE_AMATORKA: tableRowTitle = @"Amatorka (Lookup)"; break;
+        case GPUIMAGE_MISSETIKATE: tableRowTitle = @"Miss Etikate (Lookup)"; break;
+        case GPUIMAGE_SOFTELEGANCE: tableRowTitle = @"Soft elegance (Lookup)"; break;
         case GPUIMAGE_GAUSSIAN: tableRowTitle = @"Gaussian blur"; break;
         case GPUIMAGE_GAUSSIAN_SELECTIVE: tableRowTitle = @"Gaussian selective blur"; break;
         case GPUIMAGE_GAUSSIAN_POSITION: tableRowTitle = @"Gaussian (centered)"; break;

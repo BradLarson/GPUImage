@@ -78,6 +78,10 @@
 #import <GPUImage/GPUImageHazeFilter.h>
 #import <GPUImage/GPUImageToneCurveFilter.h>
 #import <GPUImage/GPUImageHighlightShadowFilter.h>
+#import <GPUImage/GPUImageLookupFilter.h>
+#import <GPUImage/GPUImageAmatorkaFilter.h>
+#import <GPUImage/GPUImageMissEtikateFilter.h>
+#import <GPUImage/GPUImageSoftEleganceFilter.h>
 
 // Outputs
 #import <GPUImage/GPUImageView.h>

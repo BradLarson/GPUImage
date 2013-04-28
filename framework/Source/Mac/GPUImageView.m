@@ -65,11 +65,11 @@
 	return self;
 }
 
-- (void) prepareOpenGL
-{
-    GLint swapInt = 1;
-    [[self openGLContext] setValues:&swapInt forParameter:NSOpenGLCPSwapInterval]; // set to vbl sync
-}
+//- (void) prepareOpenGL
+//{
+//    GLint swapInt = 1;
+//    [[self openGLContext] setValues:&swapInt forParameter:NSOpenGLCPSwapInterval]; // set to vbl sync
+//}
 
 - (void)commonInit;
 {
@@ -102,10 +102,9 @@
     
     runSynchronouslyOnVideoProcessingQueue(^{
         [self.openGLContext makeCurrentContext];
-        glDisable(GL_DEPTH_TEST);
-        glEnable(GL_TEXTURE_2D);
+        displayProgram = [[GPUImageContext sharedImageProcessingContext] programForVertexShaderString:kGPUImageVertexShaderString fragmentShaderString:kGPUImagePassthroughFragmentShaderString];
 
-        displayProgram = [[GLProgram alloc] initWithVertexShaderString:kGPUImageVertexShaderString fragmentShaderString:kGPUImagePassthroughFragmentShaderString];
+//        displayProgram = [[GLProgram alloc] initWithVertexShaderString:kGPUImageVertexShaderString fragmentShaderString:kGPUImagePassthroughFragmentShaderString];
         if (!displayProgram.initialized)
         {
             [displayProgram addAttribute:@"position"];
@@ -127,7 +126,10 @@
         displayPositionAttribute = [displayProgram attributeIndex:@"position"];
         displayTextureCoordinateAttribute = [displayProgram attributeIndex:@"inputTextureCoordinate"];
         displayInputTextureUniform = [displayProgram uniformIndex:@"inputImageTexture"];
-        [displayProgram use];
+        
+        [GPUImageContext setActiveShaderProgram:displayProgram];
+
+//        [displayProgram use];
         glEnableVertexAttribArray(displayPositionAttribute);
         glEnableVertexAttribArray(displayTextureCoordinateAttribute);
     
@@ -174,7 +176,7 @@
 
 - (void)reshape;
 {
-    if ( (_sizeInPixels.width == self.bounds.size.width) && (_sizeInPixels.width == self.bounds.size.width) )
+    if ( (_sizeInPixels.width == self.bounds.size.width) && (_sizeInPixels.height == self.bounds.size.height) )
     {
         return;
     }
@@ -182,7 +184,9 @@
     _sizeInPixels.width = self.bounds.size.width;
     _sizeInPixels.height = self.bounds.size.height;
     [self recalculateViewGeometry];
-    [self newFrameReadyAtTime:kCMTimeInvalid atIndex:0];
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [self newFrameReadyAtTime:kCMTimeInvalid atIndex:0];
+    });
 }
 
 #pragma mark -
@@ -190,7 +194,7 @@
 
 - (void)recalculateViewGeometry;
 {
-    runSynchronouslyOnVideoProcessingQueue(^{
+//    runSynchronouslyOnVideoProcessingQueue(^{
         CGFloat heightScaling, widthScaling;
         
         CGSize currentViewSize = self.bounds.size;
@@ -228,7 +232,7 @@
         imageVertices[5] = heightScaling;
         imageVertices[6] = widthScaling;
         imageVertices[7] = heightScaling;
-    });
+//    });
     
 //    static const GLfloat imageVertices[] = {
 //        -1.0f, -1.0f,
@@ -322,20 +326,16 @@
 - (void)newFrameReadyAtTime:(CMTime)frameTime atIndex:(NSInteger)textureIndex;
 {
     runSynchronouslyOnVideoProcessingQueue(^{
-        [[self openGLContext] makeCurrentContext];
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        glBindRenderbuffer(GL_RENDERBUFFER, 0);
+//        [[self openGLContext] makeCurrentContext];
+        [GPUImageContext setActiveShaderProgram:displayProgram];
         [self setDisplayFramebuffer];
-        [displayProgram use];
+//        [displayProgram use];
         
-        glMatrixMode(GL_MODELVIEW);
-        glLoadIdentity();
-
-        glMatrixMode(GL_PROJECTION);
-        glLoadIdentity();
-
-//        [self setDisplayFramebuffer];
-//        glViewport(0, 0, (GLint)_sizeInPixels.width, (GLint)_sizeInPixels.height);
+//        glMatrixMode(GL_MODELVIEW);
+//        glLoadIdentity();
+//
+//        glMatrixMode(GL_PROJECTION);
+//        glLoadIdentity();
 
         glClearColor(backgroundColorRed, backgroundColorGreen, backgroundColorBlue, backgroundColorAlpha);
         glClear(GL_COLOR_BUFFER_BIT);
@@ -344,13 +344,8 @@
         glBindTexture(GL_TEXTURE_2D, inputTextureForDisplay);
         glUniform1i(displayInputTextureUniform, 4);
 
-//        glVertexPointer(2, GL_FLOAT, 0, imageVertices);
-//        glTexCoordPointer(2, GL_FLOAT, 0, noRotationTextureCoordinates);
-
         glVertexAttribPointer(displayPositionAttribute, 2, GL_FLOAT, 0, 0, imageVertices);
         glVertexAttribPointer(displayTextureCoordinateAttribute, 2, GL_FLOAT, 0, 0, [GPUImageView textureCoordinatesForRotation:inputRotation]);
-
-//        glColor4f(0.0 , 1.0, 0.0, 1.0);
 
         [self lockFocus];
         glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
@@ -358,8 +353,6 @@
         [self presentFramebuffer];
         glBindTexture(GL_TEXTURE_2D, 0);
         [self unlockFocus];
-        
-//        [GPUImageContext useImageProcessingContext];
     });
 }
 
