@@ -87,7 +87,7 @@ static void *openGLESContextQueueKey;
         [self useImageProcessingContext];
         glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTextureSize);
     });
-
+    
     return maxTextureSize;
 }
 
@@ -220,6 +220,7 @@ static void *openGLESContextQueueKey;
 
         // Set up a few global settings for the image processing pipeline
         glDisable(GL_DEPTH_TEST);
+        glEnable(GL_TEXTURE_2D);
     }
     
     return _context;

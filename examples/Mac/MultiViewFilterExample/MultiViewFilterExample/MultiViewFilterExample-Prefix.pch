@@ -1,0 +1,7 @@
+//
+// Prefix header for all source files of the 'MultiViewFilterExample' target in the 'MultiViewFilterExample' project
+//
+
+#ifdef __OBJC__
+    #import <Cocoa/Cocoa.h>
+#endif

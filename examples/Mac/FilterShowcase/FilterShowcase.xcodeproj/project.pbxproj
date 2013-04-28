@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		BCB00A4C172B17F400DB804C /* GPUImage.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = BCF8678F17263F3500912E34 /* GPUImage.framework */; };
 		BCF8676E17263EAC00912E34 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCF8676D17263EAC00912E34 /* Cocoa.framework */; };
 		BCF8677817263EAC00912E34 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = BCF8677617263EAC00912E34 /* InfoPlist.strings */; };
 		BCF8677A17263EAC00912E34 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = BCF8677917263EAC00912E34 /* main.m */; };
@@ -38,6 +39,19 @@
 			remoteInfo = GPUImage;
 		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		BCB00A4B172B17E900DB804C /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				BCB00A4C172B17F400DB804C /* GPUImage.framework in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		BCF8676A17263EAC00912E34 /* FilterShowcase.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FilterShowcase.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -161,6 +175,7 @@
 			buildConfigurationList = BCF8678717263EAD00912E34 /* Build configuration list for PBXNativeTarget "FilterShowcase" */;
 			buildPhases = (
 				BCF8676617263EAC00912E34 /* Sources */,
+				BCB00A4B172B17E900DB804C /* CopyFiles */,
 				BCF8676717263EAC00912E34 /* Frameworks */,
 				BCF8676817263EAC00912E34 /* Resources */,
 			);

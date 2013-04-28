@@ -356,7 +356,9 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
                 glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (int)currentFBOSize.width, (int)currentFBOSize.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
 //            }
             glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, outputTexture, 0);
-            
+//            glBindFramebuffer(GL_FRAMEBUFFER, filterFramebuffer);
+//            GLenum att = GL_COLOR_ATTACHMENT0;
+//            glDrawBuffers(1, &att);
             [self notifyTargetsAboutNewOutputTexture];
         }
         

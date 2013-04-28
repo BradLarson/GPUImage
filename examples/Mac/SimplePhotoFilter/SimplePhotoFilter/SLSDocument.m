@@ -28,8 +28,16 @@
     
     NSLog(@"Did load nib");
     
+//    [inputPicture addTarget:imageFilter];
+//    [imageFilter addTarget:self.imageView];
+    
+//    [inputPicture addTarget:self.imageView];
+//    [inputPicture processImage];
+    
     [inputPicture addTarget:imageFilter];
-    [imageFilter addTarget:self.imageView];
+    GPUImageSketchFilter *sketchFilter = [[GPUImageSketchFilter alloc] init];
+    [imageFilter addTarget:sketchFilter];
+    [sketchFilter addTarget:self.imageView];
     [inputPicture processImage];
 }
 
