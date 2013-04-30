@@ -129,6 +129,7 @@
 		case GPUIMAGE_CGA: cell.textLabel.text = @"CGA colorspace"; break;
 		case GPUIMAGE_CONVOLUTION: cell.textLabel.text = @"3x3 convolution"; break;
 		case GPUIMAGE_EMBOSS: cell.textLabel.text = @"Emboss"; break;
+		case GPUIMAGE_LAPLACIAN: cell.textLabel.text = @"Laplacian"; break;
 		case GPUIMAGE_POSTERIZE: cell.textLabel.text = @"Posterize"; break;
 		case GPUIMAGE_SWIRL: cell.textLabel.text = @"Swirl"; break;
 		case GPUIMAGE_BULGE: cell.textLabel.text = @"Bulge"; break;

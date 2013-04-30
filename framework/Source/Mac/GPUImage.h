@@ -82,6 +82,9 @@
 #import <GPUImage/GPUImageAmatorkaFilter.h>
 #import <GPUImage/GPUImageMissEtikateFilter.h>
 #import <GPUImage/GPUImageSoftEleganceFilter.h>
+#import <GPUImage/GPUImage3x3ConvolutionFilter.h>
+#import <GPUImage/GPUImageEmbossFilter.h>
+#import <GPUImage/GPUImageLaplacianFilter.h>
 
 // Outputs
 #import <GPUImage/GPUImageView.h>

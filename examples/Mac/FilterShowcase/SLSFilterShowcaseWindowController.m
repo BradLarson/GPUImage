@@ -296,6 +296,31 @@
             currentlySelectedFilter = [[GPUImageToonFilter alloc] init];
             self.enableSlider = NO;
         }; break;
+        case GPUIMAGE_CONVOLUTION:
+        {
+            currentlySelectedFilter = [[GPUImage3x3ConvolutionFilter alloc] init];
+            
+            [(GPUImage3x3ConvolutionFilter *)currentlySelectedFilter setConvolutionKernel:(GPUMatrix3x3){
+                {-1.0f,  0.0f, 1.0f},
+                {-2.0f, 0.0f, 2.0f},
+                {-1.0f,  0.0f, 1.0f}
+            }];
+
+            self.enableSlider = NO;
+        }; break;
+        case GPUIMAGE_EMBOSS:
+        {
+            currentlySelectedFilter = [[GPUImageEmbossFilter alloc] init];
+            self.minimumSliderValue = 0.0;
+            self.maximumSliderValue = 5.0;
+            self.currentSliderValue = 1.0;
+            self.enableSlider = YES;
+        }; break;
+        case GPUIMAGE_LAPLACIAN:
+        {
+            currentlySelectedFilter = [[GPUImageLaplacianFilter alloc] init];
+            self.enableSlider = NO;
+        }; break;
         case GPUIMAGE_KUWAHARA:
         {
             currentlySelectedFilter = [[GPUImageKuwaharaFilter alloc] init];
@@ -638,6 +663,7 @@
         case GPUIMAGE_HAZE: [(GPUImageHazeFilter *)currentlySelectedFilter setDistance:_currentSliderValue]; break;
         case GPUIMAGE_SEPIA: [(GPUImageSepiaFilter *)currentlySelectedFilter setIntensity:_currentSliderValue]; break;
         case GPUIMAGE_PIXELLATE: [(GPUImagePixellateFilter *)currentlySelectedFilter setFractionalWidthOfAPixel:_currentSliderValue]; break;
+        case GPUIMAGE_EMBOSS: [(GPUImageEmbossFilter *)currentlySelectedFilter setIntensity:_currentSliderValue]; break;
         case GPUIMAGE_KUWAHARA: [(GPUImageKuwaharaFilter *)currentlySelectedFilter setRadius:round(_currentSliderValue)]; break;
         case GPUIMAGE_SHARPEN: [(GPUImageSharpenFilter *)currentlySelectedFilter setSharpness:_currentSliderValue]; break;
         case GPUIMAGE_UNSHARPMASK: [(GPUImageUnsharpMaskFilter *)currentlySelectedFilter setIntensity:_currentSliderValue]; break;
@@ -695,6 +721,9 @@
         case GPUIMAGE_SOBELEDGEDETECTION: tableRowTitle = @"Sobel edge detection"; break;
         case GPUIMAGE_SKETCH: tableRowTitle = @"Sketch"; break;
         case GPUIMAGE_TOON: tableRowTitle = @"Toon"; break;
+        case GPUIMAGE_CONVOLUTION: tableRowTitle = @"3x3 convolution"; break;
+        case GPUIMAGE_EMBOSS: tableRowTitle = @"Emboss"; break;
+        case GPUIMAGE_LAPLACIAN: tableRowTitle = @"Laplacian (3x3)"; break;
         case GPUIMAGE_KUWAHARA: tableRowTitle = @"Kuwahara"; break;
         case GPUIMAGE_FALSECOLOR: tableRowTitle = @"False color"; break;
         case GPUIMAGE_SHARPEN: tableRowTitle = @"Sharpen"; break;
@@ -745,7 +774,7 @@
         case GPUIMAGE_POISSONBLEND: tableRowTitle = @"Poisson blend"; break;
         case GPUIMAGE_OPACITY: tableRowTitle = @"Opacity adjustment"; break;
     }
-	
+
 	return tableRowTitle;
 }
 

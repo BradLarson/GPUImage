@@ -717,6 +717,13 @@
             
             filter = [[GPUImageEmbossFilter alloc] init];
         }; break;
+        case GPUIMAGE_LAPLACIAN:
+        {
+            self.title = @"Laplacian";
+            self.filterSettingsSlider.hidden = YES;
+            
+            filter = [[GPUImageLaplacianFilter alloc] init];
+        }; break;
         case GPUIMAGE_POSTERIZE:
         {
             self.title = @"Posterize";

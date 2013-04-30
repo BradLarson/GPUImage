@@ -95,7 +95,6 @@ NSString *const kGPUImageSobelEdgeDetectionFragmentShaderString = SHADER_STRING
     return self;
 }
 
-
 - (id)initWithFragmentShaderFromString:(NSString *)fragmentShaderString;
 {
     // Do a luminance pass first to reduce the calculations performed at each fragment in the edge detection phase

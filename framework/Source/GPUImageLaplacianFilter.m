@@ -1,10 +1,9 @@
-#import "GPUImage3x3ConvolutionFilter.h"
-
+#import "GPUImageLaplacianFilter.h"
 #if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
-NSString *const kGPUImage3x3ConvolutionFragmentShaderString = SHADER_STRING
+NSString *const kGPUImageLaplacianFragmentShaderString = SHADER_STRING
 (
  precision highp float;
-
+ 
  uniform sampler2D inputImageTexture;
  
  uniform mediump mat3 convolutionMatrix;
@@ -32,16 +31,19 @@ NSString *const kGPUImage3x3ConvolutionFragmentShaderString = SHADER_STRING
      mediump vec3 topColor = texture2D(inputImageTexture, topTextureCoordinate).rgb;
      mediump vec3 topRightColor = texture2D(inputImageTexture, topRightTextureCoordinate).rgb;
      mediump vec3 topLeftColor = texture2D(inputImageTexture, topLeftTextureCoordinate).rgb;
-
+     
      mediump vec3 resultColor = topLeftColor * convolutionMatrix[0][0] + topColor * convolutionMatrix[0][1] + topRightColor * convolutionMatrix[0][2];
      resultColor += leftColor * convolutionMatrix[1][0] + centerColor.rgb * convolutionMatrix[1][1] + rightColor * convolutionMatrix[1][2];
      resultColor += bottomLeftColor * convolutionMatrix[2][0] + bottomColor * convolutionMatrix[2][1] + bottomRightColor * convolutionMatrix[2][2];
-
+     
+     // Normalize the results to allow for negative gradients in the 0.0-1.0 colorspace
+     resultColor = (resultColor + 1.0) / 2.0;
+     
      gl_FragColor = vec4(resultColor, centerColor.a);
  }
-);                                                                         
+);
 #else
-NSString *const kGPUImage3x3ConvolutionFragmentShaderString = SHADER_STRING
+NSString *const kGPUImageLaplacianFragmentShaderString = SHADER_STRING
 (
  uniform sampler2D inputImageTexture;
  
@@ -75,54 +77,39 @@ NSString *const kGPUImage3x3ConvolutionFragmentShaderString = SHADER_STRING
      resultColor += leftColor * convolutionMatrix[1][0] + centerColor.rgb * convolutionMatrix[1][1] + rightColor * convolutionMatrix[1][2];
      resultColor += bottomLeftColor * convolutionMatrix[2][0] + bottomColor * convolutionMatrix[2][1] + bottomRightColor * convolutionMatrix[2][2];
      
+     // Normalize the results to allow for negative gradients in the 0.0-1.0 colorspace
+     resultColor = (resultColor + 1.0) / 2.0;
+
      gl_FragColor = vec4(resultColor, centerColor.a);
  }
 );
 #endif
 
-@implementation GPUImage3x3ConvolutionFilter
-
-@synthesize convolutionKernel = _convolutionKernel;
-
-#pragma mark -
-#pragma mark Initialization and teardown
+@implementation GPUImageLaplacianFilter
 
 - (id)init;
 {
-    if (!(self = [self initWithFragmentShaderFromString:kGPUImage3x3ConvolutionFragmentShaderString]))
+    if (!(self = [super initWithFragmentShaderFromString:kGPUImageLaplacianFragmentShaderString]))
     {
 		return nil;
     }
-
-    self.convolutionKernel = (GPUMatrix3x3){
-        {0.f, 0.f, 0.f},
-        {0.f, 1.f, 0.f},
-        {0.f, 0.f, 0.f}
-    };
-
-    return self;
-}
-
-- (id)initWithFragmentShaderFromString:(NSString *)fragmentShaderString;
-{
-    if (!(self = [super initWithFragmentShaderFromString:fragmentShaderString]))
-    {
-        return nil;
-    }
     
-    convolutionMatrixUniform = [filterProgram uniformIndex:@"convolutionMatrix"];
+    GPUMatrix3x3 newConvolutionMatrix;
+    newConvolutionMatrix.one.one = 0.5;
+    newConvolutionMatrix.one.two = 1.0;
+    newConvolutionMatrix.one.three = 0.5;
+    
+    newConvolutionMatrix.two.one = 1.0;
+    newConvolutionMatrix.two.two = -6.0;
+    newConvolutionMatrix.two.three = 1.0;
+    
+    newConvolutionMatrix.three.one = 0.5;
+    newConvolutionMatrix.three.two = 1.0;
+    newConvolutionMatrix.three.three = 0.5;
+    
+    self.convolutionKernel = newConvolutionMatrix;
     
     return self;
-}
-
-#pragma mark -
-#pragma mark Accessors
-
-- (void)setConvolutionKernel:(GPUMatrix3x3)newValue;
-{
-    _convolutionKernel = newValue;
-    
-    [self setMatrix3f:_convolutionKernel forUniform:convolutionMatrixUniform program:filterProgram];
 }
 
 @end
