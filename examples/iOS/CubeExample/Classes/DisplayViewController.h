@@ -3,7 +3,7 @@
 
 #import "ESRenderer.h"
 #import "ES2Renderer.h"
-#import "GPUImage.h"
+#import <GPUImage/GPUImage.h>
 
 @interface DisplayViewController : UIViewController
 {

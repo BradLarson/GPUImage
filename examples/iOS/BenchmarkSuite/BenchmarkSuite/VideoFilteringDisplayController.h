@@ -1,6 +1,6 @@
 #import <UIKit/UIKit.h>
 #import <GLKit/GLKit.h>
-#import "GPUImage.h"
+#import <GPUImage/GPUImage.h>
 
 @protocol VideoFilteringCallback;
 

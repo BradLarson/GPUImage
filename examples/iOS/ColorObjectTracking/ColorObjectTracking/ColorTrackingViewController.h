@@ -1,5 +1,5 @@
 #import <UIKit/UIKit.h>
-#import "GPUImage.h"
+#import <GPUImage/GPUImage.h>
 
 typedef enum { PASSTHROUGH_VIDEO, SIMPLE_THRESHOLDING, POSITION_THRESHOLDING, OBJECT_TRACKING} ColorTrackingDisplayMode;
 

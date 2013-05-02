@@ -1,5 +1,5 @@
 #import "ImageFilteringBenchmarkController.h"
-#import "GPUImage.h"
+#import <GPUImage/GPUImage.h>
 
 @implementation ImageFilteringBenchmarkController
 

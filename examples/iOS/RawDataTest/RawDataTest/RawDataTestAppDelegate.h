@@ -1,4 +1,4 @@
-#import "GPUImage.h"
+#import <GPUImage/GPUImage.h>
 #import <UIKit/UIKit.h>
 
 @interface RawDataTestAppDelegate : UIResponder <UIApplicationDelegate>
