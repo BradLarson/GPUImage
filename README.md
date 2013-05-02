@@ -473,11 +473,13 @@ GPUImage needs a few other frameworks to be linked into your application, so you
 - AVFoundation
 - QuartzCore
 
-You'll also need to find the framework headers, so within your project's build settings set the Header Search Paths to the relative path from your application to the framework/ subdirectory within the GPUImage source directory. Make this header search path recursive.
+You'll also need to find the framework headers, so within your project's build settings set the Header Search Paths to:
+
+    $(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/usr/local/include
 
 To use the GPUImage classes within your application, simply include the core framework header using the following:
 
-    #import "GPUImage.h"
+    #import <GPUImage/GPUImage.h>
 
 As a note: if you run into the error "Unknown class GPUImageView in Interface Builder" or the like when trying to build an interface with Interface Builder, you may need to add -ObjC to your Other Linker Flags in your project's build settings.
 
