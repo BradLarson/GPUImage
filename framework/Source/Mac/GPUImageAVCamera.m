@@ -104,9 +104,15 @@ NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = SHAD
 #pragma mark -
 #pragma mark Initialization and teardown
 
++ (NSArray *)connectedCameraDevices;
+{
+    NSArray *devices = [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];
+    return devices;
+}
+
 - (id)init;
 {
-    if (!(self = [self initWithSessionPreset:AVCaptureSessionPreset640x480 cameraPosition:AVCaptureDevicePositionBack]))
+    if (!(self = [self initWithSessionPreset:AVCaptureSessionPreset640x480 cameraDevice:nil]))
     {
 		return nil;
     }
@@ -114,7 +120,7 @@ NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = SHAD
     return self;
 }
 
-- (id)initWithSessionPreset:(NSString *)sessionPreset cameraPosition:(AVCaptureDevicePosition)cameraPosition; 
+- (id)initWithSessionPreset:(NSString *)sessionPreset cameraDevice:(AVCaptureDevice *)cameraDevice;
 {
 	if (!(self = [super init]))
     {
@@ -179,16 +185,24 @@ NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = SHAD
     
 	// Grab the back-facing or front-facing camera
     _inputCamera = nil;
-	NSArray *devices = [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];
-	for (AVCaptureDevice *device in devices) 
-	{
-        NSLog(@"Device: %@, %ld", device, [device position]);
-        
-		if (([device position] == cameraPosition) && (![device isSuspended]) )
-		{
-			_inputCamera = device;
-		}
-	}
+    
+    if (cameraDevice == nil)
+    {
+        NSArray *devices = [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];
+        for (AVCaptureDevice *device in devices)
+        {
+            NSLog(@"Device: %@, %ld", device, [device position]);
+            
+            if (![device isSuspended])
+            {
+                _inputCamera = device;
+            }
+        }
+    }
+    else
+    {
+        _inputCamera = cameraDevice;
+    }
     
     if (!_inputCamera) {
         return nil;
@@ -517,6 +531,8 @@ NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = SHAD
     CVImageBufferRef cameraFrame = CMSampleBufferGetImageBuffer(sampleBuffer);
     GLsizei bufferWidth = (GLsizei)CVPixelBufferGetWidth(cameraFrame);
     GLsizei bufferHeight = (GLsizei)CVPixelBufferGetHeight(cameraFrame);
+    
+    NSLog(@"Buffer width: %d, height: %d", bufferWidth, bufferHeight);
     
 	CMTime currentTime = CMSampleBufferGetPresentationTimeStamp(sampleBuffer);
 

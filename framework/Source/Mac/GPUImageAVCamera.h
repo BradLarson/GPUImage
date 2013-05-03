@@ -64,6 +64,8 @@
 
 /// @name Initialization and teardown
 
++ (NSArray *)connectedCameraDevices;
+
 /** Begin a capture session
  
  See AVCaptureSession for acceptable values
@@ -71,7 +73,7 @@
  @param sessionPreset Session preset to use
  @param cameraPosition Camera to capture from
  */
-- (id)initWithSessionPreset:(NSString *)sessionPreset cameraPosition:(AVCaptureDevicePosition)cameraPosition;
+- (id)initWithSessionPreset:(NSString *)sessionPreset cameraDevice:(AVCaptureDevice *)cameraDevice;
 
 /** Tear down the capture session
  */

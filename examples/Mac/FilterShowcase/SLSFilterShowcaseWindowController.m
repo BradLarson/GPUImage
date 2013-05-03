@@ -27,7 +27,7 @@
 {
     [super windowDidLoad];
 
-    inputCamera = [[GPUImageAVCamera alloc] initWithSessionPreset:AVCaptureSessionPreset640x480 cameraPosition:AVCaptureDevicePositionUnspecified];
+    inputCamera = [[GPUImageAVCamera alloc] initWithSessionPreset:AVCaptureSessionPreset640x480 cameraDevice:nil];
     inputCamera.runBenchmark = YES;
     
     currentlySelectedRow = 1;

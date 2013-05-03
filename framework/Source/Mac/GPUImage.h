@@ -85,6 +85,8 @@
 #import <GPUImage/GPUImage3x3ConvolutionFilter.h>
 #import <GPUImage/GPUImageEmbossFilter.h>
 #import <GPUImage/GPUImageLaplacianFilter.h>
+#import <GPUImage/GPUImageLanczosResamplingFilter.h>
+#import <GPUImage/GPUImageThreeInputFilter.h>
 
 // Outputs
 #import <GPUImage/GPUImageView.h>
