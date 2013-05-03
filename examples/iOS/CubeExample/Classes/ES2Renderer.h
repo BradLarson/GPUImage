@@ -3,7 +3,7 @@
 #import <OpenGLES/ES2/gl.h>
 #import <OpenGLES/ES2/glext.h>
 #import <QuartzCore/QuartzCore.h>
-#import "GPUImage.h"
+#import <GPUImage/GPUImage.h>
 
 @class PVRTexture;
 
