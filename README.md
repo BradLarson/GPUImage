@@ -36,6 +36,10 @@ BSD-style, with the full license available with the framework in License.txt.
 - Devices must have a camera to use camera-related functionality (obviously)
 - The framework uses automatic reference counting (ARC), but should support projects using both ARC and manual reference counting if added as a subproject as explained below. For manual reference counting applications targeting iOS 4.x, you'll need add -fobjc-arc to the Other Linker Flags for your application project.
 
+## Build iOS static library ##
+
+Execute `build.sh` to compile a universal library for iOS simulator/device. The produced library and header files are located at `build/Release-iphone`. You may also change the version of iOS SDK by specifying `IOSSDK_VER` in the `build.sh` (all available versions can be found using `xcodebuild -showsdks`).
+
 ## General architecture ##
 
 GPUImage uses OpenGL ES 2.0 shaders to perform image and video manipulation much faster than could be done in CPU-bound routines. However, it hides the complexity of interacting with the OpenGL ES API in a simplified Objective-C interface. This interface lets you define input sources for images and video, attach filters in a chain, and send the resulting processed image or video to the screen, to a UIImage, or to a movie on disk.
