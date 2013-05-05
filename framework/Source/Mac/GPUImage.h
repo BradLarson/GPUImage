@@ -96,6 +96,19 @@
 #import <GPUImage/GPUImageAdaptiveThresholdFilter.h>
 #import <GPUImage/GPUImageAverageLuminanceThresholdFilter.h>
 #import <GPUImage/GPUImageLuminanceThresholdFilter.h>
+#import <GPUImage/GPUImageHalftoneFilter.h>
+#import <GPUImage/GPUImagePixellatePositionFilter.h>
+#import <GPUImage/GPUImagePolarPixellateFilter.h>
+#import <GPUImage/GPUImagePolkaDotFilter.h>
+#import <GPUImage/GPUImageCrosshatchFilter.h>
+#import <GPUImage/GPUImageXYDerivativeFilter.h>
+#import <GPUImage/GPUImageSingleComponentFastBlurFilter.h>
+#import <GPUImage/GPUImageDirectionalNonMaximumSuppressionFilter.h>
+#import <GPUImage/GPUImageDirectionalSobelEdgeDetectionFilter.h>
+#import <GPUImage/GPUImageSingleComponentFastBlurFilter.h>
+#import <GPUImage/GPUImageCannyEdgeDetectionFilter.h>
+#import <GPUImage/GPUImagePrewittEdgeDetectionFilter.h>
+#import <GPUImage/GPUImageThresholdEdgeDetectionFilter.h>
 
 // Outputs
 #import <GPUImage/GPUImageView.h>
