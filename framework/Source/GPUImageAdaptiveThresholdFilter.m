@@ -4,6 +4,7 @@
 #import "GPUImageGrayscaleFilter.h"
 #import "GPUImageBoxBlurFilter.h"
 
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
 NSString *const kGPUImageAdaptiveThresholdFragmentShaderString = SHADER_STRING
 ( 
  varying highp vec2 textureCoordinate;
@@ -19,10 +20,27 @@ NSString *const kGPUImageAdaptiveThresholdFragmentShaderString = SHADER_STRING
      highp float thresholdResult = step(blurredInput - 0.05, localLuminance);
      
      gl_FragColor = vec4(vec3(thresholdResult), 1.0);
-//     gl_FragColor = vec4(localLuminance, textureColor.r, 0.0, textureColor.w);
-//     gl_FragColor = vec4(localLuminance, localLuminance, localLuminance, 1.0);
  }
- );
+);
+#else
+NSString *const kGPUImageAdaptiveThresholdFragmentShaderString = SHADER_STRING
+(
+ varying vec2 textureCoordinate;
+ varying vec2 textureCoordinate2;
+ 
+ uniform sampler2D inputImageTexture;
+ uniform sampler2D inputImageTexture2;
+ 
+ void main()
+ {
+     float blurredInput = texture2D(inputImageTexture, textureCoordinate).r;
+     float localLuminance = texture2D(inputImageTexture2, textureCoordinate2).r;
+     float thresholdResult = step(blurredInput - 0.05, localLuminance);
+     
+     gl_FragColor = vec4(vec3(thresholdResult), 1.0);
+ }
+);
+#endif
 
 @interface GPUImageAdaptiveThresholdFilter()
 {

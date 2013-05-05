@@ -1,5 +1,6 @@
 #import "GPUImageLuminosity.h"
 
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
 NSString *const kGPUImageInitialLuminosityFragmentShaderString = SHADER_STRING
 (
  precision highp float;
@@ -51,6 +52,55 @@ NSString *const kGPUImageLuminosityFragmentShaderString = SHADER_STRING
      gl_FragColor = vec4(luminosity, luminosity, luminosity, 1.0);
  }
 );
+#else
+NSString *const kGPUImageInitialLuminosityFragmentShaderString = SHADER_STRING
+(
+ uniform sampler2D inputImageTexture;
+ 
+ varying vec2 outputTextureCoordinate;
+ 
+ varying vec2 upperLeftInputTextureCoordinate;
+ varying vec2 upperRightInputTextureCoordinate;
+ varying vec2 lowerLeftInputTextureCoordinate;
+ varying vec2 lowerRightInputTextureCoordinate;
+ 
+ const vec3 W = vec3(0.2125, 0.7154, 0.0721);
+ 
+ void main()
+ {
+     float upperLeftLuminance = dot(texture2D(inputImageTexture, upperLeftInputTextureCoordinate).rgb, W);
+     float upperRightLuminance = dot(texture2D(inputImageTexture, upperRightInputTextureCoordinate).rgb, W);
+     float lowerLeftLuminance = dot(texture2D(inputImageTexture, lowerLeftInputTextureCoordinate).rgb, W);
+     float lowerRightLuminance = dot(texture2D(inputImageTexture, lowerRightInputTextureCoordinate).rgb, W);
+     
+     float luminosity = 0.25 * (upperLeftLuminance + upperRightLuminance + lowerLeftLuminance + lowerRightLuminance);
+     gl_FragColor = vec4(luminosity, luminosity, luminosity, 1.0);
+ }
+);
+
+NSString *const kGPUImageLuminosityFragmentShaderString = SHADER_STRING
+(
+ uniform sampler2D inputImageTexture;
+ 
+ varying vec2 outputTextureCoordinate;
+ 
+ varying vec2 upperLeftInputTextureCoordinate;
+ varying vec2 upperRightInputTextureCoordinate;
+ varying vec2 lowerLeftInputTextureCoordinate;
+ varying vec2 lowerRightInputTextureCoordinate;
+ 
+ void main()
+ {
+     float upperLeftLuminance = texture2D(inputImageTexture, upperLeftInputTextureCoordinate).r;
+     float upperRightLuminance = texture2D(inputImageTexture, upperRightInputTextureCoordinate).r;
+     float lowerLeftLuminance = texture2D(inputImageTexture, lowerLeftInputTextureCoordinate).r;
+     float lowerRightLuminance = texture2D(inputImageTexture, lowerRightInputTextureCoordinate).r;
+     
+     float luminosity = 0.25 * (upperLeftLuminance + upperRightLuminance + lowerLeftLuminance + lowerRightLuminance);
+     gl_FragColor = vec4(luminosity, luminosity, luminosity, 1.0);
+ }
+);
+#endif
 
 @implementation GPUImageLuminosity
 
@@ -139,7 +189,11 @@ NSString *const kGPUImageLuminosityFragmentShaderString = SHADER_STRING
     GLuint currentFramebuffer = [[stageFramebuffers objectAtIndex:0] intValue];
     glBindFramebuffer(GL_FRAMEBUFFER, currentFramebuffer);
     
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
     CGSize currentStageSize = [[stageSizes objectAtIndex:0] CGSizeValue];
+#else
+    NSSize currentStageSize = [[stageSizes objectAtIndex:0] sizeValue];
+#endif
     glViewport(0, 0, (int)currentStageSize.width, (int)currentStageSize.height);
 
     GLuint currentTexture = sourceTexture;
@@ -170,7 +224,11 @@ NSString *const kGPUImageLuminosityFragmentShaderString = SHADER_STRING
         currentFramebuffer = [[stageFramebuffers objectAtIndex:currentStage] intValue];
         glBindFramebuffer(GL_FRAMEBUFFER, currentFramebuffer);
         
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
         currentStageSize = [[stageSizes objectAtIndex:currentStage] CGSizeValue];
+#else
+        currentStageSize = [[stageSizes objectAtIndex:currentStage] sizeValue];
+#endif
         glViewport(0, 0, (int)currentStageSize.width, (int)currentStageSize.height);
         
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -231,7 +289,11 @@ NSString *const kGPUImageLuminosityFragmentShaderString = SHADER_STRING
 
 - (void)extractLuminosityAtFrameTime:(CMTime)frameTime;
 {
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
     CGSize finalStageSize = [[stageSizes lastObject] CGSizeValue];
+#else
+    NSSize finalStageSize = [[stageSizes lastObject] sizeValue];
+#endif
     NSUInteger totalNumberOfPixels = round(finalStageSize.width * finalStageSize.height);
     
     if (rawImagePixels == NULL)

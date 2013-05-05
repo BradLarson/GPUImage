@@ -16,6 +16,7 @@ NSString *const kGPUImageHistogramGeneratorVertexShaderString = SHADER_STRING
  }
 );
 
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
 NSString *const kGPUImageHistogramGeneratorFragmentShaderString = SHADER_STRING
 (
  varying highp vec2 textureCoordinate;
@@ -31,7 +32,23 @@ NSString *const kGPUImageHistogramGeneratorFragmentShaderString = SHADER_STRING
      gl_FragColor = mix(backgroundColor, heightTest, heightTest.r + heightTest.g + heightTest.b);
  }
 );
-
+#else
+NSString *const kGPUImageHistogramGeneratorFragmentShaderString = SHADER_STRING
+(
+ varying vec2 textureCoordinate;
+ varying float height;
+ 
+ uniform sampler2D inputImageTexture;
+ uniform vec4 backgroundColor;
+ 
+ void main()
+ {
+     vec3 colorChannels = texture2D(inputImageTexture, textureCoordinate).rgb;
+     vec4 heightTest = vec4(step(height, colorChannels), 1.0);
+     gl_FragColor = mix(backgroundColor, heightTest, heightTest.r + heightTest.g + heightTest.b);
+ }
+);
+#endif
 
 @implementation GPUImageHistogramGenerator
 

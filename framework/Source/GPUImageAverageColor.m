@@ -5,8 +5,8 @@ NSString *const kGPUImageColorAveragingVertexShaderString = SHADER_STRING
  attribute vec4 position;
  attribute vec4 inputTextureCoordinate;
  
- uniform highp float texelWidth;
- uniform highp float texelHeight;
+ uniform float texelWidth;
+ uniform float texelHeight;
  
  varying vec2 upperLeftInputTextureCoordinate;
  varying vec2 upperRightInputTextureCoordinate;
@@ -24,6 +24,7 @@ NSString *const kGPUImageColorAveragingVertexShaderString = SHADER_STRING
  }
  );
 
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
 NSString *const kGPUImageColorAveragingFragmentShaderString = SHADER_STRING
 (
  precision highp float;
@@ -47,7 +48,29 @@ NSString *const kGPUImageColorAveragingFragmentShaderString = SHADER_STRING
      gl_FragColor = 0.25 * (upperLeftColor + upperRightColor + lowerLeftColor + lowerRightColor);
  }
 );
-
+#else
+NSString *const kGPUImageColorAveragingFragmentShaderString = SHADER_STRING
+(
+ uniform sampler2D inputImageTexture;
+ 
+ varying vec2 outputTextureCoordinate;
+ 
+ varying vec2 upperLeftInputTextureCoordinate;
+ varying vec2 upperRightInputTextureCoordinate;
+ varying vec2 lowerLeftInputTextureCoordinate;
+ varying vec2 lowerRightInputTextureCoordinate;
+ 
+ void main()
+ {
+     vec4 upperLeftColor = texture2D(inputImageTexture, upperLeftInputTextureCoordinate);
+     vec4 upperRightColor = texture2D(inputImageTexture, upperRightInputTextureCoordinate);
+     vec4 lowerLeftColor = texture2D(inputImageTexture, lowerLeftInputTextureCoordinate);
+     vec4 lowerRightColor = texture2D(inputImageTexture, lowerRightInputTextureCoordinate);
+     
+     gl_FragColor = 0.25 * (upperLeftColor + upperRightColor + lowerLeftColor + lowerRightColor);
+ }
+);
+#endif
 
 @implementation GPUImageAverageColor
 
@@ -117,7 +140,11 @@ NSString *const kGPUImageColorAveragingFragmentShaderString = SHADER_STRING
 //                currentStageSize.height = 2.0; // TODO: Rotate the image to account for this case, which causes FBO construction to fail
             }
             
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
             [stageSizes addObject:[NSValue valueWithCGSize:currentStageSize]];
+#else
+            [stageSizes addObject:[NSValue valueWithSize:NSSizeFromCGSize(currentStageSize)]];
+#endif
 
             GLuint textureForStage;
             glGenTextures(1, &textureForStage);
@@ -186,7 +213,11 @@ NSString *const kGPUImageColorAveragingFragmentShaderString = SHADER_STRING
             GLuint currentTexture = [[stageTextures objectAtIndex:currentStage] intValue];
             glBindTexture(GL_TEXTURE_2D, currentTexture);
             
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
             CGSize currentFramebufferSize = [[stageSizes objectAtIndex:currentStage] CGSizeValue];
+#else
+            NSSize currentFramebufferSize = [[stageSizes objectAtIndex:currentStage] sizeValue];
+#endif
             
 //            NSLog(@"FBO stage size: %f, %f", currentFramebufferSize.width, currentFramebufferSize.height);
             glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (int)currentFramebufferSize.width, (int)currentFramebufferSize.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
@@ -236,7 +267,11 @@ NSString *const kGPUImageColorAveragingFragmentShaderString = SHADER_STRING
         GLuint currentFramebuffer = [[stageFramebuffers objectAtIndex:currentStage] intValue];
         glBindFramebuffer(GL_FRAMEBUFFER, currentFramebuffer);
         
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
         CGSize currentStageSize = [[stageSizes objectAtIndex:currentStage] CGSizeValue];
+#else
+        NSSize currentStageSize = [[stageSizes objectAtIndex:currentStage] sizeValue];
+#endif
         glViewport(0, 0, (int)currentStageSize.width, (int)currentStageSize.height);
 
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -304,7 +339,11 @@ NSString *const kGPUImageColorAveragingFragmentShaderString = SHADER_STRING
 
 - (void)extractAverageColorAtFrameTime:(CMTime)frameTime;
 {
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
     CGSize finalStageSize = [[stageSizes lastObject] CGSizeValue];
+#else
+    NSSize finalStageSize = [[stageSizes lastObject] sizeValue];
+#endif
     NSUInteger totalNumberOfPixels = round(finalStageSize.width * finalStageSize.height);
     
     if (rawImagePixels == NULL)

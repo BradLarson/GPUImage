@@ -87,6 +87,15 @@
 #import <GPUImage/GPUImageLaplacianFilter.h>
 #import <GPUImage/GPUImageLanczosResamplingFilter.h>
 #import <GPUImage/GPUImageThreeInputFilter.h>
+#import <GPUImage/GPUImageColorInvertFilter.h>
+#import <GPUImage/GPUImageHistogramFilter.h>
+#import <GPUImage/GPUImageHistogramGenerator.h>
+#import <GPUImage/GPUImageAverageColor.h>
+#import <GPUImage/GPUImageLuminosity.h>
+#import <GPUImage/GPUImageSolidColorGenerator.h>
+#import <GPUImage/GPUImageAdaptiveThresholdFilter.h>
+#import <GPUImage/GPUImageAverageLuminanceThresholdFilter.h>
+#import <GPUImage/GPUImageLuminanceThresholdFilter.h>
 
 // Outputs
 #import <GPUImage/GPUImageView.h>

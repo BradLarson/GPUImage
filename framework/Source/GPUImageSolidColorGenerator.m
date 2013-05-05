@@ -1,5 +1,6 @@
 #import "GPUImageSolidColorGenerator.h"
 
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
 NSString *const kGPUSolidColorFragmentShaderString = SHADER_STRING
 (
  precision lowp float;
@@ -14,6 +15,20 @@ NSString *const kGPUSolidColorFragmentShaderString = SHADER_STRING
      gl_FragColor = color;
  }
 );
+#else
+NSString *const kGPUSolidColorFragmentShaderString = SHADER_STRING
+(
+ varying vec2 textureCoordinate;
+ 
+ uniform sampler2D inputImageTexture;
+ uniform vec4 color;
+ 
+ void main()
+ {
+     gl_FragColor = color;
+ }
+);
+#endif
 
 @implementation GPUImageSolidColorGenerator
 

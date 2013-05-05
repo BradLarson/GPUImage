@@ -73,6 +73,8 @@
  @param sessionPreset Session preset to use
  @param cameraPosition Camera to capture from
  */
+- (id)initWithDeviceUniqueID:(NSString *)deviceUniqueID;
+- (id)initWithSessionPreset:(NSString *)sessionPreset deviceUniqueID:(NSString *)deviceUniqueID;
 - (id)initWithSessionPreset:(NSString *)sessionPreset cameraDevice:(AVCaptureDevice *)cameraDevice;
 
 /** Tear down the capture session
@@ -124,5 +126,7 @@
 /** When benchmarking is enabled, this will keep a running average of the time from uploading, processing, and final recording or display
  */
 - (CGFloat)averageFrameDurationDuringCapture;
+
+- (void)printSupportedPixelFormats;
 
 @end
