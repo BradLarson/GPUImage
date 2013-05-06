@@ -128,7 +128,7 @@ There are currently 125 built-in filters, divided into the following categories:
   - *opacity*: The value to multiply the incoming alpha channel for each pixel by (0.0 - 1.0, with 1.0 as the default)
 
 - **GPUImageSolidColorGenerator**: This outputs a generated image with a solid color. You need to define the image size using -forceProcessingAtSize:
- - *color*: The color, in a four component format, that is used to fill the image.
+  - *color*: The color, in a four component format, that is used to fill the image.
 
 - **GPUImageLuminanceThresholdFilter**: Pixels with a luminance above the threshold will appear white, and those below will be black
   - *threshold*: The luminance threshold, from 0.0 to 1.0, with a default of 0.5
@@ -148,8 +148,8 @@ There are currently 125 built-in filters, divided into the following categories:
 - **GPUImageLuminosity**: Like the GPUImageAverageColor, this reduces an image to its average luminosity. You need to set the luminosityProcessingFinishedBlock to handle the output of this filter, which just returns a luminosity value and a frame time.
 
 - **GPUImageChromaKeyFilter**: For a given color in the image, sets the alpha channel to 0. This is similar to the GPUImageChromaKeyBlendFilter, only instead of blending in a second image for a matching color this doesn't take in a second image and just turns a given color transparent.
-- *thresholdSensitivity*: How close a color match needs to exist to the target color to be replaced (default of 0.4)
-- *smoothing*: How smoothly to blend for the color match (default of 0.1)
+  - *thresholdSensitivity*: How close a color match needs to exist to the target color to be replaced (default of 0.4)
+  - *smoothing*: How smoothly to blend for the color match (default of 0.1)
 
 ### Image processing ###
 
