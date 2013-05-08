@@ -361,4 +361,12 @@
     }
 }
 
+- (void)cancelProcessing
+{
+    if (reader) {
+        [reader cancelReading];
+    }
+    [self endProcessing];
+}
+
 @end
