@@ -22,8 +22,7 @@ NSString *const kGPUImageVignetteFragmentShaderString = SHADER_STRING
      lowp vec3 rgb = texture2D(inputImageTexture, textureCoordinate).rgb;
      lowp float d = distance(textureCoordinate, vec2(vignetteCenter.x, vignetteCenter.y));
      lowp float percent = smoothstep(vignetteStart, vignetteEnd, d);
-     gl_FragColor = vec4(mix(rgb.x, vignetteColor.x, percent), mix(rgb.y, vignetteColor.y, percent), mix(rgb.z, vignetteColor.z, percent), 1.0);
- }
+          gl_FragColor = vec4(mix(rgb.x, vignetteColor.x, percent), mix(rgb.y, vignetteColor.y, percent), mix(rgb.z, vignetteColor.z, percent), texture2D(inputImageTexture, textureCoordinate).w); }
 );
 
 @implementation GPUImageVignetteFilter
