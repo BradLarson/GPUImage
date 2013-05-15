@@ -400,6 +400,9 @@
                 // GL_EXT_read_format_bgra
                 //            glReadPixels(0, 0, imageSize.width, imageSize.height, GL_BGRA_EXT, GL_UNSIGNED_BYTE, _rawBytesForImage);
             }
+          
+            hasReadFromTheCurrentFrame = YES;
+
         });
         
         return _rawBytesForImage;
