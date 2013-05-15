@@ -148,5 +148,140 @@ NSString *const kGPUImageLevelsFragmentShaderString = SHADER_STRING
     [self setBlueMin:min gamma:mid max:max minOut:0.0 maxOut:1.0];
 }
 
+- (float)getRedMin {
+    return minVector.one;
+}
+
+- (float)getRedMid {
+    return midVector.one;
+}
+
+- (float)getRedMax {
+    return maxVector.one;
+}
+
+- (float)getRedMinOut {
+    return minOutputVector.one;
+}
+
+- (float)getRedMaxOut {
+    return maxOutputVector.one;
+}
+
+- (float)getGreenMin {
+    return minVector.two;
+}
+
+- (float)getGreenMid {
+    return midVector.two;
+}
+
+- (float)getGreenMax {
+    return maxVector.two;
+}
+
+- (float)getGreenMinOut {
+    return minOutputVector.two;
+}
+
+- (float)getGreenMaxOut {
+    return maxOutputVector.two;
+}
+
+- (float)getBlueMin {
+    return minVector.three;
+}
+
+- (float)getBlueMid {
+    return midVector.three;
+}
+
+- (float)getBlueMax {
+    return maxVector.three;
+}
+
+- (float)getBlueMinOut {
+    return minOutputVector.three;
+}
+
+- (float)getBlueMaxOut {
+    return maxOutputVector.three;
+}
+
+- (void)setRedMin:(float)value {
+    minVector.one = value;
+    [self updateUniforms];
+}
+
+- (void)setRedMid:(float)value {
+    midVector.one = value;
+    [self updateUniforms];
+}
+
+- (void)setRedMax:(float)value {
+    maxVector.one = value;
+    [self updateUniforms];
+}
+
+- (void)setRedMinOut:(float)value {
+    minOutputVector.one = value;
+    [self updateUniforms];
+}
+
+- (void)setRedMaxOut:(float)value {
+    maxOutputVector.one = value;
+    [self updateUniforms];
+}
+
+- (void)setGreenMin:(float)value {
+    minVector.two = value;
+    [self updateUniforms];
+}
+
+- (void)setGreenMid:(float)value {
+    midVector.two = value;
+    [self updateUniforms];
+}
+
+- (void)setGreenMax:(float)value {
+    maxVector.two = value;
+    [self updateUniforms];
+}
+
+- (void)setGreenMinOut:(float)value {
+    minOutputVector.two = value;
+    [self updateUniforms];
+}
+
+- (void)setGreenMaxOut:(float)value {
+    maxOutputVector.two = value;
+    [self updateUniforms];
+}
+
+- (void)setBlueMin:(float)value {
+    minVector.three = value;
+    [self updateUniforms];
+}
+
+- (void)setBlueMid:(float)value {
+    midVector.three = value;
+    [self updateUniforms];
+}
+
+- (void)setBlueMax:(float)value {
+    maxVector.three = value;
+    [self updateUniforms];
+}
+
+- (void)setBlueMinOut:(float)value {
+    minOutputVector.three = value;
+    [self updateUniforms];
+}
+
+- (void)setBlueMaxOut:(float)value {
+    maxOutputVector.three = value;
+    [self updateUniforms];
+}
+
 @end
 
