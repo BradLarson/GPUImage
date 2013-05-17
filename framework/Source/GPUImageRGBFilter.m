@@ -14,7 +14,7 @@ NSString *const kGPUImageRGBFragmentShaderString = SHADER_STRING
  {
      highp vec4 textureColor = texture2D(inputImageTexture, textureCoordinate);
      
-     gl_FragColor = vec4(textureColor.r * red, textureColor.g * green, textureColor.b * blue, 1.0);
+     gl_FragColor = vec4(textureColor.r * red, textureColor.g * green, textureColor.b * blue, textureColor.a);
  }
 );
 #else
@@ -31,7 +31,7 @@ NSString *const kGPUImageRGBFragmentShaderString = SHADER_STRING
  {
      vec4 textureColor = texture2D(inputImageTexture, textureCoordinate);
      
-     gl_FragColor = vec4(textureColor.r * red, textureColor.g * green, textureColor.b * blue, 1.0);
+     gl_FragColor = vec4(textureColor.r * red, textureColor.g * green, textureColor.b * blue, textureColor.a);
  }
  );
 #endif
