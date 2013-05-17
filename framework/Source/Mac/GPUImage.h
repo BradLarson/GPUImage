@@ -109,6 +109,15 @@
 #import <GPUImage/GPUImageCannyEdgeDetectionFilter.h>
 #import <GPUImage/GPUImagePrewittEdgeDetectionFilter.h>
 #import <GPUImage/GPUImageThresholdEdgeDetectionFilter.h>
+#import <GPUImage/GPUImageHarrisCornerDetectionFilter.h>
+#import <GPUImage/GPUImageNobleCornerDetectionFilter.h>
+#import <GPUImage/GPUImageShiTomasiFeatureDetectionFilter.h>
+#import <GPUImage/GPUImageThresholdedNonMaximumSuppressionFilter.h>
+#import <GPUImage/GPUImageColorPackingFilter.h>
+#import <GPUImage/GPUImageHoughTransformLineDetector.h>
+#import <GPUImage/GPUImageParallelCoordinateLineTransformFilter.h>
+#import <GPUImage/GPUImageCrosshairGenerator.h>
+#import <GPUImage/GPUImageLineGenerator.h>
 
 // Outputs
 #import <GPUImage/GPUImageView.h>
