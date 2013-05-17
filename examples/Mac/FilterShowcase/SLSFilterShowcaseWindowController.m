@@ -359,6 +359,38 @@
             self.currentSliderValue = 0.6;
             self.enableSlider = YES;
         }; break;
+        case GPUIMAGE_BUFFER:
+        {
+            currentlySelectedFilter = [[GPUImageBuffer alloc] init];
+            self.enableSlider = NO;
+        }; break;
+        case GPUIMAGE_LOWPASS:
+        {
+            currentlySelectedFilter = [[GPUImageLowPassFilter alloc] init];
+            
+            self.minimumSliderValue = 0.0;
+            self.maximumSliderValue = 1.0;
+            self.currentSliderValue = 0.5;
+            self.enableSlider = YES;
+        }; break;
+        case GPUIMAGE_HIGHPASS:
+        {
+            currentlySelectedFilter = [[GPUImageHighPassFilter alloc] init];
+            
+            self.minimumSliderValue = 0.0;
+            self.maximumSliderValue = 1.0;
+            self.currentSliderValue = 0.5;
+            self.enableSlider = YES;
+        }; break;
+        case GPUIMAGE_MOTIONDETECTOR:
+        {
+            currentlySelectedFilter = [[GPUImageMotionDetector alloc] init];
+            
+            self.minimumSliderValue = 0.0;
+            self.maximumSliderValue = 1.0;
+            self.currentSliderValue = 0.5;
+            self.enableSlider = YES;
+        }; break;
         case GPUIMAGE_GRAYSCALE:
         {
             currentlySelectedFilter = [[GPUImageGrayscaleFilter alloc] init];
@@ -939,6 +971,9 @@
         case GPUIMAGE_NOBLECORNERDETECTION: [(GPUImageNobleCornerDetectionFilter *)currentlySelectedFilter setThreshold:_currentSliderValue]; break;
         case GPUIMAGE_SHITOMASIFEATUREDETECTION: [(GPUImageShiTomasiFeatureDetectionFilter *)currentlySelectedFilter setThreshold:_currentSliderValue]; break;
         case GPUIMAGE_HOUGHTRANSFORMLINEDETECTOR: [(GPUImageHoughTransformLineDetector *)currentlySelectedFilter setLineDetectionThreshold:_currentSliderValue]; break;
+        case GPUIMAGE_LOWPASS: [(GPUImageLowPassFilter *)currentlySelectedFilter setFilterStrength:_currentSliderValue]; break;
+        case GPUIMAGE_HIGHPASS: [(GPUImageHighPassFilter *)currentlySelectedFilter setFilterStrength:_currentSliderValue]; break;
+        case GPUIMAGE_MOTIONDETECTOR: [(GPUImageMotionDetector *)currentlySelectedFilter setLowPassFilterStrength:_currentSliderValue]; break;
         case GPUIMAGE_EMBOSS: [(GPUImageEmbossFilter *)currentlySelectedFilter setIntensity:_currentSliderValue]; break;
         case GPUIMAGE_KUWAHARA: [(GPUImageKuwaharaFilter *)currentlySelectedFilter setRadius:round(_currentSliderValue)]; break;
         case GPUIMAGE_SHARPEN: [(GPUImageSharpenFilter *)currentlySelectedFilter setSharpness:_currentSliderValue]; break;
@@ -1013,6 +1048,10 @@
         case GPUIMAGE_NOBLECORNERDETECTION: tableRowTitle = @"Noble corner detector"; break;
         case GPUIMAGE_SHITOMASIFEATUREDETECTION: tableRowTitle = @"Shi-Tomasi feature detector"; break;
         case GPUIMAGE_HOUGHTRANSFORMLINEDETECTOR: tableRowTitle = @"Hough transform line detector"; break;
+        case GPUIMAGE_BUFFER: tableRowTitle = @"Image buffer"; break;
+        case GPUIMAGE_LOWPASS: tableRowTitle = @"Low pass"; break;
+        case GPUIMAGE_HIGHPASS: tableRowTitle = @"High pass"; break;
+        case GPUIMAGE_MOTIONDETECTOR: tableRowTitle = @"Motion detector"; break;
         case GPUIMAGE_XYGRADIENT: tableRowTitle = @"X-Y gradient"; break;
         case GPUIMAGE_SKETCH: tableRowTitle = @"Sketch"; break;
         case GPUIMAGE_TOON: tableRowTitle = @"Toon"; break;

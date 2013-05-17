@@ -23,6 +23,14 @@
 		BC78B713172DCCB800342C6A /* GPUImageMissEtikateFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = BC78B70B172DCCB800342C6A /* GPUImageMissEtikateFilter.m */; };
 		BC78B714172DCCB800342C6A /* GPUImageSoftEleganceFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = BC78B70C172DCCB800342C6A /* GPUImageSoftEleganceFilter.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BC78B715172DCCB800342C6A /* GPUImageSoftEleganceFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = BC78B70D172DCCB800342C6A /* GPUImageSoftEleganceFilter.m */; };
+		BCA20B571746C9EC0097C84A /* GPUImageBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = BCA20B4F1746C9EC0097C84A /* GPUImageBuffer.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		BCA20B581746C9EC0097C84A /* GPUImageBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = BCA20B501746C9EC0097C84A /* GPUImageBuffer.m */; };
+		BCA20B591746C9EC0097C84A /* GPUImageHighPassFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = BCA20B511746C9EC0097C84A /* GPUImageHighPassFilter.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		BCA20B5A1746C9EC0097C84A /* GPUImageHighPassFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = BCA20B521746C9EC0097C84A /* GPUImageHighPassFilter.m */; };
+		BCA20B5B1746C9EC0097C84A /* GPUImageLowPassFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = BCA20B531746C9EC0097C84A /* GPUImageLowPassFilter.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		BCA20B5C1746C9EC0097C84A /* GPUImageLowPassFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = BCA20B541746C9EC0097C84A /* GPUImageLowPassFilter.m */; };
+		BCA20B5D1746C9EC0097C84A /* GPUImageMotionDetector.h in Headers */ = {isa = PBXBuildFile; fileRef = BCA20B551746C9EC0097C84A /* GPUImageMotionDetector.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		BCA20B5E1746C9EC0097C84A /* GPUImageMotionDetector.m in Sources */ = {isa = PBXBuildFile; fileRef = BCA20B561746C9EC0097C84A /* GPUImageMotionDetector.m */; };
 		BCA3F32017239B6500E28AEC /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCA3F31F17239B6500E28AEC /* Cocoa.framework */; };
 		BCA3F3621723A8FA00E28AEC /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCA3F3601723A8FA00E28AEC /* OpenGL.framework */; };
 		BCA3F3631723A8FA00E28AEC /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCA3F3611723A8FA00E28AEC /* QuartzCore.framework */; };
@@ -264,6 +272,14 @@
 		BC78B70B172DCCB800342C6A /* GPUImageMissEtikateFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GPUImageMissEtikateFilter.m; path = Source/GPUImageMissEtikateFilter.m; sourceTree = SOURCE_ROOT; };
 		BC78B70C172DCCB800342C6A /* GPUImageSoftEleganceFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GPUImageSoftEleganceFilter.h; path = Source/GPUImageSoftEleganceFilter.h; sourceTree = SOURCE_ROOT; };
 		BC78B70D172DCCB800342C6A /* GPUImageSoftEleganceFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GPUImageSoftEleganceFilter.m; path = Source/GPUImageSoftEleganceFilter.m; sourceTree = SOURCE_ROOT; };
+		BCA20B4F1746C9EC0097C84A /* GPUImageBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GPUImageBuffer.h; path = Source/GPUImageBuffer.h; sourceTree = SOURCE_ROOT; };
+		BCA20B501746C9EC0097C84A /* GPUImageBuffer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GPUImageBuffer.m; path = Source/GPUImageBuffer.m; sourceTree = SOURCE_ROOT; };
+		BCA20B511746C9EC0097C84A /* GPUImageHighPassFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GPUImageHighPassFilter.h; path = Source/GPUImageHighPassFilter.h; sourceTree = SOURCE_ROOT; };
+		BCA20B521746C9EC0097C84A /* GPUImageHighPassFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GPUImageHighPassFilter.m; path = Source/GPUImageHighPassFilter.m; sourceTree = SOURCE_ROOT; };
+		BCA20B531746C9EC0097C84A /* GPUImageLowPassFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GPUImageLowPassFilter.h; path = Source/GPUImageLowPassFilter.h; sourceTree = SOURCE_ROOT; };
+		BCA20B541746C9EC0097C84A /* GPUImageLowPassFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GPUImageLowPassFilter.m; path = Source/GPUImageLowPassFilter.m; sourceTree = SOURCE_ROOT; };
+		BCA20B551746C9EC0097C84A /* GPUImageMotionDetector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GPUImageMotionDetector.h; path = Source/GPUImageMotionDetector.h; sourceTree = SOURCE_ROOT; };
+		BCA20B561746C9EC0097C84A /* GPUImageMotionDetector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GPUImageMotionDetector.m; path = Source/GPUImageMotionDetector.m; sourceTree = SOURCE_ROOT; };
 		BCA3F31C17239B6500E28AEC /* GPUImage.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = GPUImage.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BCA3F31F17239B6500E28AEC /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		BCA3F32217239B6500E28AEC /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -769,6 +785,14 @@
 				BC569579174683620081491B /* GPUImageLineGenerator.m */,
 				BCE2EF9A17459E5100C0628C /* GPUImageParallelCoordinateLineTransformFilter.h */,
 				BCE2EF9B17459E5100C0628C /* GPUImageParallelCoordinateLineTransformFilter.m */,
+				BCA20B4F1746C9EC0097C84A /* GPUImageBuffer.h */,
+				BCA20B501746C9EC0097C84A /* GPUImageBuffer.m */,
+				BCA20B511746C9EC0097C84A /* GPUImageHighPassFilter.h */,
+				BCA20B521746C9EC0097C84A /* GPUImageHighPassFilter.m */,
+				BCA20B531746C9EC0097C84A /* GPUImageLowPassFilter.h */,
+				BCA20B541746C9EC0097C84A /* GPUImageLowPassFilter.m */,
+				BCA20B551746C9EC0097C84A /* GPUImageMotionDetector.h */,
+				BCA20B561746C9EC0097C84A /* GPUImageMotionDetector.m */,
 				BCF86816172854AE00912E34 /* GPUImageBoxBlurFilter.h */,
 				BCF86817172854B100912E34 /* GPUImageBoxBlurFilter.m */,
 				BCF86818172854B300912E34 /* GPUImageFastBlurFilter.h */,
@@ -980,6 +1004,10 @@
 				BCE2EF9C17459E5100C0628C /* GPUImageParallelCoordinateLineTransformFilter.h in Headers */,
 				BC56957A174683620081491B /* GPUImageCrosshairGenerator.h in Headers */,
 				BC56957C174683620081491B /* GPUImageLineGenerator.h in Headers */,
+				BCA20B571746C9EC0097C84A /* GPUImageBuffer.h in Headers */,
+				BCA20B591746C9EC0097C84A /* GPUImageHighPassFilter.h in Headers */,
+				BCA20B5B1746C9EC0097C84A /* GPUImageLowPassFilter.h in Headers */,
+				BCA20B5D1746C9EC0097C84A /* GPUImageMotionDetector.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1161,6 +1189,10 @@
 				BCE2EF9D17459E5100C0628C /* GPUImageParallelCoordinateLineTransformFilter.m in Sources */,
 				BC56957B174683620081491B /* GPUImageCrosshairGenerator.m in Sources */,
 				BC56957D174683620081491B /* GPUImageLineGenerator.m in Sources */,
+				BCA20B581746C9EC0097C84A /* GPUImageBuffer.m in Sources */,
+				BCA20B5A1746C9EC0097C84A /* GPUImageHighPassFilter.m in Sources */,
+				BCA20B5C1746C9EC0097C84A /* GPUImageLowPassFilter.m in Sources */,
+				BCA20B5E1746C9EC0097C84A /* GPUImageMotionDetector.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -118,6 +118,10 @@
 #import <GPUImage/GPUImageParallelCoordinateLineTransformFilter.h>
 #import <GPUImage/GPUImageCrosshairGenerator.h>
 #import <GPUImage/GPUImageLineGenerator.h>
+#import <GPUImage/GPUImageBuffer.h>
+#import <GPUImage/GPUImageLowPassFilter.h>
+#import <GPUImage/GPUImageHighPassFilter.h>
+#import <GPUImage/GPUImageMotionDetector.h>
 
 // Outputs
 #import <GPUImage/GPUImageView.h>
