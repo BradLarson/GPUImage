@@ -1,5 +1,6 @@
 #import "GPUImagePinchDistortionFilter.h"
 
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
 NSString *const kGPUImagePinchDistortionFragmentShaderString = SHADER_STRING
 (
  varying highp vec2 textureCoordinate;
@@ -30,8 +31,42 @@ NSString *const kGPUImagePinchDistortionFragmentShaderString = SHADER_STRING
      {
          gl_FragColor = texture2D(inputImageTexture, textureCoordinate );
      }
-}
+ }
 );
+#else
+NSString *const kGPUImagePinchDistortionFragmentShaderString = SHADER_STRING
+(
+ varying vec2 textureCoordinate;
+ 
+ uniform sampler2D inputImageTexture;
+ 
+ uniform float aspectRatio;
+ uniform vec2 center;
+ uniform float radius;
+ uniform float scale;
+ 
+ void main()
+ {
+     vec2 textureCoordinateToUse = vec2(textureCoordinate.x, (textureCoordinate.y * aspectRatio + 0.5 - 0.5 * aspectRatio));
+     float dist = distance(center, textureCoordinateToUse);
+     textureCoordinateToUse = textureCoordinate;
+     
+     if (dist < radius)
+     {
+         textureCoordinateToUse -= center;
+         float percent = 1.0 + ((0.5 - dist) / 0.5) * scale;
+         textureCoordinateToUse = textureCoordinateToUse * percent;
+         textureCoordinateToUse += center;
+         
+         gl_FragColor = texture2D(inputImageTexture, textureCoordinateToUse );
+     }
+     else
+     {
+         gl_FragColor = texture2D(inputImageTexture, textureCoordinate );
+     }
+ }
+);
+#endif
 
 @interface GPUImagePinchDistortionFilter ()
 

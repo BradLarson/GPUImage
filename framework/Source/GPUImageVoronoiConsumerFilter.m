@@ -1,5 +1,6 @@
 #import "GPUImageVoronoiConsumerFilter.h"
 
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
 NSString *const kGPUImageVoronoiConsumerFragmentShaderString = SHADER_STRING
 (
  
@@ -26,9 +27,34 @@ NSString *const kGPUImageVoronoiConsumerFragmentShaderString = SHADER_STRING
      
      gl_FragColor = color;
  }
+);
+#else
+NSString *const kGPUImageVoronoiConsumerFragmentShaderString = SHADER_STRING
+(
+ uniform sampler2D inputImageTexture;
+ uniform sampler2D inputImageTexture2;
+ uniform vec2 size;
+ varying vec2 textureCoordinate;
  
+ vec2 getCoordFromColor(vec4 color)
+ {
+    float z = color.z * 256.0;
+    float yoff = floor(z / 8.0);
+    float xoff = mod(z, 8.0);
+    float x = color.x*256.0 + xoff*256.0;
+    float y = color.y*256.0 + yoff*256.0;
+    return vec2(x,y) / size;
+ }
  
- );
+ void main(void)
+ {
+     vec4 colorLoc = texture2D(inputImageTexture2, textureCoordinate);
+     vec4 color = texture2D(inputImageTexture, getCoordFromColor(colorLoc));
+     
+     gl_FragColor = color;
+ }
+);
+#endif
 
 @implementation GPUImageVoronoiConsumerFilter
 
