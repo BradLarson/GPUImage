@@ -228,7 +228,7 @@ NSString *const kGPUImageThreeInputTextureVertexShaderString = SHADER_STRING
     outputTextureRetainCount = [targets count];
     
     // You can set up infinite update loops, so this helps to short circuit them
-    if (hasReceivedFirstFrame && hasReceivedSecondFrame)
+    if (hasReceivedFirstFrame && hasReceivedSecondFrame && hasReceivedThirdFrame)
     {
         return;
     }
