@@ -784,17 +784,21 @@ NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = SHAD
 
 - (void)destroyYUVConversionFBO;
 {
-    if (yuvConversionFramebuffer)
-	{
-		glDeleteFramebuffers(1, &yuvConversionFramebuffer);
-		yuvConversionFramebuffer = 0;
-	}
-    
-    if (outputTexture)
-    {
-        glDeleteTextures(1, &outputTexture);
-        outputTexture = 0;
-    }
+    runSynchronouslyOnVideoProcessingQueue(^{
+        [GPUImageContext useImageProcessingContext];
+
+        if (yuvConversionFramebuffer)
+        {
+            glDeleteFramebuffers(1, &yuvConversionFramebuffer);
+            yuvConversionFramebuffer = 0;
+        }
+        
+        if (outputTexture)
+        {
+            glDeleteTextures(1, &outputTexture);
+            outputTexture = 0;
+        }
+    });
 }
 
 

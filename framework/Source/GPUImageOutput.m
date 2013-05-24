@@ -230,11 +230,15 @@ void reportAvailableMemoryForGPUImage(NSString *tag)
 
 - (void)deleteOutputTexture;
 {
-    if (outputTexture)
-    {
-        glDeleteTextures(1, &outputTexture);
-        outputTexture = 0;
-    }
+    runSynchronouslyOnVideoProcessingQueue(^{
+        [GPUImageContext useImageProcessingContext];
+
+        if (outputTexture)
+        {
+            glDeleteTextures(1, &outputTexture);
+            outputTexture = 0;
+        }
+    });
 }
 
 - (void)forceProcessingAtSize:(CGSize)frameSize;

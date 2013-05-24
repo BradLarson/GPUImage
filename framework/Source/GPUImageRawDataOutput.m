@@ -189,25 +189,27 @@
 
 - (void)destroyDataFBO;
 {
-    [GPUImageContext useImageProcessingContext];
-
-    if (renderTexture)
-    {
-        CFRelease(renderTexture);
-        renderTexture = NULL;
-    }
-
-    if (dataFramebuffer)
-	{
-		glDeleteFramebuffers(1, &dataFramebuffer);
-		dataFramebuffer = 0;
-	}	
-
-    if (dataRenderbuffer)
-	{
-		glDeleteRenderbuffers(1, &dataRenderbuffer);
-		dataRenderbuffer = 0;
-	}	
+    runSynchronouslyOnVideoProcessingQueue(^{
+        [GPUImageContext useImageProcessingContext];
+        
+        if (renderTexture)
+        {
+            CFRelease(renderTexture);
+            renderTexture = NULL;
+        }
+        
+        if (dataFramebuffer)
+        {
+            glDeleteFramebuffers(1, &dataFramebuffer);
+            dataFramebuffer = 0;
+        }
+        
+        if (dataRenderbuffer)
+        {
+            glDeleteRenderbuffers(1, &dataRenderbuffer);
+            dataRenderbuffer = 0;
+        }
+    });
 }
 
 - (void)setFilterFBO;

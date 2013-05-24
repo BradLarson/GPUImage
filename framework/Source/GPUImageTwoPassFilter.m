@@ -102,20 +102,24 @@
 
 - (void)deleteOutputTexture;
 {
-    if (outputTexture)
-    {
-        glDeleteTextures(1, &outputTexture);
-        outputTexture = 0;
-    }
+    runSynchronouslyOnVideoProcessingQueue(^{
+        [GPUImageContext useImageProcessingContext];
 
-    if (!([GPUImageContext supportsFastTextureUpload] && preparedToCaptureImage))
-    {
-        if (secondFilterOutputTexture)
+        if (outputTexture)
         {
-            glDeleteTextures(1, &secondFilterOutputTexture);
-            secondFilterOutputTexture = 0;
+            glDeleteTextures(1, &outputTexture);
+            outputTexture = 0;
         }
-    }
+        
+        if (!([GPUImageContext supportsFastTextureUpload] && preparedToCaptureImage))
+        {
+            if (secondFilterOutputTexture)
+            {
+                glDeleteTextures(1, &secondFilterOutputTexture);
+                secondFilterOutputTexture = 0;
+            }
+        }
+    });
 }
 
 #pragma mark -
