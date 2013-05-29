@@ -192,12 +192,12 @@
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [self startProcessing];
                 });
+            } else {
+                [weakSelf endProcessing];
+                if ([self.delegate respondsToSelector:@selector(didCompletePlayingMovie)]) {
+                    [self.delegate didCompletePlayingMovie];
+                }
             }
-            
-           /* [weakSelf endProcessing];
-            if ([self.delegate respondsToSelector:@selector(didCompletePlayingMovie)]) {
-                [self.delegate didCompletePlayingMovie];
-            }*/
         }
     }
 }
