@@ -2,6 +2,7 @@
 #import <AVFoundation/AVFoundation.h>
 #import "GPUImageContext.h"
 #import "GPUImageOutput.h"
+#import "GPUImageMovie.h"
 
 
 /** Source object for filtering movies
