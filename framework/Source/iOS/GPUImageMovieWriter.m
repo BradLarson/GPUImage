@@ -267,7 +267,8 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 
 - (void)finishRecordingWithCompletionHandler:(void (^)(void))handler;
 {
-    if (assetWriter.status == AVAssetWriterStatusCompleted || assetWriter.status == AVAssetWriterStatusCancelled)
+    if (assetWriter.status == AVAssetWriterStatusCompleted || assetWriter.status == AVAssetWriterStatusCancelled
+        || assetWriter.status == AVAssetWriterStatusUnknown)
     {
         return;
     }
