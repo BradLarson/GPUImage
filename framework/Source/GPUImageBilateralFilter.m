@@ -156,6 +156,8 @@ NSString *const kGPUImageBilateralFilterFragmentShaderString = SHADER_STRING
 
 @implementation GPUImageBilateralFilter
 
+@synthesize distanceNormalizationFactor = _distanceNormalizationFactor;
+
 - (id)init;
 {
     

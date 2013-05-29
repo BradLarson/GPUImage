@@ -146,20 +146,24 @@ NSString *const kGPUImagePoissonBlendFragmentShaderString = SHADER_STRING
 
 - (void)deleteOutputTexture;
 {
-    if (outputTexture)
-    {
-        glDeleteTextures(1, &outputTexture);
-        outputTexture = 0;
-    }
-    
-    if (!([GPUImageContext supportsFastTextureUpload] && preparedToCaptureImage))
-    {
-        if (secondFilterOutputTexture)
+    runSynchronouslyOnVideoProcessingQueue(^{
+        [GPUImageContext useImageProcessingContext];
+
+        if (outputTexture)
         {
-            glDeleteTextures(1, &secondFilterOutputTexture);
-            secondFilterOutputTexture = 0;
+            glDeleteTextures(1, &outputTexture);
+            outputTexture = 0;
         }
-    }
+        
+        if (!([GPUImageContext supportsFastTextureUpload] && preparedToCaptureImage))
+        {
+            if (secondFilterOutputTexture)
+            {
+                glDeleteTextures(1, &secondFilterOutputTexture);
+                secondFilterOutputTexture = 0;
+            }
+        }
+    });
 }
 
 - (void)createFilterFBOofSize:(CGSize)currentFBOSize

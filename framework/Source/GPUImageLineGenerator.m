@@ -8,8 +8,9 @@ NSString *const kGPUImageLineGeneratorVertexShaderString = SHADER_STRING
  {
      gl_Position = position;
  }
- );
+);
 
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
 NSString *const kGPUImageLineGeneratorFragmentShaderString = SHADER_STRING
 (
  uniform lowp vec3 lineColor;
@@ -19,6 +20,17 @@ NSString *const kGPUImageLineGeneratorFragmentShaderString = SHADER_STRING
      gl_FragColor = vec4(lineColor, 1.0);
  }
 );
+#else
+NSString *const kGPUImageLineGeneratorFragmentShaderString = SHADER_STRING
+(
+ uniform vec3 lineColor;
+ 
+ void main()
+ {
+     gl_FragColor = vec4(lineColor, 1.0);
+ }
+);
+#endif
 
 @interface GPUImageLineGenerator()
 
@@ -88,7 +100,7 @@ NSString *const kGPUImageLineGeneratorFragmentShaderString = SHADER_STRING
         GLfloat slope = lineSlopeAndIntercepts[currentLineIndex++];
         GLfloat intercept = lineSlopeAndIntercepts[currentLineIndex++];
         
-        if (lineSlopeAndIntercepts[currentLineIndex] > 9000.0) // Vertical line
+        if (slope > 9000.0) // Vertical line
         {
             lineCoordinates[currentVertexIndex++] = intercept;
             lineCoordinates[currentVertexIndex++] = -1.0;

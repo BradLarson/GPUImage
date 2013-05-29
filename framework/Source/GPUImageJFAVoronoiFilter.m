@@ -10,8 +10,7 @@ NSString *const kGPUImageJFAVoronoiVertexShaderString = SHADER_STRING
  attribute vec4 position;
  attribute vec4 inputTextureCoordinate;
  
- uniform highp float sampleStep;
- 
+ uniform float sampleStep;
  
  varying vec2 textureCoordinate;
  varying vec2 leftTextureCoordinate;
@@ -48,6 +47,7 @@ NSString *const kGPUImageJFAVoronoiVertexShaderString = SHADER_STRING
  }
  );
 
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
 NSString *const kGPUImageJFAVoronoiFragmentShaderString = SHADER_STRING
 (
  
@@ -179,7 +179,138 @@ NSString *const kGPUImageJFAVoronoiFragmentShaderString = SHADER_STRING
      }
      gl_FragColor = dst;
  }
- );
+);
+#else
+NSString *const kGPUImageJFAVoronoiFragmentShaderString = SHADER_STRING
+( 
+ varying vec2 textureCoordinate;
+ varying vec2 leftTextureCoordinate;
+ varying vec2 rightTextureCoordinate;
+ 
+ varying vec2 topTextureCoordinate;
+ varying vec2 topLeftTextureCoordinate;
+ varying vec2 topRightTextureCoordinate;
+ 
+ varying vec2 bottomTextureCoordinate;
+ varying vec2 bottomLeftTextureCoordinate;
+ varying vec2 bottomRightTextureCoordinate;
+ 
+ uniform sampler2D inputImageTexture;
+ uniform vec2 size;
+ //varying vec2 textureCoordinate;
+ //uniform float sampleStep;
+ 
+ vec2 getCoordFromColor(vec4 color)
+{
+    float z = color.z * 256.0;
+    float yoff = floor(z / 8.0);
+    float xoff = mod(z, 8.0);
+    float x = color.x*256.0 + xoff*256.0;
+    float y = color.y*256.0 + yoff*256.0;
+    return vec2(x,y) / size;
+}
+ 
+ void main(void) {
+     
+     vec2 sub;
+     vec4 dst;
+     vec4 local = texture2D(inputImageTexture, textureCoordinate);
+     vec4 sam;
+     float l;
+     float smallestDist;
+     if(local.a == 0.0){
+         
+         smallestDist = dot(1.0,1.0);
+     }else{
+         sub = getCoordFromColor(local)-textureCoordinate;
+         smallestDist = dot(sub,sub);
+     }
+     dst = local;
+     
+     
+     sam = texture2D(inputImageTexture, topRightTextureCoordinate);
+     if(sam.a == 1.0){
+         sub = (getCoordFromColor(sam)-textureCoordinate);
+         l = dot(sub,sub);
+         if(l < smallestDist){
+             smallestDist = l;
+             dst = sam;
+         }
+     }
+     
+     sam = texture2D(inputImageTexture, topTextureCoordinate);
+     if(sam.a == 1.0){
+         sub = (getCoordFromColor(sam)-textureCoordinate);
+         l = dot(sub,sub);
+         if(l < smallestDist){
+             smallestDist = l;
+             dst = sam;
+         }
+     }
+     
+     sam = texture2D(inputImageTexture, topLeftTextureCoordinate);
+     if(sam.a == 1.0){
+         sub = (getCoordFromColor(sam)-textureCoordinate);
+         l = dot(sub,sub);
+         if(l < smallestDist){
+             smallestDist = l;
+             dst = sam;
+         }
+     }
+     
+     sam = texture2D(inputImageTexture, bottomRightTextureCoordinate);
+     if(sam.a == 1.0){
+         sub = (getCoordFromColor(sam)-textureCoordinate);
+         l = dot(sub,sub);
+         if(l < smallestDist){
+             smallestDist = l;
+             dst = sam;
+         }
+     }
+     
+     sam = texture2D(inputImageTexture, bottomTextureCoordinate);
+     if(sam.a == 1.0){
+         sub = (getCoordFromColor(sam)-textureCoordinate);
+         l = dot(sub,sub);
+         if(l < smallestDist){
+             smallestDist = l;
+             dst = sam;
+         }
+     }
+     
+     sam = texture2D(inputImageTexture, bottomLeftTextureCoordinate);
+     if(sam.a == 1.0){
+         sub = (getCoordFromColor(sam)-textureCoordinate);
+         l = dot(sub,sub);
+         if(l < smallestDist){
+             smallestDist = l;
+             dst = sam;
+         }
+     }
+     
+     sam = texture2D(inputImageTexture, leftTextureCoordinate);
+     if(sam.a == 1.0){
+         sub = (getCoordFromColor(sam)-textureCoordinate);
+         l = dot(sub,sub);
+         if(l < smallestDist){
+             smallestDist = l;
+             dst = sam;
+         }
+     }
+     
+     sam = texture2D(inputImageTexture, rightTextureCoordinate);
+     if(sam.a == 1.0){
+         sub = (getCoordFromColor(sam)-textureCoordinate);
+         l = dot(sub,sub);
+         if(l < smallestDist){
+             smallestDist = l;
+             dst = sam;
+         }
+     }
+     gl_FragColor = dst;
+ }
+);
+#endif
 
 @interface GPUImageJFAVoronoiFilter() {
     int currentPass;
@@ -297,6 +428,7 @@ NSString *const kGPUImageJFAVoronoiFragmentShaderString = SHADER_STRING
     
     if ([GPUImageContext supportsFastTextureUpload] && preparedToCaptureImage)
     {
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
 #if defined(__IPHONE_6_0)
         CVReturn err = CVOpenGLESTextureCacheCreate(kCFAllocatorDefault, NULL, [[GPUImageContext sharedImageProcessingContext] context], NULL, &filterTextureCache);
 #else
@@ -349,6 +481,7 @@ NSString *const kGPUImageJFAVoronoiFragmentShaderString = SHADER_STRING
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, CVOpenGLESTextureGetName(renderTexture), 0);
         
         [self notifyTargetsAboutNewOutputTexture];
+#endif
     }
     else
     {

@@ -119,26 +119,36 @@
 
 - (GLuint)generateTexture;
 {
-    GLuint newTextureName = 0;
-    glActiveTexture(GL_TEXTURE0);
-    glGenTextures(1, &newTextureName);
-	glBindTexture(GL_TEXTURE_2D, newTextureName);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	// This is necessary for non-power-of-two textures
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    __block GLuint newTextureName = 0;
 
-    CGSize currentFBOSize = [self sizeOfFBO];
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (int)currentFBOSize.width, (int)currentFBOSize.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
-    glBindTexture(GL_TEXTURE_2D, 0);
+    runSynchronouslyOnVideoProcessingQueue(^{
+        [GPUImageContext useImageProcessingContext];
+
+        glActiveTexture(GL_TEXTURE0);
+        glGenTextures(1, &newTextureName);
+        glBindTexture(GL_TEXTURE_2D, newTextureName);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        // This is necessary for non-power-of-two textures
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        
+        CGSize currentFBOSize = [self sizeOfFBO];
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (int)currentFBOSize.width, (int)currentFBOSize.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+        glBindTexture(GL_TEXTURE_2D, 0);
+        
+    });
 
     return newTextureName;
 }
 
 - (void)removeTexture:(GLuint)textureToRemove;
 {
-    glDeleteTextures(1, &textureToRemove);
+    runSynchronouslyOnVideoProcessingQueue(^{
+        [GPUImageContext useImageProcessingContext];
+
+        glDeleteTextures(1, &textureToRemove);
+    });
 }
 
 #pragma mark -

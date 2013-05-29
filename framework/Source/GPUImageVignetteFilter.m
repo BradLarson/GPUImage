@@ -1,5 +1,6 @@
 #import "GPUImageVignetteFilter.h"
 
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
 NSString *const kGPUImageVignetteFragmentShaderString = SHADER_STRING
 (
  uniform sampler2D inputImageTexture;
@@ -12,19 +13,32 @@ NSString *const kGPUImageVignetteFragmentShaderString = SHADER_STRING
  
  void main()
  {
-     /*
-     lowp vec3 rgb = texture2D(inputImageTexture, textureCoordinate).rgb;
-     lowp float d = distance(textureCoordinate, vec2(0.5,0.5));
-     rgb *= (1.0 - smoothstep(vignetteStart, vignetteEnd, d));
-     gl_FragColor = vec4(vec3(rgb),1.0);
-      */
-     
-     lowp vec3 rgb = texture2D(inputImageTexture, textureCoordinate).rgb;
+     lowp vec4 sourceImageColor = texture2D(inputImageTexture, textureCoordinate);
      lowp float d = distance(textureCoordinate, vec2(vignetteCenter.x, vignetteCenter.y));
      lowp float percent = smoothstep(vignetteStart, vignetteEnd, d);
-     gl_FragColor = vec4(mix(rgb.x, vignetteColor.x, percent), mix(rgb.y, vignetteColor.y, percent), mix(rgb.z, vignetteColor.z, percent), 1.0);
+     gl_FragColor = vec4(mix(sourceImageColor.rgb, vignetteColor, percent), sourceImageColor.a);
  }
 );
+#else
+NSString *const kGPUImageVignetteFragmentShaderString = SHADER_STRING
+(
+ uniform sampler2D inputImageTexture;
+ varying vec2 textureCoordinate;
+ 
+ uniform vec2 vignetteCenter;
+ uniform vec3 vignetteColor;
+ uniform float vignetteStart;
+ uniform float vignetteEnd;
+ 
+ void main()
+ {
+     vec4 sourceImageColor = texture2D(inputImageTexture, textureCoordinate);
+     float d = distance(textureCoordinate, vec2(vignetteCenter.x, vignetteCenter.y));
+     float percent = smoothstep(vignetteStart, vignetteEnd, d);
+     gl_FragColor = vec4(mix(sourceImageColor.rgb, vignetteColor, percent), sourceImageColor.a);
+ }
+);
+#endif
 
 @implementation GPUImageVignetteFilter
 

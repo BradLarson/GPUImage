@@ -1,13 +1,17 @@
 #import "GPUImageCrosshairGenerator.h"
 
+#define hash #
+#define wrappedlabel(x) x
+#define escapedhash(a) wrappedlabel(hash)a
+
 NSString *const kGPUImageCrosshairVertexShaderString = SHADER_STRING
 (
  attribute vec4 position;
  
  uniform float crosshairWidth;
  
- varying lowp vec2 centerLocation;
- varying lowp float pointSpacing;
+ varying vec2 centerLocation;
+ varying float pointSpacing;
  
  void main()
  {
@@ -18,24 +22,44 @@ NSString *const kGPUImageCrosshairVertexShaderString = SHADER_STRING
  }
 );
 
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
 NSString *const kGPUImageCrosshairFragmentShaderString = SHADER_STRING
 (
 
  uniform lowp vec3 crosshairColor;
 
- varying lowp vec2 centerLocation;
- varying lowp float pointSpacing;
+ varying highp vec2 centerLocation;
+ varying highp float pointSpacing;
 
  void main()
  {
      lowp vec2 distanceFromCenter = abs(centerLocation - gl_PointCoord.xy);
      lowp float axisTest = step(pointSpacing, gl_PointCoord.y) * step(distanceFromCenter.x, 0.09) + step(pointSpacing, gl_PointCoord.x) * step(distanceFromCenter.y, 0.09);
-     
+
      gl_FragColor = vec4(crosshairColor * axisTest, axisTest);
 //     gl_FragColor = vec4(distanceFromCenterInX, distanceFromCenterInY, 0.0, 1.0);
  }
 );
-
+#else
+NSString *const kGPUImageCrosshairFragmentShaderString = SHADER_STRING
+(
+ escapedhash(version 120)\n
+ 
+ uniform vec3 crosshairColor;
+ 
+ varying vec2 centerLocation;
+ varying float pointSpacing;
+ 
+ void main()
+ {
+     vec2 distanceFromCenter = abs(centerLocation - gl_PointCoord.xy);
+     float axisTest = step(pointSpacing, gl_PointCoord.y) * step(distanceFromCenter.x, 0.09) + step(pointSpacing, gl_PointCoord.x) * step(distanceFromCenter.y, 0.09);
+     
+     gl_FragColor = vec4(crosshairColor * axisTest, axisTest);
+     //     gl_FragColor = vec4(distanceFromCenterInX, distanceFromCenterInY, 0.0, 1.0);
+ }
+);
+#endif
 
 @implementation GPUImageCrosshairGenerator
 
@@ -75,6 +99,12 @@ NSString *const kGPUImageCrosshairFragmentShaderString = SHADER_STRING
     runSynchronouslyOnVideoProcessingQueue(^{
         [GPUImageContext setActiveShaderProgram:filterProgram];
         
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+#else
+        glEnable(GL_POINT_SPRITE);
+        glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
+#endif
+        
         [self setFilterFBO];
         
         glClearColor(0.0, 0.0, 0.0, 0.0);
@@ -82,7 +112,7 @@ NSString *const kGPUImageCrosshairFragmentShaderString = SHADER_STRING
         
         glVertexAttribPointer(filterPositionAttribute, 2, GL_FLOAT, 0, 0, crosshairCoordinates);
         
-        glDrawArrays(GL_POINTS, 0, numberOfCrosshairs);
+        glDrawArrays(GL_POINTS, 0, (GLsizei)numberOfCrosshairs);
         
         [self informTargetsAboutNewFrameAtTime:frameTime];
     });

@@ -941,14 +941,18 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
 
 - (void)deleteOutputTexture;
 {
-    if (!([GPUImageContext supportsFastTextureUpload] && preparedToCaptureImage))
-    {
-        if (outputTexture)
+    runSynchronouslyOnVideoProcessingQueue(^{
+        [GPUImageContext useImageProcessingContext];
+
+        if (!([GPUImageContext supportsFastTextureUpload] && preparedToCaptureImage))
         {
-            glDeleteTextures(1, &outputTexture);
-            outputTexture = 0;
+            if (outputTexture)
+            {
+                glDeleteTextures(1, &outputTexture);
+                outputTexture = 0;
+            }
         }
-    }
+    });
 }
 
 - (CGSize)maximumOutputSize;
