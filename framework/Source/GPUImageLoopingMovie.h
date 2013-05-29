@@ -3,12 +3,6 @@
 #import "GPUImageContext.h"
 #import "GPUImageOutput.h"
 
-/** Protocol for getting Movie played callback.
- */
-@protocol GPUImageMovieDelegate <NSObject>
-
-- (void)didCompletePlayingMovie;
-@end
 
 /** Source object for filtering movies
  */
