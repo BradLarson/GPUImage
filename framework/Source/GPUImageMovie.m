@@ -9,6 +9,7 @@
     AVAssetReader *reader;
     CMTime previousFrameTime;
     CFAbsoluteTime previousActualFrameTime;
+    BOOL keepLooping;
 }
 
 - (void)processAsset;
@@ -22,6 +23,7 @@
 @synthesize runBenchmark = _runBenchmark;
 @synthesize playAtActualSpeed = _playAtActualSpeed;
 @synthesize delegate = _delegate;
+@synthesize shouldRepeat = _shouldRepeat;
 
 #pragma mark -
 #pragma mark Initialization and teardown
@@ -102,6 +104,8 @@
       return;
     }
     
+    if (_shouldRepeat) keepLooping = YES;
+    
     previousFrameTime = kCMTimeZero;
     previousActualFrameTime = CFAbsoluteTimeGetCurrent();
   
@@ -169,7 +173,7 @@
     }
     else
     {
-        while (reader.status == AVAssetReaderStatusReading) 
+        while (reader.status == AVAssetReaderStatusReading && (!_shouldRepeat || keepLooping))
         {
                 [weakSelf readNextVideoFrameFromOutput:readerVideoTrackOutput];
 
@@ -181,10 +185,21 @@
         }
 
         if (reader.status == AVAssetWriterStatusCompleted) {
+                
+            [reader cancelReading];
+
+            if (keepLooping) {
+                reader = nil;
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self startProcessing];
+                });
+            } else {
                 [weakSelf endProcessing];
-            if ([self.delegate respondsToSelector:@selector(didCompletePlayingMovie)]) {
-                [self.delegate didCompletePlayingMovie];
+                if ([self.delegate respondsToSelector:@selector(didCompletePlayingMovie)]) {
+                    [self.delegate didCompletePlayingMovie];
+                }
             }
+
         }
     }
 }
@@ -225,8 +240,10 @@
         }
         else
         {
-            videoEncodingIsFinished = YES;
-            [self endProcessing];
+            if (!keepLooping) {
+                videoEncodingIsFinished = YES;
+                [self endProcessing];
+            }
         }
     }
     else if (synchronizedMovieWriter != nil)
@@ -349,6 +366,8 @@
 
 - (void)endProcessing;
 {
+    keepLooping = NO;
+    
     for (id<GPUImageInput> currentTarget in targets)
     {
         [currentTarget endProcessing];
