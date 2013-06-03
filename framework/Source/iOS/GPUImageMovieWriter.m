@@ -289,7 +289,10 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
         }
         else {
             // Not running iOS 6
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
             [assetWriter finishWriting];
+#pragma clang diagnostic pop
             if (handler) handler();
         }
 #endif

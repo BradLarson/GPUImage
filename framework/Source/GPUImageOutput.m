@@ -18,8 +18,11 @@ void runOnMainQueueWithoutDeadlocking(void (^block)(void))
 void runSynchronouslyOnVideoProcessingQueue(void (^block)(void))
 {
     dispatch_queue_t videoProcessingQueue = [GPUImageContext sharedContextQueue];
-    
-	if(dispatch_get_specific([GPUImageContext contextKey]))
+#if (!defined(__IPHONE_6_0) || (__IPHONE_OS_VERSION_MAX_ALLOWED < __IPHONE_6_0))
+    if (dispatch_get_current_queue() == videoProcessingQueue)
+#else
+	if (dispatch_get_specific([GPUImageContext contextKey]))
+#endif
 	{
 		block();
 	}else
@@ -32,7 +35,11 @@ void runAsynchronouslyOnVideoProcessingQueue(void (^block)(void))
 {
     dispatch_queue_t videoProcessingQueue = [GPUImageContext sharedContextQueue];
     
-	if(dispatch_get_specific([GPUImageContext contextKey]))
+#if (!defined(__IPHONE_6_0) || (__IPHONE_OS_VERSION_MAX_ALLOWED < __IPHONE_6_0))
+    if (dispatch_get_current_queue() == videoProcessingQueue)
+#else
+    if (dispatch_get_specific([GPUImageContext contextKey]))
+#endif
 	{
 		block();
 	}else
