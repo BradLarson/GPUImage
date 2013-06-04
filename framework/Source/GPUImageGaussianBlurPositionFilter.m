@@ -116,6 +116,8 @@ NSString *const kGPUImageGaussianBlurPositionFragmentShaderString = SHADER_STRIN
 
 @interface GPUImageGaussianBlurPositionFilter ()
 
+- (void)adjustAspectRatio;
+
 @property (readwrite, nonatomic) CGFloat aspectRatio;
 
 @end
@@ -157,25 +159,43 @@ NSString *const kGPUImageGaussianBlurPositionFragmentShaderString = SHADER_STRIN
                       secondStageFragmentShaderFromString:nil];
 }
 
+- (void)adjustAspectRatio;
+{
+    if (GPUImageRotationSwapsWidthAndHeight(inputRotation))
+    {
+        [self setAspectRatio:(inputTextureSize.width / inputTextureSize.height)];
+    }
+    else
+    {
+        [self setAspectRatio:(inputTextureSize.height / inputTextureSize.width)];
+    }
+}
+
+- (void)forceProcessingAtSize:(CGSize)frameSize;
+{
+    [super forceProcessingAtSize:frameSize];
+    [self adjustAspectRatio];
+}
+
 - (void)setInputSize:(CGSize)newSize atIndex:(NSInteger)textureIndex;
 {
     CGSize oldInputSize = inputTextureSize;
     [super setInputSize:newSize atIndex:textureIndex];
-
+    
     if ( (!CGSizeEqualToSize(oldInputSize, inputTextureSize)) && (!CGSizeEqualToSize(newSize, CGSizeZero)) )
     {
-        if (GPUImageRotationSwapsWidthAndHeight(inputRotation))
-        {
-            [self setAspectRatio:(inputTextureSize.width / inputTextureSize.height)];
-        }
-        else
-        {
-            [self setAspectRatio:(inputTextureSize.height / inputTextureSize.width)];
-        }
+        [self adjustAspectRatio];
     }
 }
 
-#pragma mark Getters and Setters
+- (void)setInputRotation:(GPUImageRotationMode)newInputRotation atIndex:(NSInteger)textureIndex;
+{
+    [super setInputRotation:newInputRotation atIndex:textureIndex];
+    [self adjustAspectRatio];
+}
+
+#pragma mark -
+#pragma mark Accessors
 
 - (void)setBlurSize:(CGFloat)newValue;
 {

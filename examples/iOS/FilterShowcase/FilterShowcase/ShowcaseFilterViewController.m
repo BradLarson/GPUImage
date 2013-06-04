@@ -1278,7 +1278,9 @@
         default: filter = [[GPUImageSepiaFilter alloc] init]; break;
     }
     
-    if (filterType == GPUIMAGE_FILECONFIG) 
+    [filter forceProcessingAtSize:CGSizeMake(480.0, 640.0)];
+
+    if (filterType == GPUIMAGE_FILECONFIG)
     {
         self.title = @"File Configuration";
         pipeline = [[GPUImageFilterPipeline alloc] initWithConfigurationFile:[[NSBundle mainBundle] URLForResource:@"SampleConfiguration" withExtension:@"plist"]

@@ -70,6 +70,8 @@ NSString *const kGPUImagePinchDistortionFragmentShaderString = SHADER_STRING
 
 @interface GPUImagePinchDistortionFilter ()
 
+- (void)adjustAspectRatio;
+
 @property (readwrite, nonatomic) CGFloat aspectRatio;
 
 @end
@@ -106,6 +108,24 @@ NSString *const kGPUImagePinchDistortionFragmentShaderString = SHADER_STRING
 #pragma mark -
 #pragma mark Accessors
 
+- (void)adjustAspectRatio;
+{
+    if (GPUImageRotationSwapsWidthAndHeight(inputRotation))
+    {
+        [self setAspectRatio:(inputTextureSize.width / inputTextureSize.height)];
+    }
+    else
+    {
+        [self setAspectRatio:(inputTextureSize.height / inputTextureSize.width)];
+    }
+}
+
+- (void)forceProcessingAtSize:(CGSize)frameSize;
+{
+    [super forceProcessingAtSize:frameSize];
+    [self adjustAspectRatio];
+}
+
 - (void)setInputSize:(CGSize)newSize atIndex:(NSInteger)textureIndex;
 {
     CGSize oldInputSize = inputTextureSize;
@@ -113,14 +133,7 @@ NSString *const kGPUImagePinchDistortionFragmentShaderString = SHADER_STRING
     
     if ( (!CGSizeEqualToSize(oldInputSize, inputTextureSize)) && (!CGSizeEqualToSize(newSize, CGSizeZero)) )
     {
-        if (GPUImageRotationSwapsWidthAndHeight(inputRotation))
-        {
-            [self setAspectRatio:(inputTextureSize.width / inputTextureSize.height)];
-        }
-        else
-        {
-            [self setAspectRatio:(inputTextureSize.height / inputTextureSize.width)];
-        }
+        [self adjustAspectRatio];
     }
 }
 
@@ -128,6 +141,7 @@ NSString *const kGPUImagePinchDistortionFragmentShaderString = SHADER_STRING
 {
     [super setInputRotation:newInputRotation atIndex:textureIndex];
     [self setCenter:self.center];
+    [self adjustAspectRatio];
 }
 
 - (void)setAspectRatio:(CGFloat)newValue;
