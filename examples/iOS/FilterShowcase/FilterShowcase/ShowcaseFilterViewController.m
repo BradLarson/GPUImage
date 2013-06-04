@@ -1278,8 +1278,6 @@
         default: filter = [[GPUImageSepiaFilter alloc] init]; break;
     }
     
-    [filter forceProcessingAtSize:CGSizeMake(480.0, 640.0)];
-
     if (filterType == GPUIMAGE_FILECONFIG)
     {
         self.title = @"File Configuration";
