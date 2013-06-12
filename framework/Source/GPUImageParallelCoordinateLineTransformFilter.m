@@ -21,8 +21,33 @@ NSString *const kGPUImageHoughAccumulationFragmentShaderString = SHADER_STRING
      gl_FragColor = vec4(0.004, 0.004, 0.004, 1.0);
  }
 );
+
+// NOTE: See below for where I'm tacking on the required extension as a prefix
+NSString *const kGPUImageHoughAccumulationFBOReadFragmentShaderString = SHADER_STRING
+(
+ const lowp float scalingFactor = 1.0 / 256.0;
+ 
+ void main()
+ {
+     lowp vec4 previousFragmentData = gl_LastFragData[0];
+     //     gl_FragColor = vec4(scalingFactor, scalingFactor, scalingFactor, 1.0);
+     gl_FragColor = vec4(0.004, 0.004, 0.004, 1.0);
+ }
+ );
+
 #else
 NSString *const kGPUImageHoughAccumulationFragmentShaderString = SHADER_STRING
+(
+ const float scalingFactor = 1.0 / 256.0;
+ 
+ void main()
+ {
+     //     gl_FragColor = vec4(scalingFactor, scalingFactor, scalingFactor, 1.0);
+     gl_FragColor = vec4(0.004, 0.004, 0.004, 1.0);
+ }
+);
+
+NSString *const kGPUImageHoughAccumulationFBOReadFragmentShaderString = SHADER_STRING
 (
  const float scalingFactor = 1.0 / 256.0;
  
@@ -47,10 +72,26 @@ NSString *const kGPUImageHoughAccumulationFragmentShaderString = SHADER_STRING
 
 - (id)init;
 {
-    if (!(self = [super initWithVertexShaderFromString:kGPUImageHoughAccumulationVertexShaderString fragmentShaderFromString:kGPUImageHoughAccumulationFragmentShaderString]))
+    NSString *fragmentShaderToUse = nil;
+    
+    if ([GPUImageContext deviceSupportsFramebufferReads])
+    {
+        fragmentShaderToUse = [NSString stringWithFormat:@"#extension GL_EXT_shader_framebuffer_fetch : require\n %@",kGPUImageHoughAccumulationFBOReadFragmentShaderString];
+        
+//        NSLog(@"Supports FBO reads: %@", fragmentShaderToUse);
+//        fragmentShaderToUse = kGPUImageHoughAccumulationFBOReadFragmentShaderString;
+    }
+    else
+    {
+//        NSLog(@"Doesn't support FBO reads");
+        fragmentShaderToUse = kGPUImageHoughAccumulationFragmentShaderString;
+    }
+
+    if (!(self = [super initWithVertexShaderFromString:kGPUImageHoughAccumulationVertexShaderString fragmentShaderFromString:fragmentShaderToUse]))
     {
         return nil;
     }
+    
     
     return self;
 }

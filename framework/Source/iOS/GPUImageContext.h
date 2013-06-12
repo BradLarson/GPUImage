@@ -25,6 +25,7 @@ typedef enum { kGPUImageNoRotation, kGPUImageRotateLeft, kGPUImageRotateRight, k
 + (GLint)maximumTextureUnitsForThisDevice;
 + (BOOL)deviceSupportsOpenGLESExtension:(NSString *)extension;
 + (BOOL)deviceSupportsRedTextures;
++ (BOOL)deviceSupportsFramebufferReads;
 + (CGSize)sizeThatFitsWithinATextureForSize:(CGSize)inputSize;
 
 - (void)presentBufferForDisplay;

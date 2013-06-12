@@ -4,6 +4,10 @@
 #define STRINGIZE2(x) STRINGIZE(x)
 #define SHADER_STRING(text) @ STRINGIZE2(text)
 
+#define hash #
+#define wrappedlabel(x) x
+#define escapedhash(a) wrappedlabel(hash)a
+
 extern NSString *const kGPUImageVertexShaderString;
 extern NSString *const kGPUImagePassthroughFragmentShaderString;
 

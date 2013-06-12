@@ -7,7 +7,7 @@ NSString *const kGPUImageHazeFragmentShaderString = SHADER_STRING
  
  uniform sampler2D inputImageTexture;
  
- uniform lowp float distance;
+ uniform lowp float hazeDistance;
  uniform highp float slope;
  
  void main()
@@ -15,7 +15,7 @@ NSString *const kGPUImageHazeFragmentShaderString = SHADER_STRING
 	//todo reconsider precision modifiers	 
 	 highp vec4 color = vec4(1.0);//todo reimplement as a parameter
 	 
-	 highp float  d = textureCoordinate.y * slope  +  distance; 
+	 highp float  d = textureCoordinate.y * slope  +  hazeDistance;
 	 
 	 highp vec4 c = texture2D(inputImageTexture, textureCoordinate) ; // consider using unpremultiply
 	 
@@ -31,7 +31,7 @@ NSString *const kGPUImageHazeFragmentShaderString = SHADER_STRING
  
  uniform sampler2D inputImageTexture;
  
- uniform float distance;
+ uniform float hazeDistance;
  uniform float slope;
  
  void main()
@@ -39,7 +39,7 @@ NSString *const kGPUImageHazeFragmentShaderString = SHADER_STRING
      //todo reconsider precision modifiers
 	 vec4 color = vec4(1.0);//todo reimplement as a parameter
 	 
-	 float  d = textureCoordinate.y * slope  +  distance;
+	 float  d = textureCoordinate.y * slope  +  hazeDistance;
 	 
 	 vec4 c = texture2D(inputImageTexture, textureCoordinate) ; // consider using unpremultiply
 	 	 
@@ -67,7 +67,7 @@ NSString *const kGPUImageHazeFragmentShaderString = SHADER_STRING
 		return nil;
     }
     
-    distanceUniform = [filterProgram uniformIndex:@"distance"];
+    distanceUniform = [filterProgram uniformIndex:@"hazeDistance"];
 	slopeUniform = [filterProgram uniformIndex:@"slope"];
 	
     self.distance = 0.2;

@@ -132,6 +132,17 @@ static void *openGLESContextQueueKey;
     return supportsRedTextures;
 }
 
++ (BOOL)deviceSupportsFramebufferReads;
+{
+    static dispatch_once_t pred;
+    static BOOL supportsFramebufferReads = NO;
+    
+    dispatch_once(&pred, ^{
+        supportsFramebufferReads = [GPUImageContext deviceSupportsOpenGLESExtension:@"GL_EXT_shader_framebuffer_fetch"];
+    });
+    
+    return supportsFramebufferReads;
+}
 
 + (CGSize)sizeThatFitsWithinATextureForSize:(CGSize)inputSize;
 {

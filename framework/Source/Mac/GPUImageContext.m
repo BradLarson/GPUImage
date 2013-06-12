@@ -113,6 +113,10 @@ static void *openGLESContextQueueKey;
     return [extensionNames containsObject:extension];
 }
 
++ (BOOL)deviceSupportsFramebufferReads;
+{
+    return NO;
+}
 
 // http://www.khronos.org/registry/gles/extensions/EXT/EXT_texture_rg.txt
 
