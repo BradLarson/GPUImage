@@ -4,46 +4,30 @@
 NSString *const kGPUSolidColorFragmentShaderString = SHADER_STRING
 (
  precision lowp float;
- 
- varying highp vec2 textureCoordinate; 
- uniform sampler2D inputImageTexture;
- uniform vec4 color;
- uniform int useExistingAlpha;
- 
- void main()
- {
-     if (useExistingAlpha == 1)
-     {
-         lowp vec4 textureColor = texture2D(inputImageTexture, textureCoordinate);
-         gl_FragColor = vec4(color.rgb, textureColor.a);
-     }
-     else
-     {
-         gl_FragColor = color;
-     }
- }
-);
-#else
-NSString *const kGPUSolidColorFragmentShaderString = SHADER_STRING
-(
- varying vec2 textureCoordinate; 
+
+ varying highp vec2 textureCoordinate;
  uniform sampler2D inputImageTexture;
  uniform vec4 color;
  uniform int useExistingAlpha;
 
  void main()
  {
-     if (useExistingAlpha == 1)
-     {
-         lowp vec4 textureColor = texture2D(inputImageTexture, textureCoordinate);
-         gl_FragColor = vec4(color.rgb, textureColor.a);
-     }
-     else
-     {
-         gl_FragColor = color;
-     }
+     gl_FragColor = vec4(color.rgb, max(textureColor.a, 1.0 - useExistingAlpha));
  }
-);
+ );
+#else
+NSString *const kGPUSolidColorFragmentShaderString = SHADER_STRING
+(
+ varying vec2 textureCoordinate;
+ uniform sampler2D inputImageTexture;
+ uniform vec4 color;
+ uniform int useExistingAlpha;
+
+ void main()
+ {
+     gl_FragColor = vec4(color.rgb, max(textureColor.a, 1.0 - useExistingAlpha));
+ }
+ );
 #endif
 
 @implementation GPUImageSolidColorGenerator
@@ -69,6 +53,27 @@ NSString *const kGPUSolidColorFragmentShaderString = SHADER_STRING
 
 #pragma mark -
 #pragma mark Accessors
+
+- (void)forceProcessingAtSize:(CGSize)frameSize;
+{
+    [super forceProcessingAtSize:frameSize];
+
+    if (!CGSizeEqualToSize(inputTextureSize, CGSizeZero))
+    {
+        [self newFrameReadyAtTime:kCMTimeIndefinite atIndex:0];
+    }
+}
+
+- (void)addTarget:(id<GPUImageInput>)newTarget atTextureLocation:(NSInteger)textureLocation;
+{
+    [super addTarget:newTarget atTextureLocation:textureLocation];
+
+    if (!CGSizeEqualToSize(inputTextureSize, CGSizeZero))
+    {
+        [newTarget setInputSize:inputTextureSize atIndex:textureLocation];
+        [newTarget newFrameReadyAtTime:kCMTimeIndefinite atIndex:textureLocation];
+    }
+}
 
 - (void)setColor:(GPUVector4)newValue;
 {
