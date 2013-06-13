@@ -8,10 +8,11 @@ NSString *const kGPUSolidColorFragmentShaderString = SHADER_STRING
  varying highp vec2 textureCoordinate;
  uniform sampler2D inputImageTexture;
  uniform vec4 color;
- uniform int useExistingAlpha;
+ uniform float useExistingAlpha;
 
  void main()
  {
+     lowp vec4 textureColor = texture2D(inputImageTexture, textureCoordinate);
      gl_FragColor = vec4(color.rgb, max(textureColor.a, 1.0 - useExistingAlpha));
  }
  );
@@ -21,10 +22,11 @@ NSString *const kGPUSolidColorFragmentShaderString = SHADER_STRING
  varying vec2 textureCoordinate;
  uniform sampler2D inputImageTexture;
  uniform vec4 color;
- uniform int useExistingAlpha;
+ uniform float useExistingAlpha;
 
  void main()
  {
+     vec4 textureColor = texture2D(inputImageTexture, textureCoordinate);
      gl_FragColor = vec4(color.rgb, max(textureColor.a, 1.0 - useExistingAlpha));
  }
  );
