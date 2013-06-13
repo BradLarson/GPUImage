@@ -24,7 +24,6 @@
 #import "GPUImagePixellateFilter.h"
 #import "GPUImagePixellatePositionFilter.h"
 #import "GPUImageSepiaFilter.h"
-#import "GPUImageColorFilter.h"
 #import "GPUImageColorInvertFilter.h"
 #import "GPUImageSaturationFilter.h"
 #import "GPUImageContrastFilter.h"
