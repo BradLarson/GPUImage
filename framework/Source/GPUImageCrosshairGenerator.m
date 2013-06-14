@@ -38,7 +38,7 @@ NSString *const kGPUImageCrosshairFragmentShaderString = SHADER_STRING
 #else
 NSString *const kGPUImageCrosshairFragmentShaderString = SHADER_STRING
 (
- escapedhash(version 120)\n
+ GPUImageEscapedHashIdentifier(version 120)\n
  
  uniform vec3 crosshairColor;
  
