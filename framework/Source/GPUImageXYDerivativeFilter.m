@@ -24,7 +24,8 @@ NSString *const kGPUImageGradientFragmentShaderString = SHADER_STRING
  varying vec2 bottomRightTextureCoordinate;
  
  uniform sampler2D inputImageTexture;
- 
+ uniform lowp float invertColor;
+
  void main()
  {
      float topIntensity = texture2D(inputImageTexture, topTextureCoordinate).r;
@@ -61,6 +62,7 @@ NSString *const kGPUImageGradientFragmentShaderString = SHADER_STRING
  varying vec2 bottomRightTextureCoordinate;
  
  uniform sampler2D inputImageTexture;
+ uniform float invertColor;
  
  void main()
  {
