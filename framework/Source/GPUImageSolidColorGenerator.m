@@ -4,22 +4,22 @@
 NSString *const kGPUSolidColorFragmentShaderString = SHADER_STRING
 (
  precision lowp float;
-
- varying highp vec2 textureCoordinate;
+ 
+ varying highp vec2 textureCoordinate; 
  uniform sampler2D inputImageTexture;
  uniform vec4 color;
  uniform float useExistingAlpha;
-
+ 
  void main()
  {
      lowp vec4 textureColor = texture2D(inputImageTexture, textureCoordinate);
      gl_FragColor = vec4(color.rgb, max(textureColor.a, 1.0 - useExistingAlpha));
  }
- );
+);
 #else
 NSString *const kGPUSolidColorFragmentShaderString = SHADER_STRING
 (
- varying vec2 textureCoordinate;
+ varying vec2 textureCoordinate; 
  uniform sampler2D inputImageTexture;
  uniform vec4 color;
  uniform float useExistingAlpha;
@@ -29,7 +29,7 @@ NSString *const kGPUSolidColorFragmentShaderString = SHADER_STRING
      vec4 textureColor = texture2D(inputImageTexture, textureCoordinate);
      gl_FragColor = vec4(color.rgb, max(textureColor.a, 1.0 - useExistingAlpha));
  }
- );
+);
 #endif
 
 @implementation GPUImageSolidColorGenerator
@@ -96,7 +96,7 @@ NSString *const kGPUSolidColorFragmentShaderString = SHADER_STRING
 {
     _useExistingAlpha = useExistingAlpha;
 
-    [self setInteger:(useExistingAlpha ? 1 : 0) forUniform:useExistingAlphaUniform program:filterProgram];
+    [self setFloat:(useExistingAlpha ? 1.0f : 0.0f) forUniform:useExistingAlphaUniform program:filterProgram];
 }
 
 @end
