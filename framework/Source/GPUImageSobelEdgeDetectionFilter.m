@@ -21,7 +21,6 @@ NSString *const kGPUImageSobelEdgeDetectionFragmentShaderString = SHADER_STRING
  varying vec2 bottomRightTextureCoordinate;
 
  uniform sampler2D inputImageTexture;
- uniform lowp float invertColor;
  
  void main()
  {
@@ -36,7 +35,7 @@ NSString *const kGPUImageSobelEdgeDetectionFragmentShaderString = SHADER_STRING
     float h = -topLeftIntensity - 2.0 * topIntensity - topRightIntensity + bottomLeftIntensity + 2.0 * bottomIntensity + bottomRightIntensity;
     float v = -bottomLeftIntensity - 2.0 * leftIntensity - topLeftIntensity + bottomRightIntensity + 2.0 * rightIntensity + topRightIntensity;
     
-    float mag = abs(length(vec2(h, v)) - invertColor);
+    float mag = length(vec2(h, v));
     
     gl_FragColor = vec4(vec3(mag), 1.0);
  }
@@ -57,7 +56,6 @@ NSString *const kGPUImageSobelEdgeDetectionFragmentShaderString = SHADER_STRING
  varying vec2 bottomRightTextureCoordinate;
  
  uniform sampler2D inputImageTexture;
- uniform float invertColor;
  
  void main()
  {
@@ -72,7 +70,7 @@ NSString *const kGPUImageSobelEdgeDetectionFragmentShaderString = SHADER_STRING
      float h = -topLeftIntensity - 2.0 * topIntensity - topRightIntensity + bottomLeftIntensity + 2.0 * bottomIntensity + bottomRightIntensity;
      float v = -bottomLeftIntensity - 2.0 * leftIntensity - topLeftIntensity + bottomRightIntensity + 2.0 * rightIntensity + topRightIntensity;
      
-     float mag = abs(length(vec2(h, v)) - invertColor);
+     float mag = length(vec2(h, v));
      
      gl_FragColor = vec4(vec3(mag), 1.0);
  }
@@ -110,8 +108,6 @@ NSString *const kGPUImageSobelEdgeDetectionFragmentShaderString = SHADER_STRING
     
     texelWidthUniform = [secondFilterProgram uniformIndex:@"texelWidth"];
     texelHeightUniform = [secondFilterProgram uniformIndex:@"texelHeight"];
-    invertColorUniform = [secondFilterProgram uniformIndex:@"invertColor"];
-    self.invertColor = NO;
     
     return self;
 }
@@ -157,13 +153,6 @@ NSString *const kGPUImageSobelEdgeDetectionFragmentShaderString = SHADER_STRING
     _texelHeight = newValue;
 
     [self setFloat:_texelHeight forUniform:texelHeightUniform program:secondFilterProgram];
-}
-
-- (void)setInvertColor:(BOOL)invertColor
-{
-    _invertColor = invertColor;
-
-    [self setFloat:(invertColor ? 1.0f : 0.0f) forUniform:invertColorUniform program:secondFilterProgram];
 }
 
 @end

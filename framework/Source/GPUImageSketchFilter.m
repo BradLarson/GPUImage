@@ -21,7 +21,6 @@ NSString *const kGPUImageSketchFragmentShaderString = SHADER_STRING
  varying vec2 bottomRightTextureCoordinate;
  
  uniform sampler2D inputImageTexture;
- uniform lowp float invertColor;
  
  void main()
  {
@@ -36,7 +35,7 @@ NSString *const kGPUImageSketchFragmentShaderString = SHADER_STRING
      float h = -topLeftIntensity - 2.0 * topIntensity - topRightIntensity + bottomLeftIntensity + 2.0 * bottomIntensity + bottomRightIntensity;
      float v = -bottomLeftIntensity - 2.0 * leftIntensity - topLeftIntensity + bottomRightIntensity + 2.0 * rightIntensity + topRightIntensity;
      
-     float mag = abs(length(vec2(h, v)) - invertColor);
+     float mag = 1.0 - length(vec2(h, v));
      
      gl_FragColor = vec4(vec3(mag), 1.0);
  }
@@ -57,7 +56,6 @@ NSString *const kGPUImageSketchFragmentShaderString = SHADER_STRING
  varying vec2 bottomRightTextureCoordinate;
  
  uniform sampler2D inputImageTexture;
- uniform float invertColor;
  
  void main()
  {
@@ -72,7 +70,7 @@ NSString *const kGPUImageSketchFragmentShaderString = SHADER_STRING
      float h = -topLeftIntensity - 2.0 * topIntensity - topRightIntensity + bottomLeftIntensity + 2.0 * bottomIntensity + bottomRightIntensity;
      float v = -bottomLeftIntensity - 2.0 * leftIntensity - topLeftIntensity + bottomRightIntensity + 2.0 * rightIntensity + topRightIntensity;
      
-     float mag = abs(length(vec2(h, v)) - invertColor);
+     float mag = 1.0 - length(vec2(h, v));
      
      gl_FragColor = vec4(vec3(mag), 1.0);
  }
@@ -88,7 +86,6 @@ NSString *const kGPUImageSketchFragmentShaderString = SHADER_STRING
     {
 		return nil;
     }
-    self.invertColor = YES;
     
     return self;
 }
