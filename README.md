@@ -36,10 +36,6 @@ BSD-style, with the full license available with the framework in License.txt.
 - Devices must have a camera to use camera-related functionality (obviously)
 - The framework uses automatic reference counting (ARC), but should support projects using both ARC and manual reference counting if added as a subproject as explained below. For manual reference counting applications targeting iOS 4.x, you'll need add -fobjc-arc to the Other Linker Flags for your application project.
 
-## Build iOS static library ##
-
-Execute `build.sh` to compile a universal library for iOS simulator/device. The produced library and header files are located at `build/Release-iphone`. You may also change the version of iOS SDK by specifying `IOSSDK_VER` in the `build.sh` (all available versions can be found using `xcodebuild -showsdks`).
-
 ## General architecture ##
 
 GPUImage uses OpenGL ES 2.0 shaders to perform image and video manipulation much faster than could be done in CPU-bound routines. However, it hides the complexity of interacting with the OpenGL ES API in a simplified Objective-C interface. This interface lets you define input sources for images and video, attach filters in a chain, and send the resulting processed image or video to the screen, to a UIImage, or to a movie on disk.
@@ -498,6 +494,10 @@ As a note: if you run into the error "Unknown class GPUImageView in Interface Bu
 Also, if you need to deploy this to iOS 4.x, it appears that the current version of Xcode (4.3) requires that you weak-link the Core Video framework in your final application or you see crashes with the message "Symbol not found: _CVOpenGLESTextureCacheCreate" when you create an archive for upload to the App Store or for ad hoc distribution. To do this, go to your project's Build Phases tab, expand the Link Binary With Libraries group, and find CoreVideo.framework in the list. Change the setting for it in the far right of the list from Required to Optional.
 
 Additionally, this is an ARC-enabled framework, so if you want to use this within a manual reference counted application targeting iOS 4.x, you'll need to add -fobjc-arc to your Other Linker Flags as well.
+
+### Building static library at the command line ###
+
+If you don't want to include the project as a dependency in your application's Xcode project, you can build a universal static library for the iOS Simulator or device. To do this, run `build.sh` at the command line. The resulting library and header files will be located at `build/Release-iphone`. You may also change the version of the iOS SDK by changing the `IOSSDK_VER` variable in `build.sh` (all available versions can be found using `xcodebuild -showsdks`).
 
 ## Performing common tasks ##
 
