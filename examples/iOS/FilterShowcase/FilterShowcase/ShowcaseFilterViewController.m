@@ -475,8 +475,12 @@
         case GPUIMAGE_SOBELEDGEDETECTION:
         {
             self.title = @"Sobel Edge Detection";
-            self.filterSettingsSlider.hidden = YES;
-            
+            self.filterSettingsSlider.hidden = NO;
+
+            [self.filterSettingsSlider setMinimumValue:0.0];
+            [self.filterSettingsSlider setMaximumValue:1.0];
+            [self.filterSettingsSlider setValue:0.25];
+
             filter = [[GPUImageSobelEdgeDetectionFilter alloc] init];
         }; break;
         case GPUIMAGE_XYGRADIENT:
@@ -538,7 +542,11 @@
         case GPUIMAGE_PREWITTEDGEDETECTION:
         {
             self.title = @"Prewitt Edge Detection";
-            self.filterSettingsSlider.hidden = YES;
+            self.filterSettingsSlider.hidden = NO;
+            
+            [self.filterSettingsSlider setMinimumValue:0.0];
+            [self.filterSettingsSlider setMaximumValue:1.0];
+            [self.filterSettingsSlider setValue:1.0];
             
             filter = [[GPUImagePrewittEdgeDetectionFilter alloc] init];
         }; break;
@@ -564,7 +572,7 @@
             
             [self.filterSettingsSlider setMinimumValue:0.0];
             [self.filterSettingsSlider setMaximumValue:1.0];
-            [self.filterSettingsSlider setValue:0.5];
+            [self.filterSettingsSlider setValue:0.25];
             
             filter = [[GPUImageThresholdEdgeDetectionFilter alloc] init];
         }; break;
@@ -624,7 +632,11 @@
         case GPUIMAGE_SKETCH:
         {
             self.title = @"Sketch";
-            self.filterSettingsSlider.hidden = YES;
+            self.filterSettingsSlider.hidden = NO;
+            
+            [self.filterSettingsSlider setMinimumValue:0.0];
+            [self.filterSettingsSlider setMaximumValue:1.0];
+            [self.filterSettingsSlider setValue:0.25];
             
             filter = [[GPUImageSketchFilter alloc] init];
         }; break;
@@ -633,9 +645,9 @@
             self.title = @"Threshold Sketch";
             self.filterSettingsSlider.hidden = NO;
             
-            [self.filterSettingsSlider setMinimumValue:0.9];
+            [self.filterSettingsSlider setMinimumValue:0.0];
             [self.filterSettingsSlider setMaximumValue:1.0];
-            [self.filterSettingsSlider setValue:0.9];
+            [self.filterSettingsSlider setValue:0.25];
             
             filter = [[GPUImageThresholdSketchFilter alloc] init];
         }; break;
@@ -1551,6 +1563,9 @@
         case GPUIMAGE_CROSSHATCH: [(GPUImageCrosshatchFilter *)filter setCrossHatchSpacing:[(UISlider *)sender value]]; break;
         case GPUIMAGE_POSTERIZE: [(GPUImagePosterizeFilter *)filter setColorLevels:round([(UISlider*)sender value])]; break;
         case GPUIMAGE_HAZE: [(GPUImageHazeFilter *)filter setDistance:[(UISlider *)sender value]]; break;
+        case GPUIMAGE_SOBELEDGEDETECTION: [(GPUImageSobelEdgeDetectionFilter *)filter setEdgeStrength:[(UISlider *)sender value]]; break;
+        case GPUIMAGE_PREWITTEDGEDETECTION: [(GPUImagePrewittEdgeDetectionFilter *)filter setEdgeStrength:[(UISlider *)sender value]]; break;
+        case GPUIMAGE_SKETCH: [(GPUImageSketchFilter *)filter setEdgeStrength:[(UISlider *)sender value]]; break;
         case GPUIMAGE_THRESHOLD: [(GPUImageLuminanceThresholdFilter *)filter setThreshold:[(UISlider *)sender value]]; break;
         case GPUIMAGE_ADAPTIVETHRESHOLD: [(GPUImageAdaptiveThresholdFilter *)filter setBlurSize:[(UISlider*)sender value]]; break;
         case GPUIMAGE_AVERAGELUMINANCETHRESHOLD: [(GPUImageAverageLuminanceThresholdFilter *)filter setThresholdMultiplier:[(UISlider *)sender value]]; break;

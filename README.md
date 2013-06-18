@@ -214,10 +214,17 @@ There are currently 125 built-in filters, divided into the following categories:
 - **GPUImageSobelEdgeDetectionFilter**: Sobel edge detection, with edges highlighted in white
   - *texelWidth*: 
   - *texelHeight*: These parameters affect the visibility of the detected edges
+  - *edgeStrength*: Adjusts the dynamic range of the filter. Higher values lead to stronger edges, but can saturate the intensity colorspace. Default is 1.0.
+
+- **GPUImagePrewittEdgeDetectionFilter**: Prewitt edge detection, with edges highlighted in white
+  - *texelWidth*: 
+  - *texelHeight*: These parameters affect the visibility of the detected edges
+  - *edgeStrength*: Adjusts the dynamic range of the filter. Higher values lead to stronger edges, but can saturate the intensity colorspace. Default is 1.0.
 
 - **GPUImageThresholdEdgeDetectionFilter**: Performs Sobel edge detection, but applies a threshold instead of giving gradual strength values
   - *texelWidth*: 
   - *texelHeight*: These parameters affect the visibility of the detected edges
+  - *edgeStrength*: Adjusts the dynamic range of the filter. Higher values lead to stronger edges, but can saturate the intensity colorspace. Default is 1.0.
   - *threshold*: Any edge above this threshold will be black, and anything below white. Ranges from 0.0 to 1.0, with 0.8 as the default
 
 - **GPUImageCannyEdgeDetectionFilter**: This uses the full Canny process to highlight one-pixel-wide edges
@@ -379,10 +386,13 @@ There are currently 125 built-in filters, divided into the following categories:
 - **GPUImageSketchFilter**: Converts video to look like a sketch. This is just the Sobel edge detection filter with the colors inverted
   - *texelWidth*: 
   - *texelHeight*: These parameters affect the visibility of the detected edges
+  - *edgeStrength*: Adjusts the dynamic range of the filter. Higher values lead to stronger edges, but can saturate the intensity colorspace. Default is 1.0.
 
 - **GPUImageThresholdSketchFilter**: Same as the sketch filter, only the edges are thresholded instead of being grayscale
   - *texelWidth*: 
   - *texelHeight*: These parameters affect the visibility of the detected edges
+  - *edgeStrength*: Adjusts the dynamic range of the filter. Higher values lead to stronger edges, but can saturate the intensity colorspace. Default is 1.0.
+  - *threshold*: Any edge above this threshold will be black, and anything below white. Ranges from 0.0 to 1.0, with 0.8 as the default
 
 - **GPUImageToonFilter**: This uses Sobel edge detection to place a black border around objects, and then it quantizes the colors present in the image to give a cartoon-like quality to the image.
   - *texelWidth*: 

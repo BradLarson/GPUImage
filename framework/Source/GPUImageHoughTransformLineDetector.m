@@ -25,8 +25,17 @@
 #endif
     
     // First pass: do edge detection and threshold that to just have white pixels for edges
-    
-    thresholdEdgeDetectionFilter = [[GPUImageCannyEdgeDetectionFilter alloc] init];
+    if ([GPUImageContext deviceSupportsFramebufferReads])
+    {
+        thresholdEdgeDetectionFilter = [[GPUImageThresholdEdgeDetectionFilter alloc] init];
+//        thresholdEdgeDetectionFilter = [[GPUImageSobelEdgeDetectionFilter alloc] init];
+        [(GPUImageThresholdEdgeDetectionFilter *)thresholdEdgeDetectionFilter setThreshold:0.8];
+//        thresholdEdgeDetectionFilter = [[GPUImageCannyEdgeDetectionFilter alloc] init];
+    }
+    else
+    {
+        thresholdEdgeDetectionFilter = [[GPUImageCannyEdgeDetectionFilter alloc] init];
+    }
     [self addFilter:thresholdEdgeDetectionFilter];
     
 #ifdef DEBUGLINEDETECTION
@@ -39,20 +48,6 @@
     }];
 #endif
 
-/*
-    thresholdEdgeDetectionFilter = [[GPUImageThresholdEdgeDetectionFilter alloc] init];
-    [self addFilter:thresholdEdgeDetectionFilter];
-    
-#ifdef DEBUGLINEDETECTION
-    __unsafe_unretained NSMutableArray *weakIntermediateImages = _intermediateImages;
-    __unsafe_unretained GPUImageFilter *weakFilter = thresholdEdgeDetectionFilter;
-    [thresholdEdgeDetectionFilter setFrameProcessingCompletionBlock:^(GPUImageOutput *filter, CMTime frameTime){
-        [weakIntermediateImages removeAllObjects];
-        UIImage *intermediateImage = [weakFilter imageFromCurrentlyProcessedOutput];
-        [weakIntermediateImages addObject:intermediateImage];
-    }];
-#endif
-  */  
     // Second pass: extract the white points and draw representative lines in parallel coordinate space
     parallelCoordinateLineTransformFilter = [[GPUImageParallelCoordinateLineTransformFilter alloc] init];
     [self addFilter:parallelCoordinateLineTransformFilter];
@@ -66,7 +61,14 @@
 #endif
 
     // Third pass: apply non-maximum suppression
-    nonMaximumSuppressionFilter = [[GPUImageThresholdedNonMaximumSuppressionFilter alloc] init];
+    if ([GPUImageContext deviceSupportsFramebufferReads])
+    {
+        nonMaximumSuppressionFilter = [[GPUImageThresholdedNonMaximumSuppressionFilter alloc] initWithPackedColorspace:YES];
+    }
+    else
+    {
+        nonMaximumSuppressionFilter = [[GPUImageThresholdedNonMaximumSuppressionFilter alloc] initWithPackedColorspace:NO];
+    }
     [self addFilter:nonMaximumSuppressionFilter];
     
     __unsafe_unretained GPUImageHoughTransformLineDetector *weakSelf = self;
@@ -92,8 +94,8 @@
     //    self.terminalFilter = colorPackingFilter;
     self.terminalFilter = nonMaximumSuppressionFilter;
     
-    self.edgeThreshold = 0.95;
-    self.lineDetectionThreshold = 0.2;
+//    self.edgeThreshold = 0.95;
+    self.lineDetectionThreshold = 0.8;
     
     return self;
 }

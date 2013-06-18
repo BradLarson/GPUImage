@@ -1,5 +1,6 @@
 #import <Foundation/Foundation.h>
 #import <OpenGL/OpenGL.h>
+#import <OpenGL/gl.h>
 #import <QuartzCore/QuartzCore.h>
 #import <CoreMedia/CoreMedia.h>
 #import "GLProgram.h"
