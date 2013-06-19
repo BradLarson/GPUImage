@@ -10,6 +10,7 @@
 #import <OpenGLES/ES2/glext.h>
 #else
 #import <OpenGL/OpenGL.h>
+#import <OpenGL/gl.h>
 #endif
 
 @interface GLProgram : NSObject 

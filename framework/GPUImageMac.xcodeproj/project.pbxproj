@@ -23,6 +23,8 @@
 		BC78B713172DCCB800342C6A /* GPUImageMissEtikateFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = BC78B70B172DCCB800342C6A /* GPUImageMissEtikateFilter.m */; };
 		BC78B714172DCCB800342C6A /* GPUImageSoftEleganceFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = BC78B70C172DCCB800342C6A /* GPUImageSoftEleganceFilter.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BC78B715172DCCB800342C6A /* GPUImageSoftEleganceFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = BC78B70D172DCCB800342C6A /* GPUImageSoftEleganceFilter.m */; };
+		BC96A4F1176563C300F215A2 /* GPUImageNonMaximumSuppressionFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = BC96A4EF176563C300F215A2 /* GPUImageNonMaximumSuppressionFilter.h */; };
+		BC96A4F2176563C300F215A2 /* GPUImageNonMaximumSuppressionFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = BC96A4F0176563C300F215A2 /* GPUImageNonMaximumSuppressionFilter.m */; };
 		BCA20B571746C9EC0097C84A /* GPUImageBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = BCA20B4F1746C9EC0097C84A /* GPUImageBuffer.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BCA20B581746C9EC0097C84A /* GPUImageBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = BCA20B501746C9EC0097C84A /* GPUImageBuffer.m */; };
 		BCA20B591746C9EC0097C84A /* GPUImageHighPassFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = BCA20B511746C9EC0097C84A /* GPUImageHighPassFilter.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -326,6 +328,8 @@
 		BC78B70B172DCCB800342C6A /* GPUImageMissEtikateFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GPUImageMissEtikateFilter.m; path = Source/GPUImageMissEtikateFilter.m; sourceTree = SOURCE_ROOT; };
 		BC78B70C172DCCB800342C6A /* GPUImageSoftEleganceFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GPUImageSoftEleganceFilter.h; path = Source/GPUImageSoftEleganceFilter.h; sourceTree = SOURCE_ROOT; };
 		BC78B70D172DCCB800342C6A /* GPUImageSoftEleganceFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GPUImageSoftEleganceFilter.m; path = Source/GPUImageSoftEleganceFilter.m; sourceTree = SOURCE_ROOT; };
+		BC96A4EF176563C300F215A2 /* GPUImageNonMaximumSuppressionFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GPUImageNonMaximumSuppressionFilter.h; path = Source/GPUImageNonMaximumSuppressionFilter.h; sourceTree = SOURCE_ROOT; };
+		BC96A4F0176563C300F215A2 /* GPUImageNonMaximumSuppressionFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GPUImageNonMaximumSuppressionFilter.m; path = Source/GPUImageNonMaximumSuppressionFilter.m; sourceTree = SOURCE_ROOT; };
 		BCA20B4F1746C9EC0097C84A /* GPUImageBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GPUImageBuffer.h; path = Source/GPUImageBuffer.h; sourceTree = SOURCE_ROOT; };
 		BCA20B501746C9EC0097C84A /* GPUImageBuffer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GPUImageBuffer.m; path = Source/GPUImageBuffer.m; sourceTree = SOURCE_ROOT; };
 		BCA20B511746C9EC0097C84A /* GPUImageHighPassFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GPUImageHighPassFilter.h; path = Source/GPUImageHighPassFilter.h; sourceTree = SOURCE_ROOT; };
@@ -937,6 +941,8 @@
 				BC569577174683620081491B /* GPUImageCrosshairGenerator.m */,
 				BCE2EF8E17459D9300C0628C /* GPUImageColorPackingFilter.h */,
 				BCE2EF8F17459D9300C0628C /* GPUImageColorPackingFilter.m */,
+				BC96A4EF176563C300F215A2 /* GPUImageNonMaximumSuppressionFilter.h */,
+				BC96A4F0176563C300F215A2 /* GPUImageNonMaximumSuppressionFilter.m */,
 				BCE2EF9017459D9300C0628C /* GPUImageThresholdedNonMaximumSuppressionFilter.h */,
 				BCE2EF9117459D9300C0628C /* GPUImageThresholdedNonMaximumSuppressionFilter.m */,
 				BCE2EF9617459E2400C0628C /* GPUImageHoughTransformLineDetector.h */,
@@ -1197,6 +1203,7 @@
 				BCA20BC517471C4B0097C84A /* GPUImageMosaicFilter.h in Headers */,
 				BCA20BC717471C4B0097C84A /* GPUImagePerlinNoiseFilter.h in Headers */,
 				BCA20BC917471C4B0097C84A /* GPUImageVoronoiConsumerFilter.h in Headers */,
+				BC96A4F1176563C300F215A2 /* GPUImageNonMaximumSuppressionFilter.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1409,6 +1416,7 @@
 				BCA20BC617471C4B0097C84A /* GPUImageMosaicFilter.m in Sources */,
 				BCA20BC817471C4B0097C84A /* GPUImagePerlinNoiseFilter.m in Sources */,
 				BCA20BCA17471C4B0097C84A /* GPUImageVoronoiConsumerFilter.m in Sources */,
+				BC96A4F2176563C300F215A2 /* GPUImageNonMaximumSuppressionFilter.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

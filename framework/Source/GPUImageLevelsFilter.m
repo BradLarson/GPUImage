@@ -23,9 +23,9 @@ NSString *const kGPUImageLevelsFragmentShaderString = SHADER_STRING
  varying highp vec2 textureCoordinate;
  
  uniform sampler2D inputImageTexture;
- uniform lowp vec3 min;
- uniform lowp vec3 mid;
- uniform lowp vec3 max;
+ uniform lowp vec3 levelMinimum;
+ uniform lowp vec3 levelMiddle;
+ uniform lowp vec3 levelMaximum;
  uniform lowp vec3 minOutput;
  uniform lowp vec3 maxOutput;
  
@@ -33,7 +33,7 @@ NSString *const kGPUImageLevelsFragmentShaderString = SHADER_STRING
  {
      lowp vec4 textureColor = texture2D(inputImageTexture, textureCoordinate);
      
-     gl_FragColor = vec4(LevelsControl(textureColor.rgb, min, mid, max, minOutput, maxOutput), textureColor.a);
+     gl_FragColor = vec4(LevelsControl(textureColor.rgb, levelMinimum, levelMiddle, levelMaximum, minOutput, maxOutput), textureColor.a);
  }
 );
 #else
@@ -42,9 +42,9 @@ NSString *const kGPUImageLevelsFragmentShaderString = SHADER_STRING
  varying vec2 textureCoordinate;
  
  uniform sampler2D inputImageTexture;
- uniform vec3 min;
- uniform vec3 mid;
- uniform vec3 max;
+ uniform vec3 levelMinimum;
+ uniform vec3 levelMiddle;
+ uniform vec3 levelMaximum;
  uniform vec3 minOutput;
  uniform vec3 maxOutput;
  
@@ -52,7 +52,7 @@ NSString *const kGPUImageLevelsFragmentShaderString = SHADER_STRING
  {
      vec4 textureColor = texture2D(inputImageTexture, textureCoordinate);
      
-     gl_FragColor = vec4(LevelsControl(textureColor.rgb, min, mid, max, minOutput, maxOutput), textureColor.a);
+     gl_FragColor = vec4(LevelsControl(textureColor.rgb, levelMinimum, levelMiddle, levelMaximum, minOutput, maxOutput), textureColor.a);
  }
 );
 #endif
@@ -69,9 +69,9 @@ NSString *const kGPUImageLevelsFragmentShaderString = SHADER_STRING
 		return nil;
     }
     
-    minUniform = [filterProgram uniformIndex:@"min"];
-    midUniform = [filterProgram uniformIndex:@"mid"];
-    maxUniform = [filterProgram uniformIndex:@"max"];
+    minUniform = [filterProgram uniformIndex:@"levelMinimum"];
+    midUniform = [filterProgram uniformIndex:@"levelMiddle"];
+    maxUniform = [filterProgram uniformIndex:@"levelMaximum"];
     minOutputUniform = [filterProgram uniformIndex:@"minOutput"];
     maxOutputUniform = [filterProgram uniformIndex:@"maxOutput"];
     

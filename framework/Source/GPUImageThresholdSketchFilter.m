@@ -19,7 +19,8 @@ NSString *const kGPUImageThresholdSketchFragmentShaderString = SHADER_STRING
  
  uniform sampler2D inputImageTexture;
  uniform lowp float threshold;
- 
+ uniform float edgeStrength;
+
  const highp vec3 W = vec3(0.2125, 0.7154, 0.0721);
  
  void main()
@@ -35,8 +36,9 @@ NSString *const kGPUImageThresholdSketchFragmentShaderString = SHADER_STRING
      float h = -topLeftIntensity - 2.0 * topIntensity - topRightIntensity + bottomLeftIntensity + 2.0 * bottomIntensity + bottomRightIntensity;
      float v = -bottomLeftIntensity - 2.0 * leftIntensity - topLeftIntensity + bottomRightIntensity + 2.0 * rightIntensity + topRightIntensity;
      
-     float mag = 1.0 - length(vec2(h, v));
+     float mag = (length(vec2(h, v)) * edgeStrength);
      mag = step(threshold, mag);
+     mag = 1.0 - mag;
      
      gl_FragColor = vec4(vec3(mag), 1.0);
  }
@@ -58,7 +60,8 @@ NSString *const kGPUImageThresholdSketchFragmentShaderString = SHADER_STRING
  
  uniform sampler2D inputImageTexture;
  uniform float threshold;
- 
+ uniform float edgeStrength;
+
  const vec3 W = vec3(0.2125, 0.7154, 0.0721);
  
  void main()
@@ -74,7 +77,7 @@ NSString *const kGPUImageThresholdSketchFragmentShaderString = SHADER_STRING
      float h = -topLeftIntensity - 2.0 * topIntensity - topRightIntensity + bottomLeftIntensity + 2.0 * bottomIntensity + bottomRightIntensity;
      float v = -bottomLeftIntensity - 2.0 * leftIntensity - topLeftIntensity + bottomRightIntensity + 2.0 * rightIntensity + topRightIntensity;
      
-     float mag = 1.0 - length(vec2(h, v));
+     float mag = 1.0 - length(vec2(h, v) * edgeStrength);
      mag = step(threshold, mag);
      
      gl_FragColor = vec4(vec3(mag), 1.0);

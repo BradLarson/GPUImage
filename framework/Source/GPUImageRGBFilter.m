@@ -6,15 +6,15 @@ NSString *const kGPUImageRGBFragmentShaderString = SHADER_STRING
  varying highp vec2 textureCoordinate;
  
  uniform sampler2D inputImageTexture;
- uniform highp float red;
- uniform highp float green;
- uniform highp float blue;
+ uniform highp float redAdjustment;
+ uniform highp float greenAdjustment;
+ uniform highp float blueAdjustment;
  
  void main()
  {
      highp vec4 textureColor = texture2D(inputImageTexture, textureCoordinate);
      
-     gl_FragColor = vec4(textureColor.r * red, textureColor.g * green, textureColor.b * blue, textureColor.a);
+     gl_FragColor = vec4(textureColor.r * redAdjustment, textureColor.g * greenAdjustment, textureColor.b * blueAdjustment, textureColor.a);
  }
 );
 #else
@@ -23,15 +23,15 @@ NSString *const kGPUImageRGBFragmentShaderString = SHADER_STRING
  varying vec2 textureCoordinate;
  
  uniform sampler2D inputImageTexture;
- uniform float red;
- uniform float green;
- uniform float blue;
+ uniform float redAdjustment;
+ uniform float greenAdjustment;
+ uniform float blueAdjustment;
  
  void main()
  {
      vec4 textureColor = texture2D(inputImageTexture, textureCoordinate);
      
-     gl_FragColor = vec4(textureColor.r * red, textureColor.g * green, textureColor.b * blue, textureColor.a);
+     gl_FragColor = vec4(textureColor.r * redAdjustment, textureColor.g * greenAdjustment, textureColor.b * blueAdjustment, textureColor.a);
  }
  );
 #endif
@@ -50,13 +50,13 @@ NSString *const kGPUImageRGBFragmentShaderString = SHADER_STRING
 		return nil;
     }
     
-    redUniform = [filterProgram uniformIndex:@"red"];
+    redUniform = [filterProgram uniformIndex:@"redAdjustment"];
     self.red = 1.0;
     
-    greenUniform = [filterProgram uniformIndex:@"green"];
+    greenUniform = [filterProgram uniformIndex:@"greenAdjustment"];
     self.green = 1.0;
     
-    blueUniform = [filterProgram uniformIndex:@"blue"];
+    blueUniform = [filterProgram uniformIndex:@"blueAdjustment"];
     self.blue = 1.0;
     
     return self;

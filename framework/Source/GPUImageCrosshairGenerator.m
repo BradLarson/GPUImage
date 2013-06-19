@@ -1,9 +1,5 @@
 #import "GPUImageCrosshairGenerator.h"
 
-#define hash #
-#define wrappedlabel(x) x
-#define escapedhash(a) wrappedlabel(hash)a
-
 NSString *const kGPUImageCrosshairVertexShaderString = SHADER_STRING
 (
  attribute vec4 position;
@@ -25,7 +21,6 @@ NSString *const kGPUImageCrosshairVertexShaderString = SHADER_STRING
 #if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
 NSString *const kGPUImageCrosshairFragmentShaderString = SHADER_STRING
 (
-
  uniform lowp vec3 crosshairColor;
 
  varying highp vec2 centerLocation;
@@ -43,7 +38,7 @@ NSString *const kGPUImageCrosshairFragmentShaderString = SHADER_STRING
 #else
 NSString *const kGPUImageCrosshairFragmentShaderString = SHADER_STRING
 (
- escapedhash(version 120)\n
+ GPUImageEscapedHashIdentifier(version 120)\n
  
  uniform vec3 crosshairColor;
  

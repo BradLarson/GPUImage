@@ -344,15 +344,15 @@
         [super renderToTextureWithVertices:vertices textureCoordinates:textureCoordinates sourceTexture:sourceTexture];
     }
     
+    
     // Run the second stage of the two-pass filter
+    [GPUImageContext setActiveShaderProgram:secondFilterProgram];
     [self setSecondFilterFBO];
     
-    [GPUImageContext setActiveShaderProgram:secondFilterProgram];
     [self setUniformsForProgramAtIndex:1];
 
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
-    
     if (!currentlyReceivingMonochromeInput)
     {
         glActiveTexture(GL_TEXTURE3);
