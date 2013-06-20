@@ -16,7 +16,6 @@ extern NSString *const kGPUImageColorSwizzlingFragmentShaderString;
 {
     BOOL alreadyFinishedRecording;
     
-    NSURL *movieURL;
     NSString *fileType;
 	AVAssetWriter *assetWriter;
 	AVAssetWriterInput *assetWriterAudioInput;
@@ -49,6 +48,8 @@ extern NSString *const kGPUImageColorSwizzlingFragmentShaderString;
 @property(nonatomic, assign) CGAffineTransform transform;
 @property(nonatomic, copy) NSArray *metaData;
 @property(nonatomic, assign, getter = isPaused) BOOL paused;
+@property(nonatomic, readonly) BOOL isRecording;
+@property(nonatomic, readonly) NSURL *movieURL;
 
 // Initialization and teardown
 - (id)initWithMovieURL:(NSURL *)newMovieURL size:(CGSize)newSize;
