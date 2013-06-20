@@ -137,6 +137,7 @@
     if (!CGSizeEqualToSize(self.bounds.size, boundsSizeAtFrameBufferEpoch) &&
         !CGSizeEqualToSize(self.bounds.size, CGSizeZero)) {
         runSynchronouslyOnVideoProcessingQueue(^{
+			[self recalculateViewGeometry];
             [self destroyDisplayFramebuffer];
             [self createDisplayFramebuffer];
             [self recalculateViewGeometry];

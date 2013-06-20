@@ -44,8 +44,6 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
     GLubyte *frameData;
     
     CMTime startTime, previousFrameTime;
-    
-    BOOL isRecording;
 }
 
 // Movie recording
@@ -70,6 +68,8 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 @synthesize videoInputReadyCallback;
 @synthesize audioInputReadyCallback;
 @synthesize enabled;
+@synthesize isRecording;
+@synthesize movieURL;
 
 @synthesize delegate = _delegate;
 

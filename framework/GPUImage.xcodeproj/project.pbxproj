@@ -1759,12 +1759,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CODE_SIGN_IDENTITY = "";
 				DSTROOT = /tmp/GPUImage.dst;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Source/iOS/GPUImage-Prefix.pch";
 				HEADER_SEARCH_PATHS = "";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "81304CB4-DA72-400E-9E51-9FAB41A532AF";
 				SKIP_INSTALL = YES;
 			};
 			name = Debug;
@@ -1773,12 +1775,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CODE_SIGN_IDENTITY = "";
 				DSTROOT = /tmp/GPUImage.dst;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Source/iOS/GPUImage-Prefix.pch";
 				HEADER_SEARCH_PATHS = "";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "81304CB4-DA72-400E-9E51-9FAB41A532AF";
 				SKIP_INSTALL = YES;
 			};
 			name = Release;

@@ -31,8 +31,6 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 
     dispatch_queue_t audioQueue, videoQueue;
     BOOL audioEncodingIsFinished, videoEncodingIsFinished;
-
-    BOOL isRecording;
 }
 
 // Movie recording
@@ -59,7 +57,8 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 @synthesize enabled;
 @synthesize shouldInvalidateAudioSampleWhenDone = _shouldInvalidateAudioSampleWhenDone;
 @synthesize paused = _paused;
-
+@synthesize isRecording;
+@synthesize movieURL;
 @synthesize delegate = _delegate;
 
 #pragma mark -
@@ -624,8 +623,8 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
         1.0f,  1.0f,
     };
     
-    const GLfloat *textureCoordinates = [GPUImageFilter textureCoordinatesForRotation:inputRotation];
-    
+	const GLfloat *textureCoordinates = [GPUImageFilter textureCoordinatesForRotation:inputRotation];
+	
 	glActiveTexture(GL_TEXTURE4);
 	glBindTexture(GL_TEXTURE_2D, [firstInputFramebuffer texture]);
 	glUniform1i(colorSwizzlingInputTextureUniform, 4);	
