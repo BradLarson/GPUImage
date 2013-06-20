@@ -67,6 +67,17 @@
     // TODO: Dispatch this whole thing asynchronously to move image loading off main thread
     CGFloat widthOfImage = CGImageGetWidth(newImageSource);
     CGFloat heightOfImage = CGImageGetHeight(newImageSource);
+
+    // If passed an empty image reference, create a small 2x2 image so we don't trigger a fatal error in the future on CGContextDrawImage below
+    if( !(widthOfImage >= 1) || !(heightOfImage >= 1) ){
+        widthOfImage = heightOfImage = 2.0;
+        UIGraphicsBeginImageContextWithOptions(CGSizeMake(widthOfImage, heightOfImage), NO, 0.0);
+        UIImage *blank = UIGraphicsGetImageFromCurrentImageContext();
+        UIGraphicsEndImageContext();
+        newImageSource = blank.CGImage;
+        blank = nil;
+    }
+    
     pixelSizeOfImage = CGSizeMake(widthOfImage, heightOfImage);
     CGSize pixelSizeToUseForTexture = pixelSizeOfImage;
     
