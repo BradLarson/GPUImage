@@ -249,7 +249,7 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
         isRecording = YES;
         _discont = NO;
         _timeOffset = CMTimeMake(0, 0);
-        _isPaused = NO;
+        _paused = NO;
         startTime = kCMTimeInvalid;
         //    [assetWriter startWriting];
         
@@ -268,7 +268,7 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 {
     @synchronized(self)
     {
-        _isPaused = YES;
+        _paused = YES;
         _discont = YES;
     }
 }
@@ -277,7 +277,7 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 {
     @synchronized(self)
     {
-        _isPaused = NO;
+        _paused = NO;
     }
 }
 
@@ -339,7 +339,7 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 
 - (void)processAudioBuffer:(CMSampleBufferRef)audioBuffer;
 {
-    if (!isRecording || _isPaused)
+    if (!isRecording || _paused)
     {
         return;
     }
@@ -541,7 +541,7 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 {
     @synchronized(self)
     {
-        if (!isRecording || _isPaused)
+        if (!isRecording || _paused)
         {
             return;
         }
