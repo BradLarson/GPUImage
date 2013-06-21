@@ -256,7 +256,8 @@ void GPUImageCreateResizedSampleBuffer(CVPixelBufferRef cameraFrame, CGSize fina
             dispatch_semaphore_signal(frameRenderingSemaphore);
             [self captureOutput:photoOutput didOutputSampleBuffer:sampleBuffer fromConnection:[[photoOutput connections] objectAtIndex:0]];
             dispatch_semaphore_wait(frameRenderingSemaphore, DISPATCH_TIME_FOREVER);
-            CFRelease(sampleBuffer);
+            if (sampleBuffer != NULL)
+                CFRelease(sampleBuffer);
         }
         else
         {
