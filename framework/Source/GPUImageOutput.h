@@ -16,6 +16,16 @@ typedef NS_ENUM(NSInteger, UIImageOrientation) {
 };
 #endif
 
+typedef struct GPUTextureOptions {
+    GLenum minFilter;
+    GLenum magFilter;
+    GLenum wrapS;
+    GLenum wrapT;
+    GLenum internalFormat;
+    GLenum format;
+    GLenum type;
+} GPUTextureOptions;
+
 void runOnMainQueueWithoutDeadlocking(void (^block)(void));
 void runSynchronouslyOnVideoProcessingQueue(void (^block)(void));
 void runAsynchronouslyOnVideoProcessingQueue(void (^block)(void));
@@ -58,6 +68,7 @@ void reportAvailableMemoryForGPUImage(NSString *tag);
 @property(readwrite, nonatomic, unsafe_unretained) id<GPUImageInput> targetToIgnoreForUpdates;
 @property(nonatomic, copy) void(^frameProcessingCompletionBlock)(GPUImageOutput*, CMTime);
 @property(nonatomic) BOOL enabled;
+@property(readwrite, nonatomic) GPUTextureOptions outputTextureOptions;
 
 /// @name Managing targets
 - (void)setInputTextureForTarget:(id<GPUImageInput>)target atIndex:(NSInteger)inputTextureIndex;

@@ -79,6 +79,7 @@ void reportAvailableMemoryForGPUImage(NSString *tag)
 @synthesize targetToIgnoreForUpdates = _targetToIgnoreForUpdates;
 @synthesize frameProcessingCompletionBlock = _frameProcessingCompletionBlock;
 @synthesize enabled = _enabled;
+@synthesize outputTextureOptions = _outputTextureOptions;
 
 #pragma mark -
 #pragma mark Initialization and teardown
@@ -94,6 +95,15 @@ void reportAvailableMemoryForGPUImage(NSString *tag)
     targetTextureIndices = [[NSMutableArray alloc] init];
     _enabled = YES;
     allTargetsWantMonochromeData = YES;
+    
+    // set default texture options
+    _outputTextureOptions.minFilter = GL_LINEAR;
+    _outputTextureOptions.magFilter = GL_LINEAR;
+    _outputTextureOptions.wrapS = GL_CLAMP_TO_EDGE;
+    _outputTextureOptions.wrapT = GL_CLAMP_TO_EDGE;
+    _outputTextureOptions.internalFormat = GL_RGBA;
+    _outputTextureOptions.format = GL_BGRA;
+    _outputTextureOptions.type = GL_UNSIGNED_BYTE;
 
     return self;
 }
@@ -225,11 +235,11 @@ void reportAvailableMemoryForGPUImage(NSString *tag)
             glActiveTexture(GL_TEXTURE0);
             glGenTextures(1, &outputTexture);
             glBindTexture(GL_TEXTURE_2D, outputTexture);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, self.outputTextureOptions.minFilter);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, self.outputTextureOptions.magFilter);
             // This is necessary for non-power-of-two textures
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, self.outputTextureOptions.wrapS);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, self.outputTextureOptions.wrapT);
             glBindTexture(GL_TEXTURE_2D, 0);
         }
     });
