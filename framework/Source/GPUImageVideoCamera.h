@@ -50,8 +50,9 @@
  */
 @property (readwrite) NSInteger frameRate;
 
-/// Easy way to tell if front-facing camera is present on device
+/// Easy way to tell which cameras are present on device
 @property (readonly, getter = isFrontFacingCameraPresent) BOOL frontFacingCameraPresent;
+@property (readonly, getter = isBackFacingCameraPresent) BOOL backFacingCameraPresent;
 
 /// This enables the benchmarking mode, which logs out instantaneous and average frame times to the console
 @property(readwrite, nonatomic) BOOL runBenchmark;
@@ -127,5 +128,8 @@
 /** When benchmarking is enabled, this will keep a running average of the time from uploading, processing, and final recording or display
  */
 - (CGFloat)averageFrameDurationDuringCapture;
+
++ (BOOL)isBackFacingCameraPresent;
++ (BOOL)isFrontFacingCameraPresent;
 
 @end
