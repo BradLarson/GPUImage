@@ -183,9 +183,9 @@
     hasProcessedImage = NO;
 }
 
-- (BOOL)processImage;
+- (void)processImage;
 {
-    return [self processImageWithCompletionHandler:^{}];
+    [self processImageWithCompletionHandler:nil];
 }
 
 - (BOOL)processImageWithCompletionHandler:(void (^)(void))completion;
@@ -217,7 +217,9 @@
         
         dispatch_semaphore_signal(imageUpdateSemaphore);
         
-        completion();
+        if (completion != nil) {
+            completion();
+        }
     });
     
     return YES;

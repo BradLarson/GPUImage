@@ -18,12 +18,8 @@
 - (id)initWithCGImage:(CGImageRef)newImageSource smoothlyScaleOutput:(BOOL)smoothlyScaleOutput;
 
 // Image rendering
-
-/**
- * Process image with all targets and filters asynchronously
- * @returns NO if resource is blocked and processing is discarded, YES otherwise
- */
-- (BOOL)processImage;
+- (void)processImage;
+- (CGSize)outputImageSize;
 
 /**
  * Process image with all targets and filters asynchronously
@@ -33,7 +29,5 @@
  * @returns NO if resource is blocked and processing is discarded, YES otherwise
  */
 - (BOOL)processImageWithCompletionHandler:(void (^)(void))completion;
-
-- (CGSize)outputImageSize;
 
 @end
