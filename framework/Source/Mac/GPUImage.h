@@ -8,6 +8,8 @@
 #import <GPUImage/GPUImageOutput.h>
 #import <GPUImage/GPUImageAVCamera.h>
 #import <GPUImage/GPUImagePicture.h>
+#import <GPUImage/GPUImageRawDataInput.h>
+#import <GPUImage/GPUImageRawDataOutput.h>
 
 // Filters
 #import <GPUImage/GPUImageFilter.h>
