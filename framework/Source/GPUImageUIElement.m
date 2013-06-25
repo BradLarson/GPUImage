@@ -90,6 +90,7 @@
     CGColorSpaceRelease(genericRGBColorspace);
     
     glBindTexture(GL_TEXTURE_2D, outputTexture);
+    // no need to use self.outputTextureOptions here, we always need these texture options
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (int)layerPixelSize.width, (int)layerPixelSize.height, 0, GL_BGRA, GL_UNSIGNED_BYTE, imageData);
     
     free(imageData);
