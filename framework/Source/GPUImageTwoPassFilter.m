@@ -347,12 +347,14 @@
     
     // Run the second stage of the two-pass filter
     [GPUImageContext setActiveShaderProgram:secondFilterProgram];
+    glActiveTexture(GL_TEXTURE2);
+    glBindTexture(GL_TEXTURE_2D, 0);
+    glActiveTexture(GL_TEXTURE3);
+    glBindTexture(GL_TEXTURE_2D, 0);
     [self setSecondFilterFBO];
     
     [self setUniformsForProgramAtIndex:1];
-
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
+    
     if (!currentlyReceivingMonochromeInput)
     {
         glActiveTexture(GL_TEXTURE3);
@@ -369,6 +371,9 @@
 	glUniform1i(secondFilterInputTextureUniform, 3);
     
     glVertexAttribPointer(secondFilterPositionAttribute, 2, GL_FLOAT, 0, 0, vertices);
+
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
 
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 

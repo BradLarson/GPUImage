@@ -25,17 +25,20 @@
 #endif
     
     // First pass: do edge detection and threshold that to just have white pixels for edges
-    if ([GPUImageContext deviceSupportsFramebufferReads])
-    {
+//    if ([GPUImageContext deviceSupportsFramebufferReads])
+//    if ([GPUImageContext deviceSupportsFramebufferReads])
+//    {
         thresholdEdgeDetectionFilter = [[GPUImageThresholdEdgeDetectionFilter alloc] init];
 //        thresholdEdgeDetectionFilter = [[GPUImageSobelEdgeDetectionFilter alloc] init];
-        [(GPUImageThresholdEdgeDetectionFilter *)thresholdEdgeDetectionFilter setThreshold:0.8];
+        [(GPUImageThresholdEdgeDetectionFilter *)thresholdEdgeDetectionFilter setThreshold:0.4];
+//        [(GPUImageThresholdEdgeDetectionFilter *)thresholdEdgeDetectionFilter setEdgeStrength:0.25];
+        [(GPUImageThresholdEdgeDetectionFilter *)thresholdEdgeDetectionFilter setEdgeStrength:1.0];
 //        thresholdEdgeDetectionFilter = [[GPUImageCannyEdgeDetectionFilter alloc] init];
-    }
-    else
-    {
-        thresholdEdgeDetectionFilter = [[GPUImageCannyEdgeDetectionFilter alloc] init];
-    }
+//    }
+//    else
+//    {
+//        thresholdEdgeDetectionFilter = [[GPUImageCannyEdgeDetectionFilter alloc] init];
+//    }
     [self addFilter:thresholdEdgeDetectionFilter];
     
 #ifdef DEBUGLINEDETECTION
