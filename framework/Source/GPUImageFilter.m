@@ -188,7 +188,7 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
 {
     
     // a CGImage can only be created from a 'normal' color texture
-    NSAssert(self.outputTextureOptions.format == GL_RGBA, @"For conversion to a CGImage the output texture format for this filter must be GL_RGBA.");
+    NSAssert(self.outputTextureOptions.internalFormat == GL_RGBA, @"For conversion to a CGImage the output texture format for this filter must be GL_RGBA.");
     NSAssert(self.outputTextureOptions.type == GL_UNSIGNED_BYTE, @"For conversion to a CGImage the type of the output texture of this filter must be GL_UNSIGNED_BYTE.");
     
     __block CGImageRef cgImageFromBytes;

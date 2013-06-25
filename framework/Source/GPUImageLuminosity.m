@@ -290,7 +290,7 @@ NSString *const kGPUImageLuminosityFragmentShaderString = SHADER_STRING
 - (void)extractLuminosityAtFrameTime:(CMTime)frameTime;
 {
     // we need a normal color texture for this filter
-    NSAssert(self.outputTextureOptions.format == GL_RGBA, @"The output texture format for this filter must be GL_RGBA.");
+    NSAssert(self.outputTextureOptions.internalFormat == GL_RGBA, @"The output texture format for this filter must be GL_RGBA.");
     NSAssert(self.outputTextureOptions.type == GL_UNSIGNED_BYTE, @"The type of the output texture of this filter must be GL_UNSIGNED_BYTE.");
     
 #if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
