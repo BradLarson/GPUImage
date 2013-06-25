@@ -419,7 +419,25 @@ NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = SHAD
     return [[videoInput device] position];
 }
 
-- (BOOL)isFrontFacingCameraPresent;
++ (BOOL)isBackFacingCameraPresent;
+{
+	NSArray *devices = [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];
+	
+	for (AVCaptureDevice *device in devices)
+	{
+		if ([device position] == AVCaptureDevicePositionBack)
+			return YES;
+	}
+	
+	return NO;
+}
+
+- (BOOL)isBackFacingCameraPresent
+{
+    return [GPUImageVideoCamera isBackFacingCameraPresent];
+}
+
++ (BOOL)isFrontFacingCameraPresent;
 {
 	NSArray *devices = [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];
 	
@@ -430,6 +448,11 @@ NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = SHAD
 	}
 	
 	return NO;
+}
+
+- (BOOL)isFrontFacingCameraPresent
+{
+    return [GPUImageVideoCamera isFrontFacingCameraPresent];
 }
 
 - (void)setCaptureSessionPreset:(NSString *)captureSessionPreset;
