@@ -40,6 +40,7 @@ NSString *const kGPUImageLuminanceFragmentShaderString = SHADER_STRING
  );
 #endif
 
+
 - (void)renderToTextureWithVertices:(const GLfloat *)vertices textureCoordinates:(const GLfloat *)textureCoordinates sourceTexture:(GLuint)sourceTexture;
 {
     if (!currentlyReceivingMonochromeInput)
