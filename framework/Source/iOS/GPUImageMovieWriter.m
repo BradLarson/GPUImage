@@ -341,8 +341,12 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
         
 //        NSLog(@"Recorded audio sample time: %lld, %d, %lld", currentSampleTime.value, currentSampleTime.timescale, currentSampleTime.epoch);
         CFRetain(audioBuffer);
-        dispatch_async(movieWritingQueue, ^{
-            [assetWriterAudioInput appendSampleBuffer:audioBuffer];
+        dispatch_sync(movieWritingQueue, ^{
+            if (![assetWriterAudioInput appendSampleBuffer:audioBuffer]) {
+                NSLog(@"Failed to write audio at time: %lld, with error: %@", currentSampleTime.value, assetWriter.error);
+            } else {
+//                NSLog(@"Written audio at %lld", currentSampleTime.value);
+            }
             CFRelease(audioBuffer);
         });
     }
@@ -573,7 +577,7 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
     dispatch_sync(movieWritingQueue, ^{
         if(![assetWriterPixelBufferInput appendPixelBuffer:pixel_buffer withPresentationTime:frameTime])
         {
-            NSLog(@"Problem appending pixel buffer at time: %lld", frameTime.value);
+            NSLog(@"Problem appending pixel buffer at time: %lld, with error: %@", frameTime.value, assetWriter.error);
         }
         else
         {
