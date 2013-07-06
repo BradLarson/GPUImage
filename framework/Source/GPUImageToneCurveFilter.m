@@ -303,7 +303,7 @@ NSString *const kGPUImageToneCurveFragmentShaderString = SHADER_STRING
 
         // Insert points similarly at the end, if necessary.
 #if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
-        CGPoint lastSplinePoint = [[splinePoints objectAtIndex:([splinePoints count] - 1)] CGPointValue];
+        CGPoint lastSplinePoint = [[splinePoints lastObject] CGPointValue];
 
         if (lastSplinePoint.x < 255) {
             for (int i = lastSplinePoint.x + 1; i <= 255; i++) {
@@ -312,7 +312,7 @@ NSString *const kGPUImageToneCurveFragmentShaderString = SHADER_STRING
             }
         }
 #else
-        NSPoint lastSplinePoint = [[splinePoints objectAtIndex:([splinePoints count] - 1)] pointValue];
+        NSPoint lastSplinePoint = [[splinePoints lastObject] pointValue];
         
         if (lastSplinePoint.x < 255) {
             for (int i = lastSplinePoint.x + 1; i <= 255; i++) {
@@ -354,8 +354,7 @@ NSString *const kGPUImageToneCurveFragmentShaderString = SHADER_STRING
 {
     NSMutableArray *sdA = [self secondDerivative:points];
     
-    // Is [points count] equal to [sdA count]?
-//    int n = [points count];
+    // [points count] is equal to [sdA count]
     NSInteger n = [sdA count];
     if (n < 1)
     {
@@ -408,16 +407,14 @@ NSString *const kGPUImageToneCurveFragmentShaderString = SHADER_STRING
         }
     }
     
-    // If the last point is (255, 255) it doesn't get added.
-    if ([output count] == 255) {
-        [output addObject:[points lastObject]];
-    }
+    // The above always misses the last point because the last point is the last next, so we approach but don't equal it.
+    [output addObject:[points lastObject]];
     return output;
 }
 
 - (NSMutableArray *)secondDerivative:(NSArray *)points
 {
-    NSInteger n = [points count];
+    const NSInteger n = [points count];
     if ((n <= 0) || (n == 1))
     {
         return nil;
