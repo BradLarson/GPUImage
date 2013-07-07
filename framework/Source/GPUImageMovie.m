@@ -269,7 +269,8 @@
         runSynchronouslyOnVideoProcessingQueue(^{
             [self.audioEncodingTarget processAudioBuffer:audioSampleBufferRef];
             
-            CMSampleBufferInvalidate(audioSampleBufferRef);
+            /* Don't invalidate the buffer as we retain it and use it asynchronously in the audioEncodingTarget */
+//            CMSampleBufferInvalidate(audioSampleBufferRef);
             CFRelease(audioSampleBufferRef);
         });
     }
