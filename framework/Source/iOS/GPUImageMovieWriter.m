@@ -332,17 +332,22 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
                 startTime = currentSampleTime;
             });
         }
-
-        if (!assetWriterAudioInput.readyForMoreMediaData)
-        {
-            NSLog(@"Had to drop an audio frame");
-            return;
-        }
         
-//        NSLog(@"Recorded audio sample time: %lld, %d, %lld", currentSampleTime.value, currentSampleTime.timescale, currentSampleTime.epoch);
         CFRetain(audioBuffer);
         dispatch_async(movieWritingQueue, ^{
-            [assetWriterAudioInput appendSampleBuffer:audioBuffer];
+            if (assetWriterAudioInput.readyForMoreMediaData)
+            {
+                if (![assetWriterAudioInput appendSampleBuffer:audioBuffer]) {
+                    NSLog(@"Failed to write audio at time: %lld, with error: %@", currentSampleTime.value, assetWriter.error);
+                } else {
+//                  NSLog(@"Recorded audio sample time: %lld, %d, %lld", currentSampleTime.value, currentSampleTime.timescale, currentSampleTime.epoch);
+                }
+            }
+            else
+            {
+                NSLog(@"Had to drop an audio frame");
+            }
+            
             CFRelease(audioBuffer);
         });
     }
@@ -573,7 +578,7 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
     dispatch_sync(movieWritingQueue, ^{
         if(![assetWriterPixelBufferInput appendPixelBuffer:pixel_buffer withPresentationTime:frameTime])
         {
-            NSLog(@"Problem appending pixel buffer at time: %lld", frameTime.value);
+            NSLog(@"Problem appending pixel buffer at time: %lld, with error: %@", frameTime.value, assetWriter.error);
         }
         else
         {
