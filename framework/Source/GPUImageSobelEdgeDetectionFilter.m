@@ -119,18 +119,28 @@ NSString *const kGPUImageSobelEdgeDetectionFragmentShaderString = SHADER_STRING
 
 - (void)setupFilterForSize:(CGSize)filterFrameSize;
 {
-    runSynchronouslyOnVideoProcessingQueue(^{
-        if (!hasOverriddenImageSizeFactor)
-        {
-            _texelWidth = 1.0 / filterFrameSize.width;
-            _texelHeight = 1.0 / filterFrameSize.height;
+    if (!hasOverriddenImageSizeFactor)
+    {
+        _texelWidth = 1.0 / filterFrameSize.width;
+        _texelHeight = 1.0 / filterFrameSize.height;
+        
+        runSynchronouslyOnVideoProcessingQueue(^{
+            [GPUImageContext setActiveShaderProgram:secondFilterProgram];
+            glUniform1f(texelWidthUniform, _texelWidth);
+            glUniform1f(texelHeightUniform, _texelHeight);
+        });
+    }
+}
 
-            runSynchronouslyOnVideoProcessingQueue(^{
-                [self setFloat:_texelWidth forUniform:texelWidthUniform program:secondFilterProgram];
-                [self setFloat:_texelHeight forUniform:texelHeightUniform program:secondFilterProgram];
-            });
-        }
-    });
+- (void)setUniformsForProgramAtIndex:(NSUInteger)programIndex;
+{
+    [super setUniformsForProgramAtIndex:programIndex];
+    
+    if (programIndex == 1)
+    {
+        glUniform1f(texelWidthUniform, _texelWidth);
+        glUniform1f(texelHeightUniform, _texelHeight);
+    }
 }
 
 - (BOOL)wantsMonochromeInput;

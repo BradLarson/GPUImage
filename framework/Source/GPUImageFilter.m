@@ -186,6 +186,11 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
 
 - (CGImageRef)newCGImageFromCurrentlyProcessedOutputWithOrientation:(UIImageOrientation)imageOrientation
 {
+    
+    // a CGImage can only be created from a 'normal' color texture
+    NSAssert(self.outputTextureOptions.internalFormat == GL_RGBA, @"For conversion to a CGImage the output texture format for this filter must be GL_RGBA.");
+    NSAssert(self.outputTextureOptions.type == GL_UNSIGNED_BYTE, @"For conversion to a CGImage the type of the output texture of this filter must be GL_UNSIGNED_BYTE.");
+    
     __block CGImageRef cgImageFromBytes;
 
     runSynchronouslyOnVideoProcessingQueue(^{
@@ -316,11 +321,11 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
                                                                 filterTextureCache, renderTarget,
                                                                 NULL, // texture attributes
                                                                 GL_TEXTURE_2D,
-                                                                GL_RGBA, // opengl format
+                                                                self.outputTextureOptions.internalFormat, // opengl format
                                                                 (int)currentFBOSize.width,
                                                                 (int)currentFBOSize.height,
-                                                                GL_BGRA, // native iOS format
-                                                                GL_UNSIGNED_BYTE,
+                                                                self.outputTextureOptions.format, // native iOS format
+                                                                self.outputTextureOptions.type,
                                                                 0,
                                                                 &renderTexture);
             if (err)
@@ -333,8 +338,8 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
 
             glBindTexture(CVOpenGLESTextureGetTarget(renderTexture), CVOpenGLESTextureGetName(renderTexture));
             outputTexture = CVOpenGLESTextureGetName(renderTexture);
-            glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-            glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+            glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, self.outputTextureOptions.wrapS);
+            glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, self.outputTextureOptions.wrapT);
             
             glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, CVOpenGLESTextureGetName(renderTexture), 0);
             
@@ -353,7 +358,15 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
 //            }
 //            else
 //            {
-                glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (int)currentFBOSize.width, (int)currentFBOSize.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+                glTexImage2D(GL_TEXTURE_2D,
+                             0,
+                             self.outputTextureOptions.internalFormat,
+                             (int)currentFBOSize.width,
+                             (int)currentFBOSize.height,
+                             0,
+                             self.outputTextureOptions.format,
+                             self.outputTextureOptions.type,
+                             0);
 //            }
             glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, outputTexture, 0);
 //            glBindFramebuffer(GL_FRAMEBUFFER, filterFramebuffer);

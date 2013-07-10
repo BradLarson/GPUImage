@@ -302,7 +302,18 @@
         
         [GPUImageContext useImageProcessingContext];
         CVOpenGLESTextureRef texture = NULL;
-        CVReturn err = CVOpenGLESTextureCacheCreateTextureFromImage(kCFAllocatorDefault, coreVideoTextureCache, movieFrame, NULL, GL_TEXTURE_2D, GL_RGBA, bufferWidth, bufferHeight, GL_BGRA, GL_UNSIGNED_BYTE, 0, &texture);
+        CVReturn err = CVOpenGLESTextureCacheCreateTextureFromImage(kCFAllocatorDefault,
+                                                                    coreVideoTextureCache,
+                                                                    movieFrame,
+                                                                    NULL,
+                                                                    GL_TEXTURE_2D,
+                                                                    self.outputTextureOptions.internalFormat,
+                                                                    bufferWidth,
+                                                                    bufferHeight,
+                                                                    self.outputTextureOptions.format,
+                                                                    self.outputTextureOptions.type,
+                                                                    0,
+                                                                    &texture);
         
         if (!texture || err) {
             NSLog(@"Movie CVOpenGLESTextureCacheCreateTextureFromImage failed (error: %d)", err);  
@@ -312,10 +323,10 @@
         outputTexture = CVOpenGLESTextureGetName(texture);
         //        glBindTexture(CVOpenGLESTextureGetTarget(texture), outputTexture);
         glBindTexture(GL_TEXTURE_2D, outputTexture);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, self.outputTextureOptions.minFilter);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, self.outputTextureOptions.magFilter);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, self.outputTextureOptions.wrapS);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, self.outputTextureOptions.wrapT);
         
         for (id<GPUImageInput> currentTarget in targets)
         {
@@ -343,7 +354,15 @@
         
         glBindTexture(GL_TEXTURE_2D, outputTexture);
         // Using BGRA extension to pull in video frame data directly
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, bufferWidth, bufferHeight, 0, GL_BGRA, GL_UNSIGNED_BYTE, CVPixelBufferGetBaseAddress(movieFrame));
+        glTexImage2D(GL_TEXTURE_2D,
+                     0,
+                     self.outputTextureOptions.internalFormat,
+                     bufferWidth,
+                     bufferHeight,
+                     0,
+                     self.outputTextureOptions.format,
+                     self.outputTextureOptions.type,
+                     CVPixelBufferGetBaseAddress(movieFrame));
         
         CGSize currentSize = CGSizeMake(bufferWidth, bufferHeight);
         for (id<GPUImageInput> currentTarget in targets)
