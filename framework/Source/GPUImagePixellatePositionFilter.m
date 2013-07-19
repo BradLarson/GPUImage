@@ -180,8 +180,8 @@ NSString *const kGPUImagePixellationPositionFragmentShaderString = SHADER_STRING
 - (void)setCenter:(CGPoint)center
 {
     _center = center;
-    
-    [self setPoint:_center forUniform:centerUniform program:filterProgram];
+    CGPoint rotatedPoint = [self rotatedPoint:center forRotation:inputRotation];    
+    [self setPoint:rotatedPoint forUniform:centerUniform program:filterProgram];
 }
 
 - (void)setRadius:(CGFloat)radius
