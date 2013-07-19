@@ -198,13 +198,18 @@
 
 - (void)processImage;
 {
+    [self processImageWithCompletionHandler:nil];
+}
+
+- (BOOL)processImageWithCompletionHandler:(void (^)(void))completion;
+{
     hasProcessedImage = YES;
     
     //    dispatch_semaphore_wait(imageUpdateSemaphore, DISPATCH_TIME_FOREVER);
     
     if (dispatch_semaphore_wait(imageUpdateSemaphore, DISPATCH_TIME_NOW) != 0)
     {
-        return;
+        return NO;
     }
     
     runAsynchronouslyOnVideoProcessingQueue(^{
@@ -226,7 +231,13 @@
         }
         
         dispatch_semaphore_signal(imageUpdateSemaphore);
+        
+        if (completion != nil) {
+            completion();
+        }
     });
+    
+    return YES;
 }
 
 - (CGSize)outputImageSize;
