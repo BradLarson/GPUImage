@@ -78,7 +78,8 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
     _shouldInvalidateAudioSampleWhenDone = NO;
     
     self.enabled = YES;
-    
+    alreadyFinishedRecording = NO;
+
     movieWritingQueue = dispatch_queue_create("com.sunsetlakesoftware.GPUImage.movieWritingQueue", NULL);
     
     videoSize = newSize;
@@ -243,6 +244,7 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 
 - (void)startRecording;
 {
+    alreadyFinishedRecording = NO;
     isRecording = YES;
     startTime = kCMTimeInvalid;
 	//    [assetWriter startWriting];
@@ -265,7 +267,9 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
     }
     
     isRecording = NO;
-    runOnMainQueueWithoutDeadlocking(^{
+    dispatch_sync(movieWritingQueue, ^{
+        alreadyFinishedRecording = YES;
+
         [assetWriterVideoInput markAsFinished];
         [assetWriterAudioInput markAsFinished];
         [assetWriter cancelWriting];
@@ -287,7 +291,7 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
         }
 
         isRecording = NO;
-        runOnMainQueueWithoutDeadlocking(^{
+        dispatch_sync(movieWritingQueue, ^{
             [assetWriterVideoInput markAsFinished];
             [assetWriterAudioInput markAsFinished];
 #if (!defined(__IPHONE_6_0) || (__IPHONE_OS_VERSION_MAX_ALLOWED < __IPHONE_6_0))
@@ -628,7 +632,11 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 {
     if (completionBlock) 
     {
-        completionBlock();
+        if (!alreadyFinishedRecording)
+        {
+            alreadyFinishedRecording = YES;
+            completionBlock();
+        }        
     }
     else 
     {

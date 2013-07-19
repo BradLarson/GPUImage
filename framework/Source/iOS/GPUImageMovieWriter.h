@@ -17,6 +17,8 @@ extern NSString *const kGPUImageColorSwizzlingFragmentShaderString;
     CMVideoDimensions videoDimensions;
 	CMVideoCodecType videoType;
 
+    BOOL alreadyFinishedRecording;
+    
     NSURL *movieURL;
     NSString *fileType;
 	AVAssetWriter *assetWriter;
