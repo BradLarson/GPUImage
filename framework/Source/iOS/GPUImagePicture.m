@@ -68,15 +68,8 @@
     CGFloat widthOfImage = CGImageGetWidth(newImageSource);
     CGFloat heightOfImage = CGImageGetHeight(newImageSource);
 
-    // If passed an empty image reference, create a small 2x2 image so we don't trigger a fatal error in the future on CGContextDrawImage below
-    if( !(widthOfImage >= 1) || !(heightOfImage >= 1) ){
-        widthOfImage = heightOfImage = 2.0;
-        UIGraphicsBeginImageContextWithOptions(CGSizeMake(widthOfImage, heightOfImage), NO, 0.0);
-        UIImage *blank = UIGraphicsGetImageFromCurrentImageContext();
-        UIGraphicsEndImageContext();
-        newImageSource = blank.CGImage;
-        blank = nil;
-    }
+    // If passed an empty image reference, CGContextDrawImage will fail in future versions of the SDK.
+    NSAssert( widthOfImage > 0 && heightOfImage > 0, @"Passed image must not be empty - it should be at least 1px tall and wide");
     
     pixelSizeOfImage = CGSizeMake(widthOfImage, heightOfImage);
     CGSize pixelSizeToUseForTexture = pixelSizeOfImage;
