@@ -56,6 +56,7 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 @synthesize videoInputReadyCallback;
 @synthesize audioInputReadyCallback;
 @synthesize enabled;
+@synthesize shouldInvalidateAudioSampleWhenDone = _shouldInvalidateAudioSampleWhenDone;
 
 @synthesize delegate = _delegate;
 
@@ -74,6 +75,8 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 		return nil;
     }
 
+    _shouldInvalidateAudioSampleWhenDone = NO;
+    
     self.enabled = YES;
     
     movieWritingQueue = dispatch_queue_create("com.sunsetlakesoftware.GPUImage.movieWritingQueue", NULL);
@@ -319,6 +322,8 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
     
     if (_hasAudioTrack)
     {
+        CFRetain(audioBuffer);
+
         CMTime currentSampleTime = CMSampleBufferGetOutputPresentationTimeStamp(audioBuffer);
         
         if (CMTIME_IS_INVALID(startTime))
@@ -340,9 +345,13 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
         }
         
 //        NSLog(@"Recorded audio sample time: %lld, %d, %lld", currentSampleTime.value, currentSampleTime.timescale, currentSampleTime.epoch);
-        CFRetain(audioBuffer);
         dispatch_async(movieWritingQueue, ^{
             [assetWriterAudioInput appendSampleBuffer:audioBuffer];
+            
+            if (_shouldInvalidateAudioSampleWhenDone)
+            {
+                CMSampleBufferInvalidate(audioBuffer);
+            }
             CFRelease(audioBuffer);
         });
     }
