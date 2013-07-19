@@ -274,42 +274,42 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 
 - (void)finishRecording;
 {
-    runSynchronouslyOnVideoProcessingQueue(^{
-        [self finishRecordingWithCompletionHandler:nil];
-    });
+    [self finishRecordingWithCompletionHandler:nil];
 }
 
 - (void)finishRecordingWithCompletionHandler:(void (^)(void))handler;
 {
-    if (assetWriter.status == AVAssetWriterStatusCompleted || assetWriter.status == AVAssetWriterStatusCancelled
-        || assetWriter.status == AVAssetWriterStatusUnknown)
-    {
-        return;
-    }
-
-    isRecording = NO;
-    runOnMainQueueWithoutDeadlocking(^{
-        [assetWriterVideoInput markAsFinished];
-        [assetWriterAudioInput markAsFinished];
-#if (!defined(__IPHONE_6_0) || (__IPHONE_OS_VERSION_MAX_ALLOWED < __IPHONE_6_0))
-        // Not iOS 6 SDK
-        [assetWriter finishWriting];
-        if (handler) handler();
-#else
-        // iOS 6 SDK
-        if ([assetWriter respondsToSelector:@selector(finishWritingWithCompletionHandler:)]) {
-            // Running iOS 6
-            [assetWriter finishWritingWithCompletionHandler:(handler ?: ^{ })];
+    runSynchronouslyOnVideoProcessingQueue(^{
+        if (assetWriter.status == AVAssetWriterStatusCompleted || assetWriter.status == AVAssetWriterStatusCancelled
+            || assetWriter.status == AVAssetWriterStatusUnknown)
+        {
+            return;
         }
-        else {
-            // Not running iOS 6
+
+        isRecording = NO;
+        runOnMainQueueWithoutDeadlocking(^{
+            [assetWriterVideoInput markAsFinished];
+            [assetWriterAudioInput markAsFinished];
+#if (!defined(__IPHONE_6_0) || (__IPHONE_OS_VERSION_MAX_ALLOWED < __IPHONE_6_0))
+            // Not iOS 6 SDK
+            [assetWriter finishWriting];
+            if (handler) handler();
+#else
+            // iOS 6 SDK
+            if ([assetWriter respondsToSelector:@selector(finishWritingWithCompletionHandler:)]) {
+                // Running iOS 6
+                [assetWriter finishWritingWithCompletionHandler:(handler ?: ^{ })];
+            }
+            else {
+                // Not running iOS 6
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
-            [assetWriter finishWriting];
+                [assetWriter finishWriting];
 #pragma clang diagnostic pop
-            if (handler) handler();
-        }
+                if (handler) handler();
+            }
 #endif
+        });
     });
 }
 
