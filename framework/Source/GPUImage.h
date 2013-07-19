@@ -117,6 +117,7 @@
 #import "GPUImageOpacityFilter.h"
 #import "GPUImageHighlightShadowFilter.h"
 #import "GPUImageFalseColorFilter.h"
+#import "GPUImageHSBFilter.h"
 #import "GPUImageHueFilter.h"
 #import "GPUImageGlassSphereFilter.h"
 #import "GPUImageLookupFilter.h"
