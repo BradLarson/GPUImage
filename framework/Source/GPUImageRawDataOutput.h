@@ -11,6 +11,7 @@ typedef struct GPUByteColorVector GPUByteColorVector;
 
 @protocol GPUImageRawDataProcessor;
 
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
 @interface GPUImageRawDataOutput : NSObject <GPUImageInput> {
     CGSize imageSize;
     CVOpenGLESTextureCacheRef rawDataTextureCache;
@@ -21,6 +22,18 @@ typedef struct GPUByteColorVector GPUByteColorVector;
     
     __unsafe_unretained id<GPUImageTextureDelegate> textureDelegate;
 }
+#else
+@interface GPUImageRawDataOutput : NSObject <GPUImageInput> {
+    CGSize imageSize;
+    CVOpenGLTextureCacheRef rawDataTextureCache;
+    CVPixelBufferRef renderTarget;
+    GPUImageRotationMode inputRotation;
+    BOOL outputBGRA;
+    CVOpenGLTextureRef renderTexture;
+    
+    __unsafe_unretained id<GPUImageTextureDelegate> textureDelegate;
+}
+#endif
 
 @property(readonly) GLubyte *rawBytesForImage;
 @property(nonatomic, copy) void(^newFrameAvailableBlock)(void);

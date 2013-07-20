@@ -1,5 +1,6 @@
 #import "GPUImagePixellatePositionFilter.h"
 
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
 NSString *const kGPUImagePixellationPositionFragmentShaderString = SHADER_STRING
 (
  varying highp vec2 textureCoordinate;
@@ -28,8 +29,40 @@ NSString *const kGPUImagePixellationPositionFragmentShaderString = SHADER_STRING
      }
  }
 );
+#else
+NSString *const kGPUImagePixellationPositionFragmentShaderString = SHADER_STRING
+(
+ varying vec2 textureCoordinate;
+ 
+ uniform sampler2D inputImageTexture;
+ 
+ uniform float fractionalWidthOfPixel;
+ uniform float aspectRatio;
+ uniform vec2 pixelateCenter;
+ uniform float pixelateRadius;
+ 
+ void main()
+ {
+     vec2 textureCoordinateToUse = vec2(textureCoordinate.x, (textureCoordinate.y * aspectRatio + 0.5 - 0.5 * aspectRatio));
+     float dist = distance(pixelateCenter, textureCoordinateToUse);
+     
+     if (dist < pixelateRadius)
+     {
+         vec2 sampleDivisor = vec2(fractionalWidthOfPixel, fractionalWidthOfPixel / aspectRatio);
+         vec2 samplePos = textureCoordinate - mod(textureCoordinate, sampleDivisor) + 0.5 * sampleDivisor;
+         gl_FragColor = texture2D(inputImageTexture, samplePos );
+     }
+     else
+     {
+         gl_FragColor = texture2D(inputImageTexture, textureCoordinate );
+     }
+ }
+);
+#endif
 
 @interface GPUImagePixellatePositionFilter ()
+
+- (void)adjustAspectRatio;
 
 @property (readwrite, nonatomic) CGFloat aspectRatio;
 
@@ -81,19 +114,37 @@ NSString *const kGPUImagePixellationPositionFragmentShaderString = SHADER_STRING
     
     if ( (!CGSizeEqualToSize(oldInputSize, inputTextureSize)) && (!CGSizeEqualToSize(newSize, CGSizeZero)) )
     {
-        if (GPUImageRotationSwapsWidthAndHeight(inputRotation))
-        {
-            [self setAspectRatio:(inputTextureSize.width / inputTextureSize.height)];
-        }
-        else
-        {
-            [self setAspectRatio:(inputTextureSize.height / inputTextureSize.width)];
-        }
+        [self adjustAspectRatio];
     }
 }
 
 #pragma mark -
 #pragma mark Accessors
+
+- (void)setInputRotation:(GPUImageRotationMode)newInputRotation atIndex:(NSInteger)textureIndex;
+{
+    [super setInputRotation:newInputRotation atIndex:textureIndex];
+    [self setCenter:self.center];
+    [self adjustAspectRatio];
+}
+
+- (void)adjustAspectRatio;
+{
+    if (GPUImageRotationSwapsWidthAndHeight(inputRotation))
+    {
+        [self setAspectRatio:(inputTextureSize.width / inputTextureSize.height)];
+    }
+    else
+    {
+        [self setAspectRatio:(inputTextureSize.height / inputTextureSize.width)];
+    }
+}
+
+- (void)forceProcessingAtSize:(CGSize)frameSize;
+{
+    [super forceProcessingAtSize:frameSize];
+    [self adjustAspectRatio];
+}
 
 - (void)setFractionalWidthOfAPixel:(CGFloat)newValue;
 {
@@ -129,8 +180,8 @@ NSString *const kGPUImagePixellationPositionFragmentShaderString = SHADER_STRING
 - (void)setCenter:(CGPoint)center
 {
     _center = center;
-    
-    [self setPoint:_center forUniform:centerUniform program:filterProgram];
+    CGPoint rotatedPoint = [self rotatedPoint:center forRotation:inputRotation];    
+    [self setPoint:rotatedPoint forUniform:centerUniform program:filterProgram];
 }
 
 - (void)setRadius:(CGFloat)radius

@@ -201,6 +201,10 @@
     return [(GPUImageFilter *)[_filters lastObject] imageFromCurrentlyProcessedOutput];
 }
 
+- (UIImage *)currentFilteredFrameWithOrientation:(UIImageOrientation)imageOrientation {
+  return [(GPUImageFilter *)[_filters lastObject] imageFromCurrentlyProcessedOutputWithOrientation:imageOrientation];
+}
+
 - (CGImageRef)newCGImageFromCurrentFilteredFrame {
     return [(GPUImageFilter *)[_filters lastObject] newCGImageFromCurrentlyProcessedOutput];
 }

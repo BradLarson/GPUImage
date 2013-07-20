@@ -4,6 +4,7 @@
 #import "GLProgram.h"
 #import "GPUImageFilter.h"
 
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
 NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 (
  varying highp vec2 textureCoordinate;
@@ -14,7 +15,20 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
  {
      gl_FragColor = texture2D(inputImageTexture, textureCoordinate).bgra;
  }
-);
+ );
+#else
+NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
+(
+ varying vec2 textureCoordinate;
+ 
+ uniform sampler2D inputImageTexture;
+ 
+ void main()
+ {
+     gl_FragColor = texture2D(inputImageTexture, textureCoordinate).bgra;
+ }
+ );
+#endif
 
 
 @interface GPUImageMovieWriter ()

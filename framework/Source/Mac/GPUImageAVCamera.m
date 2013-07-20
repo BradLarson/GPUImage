@@ -104,9 +104,15 @@ NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = SHAD
 #pragma mark -
 #pragma mark Initialization and teardown
 
++ (NSArray *)connectedCameraDevices;
+{
+    NSArray *devices = [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];
+    return devices;
+}
+
 - (id)init;
 {
-    if (!(self = [self initWithSessionPreset:AVCaptureSessionPreset640x480 cameraPosition:AVCaptureDevicePositionBack]))
+    if (!(self = [self initWithSessionPreset:AVCaptureSessionPreset640x480 cameraDevice:nil]))
     {
 		return nil;
     }
@@ -114,7 +120,27 @@ NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = SHAD
     return self;
 }
 
-- (id)initWithSessionPreset:(NSString *)sessionPreset cameraPosition:(AVCaptureDevicePosition)cameraPosition; 
+- (id)initWithDeviceUniqueID:(NSString *)deviceUniqueID;
+{
+    if (!(self = [self initWithSessionPreset:AVCaptureSessionPreset640x480 deviceUniqueID:deviceUniqueID]))
+    {
+		return nil;
+    }
+    
+    return self;
+}
+
+- (id)initWithSessionPreset:(NSString *)sessionPreset deviceUniqueID:(NSString *)deviceUniqueID;
+{
+    if (!(self = [self initWithSessionPreset:sessionPreset cameraDevice:[AVCaptureDevice deviceWithUniqueID:deviceUniqueID]]))
+    {
+		return nil;
+    }
+    
+    return self;
+}
+
+- (id)initWithSessionPreset:(NSString *)sessionPreset cameraDevice:(AVCaptureDevice *)cameraDevice;
 {
 	if (!(self = [super init]))
     {
@@ -179,16 +205,15 @@ NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = SHAD
     
 	// Grab the back-facing or front-facing camera
     _inputCamera = nil;
-	NSArray *devices = [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];
-	for (AVCaptureDevice *device in devices) 
-	{
-        NSLog(@"Device: %@, %ld", device, [device position]);
-        
-		if (([device position] == cameraPosition) && (![device isSuspended]) )
-		{
-			_inputCamera = device;
-		}
-	}
+    
+    if (cameraDevice == nil)
+    {
+        _inputCamera = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
+    }
+    else
+    {
+        _inputCamera = cameraDevice;
+    }
     
     if (!_inputCamera) {
         return nil;
@@ -211,13 +236,16 @@ NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = SHAD
 	videoOutput = [[AVCaptureVideoDataOutput alloc] init];
 	[videoOutput setAlwaysDiscardsLateVideoFrames:NO];
     
+//    NSLog(@"Camera: %@", _inputCamera);
+//    [self printSupportedPixelFormats];
+    
 //    if (captureAsYUV && [GPUImageContext deviceSupportsRedTextures])
     if (captureAsYUV && [GPUImageContext supportsFastTextureUpload])
     {
         BOOL supportsFullYUVRange = NO;
         NSArray *supportedPixelFormats = videoOutput.availableVideoCVPixelFormatTypes;
         for (NSNumber *currentPixelFormat in supportedPixelFormats)
-        {
+        {            
             if ([currentPixelFormat intValue] == kCVPixelFormatType_420YpCbCr8BiPlanarFullRange)
             {
                 supportsFullYUVRange = YES;
@@ -235,7 +263,9 @@ NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = SHAD
     }
     else
     {
-        [videoOutput setVideoSettings:[NSDictionary dictionaryWithObject:[NSNumber numberWithInt:kCVPixelFormatType_32BGRA] forKey:(id)kCVPixelBufferPixelFormatTypeKey]];
+        // Despite returning a longer list of supported pixel formats, only RGB, RGBA, BGRA, and the YUV 4:2:2 variants seem to return cleanly
+//        [videoOutput setVideoSettings:[NSDictionary dictionaryWithObject:[NSNumber numberWithInt:kCVPixelFormatType_32BGRA] forKey:(id)kCVPixelBufferPixelFormatTypeKey]];
+        [videoOutput setVideoSettings:[NSDictionary dictionaryWithObject:[NSNumber numberWithInt:kCVPixelFormatType_422YpCbCr8_yuvs] forKey:(id)kCVPixelBufferPixelFormatTypeKey]];
     }
     
     [videoOutput setSampleBufferDelegate:self queue:cameraProcessingQueue];
@@ -529,9 +559,9 @@ NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = SHAD
     //        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, bufferWidth, bufferHeight, 0, GL_BGRA, GL_UNSIGNED_BYTE, CVPixelBufferGetBaseAddress(cameraFrame));
     
     // Using BGRA extension to pull in video frame data directly
-    // The use of bytesPerRow / 4 accounts for a display glitch present in preview video frames when using the photo preset on the camera
-    GLsizei bytesPerRow = (GLsizei)CVPixelBufferGetBytesPerRow(cameraFrame);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, bytesPerRow / 4, bufferHeight, 0, GL_BGRA, GL_UNSIGNED_BYTE, CVPixelBufferGetBaseAddress(cameraFrame));
+//    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, bytesPerRow / 3, bufferHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, CVPixelBufferGetBaseAddress(cameraFrame));
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, bufferWidth, bufferHeight, 0, GL_YCBCR_422_APPLE, GL_UNSIGNED_SHORT_8_8_REV_APPLE, CVPixelBufferGetBaseAddress(cameraFrame));
+//    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, bytesPerRow / 4, bufferHeight, 0, GL_BGRA, GL_UNSIGNED_BYTE, CVPixelBufferGetBaseAddress(cameraFrame));
     
     for (id<GPUImageInput> currentTarget in targets)
     {
@@ -774,6 +804,62 @@ NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = SHAD
 {
     _horizontallyMirrorRearFacingCamera = newValue;
     [self updateOrientationSendToTargets];
+}
+
+- (void)printSupportedPixelFormats;
+{
+    NSArray *supportedPixelFormats = videoOutput.availableVideoCVPixelFormatTypes;
+    for (NSNumber *currentPixelFormat in supportedPixelFormats)
+    {
+        NSString *pixelFormatName = nil;
+        
+        switch([currentPixelFormat intValue])
+        {
+            case kCVPixelFormatType_1Monochrome: pixelFormatName = @"kCVPixelFormatType_1Monochrome"; break;
+            case kCVPixelFormatType_2Indexed: pixelFormatName = @"kCVPixelFormatType_2Indexed"; break;
+            case kCVPixelFormatType_4Indexed: pixelFormatName = @"kCVPixelFormatType_4Indexed"; break;
+            case kCVPixelFormatType_8Indexed: pixelFormatName = @"kCVPixelFormatType_8Indexed"; break;
+            case kCVPixelFormatType_1IndexedGray_WhiteIsZero: pixelFormatName = @"kCVPixelFormatType_1IndexedGray_WhiteIsZero"; break;
+            case kCVPixelFormatType_2IndexedGray_WhiteIsZero: pixelFormatName = @"kCVPixelFormatType_2IndexedGray_WhiteIsZero"; break;
+            case kCVPixelFormatType_4IndexedGray_WhiteIsZero: pixelFormatName = @"kCVPixelFormatType_4IndexedGray_WhiteIsZero"; break;
+            case kCVPixelFormatType_8IndexedGray_WhiteIsZero: pixelFormatName = @"kCVPixelFormatType_8IndexedGray_WhiteIsZero"; break;
+            case kCVPixelFormatType_16BE555: pixelFormatName = @"kCVPixelFormatType_16BE555"; break;
+            case kCVPixelFormatType_16LE555: pixelFormatName = @"kCVPixelFormatType_16LE555"; break;
+            case kCVPixelFormatType_16LE5551: pixelFormatName = @"kCVPixelFormatType_16LE5551"; break;
+            case kCVPixelFormatType_16BE565: pixelFormatName = @"kCVPixelFormatType_16BE565"; break;
+            case kCVPixelFormatType_16LE565: pixelFormatName = @"kCVPixelFormatType_16LE565"; break;
+            case kCVPixelFormatType_24RGB: pixelFormatName = @"kCVPixelFormatType_24RGB"; break;
+            case kCVPixelFormatType_24BGR: pixelFormatName = @"kCVPixelFormatType_24BGR"; break;
+            case kCVPixelFormatType_32ARGB: pixelFormatName = @"kCVPixelFormatType_32ARGB"; break;
+            case kCVPixelFormatType_32BGRA: pixelFormatName = @"kCVPixelFormatType_32BGRA"; break;
+            case kCVPixelFormatType_32ABGR: pixelFormatName = @"kCVPixelFormatType_32ABGR"; break;
+            case kCVPixelFormatType_32RGBA: pixelFormatName = @"kCVPixelFormatType_32RGBA"; break;
+            case kCVPixelFormatType_64ARGB: pixelFormatName = @"kCVPixelFormatType_64ARGB"; break;
+            case kCVPixelFormatType_48RGB: pixelFormatName = @"kCVPixelFormatType_48RGB"; break;
+            case kCVPixelFormatType_32AlphaGray: pixelFormatName = @"kCVPixelFormatType_32AlphaGray"; break;
+            case kCVPixelFormatType_16Gray: pixelFormatName = @"kCVPixelFormatType_16Gray"; break;
+            case kCVPixelFormatType_30RGB: pixelFormatName = @"kCVPixelFormatType_30RGB"; break;
+            case kCVPixelFormatType_422YpCbCr8: pixelFormatName = @"kCVPixelFormatType_422YpCbCr8"; break;
+            case kCVPixelFormatType_4444YpCbCrA8: pixelFormatName = @"kCVPixelFormatType_4444YpCbCrA8"; break;
+            case kCVPixelFormatType_4444YpCbCrA8R: pixelFormatName = @"kCVPixelFormatType_4444YpCbCrA8R"; break;
+            case kCVPixelFormatType_4444AYpCbCr8: pixelFormatName = @"kCVPixelFormatType_4444AYpCbCr8"; break;
+            case kCVPixelFormatType_4444AYpCbCr16: pixelFormatName = @"kCVPixelFormatType_4444AYpCbCr16"; break;
+            case kCVPixelFormatType_444YpCbCr8: pixelFormatName = @"kCVPixelFormatType_444YpCbCr8"; break;
+            case kCVPixelFormatType_422YpCbCr16: pixelFormatName = @"kCVPixelFormatType_422YpCbCr16"; break;
+            case kCVPixelFormatType_422YpCbCr10: pixelFormatName = @"kCVPixelFormatType_422YpCbCr10"; break;
+            case kCVPixelFormatType_444YpCbCr10: pixelFormatName = @"kCVPixelFormatType_444YpCbCr10"; break;
+            case kCVPixelFormatType_420YpCbCr8Planar: pixelFormatName = @"kCVPixelFormatType_420YpCbCr8Planar"; break;
+            case kCVPixelFormatType_420YpCbCr8PlanarFullRange: pixelFormatName = @"kCVPixelFormatType_420YpCbCr8PlanarFullRange"; break;
+            case kCVPixelFormatType_422YpCbCr_4A_8BiPlanar: pixelFormatName = @"kCVPixelFormatType_422YpCbCr_4A_8BiPlanar"; break;
+            case kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange: pixelFormatName = @"kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange"; break;
+            case kCVPixelFormatType_420YpCbCr8BiPlanarFullRange: pixelFormatName = @"kCVPixelFormatType_420YpCbCr8BiPlanarFullRange"; break;
+            case kCVPixelFormatType_422YpCbCr8_yuvs: pixelFormatName = @"kCVPixelFormatType_422YpCbCr8_yuvs"; break;
+            case kCVPixelFormatType_422YpCbCr8FullRange: pixelFormatName = @"kCVPixelFormatType_422YpCbCr8FullRange"; break;
+            case kCVPixelFormatType_OneComponent8: pixelFormatName = @"kCVPixelFormatType_OneComponent8"; break;
+            case kCVPixelFormatType_TwoComponent8: pixelFormatName = @"kCVPixelFormatType_TwoComponent8"; break;
+        }
+        NSLog(@"Supported pixel format: %@", pixelFormatName);
+    }
 }
 
 @end

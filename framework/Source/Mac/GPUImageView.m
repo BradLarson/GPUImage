@@ -65,18 +65,46 @@
 	return self;
 }
 
+//- (void) prepareOpenGL
+//{
+//    GLint swapInt = 1;
+//    [[self openGLContext] setValues:&swapInt forParameter:NSOpenGLCPSwapInterval]; // set to vbl sync
+//}
+
 - (void)commonInit;
 {
+    // I believe each of these views needs a separate OpenGL context, unlike on iOS where you're rendering to an FBO in a layer
+//    NSOpenGLPixelFormatAttribute pixelFormatAttributes[] = {
+//        NSOpenGLPFADoubleBuffer,
+//        NSOpenGLPFAAccelerated, 0,
+//        0
+//    };
+//    
+//    NSOpenGLPixelFormat *pixelFormat = [[NSOpenGLPixelFormat alloc] initWithAttributes:pixelFormatAttributes];
+//	if (pixelFormat == nil)
+//	{
+//		NSLog(@"Error: No appropriate pixel format found");
+//	}
+//    // TODO: Take into account the sharegroup
+//    NSOpenGLContext *context = [[NSOpenGLContext alloc] initWithFormat:pixelFormat shareContext:[[GPUImageContext sharedImageProcessingContext] context]];
+//    if (context == nil)
+//    {
+//        NSAssert(NO, @"Problem creating the GPUImageView context");
+//    }
+//    [self setOpenGLContext:context];
     [self setOpenGLContext:[[GPUImageContext sharedImageProcessingContext] context]];
+    
+    
     inputRotation = kGPUImageNoRotation;
     self.hidden = NO;
 
     self.enabled = YES;
     
     runSynchronouslyOnVideoProcessingQueue(^{
-        [GPUImageContext useImageProcessingContext];
-        
+        [self.openGLContext makeCurrentContext];
         displayProgram = [[GPUImageContext sharedImageProcessingContext] programForVertexShaderString:kGPUImageVertexShaderString fragmentShaderString:kGPUImagePassthroughFragmentShaderString];
+
+//        displayProgram = [[GLProgram alloc] initWithVertexShaderString:kGPUImageVertexShaderString fragmentShaderString:kGPUImagePassthroughFragmentShaderString];
         if (!displayProgram.initialized)
         {
             [displayProgram addAttribute:@"position"];
@@ -97,38 +125,23 @@
         
         displayPositionAttribute = [displayProgram attributeIndex:@"position"];
         displayTextureCoordinateAttribute = [displayProgram attributeIndex:@"inputTextureCoordinate"];
-        displayInputTextureUniform = [displayProgram uniformIndex:@"inputImageTexture"]; // This does assume a name of "inputTexture" for the fragment shader
-
+        displayInputTextureUniform = [displayProgram uniformIndex:@"inputImageTexture"];
+        
         [GPUImageContext setActiveShaderProgram:displayProgram];
+
+//        [displayProgram use];
         glEnableVertexAttribArray(displayPositionAttribute);
         glEnableVertexAttribArray(displayTextureCoordinateAttribute);
-        
+    
         [self setBackgroundColorRed:0.0 green:0.0 blue:0.0 alpha:1.0];
         _fillMode = kGPUImageFillModePreserveAspectRatio;
         [self createDisplayFramebuffer];
     });
-        
-    [self addObserver:self forKeyPath:@"frame" options:0 context:NULL];
-}
-
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
-{
-    if (object == self && [keyPath isEqualToString:@"frame"] && (!CGSizeEqualToSize(self.bounds.size, CGSizeZero)))
-    {
-        runSynchronouslyOnVideoProcessingQueue(^{
-            [self destroyDisplayFramebuffer];
-            [self createDisplayFramebuffer];
-        });
-    }
+    
 }
 
 - (void)dealloc
 {
-    [self removeObserver:self forKeyPath:@"frame"];
-    
-    runSynchronouslyOnVideoProcessingQueue(^{
-        [self destroyDisplayFramebuffer];
-    });
 }
 
 #pragma mark -
@@ -145,7 +158,7 @@
 
 - (void)destroyDisplayFramebuffer;
 {
-    [GPUImageContext useImageProcessingContext];
+    [self.openGLContext makeCurrentContext];
 }
 
 - (void)setDisplayFramebuffer;
@@ -158,15 +171,22 @@
 
 - (void)presentFramebuffer;
 {
-    [[GPUImageContext sharedImageProcessingContext] presentBufferForDisplay];
+    [self.openGLContext flushBuffer];
 }
 
 - (void)reshape;
 {
+    if ( (_sizeInPixels.width == self.bounds.size.width) && (_sizeInPixels.height == self.bounds.size.height) )
+    {
+        return;
+    }
+    
     _sizeInPixels.width = self.bounds.size.width;
     _sizeInPixels.height = self.bounds.size.height;
     [self recalculateViewGeometry];
-    [self newFrameReadyAtTime:kCMTimeInvalid atIndex:0];
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [self newFrameReadyAtTime:kCMTimeInvalid atIndex:0];
+    });
 }
 
 #pragma mark -
@@ -174,7 +194,7 @@
 
 - (void)recalculateViewGeometry;
 {
-    runSynchronouslyOnVideoProcessingQueue(^{
+//    runSynchronouslyOnVideoProcessingQueue(^{
         CGFloat heightScaling, widthScaling;
         
         CGSize currentViewSize = self.bounds.size;
@@ -212,7 +232,7 @@
         imageVertices[5] = heightScaling;
         imageVertices[6] = widthScaling;
         imageVertices[7] = heightScaling;
-    });
+//    });
     
 //    static const GLfloat imageVertices[] = {
 //        -1.0f, -1.0f,
@@ -306,22 +326,33 @@
 - (void)newFrameReadyAtTime:(CMTime)frameTime atIndex:(NSInteger)textureIndex;
 {
     runSynchronouslyOnVideoProcessingQueue(^{
+//        [[self openGLContext] makeCurrentContext];
         [GPUImageContext setActiveShaderProgram:displayProgram];
         [self setDisplayFramebuffer];
+//        [displayProgram use];
         
+//        glMatrixMode(GL_MODELVIEW);
+//        glLoadIdentity();
+//
+//        glMatrixMode(GL_PROJECTION);
+//        glLoadIdentity();
+
         glClearColor(backgroundColorRed, backgroundColorGreen, backgroundColorBlue, backgroundColorAlpha);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        
+        glClear(GL_COLOR_BUFFER_BIT);
+
         glActiveTexture(GL_TEXTURE4);
         glBindTexture(GL_TEXTURE_2D, inputTextureForDisplay);
         glUniform1i(displayInputTextureUniform, 4);
-        
+
         glVertexAttribPointer(displayPositionAttribute, 2, GL_FLOAT, 0, 0, imageVertices);
         glVertexAttribPointer(displayTextureCoordinateAttribute, 2, GL_FLOAT, 0, 0, [GPUImageView textureCoordinatesForRotation:inputRotation]);
-        
+
+        [self lockFocus];
         glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-        
+
         [self presentFramebuffer];
+        glBindTexture(GL_TEXTURE_2D, 0);
+        [self unlockFocus];
     });
 }
 

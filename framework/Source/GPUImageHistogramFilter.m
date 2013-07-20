@@ -14,7 +14,7 @@ NSString *const kGPUImageRedHistogramSamplingVertexShaderString = SHADER_STRING
 (
  attribute vec4 position;
  
- varying lowp vec3 colorFactor;
+ varying vec3 colorFactor;
 
  void main()
  {
@@ -28,7 +28,7 @@ NSString *const kGPUImageGreenHistogramSamplingVertexShaderString = SHADER_STRIN
 (
  attribute vec4 position;
  
- varying lowp vec3 colorFactor;
+ varying vec3 colorFactor;
  
  void main()
  {
@@ -42,7 +42,7 @@ NSString *const kGPUImageBlueHistogramSamplingVertexShaderString = SHADER_STRING
 (
  attribute vec4 position;
  
- varying lowp vec3 colorFactor;
+ varying vec3 colorFactor;
  
  void main()
  {
@@ -56,9 +56,9 @@ NSString *const kGPUImageLuminanceHistogramSamplingVertexShaderString = SHADER_S
 (
  attribute vec4 position;
  
- varying lowp vec3 colorFactor;
+ varying vec3 colorFactor;
  
- const highp vec3 W = vec3(0.2125, 0.7154, 0.0721);
+ const vec3 W = vec3(0.2125, 0.7154, 0.0721);
  
  void main()
  {
@@ -70,6 +70,7 @@ NSString *const kGPUImageLuminanceHistogramSamplingVertexShaderString = SHADER_S
  }
 );
 
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
 NSString *const kGPUImageHistogramAccumulationFragmentShaderString = SHADER_STRING
 (
  const lowp float scalingFactor = 1.0 / 256.0;
@@ -81,6 +82,19 @@ NSString *const kGPUImageHistogramAccumulationFragmentShaderString = SHADER_STRI
      gl_FragColor = vec4(colorFactor * scalingFactor , 1.0);
  }
 );
+#else
+NSString *const kGPUImageHistogramAccumulationFragmentShaderString = SHADER_STRING
+(
+ const float scalingFactor = 1.0 / 256.0;
+ 
+ varying vec3 colorFactor;
+ 
+ void main()
+ {
+     gl_FragColor = vec4(colorFactor * scalingFactor , 1.0);
+ }
+);
+#endif
 
 @implementation GPUImageHistogramFilter
 
@@ -249,6 +263,10 @@ NSString *const kGPUImageHistogramAccumulationFragmentShaderString = SHADER_STRI
 
 - (void)renderToTextureWithVertices:(const GLfloat *)vertices textureCoordinates:(const GLfloat *)textureCoordinates sourceTexture:(GLuint)sourceTexture;
 {
+    // we need a normal color texture for this filter
+    NSAssert(self.outputTextureOptions.internalFormat == GL_RGBA, @"The output texture format for this filter must be GL_RGBA.");
+    NSAssert(self.outputTextureOptions.type == GL_UNSIGNED_BYTE, @"The type of the output texture of this filter must be GL_UNSIGNED_BYTE.");
+    
     if (self.preventRendering)
     {
         return;

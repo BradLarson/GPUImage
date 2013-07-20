@@ -87,7 +87,7 @@ static void *openGLESContextQueueKey;
         [self useImageProcessingContext];
         glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTextureSize);
     });
-
+    
     return maxTextureSize;
 }
 
@@ -113,6 +113,10 @@ static void *openGLESContextQueueKey;
     return [extensionNames containsObject:extension];
 }
 
++ (BOOL)deviceSupportsFramebufferReads;
+{
+    return NO;
+}
 
 // http://www.khronos.org/registry/gles/extensions/EXT/EXT_texture_rg.txt
 
@@ -220,6 +224,7 @@ static void *openGLESContextQueueKey;
 
         // Set up a few global settings for the image processing pipeline
         glDisable(GL_DEPTH_TEST);
+        glEnable(GL_TEXTURE_2D);
     }
     
     return _context;

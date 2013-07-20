@@ -1,4 +1,4 @@
-#import <GPUImage/GPUImage.h>
+#import "GPUImageFilterGroup.h"
 
 @interface GPUImageFASTCornerDetectionFilter : GPUImageFilterGroup
 {

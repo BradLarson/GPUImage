@@ -146,20 +146,24 @@ NSString *const kGPUImagePoissonBlendFragmentShaderString = SHADER_STRING
 
 - (void)deleteOutputTexture;
 {
-    if (outputTexture)
-    {
-        glDeleteTextures(1, &outputTexture);
-        outputTexture = 0;
-    }
-    
-    if (!([GPUImageContext supportsFastTextureUpload] && preparedToCaptureImage))
-    {
-        if (secondFilterOutputTexture)
+    runSynchronouslyOnVideoProcessingQueue(^{
+        [GPUImageContext useImageProcessingContext];
+
+        if (outputTexture)
         {
-            glDeleteTextures(1, &secondFilterOutputTexture);
-            secondFilterOutputTexture = 0;
+            glDeleteTextures(1, &outputTexture);
+            outputTexture = 0;
         }
-    }
+        
+        if (!([GPUImageContext supportsFastTextureUpload] && preparedToCaptureImage))
+        {
+            if (secondFilterOutputTexture)
+            {
+                glDeleteTextures(1, &secondFilterOutputTexture);
+                secondFilterOutputTexture = 0;
+            }
+        }
+    });
 }
 
 - (void)createFilterFBOofSize:(CGSize)currentFBOSize
@@ -218,11 +222,11 @@ NSString *const kGPUImagePoissonBlendFragmentShaderString = SHADER_STRING
                                                                 filterTextureCache, renderTarget,
                                                                 NULL, // texture attributes
                                                                 GL_TEXTURE_2D,
-                                                                GL_RGBA, // opengl format
+                                                                self.outputTextureOptions.internalFormat, // opengl format
                                                                 (int)currentFBOSize.width,
                                                                 (int)currentFBOSize.height,
-                                                                GL_BGRA, // native iOS format
-                                                                GL_UNSIGNED_BYTE,
+                                                                self.outputTextureOptions.format, // native iOS format
+                                                                self.outputTextureOptions.type,
                                                                 0,
                                                                 &renderTexture);
             if (err)
@@ -234,8 +238,8 @@ NSString *const kGPUImagePoissonBlendFragmentShaderString = SHADER_STRING
             CFRelease(empty);
             glBindTexture(CVOpenGLESTextureGetTarget(renderTexture), CVOpenGLESTextureGetName(renderTexture));
             secondFilterOutputTexture = CVOpenGLESTextureGetName(renderTexture);
-            glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-            glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+            glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, self.outputTextureOptions.wrapS);
+            glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, self.outputTextureOptions.wrapT);
             
             glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, CVOpenGLESTextureGetName(renderTexture), 0);
             
@@ -252,7 +256,14 @@ NSString *const kGPUImagePoissonBlendFragmentShaderString = SHADER_STRING
             //            }
             //            else
             //            {
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (int)currentFBOSize.width, (int)currentFBOSize.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+            glTexImage2D(GL_TEXTURE_2D,
+                         0,
+                         self.outputTextureOptions.internalFormat,
+                         (int)currentFBOSize.width,
+                         (int)currentFBOSize.height,
+                         0,
+                         self.outputTextureOptions.format,
+                         self.outputTextureOptions.type, 0);
             //            }
             glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, secondFilterOutputTexture, 0);
             

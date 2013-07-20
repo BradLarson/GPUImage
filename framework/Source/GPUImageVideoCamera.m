@@ -122,8 +122,9 @@ NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = SHAD
 		return nil;
     }
     
-	cameraProcessingQueue = dispatch_queue_create("com.sunsetlakesoftware.GPUImage.cameraProcessingQueue", NULL);
-	audioProcessingQueue = dispatch_queue_create("com.sunsetlakesoftware.GPUImage.audioProcessingQueue", NULL);
+    cameraProcessingQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH,0);
+	audioProcessingQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW,0);
+
     frameRenderingSemaphore = dispatch_semaphore_create(1);
 
 	_frameRate = 0; // This will not set frame rate unless this value gets set to 1 or above
@@ -257,7 +258,6 @@ NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = SHAD
     }
     
     [videoOutput setSampleBufferDelegate:self queue:cameraProcessingQueue];
-//    [videoOutput setSampleBufferDelegate:self queue:[GPUImageContext sharedContextQueue]];
 	if ([_captureSession canAddOutput:videoOutput])
 	{
 		[_captureSession addOutput:videoOutput];
@@ -298,17 +298,7 @@ NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = SHAD
     }
 
 // ARC forbids explicit message send of 'release'; since iOS 6 even for dispatch_release() calls: stripping it out in that case is required.
-#if ( (__IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_6_0) || (!defined(__IPHONE_6_0)) )
-    if (cameraProcessingQueue != NULL)
-    {
-        dispatch_release(cameraProcessingQueue);
-    }
-
-    if (audioProcessingQueue != NULL)
-    {
-        dispatch_release(audioProcessingQueue);
-    }
-    
+#if ( (__IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_6_0) || (!defined(__IPHONE_6_0)) )    
     if (frameRenderingSemaphore != NULL)
     {
         dispatch_release(frameRenderingSemaphore);
@@ -434,7 +424,25 @@ NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = SHAD
     return [[videoInput device] position];
 }
 
-- (BOOL)isFrontFacingCameraPresent;
++ (BOOL)isBackFacingCameraPresent;
+{
+	NSArray *devices = [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];
+	
+	for (AVCaptureDevice *device in devices)
+	{
+		if ([device position] == AVCaptureDevicePositionBack)
+			return YES;
+	}
+	
+	return NO;
+}
+
+- (BOOL)isBackFacingCameraPresent
+{
+    return [GPUImageVideoCamera isBackFacingCameraPresent];
+}
+
++ (BOOL)isFrontFacingCameraPresent;
 {
 	NSArray *devices = [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];
 	
@@ -445,6 +453,11 @@ NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = SHAD
 	}
 	
 	return NO;
+}
+
+- (BOOL)isFrontFacingCameraPresent
+{
+    return [GPUImageVideoCamera isFrontFacingCameraPresent];
 }
 
 - (void)setCaptureSessionPreset:(NSString *)captureSessionPreset;
@@ -789,17 +802,21 @@ NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = SHAD
 
 - (void)destroyYUVConversionFBO;
 {
-    if (yuvConversionFramebuffer)
-	{
-		glDeleteFramebuffers(1, &yuvConversionFramebuffer);
-		yuvConversionFramebuffer = 0;
-	}
-    
-    if (outputTexture)
-    {
-        glDeleteTextures(1, &outputTexture);
-        outputTexture = 0;
-    }
+    runSynchronouslyOnVideoProcessingQueue(^{
+        [GPUImageContext useImageProcessingContext];
+
+        if (yuvConversionFramebuffer)
+        {
+            glDeleteFramebuffers(1, &yuvConversionFramebuffer);
+            yuvConversionFramebuffer = 0;
+        }
+        
+        if (outputTexture)
+        {
+            glDeleteTextures(1, &outputTexture);
+            outputTexture = 0;
+        }
+    });
 }
 
 
@@ -818,17 +835,7 @@ NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = SHAD
 {
     if (captureOutput == audioOutput)
     {
-//        if (dispatch_semaphore_wait(frameRenderingSemaphore, DISPATCH_TIME_NOW) != 0)
-//        {
-//            return;
-//        }
-
-        CFRetain(sampleBuffer);
-        runAsynchronouslyOnVideoProcessingQueue(^{
-            [self processAudioSampleBuffer:sampleBuffer];
-            CFRelease(sampleBuffer);
-//            dispatch_semaphore_signal(frameRenderingSemaphore);
-        });
+        [self processAudioSampleBuffer:sampleBuffer];
     }
     else
     {
@@ -836,7 +843,7 @@ NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = SHAD
         {
             return;
         }
-
+        
         CFRetain(sampleBuffer);
         runAsynchronouslyOnVideoProcessingQueue(^{
             //Feature Detection Hook.

@@ -19,4 +19,7 @@
 - (void)initializeSecondaryAttributes;
 - (void)initializeSecondOutputTextureIfNeeded;
 
+// Managing the display FBOs
+- (void)createSecondFilterFBOofSize:(CGSize)currentFBOSize;
+
 @end

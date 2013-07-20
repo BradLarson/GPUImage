@@ -67,6 +67,10 @@
     // TODO: Dispatch this whole thing asynchronously to move image loading off main thread
     CGFloat widthOfImage = CGImageGetWidth(newImageSource);
     CGFloat heightOfImage = CGImageGetHeight(newImageSource);
+
+    // If passed an empty image reference, CGContextDrawImage will fail in future versions of the SDK.
+    NSAssert( widthOfImage > 0 && heightOfImage > 0, @"Passed image must not be empty - it should be at least 1px tall and wide");
+    
     pixelSizeOfImage = CGSizeMake(widthOfImage, heightOfImage);
     CGSize pixelSizeToUseForTexture = pixelSizeOfImage;
     
@@ -143,12 +147,14 @@
         {
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         }
+        // no need to use self.outputTextureOptions here since pictures need this texture formats and type
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (int)pixelSizeToUseForTexture.width, (int)pixelSizeToUseForTexture.height, 0, GL_BGRA, GL_UNSIGNED_BYTE, imageData);
         
         if (self.shouldSmoothlyScaleOutput)
         {
             glGenerateMipmap(GL_TEXTURE_2D);
         }
+        glBindTexture(GL_TEXTURE_2D, 0);
     });
     
     if (shouldRedrawUsingCoreGraphics)
@@ -185,13 +191,18 @@
 
 - (void)processImage;
 {
+    [self processImageWithCompletionHandler:nil];
+}
+
+- (BOOL)processImageWithCompletionHandler:(void (^)(void))completion;
+{
     hasProcessedImage = YES;
     
     //    dispatch_semaphore_wait(imageUpdateSemaphore, DISPATCH_TIME_FOREVER);
     
     if (dispatch_semaphore_wait(imageUpdateSemaphore, DISPATCH_TIME_NOW) != 0)
     {
-        return;
+        return NO;
     }
     
     runAsynchronouslyOnVideoProcessingQueue(^{
@@ -206,12 +217,20 @@
             NSInteger indexOfObject = [targets indexOfObject:currentTarget];
             NSInteger textureIndexOfTarget = [[targetTextureIndices objectAtIndex:indexOfObject] integerValue];
             
+            [currentTarget setCurrentlyReceivingMonochromeInput:NO];
             [currentTarget setInputSize:pixelSizeOfImage atIndex:textureIndexOfTarget];
+//            [currentTarget setInputTexture:outputTexture atIndex:textureIndexOfTarget];
             [currentTarget newFrameReadyAtTime:kCMTimeIndefinite atIndex:textureIndexOfTarget];
         }
         
         dispatch_semaphore_signal(imageUpdateSemaphore);
+        
+        if (completion != nil) {
+            completion();
+        }
     });
+    
+    return YES;
 }
 
 - (CGSize)outputImageSize;

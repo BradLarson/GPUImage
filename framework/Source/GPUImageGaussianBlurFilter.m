@@ -21,7 +21,7 @@ NSString *const kGPUImageGaussianBlurVertexShaderString = SHADER_STRING
  	// Calculate the positions for the blur
  	int multiplier = 0;
  	vec2 blurStep;
-    vec2 singleStepOffset = vec2(texelHeightOffset, texelWidthOffset);
+    vec2 singleStepOffset = vec2(texelWidthOffset, texelHeightOffset);
      
  	for (int i = 0; i < GAUSSIAN_SAMPLES; i++)
     {
