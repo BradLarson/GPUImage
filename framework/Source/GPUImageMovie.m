@@ -87,6 +87,7 @@
         CFRelease(coreVideoTextureCache);
     }
 }
+
 #pragma mark -
 #pragma mark Movie processing
 
@@ -115,15 +116,17 @@
     GPUImageMovie __block *blockSelf = self;
     
     [inputAsset loadValuesAsynchronouslyForKeys:[NSArray arrayWithObject:@"tracks"] completionHandler: ^{
-        NSError *error = nil;
-        AVKeyValueStatus tracksStatus = [inputAsset statusOfValueForKey:@"tracks" error:&error];
-        if (!tracksStatus == AVKeyValueStatusLoaded) 
-        {
-            return;
-        }
-        blockSelf.asset = inputAsset;
-        [blockSelf processAsset];
-        blockSelf = nil;
+        runSynchronouslyOnVideoProcessingQueue(^{
+            NSError *error = nil;
+            AVKeyValueStatus tracksStatus = [inputAsset statusOfValueForKey:@"tracks" error:&error];
+            if (!tracksStatus == AVKeyValueStatusLoaded)
+            {
+                return;
+            }
+            blockSelf.asset = inputAsset;
+            [blockSelf processAsset];
+            blockSelf = nil;
+        });
     }];
 }
 
@@ -147,6 +150,8 @@
     {
         audioEncodingIsFinished = NO;
 
+        [self.audioEncodingTarget setShouldInvalidateAudioSampleWhenDone:YES];
+        
         // This might need to be extended to handle movies with more than one audio track
         AVAssetTrack* audioTrack = [audioTracks objectAtIndex:0];
         readerAudioTrackOutput = [AVAssetReaderTrackOutput assetReaderTrackOutputWithTrack:audioTrack outputSettings:nil];
@@ -266,12 +271,9 @@
     
     if (audioSampleBufferRef) 
     {
-        runSynchronouslyOnVideoProcessingQueue(^{
-            [self.audioEncodingTarget processAudioBuffer:audioSampleBufferRef];
-            
-            CMSampleBufferInvalidate(audioSampleBufferRef);
-            CFRelease(audioSampleBufferRef);
-        });
+        [self.audioEncodingTarget processAudioBuffer:audioSampleBufferRef];
+        
+        CFRelease(audioSampleBufferRef);
     }
     else
     {
