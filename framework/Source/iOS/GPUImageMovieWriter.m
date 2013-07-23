@@ -36,6 +36,7 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
     BOOL _discont;
     CMTime _timeOffset;
     CMTime _lastVideo;
+    CMTime _lastAudio;
 }
 
 // Movie recording
@@ -263,6 +264,11 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 
 - (void)pauseRecording
 {
+    if (!isRecording)
+    {
+        return;
+    }
+    
     dispatch_sync(movieWritingQueue, ^
     {
         _paused = YES;
@@ -272,6 +278,11 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 
 - (void)resumeRecording
 {
+    if (!isRecording)
+    {
+        return;
+    }
+    
     dispatch_sync(movieWritingQueue, ^
     {
         _paused = NO;
@@ -334,6 +345,24 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
     });
 }
 
+
+- (CMSampleBufferRef) adjustTime:(CMSampleBufferRef) sample by:(CMTime) offset
+{
+    CMItemCount count;
+    CMSampleBufferGetSampleTimingInfoArray(sample, 0, nil, &count);
+    CMSampleTimingInfo* pInfo = malloc(sizeof(CMSampleTimingInfo) * count);
+    CMSampleBufferGetSampleTimingInfoArray(sample, count, pInfo, &count);
+    for (CMItemCount i = 0; i < count; i++)
+    {
+        pInfo[i].decodeTimeStamp = CMTimeSubtract(pInfo[i].decodeTimeStamp, offset);
+        pInfo[i].presentationTimeStamp = CMTimeSubtract(pInfo[i].presentationTimeStamp, offset);
+    }
+    CMSampleBufferRef sout;
+    CMSampleBufferCreateCopyWithNewTiming(nil, sample, count, pInfo, &sout);
+    free(pInfo);
+    return sout;
+}
+
 - (void)processAudioBuffer:(CMSampleBufferRef)audioBuffer;
 {
     __block BOOL shouldProcess = YES;
@@ -371,12 +400,63 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
             return;
         }
         
+        if (_discont)
+        {
+            _discont = NO;
+            
+            // calc adjustment
+            CMTime pts = CMSampleBufferGetPresentationTimeStamp(audioBuffer);
+            CMTime last = _lastAudio;
+            if (last.flags & kCMTimeFlags_Valid)
+            {
+                if (_timeOffset.flags & kCMTimeFlags_Valid)
+                {
+                    pts = CMTimeSubtract(pts, _timeOffset);
+                }
+                CMTime offset = CMTimeSubtract(pts, last);
+                NSLog(@"Setting offset from audio");
+                NSLog(@"Adding %f to %f (pts %f)", ((double)offset.value)/offset.timescale, ((double)_timeOffset.value)/_timeOffset.timescale, ((double)pts.value/pts.timescale));
+                
+                // this stops us having to set a scale for _timeOffset before we see the first video time
+                if (_timeOffset.value == 0)
+                {
+                    _timeOffset = offset;
+                }
+                else
+                {
+                    _timeOffset = CMTimeAdd(_timeOffset, offset);
+                }
+            }
+            _lastAudio.flags = 0;
+            _lastVideo.flags = 0;
+        }
+        
+        // retain so that we can release either this or modified one
+        CFRetain(audioBuffer);
+        
+        if (_timeOffset.value > 0)
+        {
+            CFRelease(audioBuffer);
+            audioBuffer = [self adjustTime:audioBuffer by:_timeOffset];
+        }
+        
+        // record most recent time so we know the length of the pause
+        CMTime pts = CMSampleBufferGetPresentationTimeStamp(audioBuffer);
+        CMTime dur = CMSampleBufferGetDuration(audioBuffer);
+        if (dur.value > 0)
+        {
+            pts = CMTimeAdd(pts, dur);
+        }
+        _lastAudio = pts;
+        
 //        NSLog(@"Recorded audio sample time: %lld, %d, %lld", currentSampleTime.value, currentSampleTime.timescale, currentSampleTime.epoch);
         CFRetain(audioBuffer);
         dispatch_async(movieWritingQueue, ^{
             [assetWriterAudioInput appendSampleBuffer:audioBuffer];
             CFRelease(audioBuffer);
         });
+        
+        CFRelease(audioBuffer);
     }
 }
 
@@ -612,7 +692,10 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
     
     if (_discont)
     {
-        _discont = NO;
+    	if (!_hasAudioTrack)
+    	{
+    	    _discont = NO;
+    	}
         
         // calc adjustment
         CMTime pts = frameTime;
