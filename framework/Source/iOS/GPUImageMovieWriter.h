@@ -4,6 +4,16 @@
 
 extern NSString *const kGPUImageColorSwizzlingFragmentShaderString;
 
+typedef NS_ENUM(NSUInteger, GPUImageMovieWriterStatus)
+{
+    GPUImageMovieWriterStatusReady,
+    GPUImageMovieWriterStatusRecording,
+    GPUImageMovieWriterStatusPaused,
+    GPUImageMovieWriterStatusFinished,
+    GPUImageMovieWriterStatusCanceled,
+    GPUImageMovieWriterStatusError
+};
+
 @protocol GPUImageMovieWriterDelegate <NSObject>
 
 @optional
@@ -42,12 +52,13 @@ extern NSString *const kGPUImageColorSwizzlingFragmentShaderString;
 @property(readwrite, nonatomic) BOOL shouldInvalidateAudioSampleWhenDone;
 @property(nonatomic, copy) void(^completionBlock)(void);
 @property(nonatomic, copy) void(^failureBlock)(NSError*);
-@property(nonatomic, assign) id<GPUImageMovieWriterDelegate> delegate;
+@property(nonatomic, weak) id<GPUImageMovieWriterDelegate> delegate;
 @property(readwrite, nonatomic) BOOL encodingLiveVideo;
 @property(nonatomic, copy) void(^videoInputReadyCallback)(void);
 @property(nonatomic, copy) void(^audioInputReadyCallback)(void);
 @property(nonatomic) BOOL enabled;
-@property(nonatomic) BOOL paused;
+@property(readonly, nonatomic) GPUImageMovieWriterStatus status;
+@property(readonly, nonatomic) CGFloat recordedSeconds; // length of recorded video in seconds
 
 // Initialization and teardown
 - (id)initWithMovieURL:(NSURL *)newMovieURL size:(CGSize)newSize;
