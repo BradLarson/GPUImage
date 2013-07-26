@@ -175,6 +175,7 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
     if (error != nil)
     {
         _status = GPUImageMovieWriterStatusError;
+        self.error = error;
         NSLog(@"Error: %@", error);
         if (failureBlock) 
         {
@@ -341,6 +342,7 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
         if (assetWriter.error != nil)
         {
             _status = GPUImageMovieWriterStatusError;
+            self.error = assetWriter.error;
         }
         
         if (_status == GPUImageMovieWriterStatusError)
