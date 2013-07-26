@@ -52,7 +52,7 @@ typedef NS_ENUM(NSUInteger, GPUImageMovieWriterStatus)
 @property(readwrite, nonatomic) BOOL shouldInvalidateAudioSampleWhenDone;
 @property(nonatomic, copy) void(^completionBlock)(void);
 @property(nonatomic, copy) void(^failureBlock)(NSError*);
-@property(nonatomic, weak) id<GPUImageMovieWriterDelegate> delegate;
+@property(nonatomic, assign) id<GPUImageMovieWriterDelegate> delegate;
 @property(readwrite, nonatomic) BOOL encodingLiveVideo;
 @property(nonatomic, copy) void(^videoInputReadyCallback)(void);
 @property(nonatomic, copy) void(^audioInputReadyCallback)(void);
