@@ -38,6 +38,7 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
     CMTime _lastVideo;
     CGFloat _recordedSeconds;
     GPUImageMovieWriterStatus _status;
+    NSError *_error;
 }
 
 // Movie recording
@@ -175,7 +176,7 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
     if (error != nil)
     {
         _status = GPUImageMovieWriterStatusError;
-        self.error = error;
+        _error = error;
         NSLog(@"Error: %@", error);
         if (failureBlock) 
         {
@@ -342,7 +343,7 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
         if (assetWriter.error != nil)
         {
             _status = GPUImageMovieWriterStatusError;
-            self.error = assetWriter.error;
+            _error = assetWriter.error;
         }
         
         if (_status == GPUImageMovieWriterStatusError)

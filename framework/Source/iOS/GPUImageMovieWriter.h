@@ -58,7 +58,7 @@ typedef NS_ENUM(NSUInteger, GPUImageMovieWriterStatus)
 @property(nonatomic, copy) void(^audioInputReadyCallback)(void);
 @property(nonatomic) BOOL enabled;
 @property(readonly, nonatomic) GPUImageMovieWriterStatus status;
-@property(strong, nonatomic) NSError *error;
+@property(readonly, nonatomic) NSError *error;
 @property(readonly, nonatomic) CGFloat recordedSeconds; // length of recorded video in seconds
 
 // Initialization and teardown
