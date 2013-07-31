@@ -1,3 +1,4 @@
+/*
 #import <Foundation/Foundation.h>
 #import <AVFoundation/AVFoundation.h>
 #import "GPUImageContext.h"
@@ -52,6 +53,90 @@ typedef NS_ENUM(NSUInteger, GPUImageMovieWriterStatus)
 @property(readwrite, nonatomic) BOOL shouldInvalidateAudioSampleWhenDone;
 @property(nonatomic, copy) void(^completionBlock)(void);
 @property(nonatomic, copy) void(^failureBlock)(NSError*);
+@property(nonatomic, assign) id<GPUImageMovieWriterDelegate> delegate;
+@property(readwrite, nonatomic) BOOL encodingLiveVideo;
+@property(nonatomic, copy) void(^videoInputReadyCallback)(void);
+@property(nonatomic, copy) void(^audioInputReadyCallback)(void);
+@property(nonatomic) BOOL enabled;
+@property(readonly, nonatomic) GPUImageMovieWriterStatus status;
+@property(readonly, nonatomic) NSError *error;
+@property(readonly, nonatomic) CGFloat recordedSeconds; // length of recorded video in seconds
+
+// Initialization and teardown
+- (id)initWithMovieURL:(NSURL *)newMovieURL size:(CGSize)newSize;
+- (id)initWithMovieURL:(NSURL *)newMovieURL size:(CGSize)newSize fileType:(NSString *)newFileType outputSettings:(NSMutableDictionary *)outputSettings;
+
+- (void)setHasAudioTrack:(BOOL)hasAudioTrack audioSettings:(NSDictionary *)audioOutputSettings;
+
+// Movie recording
+- (void)startRecording;
+- (void)startRecordingInOrientation:(CGAffineTransform)orientationTransform;
+- (void)pauseRecording;
+- (void)resumeRecording;
+- (void)finishRecording;
+- (void)finishRecordingWithCompletionHandler:(void (^)(void))handler;
+- (void)cancelRecording;
+- (void)processAudioBuffer:(CMSampleBufferRef)audioBuffer;
+- (void)enableSynchronizationCallbacks;
+
+@end
+*/
+
+typedef NS_ENUM(NSUInteger, GPUImageMovieWriterStatus)
+{
+    GPUImageMovieWriterStatusReady,
+    GPUImageMovieWriterStatusRecording,
+    GPUImageMovieWriterStatusPausing,
+    GPUImageMovieWriterStatusPaused,
+    GPUImageMovieWriterStatusResuming,
+    GPUImageMovieWriterStatusFinished,
+    GPUImageMovieWriterStatusCanceled,
+    GPUImageMovieWriterStatusError
+};
+
+
+#import <Foundation/Foundation.h>
+#import <AVFoundation/AVFoundation.h>
+#import "GPUImageContext.h"
+
+extern NSString *const kGPUImageColorSwizzlingFragmentShaderString;
+
+@protocol GPUImageMovieWriterDelegate <NSObject>
+
+@optional
+- (void)movieRecordingCompleted;
+- (void)movieRecordingFailedWithError:(NSError*)error;
+
+@end
+
+@interface GPUImageMovieWriter : NSObject <GPUImageInput>
+{
+    CMVideoDimensions videoDimensions;
+	CMVideoCodecType videoType;
+    
+    BOOL alreadyFinishedRecording;
+    
+    NSURL *movieURL;
+    NSString *fileType;
+	AVAssetWriter *assetWriter;
+	AVAssetWriterInput *assetWriterAudioInput;
+	AVAssetWriterInput *assetWriterVideoInput;
+    AVAssetWriterInputPixelBufferAdaptor *assetWriterPixelBufferInput;
+	dispatch_queue_t movieWritingQueue;
+    
+    CVOpenGLESTextureCacheRef coreVideoTextureCache;
+    CVPixelBufferRef renderTarget;
+    CVOpenGLESTextureRef renderTexture;
+    
+    CGSize videoSize;
+    GPUImageRotationMode inputRotation;
+    
+    __unsafe_unretained id<GPUImageTextureDelegate> textureDelegate;
+}
+
+@property(readwrite, nonatomic) BOOL hasAudioTrack;
+@property(readwrite, nonatomic) BOOL shouldPassthroughAudio;
+@property(readwrite, nonatomic) BOOL shouldInvalidateAudioSampleWhenDone;
 @property(nonatomic, assign) id<GPUImageMovieWriterDelegate> delegate;
 @property(readwrite, nonatomic) BOOL encodingLiveVideo;
 @property(nonatomic, copy) void(^videoInputReadyCallback)(void);
