@@ -398,6 +398,7 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
                 {
                     [self.delegate movieRecordingFailedWithError:_error];
                 }
+                [self cancelRecording];
             }
             if (_shouldInvalidateAudioSampleWhenDone)
             {
