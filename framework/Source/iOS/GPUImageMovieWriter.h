@@ -49,6 +49,7 @@ extern NSString *const kGPUImageColorSwizzlingFragmentShaderString;
 @property(nonatomic) BOOL enabled;
 @property(nonatomic) BOOL isPausing;
 @property(nonatomic, readonly) CGFloat recordedSeconds;
+@property(readonly, nonatomic) NSError *error;
 
 // Initialization and teardown
 - (id)initWithMovieURL:(NSURL *)newMovieURL size:(CGSize)newSize;
