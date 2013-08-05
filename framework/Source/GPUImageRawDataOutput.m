@@ -243,6 +243,19 @@
             glDeleteRenderbuffers(1, &dataRenderbuffer);
             dataRenderbuffer = 0;
         }
+
+        if (rawDataTextureCache)
+        {
+            CVOpenGLESTextureCacheFlush(rawDataTextureCache, 0);
+            CFRelease(rawDataTextureCache);
+            rawDataTextureCache = 0;
+        }
+        
+        if (renderTarget)
+        {
+            CVPixelBufferRelease(renderTarget);
+            renderTarget = 0;
+        }
     });
 }
 
