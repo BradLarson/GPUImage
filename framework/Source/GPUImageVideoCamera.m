@@ -828,7 +828,11 @@ NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = SHAD
 
 - (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection
 {
-    if (captureOutput == audioOutput)
+    if (!self.captureSession.isRunning)
+    {
+        return;
+    }
+    else if (captureOutput == audioOutput)
     {
         [self processAudioSampleBuffer:sampleBuffer];
     }
