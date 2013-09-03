@@ -453,12 +453,20 @@
         case GPUIMAGE_SOBELEDGEDETECTION:
         {
             currentlySelectedFilter = [[GPUImageSobelEdgeDetectionFilter alloc] init];
-            self.enableSlider = NO;
+
+            self.minimumSliderValue = 0.0;
+            self.maximumSliderValue = 2.0;
+            self.currentSliderValue = 1.0;
+            self.enableSlider = YES;
         }; break;
         case GPUIMAGE_PREWITTEDGEDETECTION:
         {
             currentlySelectedFilter = [[GPUImagePrewittEdgeDetectionFilter alloc] init];
-            self.enableSlider = NO;
+
+            self.minimumSliderValue = 0.0;
+            self.maximumSliderValue = 2.0;
+            self.currentSliderValue = 1.0;
+            self.enableSlider = YES;
         }; break;
         case GPUIMAGE_CANNYEDGEDETECTION:
         {
@@ -486,14 +494,18 @@
         case GPUIMAGE_SKETCH:
         {
             currentlySelectedFilter = [[GPUImageSketchFilter alloc] init];
-            self.enableSlider = NO;
+
+            self.minimumSliderValue = 0.0;
+            self.maximumSliderValue = 2.0;
+            self.currentSliderValue = 1.0;
+            self.enableSlider = YES;
         }; break;
         case GPUIMAGE_THRESHOLDSKETCH:
         {
             currentlySelectedFilter = [[GPUImageThresholdSketchFilter alloc] init];
-            self.minimumSliderValue = 0.9;
+            self.minimumSliderValue = 0.0;
             self.maximumSliderValue = 1.0;
-            self.currentSliderValue = 0.9;
+            self.currentSliderValue = 0.25;
             self.enableSlider = YES;
         }; break;
         case GPUIMAGE_TOON:
@@ -1192,6 +1204,8 @@
         case GPUIMAGE_POLKADOT: [(GPUImagePolkaDotFilter *)currentlySelectedFilter setFractionalWidthOfAPixel:_currentSliderValue]; break;
         case GPUIMAGE_HALFTONE: [(GPUImageHalftoneFilter *)currentlySelectedFilter setFractionalWidthOfAPixel:_currentSliderValue]; break;
         case GPUIMAGE_CROSSHATCH: [(GPUImageCrosshatchFilter *)currentlySelectedFilter setCrossHatchSpacing:_currentSliderValue]; break;
+        case GPUIMAGE_SOBELEDGEDETECTION: [(GPUImageSobelEdgeDetectionFilter *)currentlySelectedFilter setEdgeStrength:_currentSliderValue]; break;
+        case GPUIMAGE_PREWITTEDGEDETECTION: [(GPUImagePrewittEdgeDetectionFilter *)currentlySelectedFilter setEdgeStrength:_currentSliderValue]; break;
         case GPUIMAGE_HISTOGRAM: [(GPUImageHistogramFilter *)currentlySelectedFilter setDownsamplingFactor:round(_currentSliderValue)]; break;
         case GPUIMAGE_THRESHOLD: [(GPUImageLuminanceThresholdFilter *)currentlySelectedFilter setThreshold:_currentSliderValue]; break;
         case GPUIMAGE_ADAPTIVETHRESHOLD: [(GPUImageAdaptiveThresholdFilter *)currentlySelectedFilter setBlurSize:_currentSliderValue]; break;
@@ -1205,6 +1219,7 @@
         case GPUIMAGE_LOWPASS: [(GPUImageLowPassFilter *)currentlySelectedFilter setFilterStrength:_currentSliderValue]; break;
         case GPUIMAGE_HIGHPASS: [(GPUImageHighPassFilter *)currentlySelectedFilter setFilterStrength:_currentSliderValue]; break;
         case GPUIMAGE_MOTIONDETECTOR: [(GPUImageMotionDetector *)currentlySelectedFilter setLowPassFilterStrength:_currentSliderValue]; break;
+        case GPUIMAGE_SKETCH: [(GPUImageSketchFilter *)currentlySelectedFilter setEdgeStrength:_currentSliderValue]; break;
         case GPUIMAGE_THRESHOLDSKETCH: [(GPUImageThresholdSketchFilter *)currentlySelectedFilter setThreshold:_currentSliderValue]; break;
         case GPUIMAGE_SMOOTHTOON: [(GPUImageSmoothToonFilter *)currentlySelectedFilter setBlurSize:_currentSliderValue]; break;
         case GPUIMAGE_POSTERIZE: [(GPUImagePosterizeFilter *)currentlySelectedFilter setColorLevels:round(_currentSliderValue)]; break;

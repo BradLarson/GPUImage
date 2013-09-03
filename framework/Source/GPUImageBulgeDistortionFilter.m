@@ -67,6 +67,8 @@ NSString *const kGPUImageBulgeDistortionFragmentShaderString = SHADER_STRING
 
 @interface GPUImageBulgeDistortionFilter ()
 
+- (void)adjustAspectRatio;
+
 @property (readwrite, nonatomic) CGFloat aspectRatio;
 
 @end
@@ -103,6 +105,24 @@ NSString *const kGPUImageBulgeDistortionFragmentShaderString = SHADER_STRING
 #pragma mark -
 #pragma mark Accessors
 
+- (void)adjustAspectRatio;
+{
+    if (GPUImageRotationSwapsWidthAndHeight(inputRotation))
+    {
+        [self setAspectRatio:(inputTextureSize.width / inputTextureSize.height)];
+    }
+    else
+    {
+        [self setAspectRatio:(inputTextureSize.height / inputTextureSize.width)];
+    }
+}
+
+- (void)forceProcessingAtSize:(CGSize)frameSize;
+{
+    [super forceProcessingAtSize:frameSize];
+    [self adjustAspectRatio];
+}
+
 - (void)setInputSize:(CGSize)newSize atIndex:(NSInteger)textureIndex;
 {
     CGSize oldInputSize = inputTextureSize;
@@ -110,14 +130,7 @@ NSString *const kGPUImageBulgeDistortionFragmentShaderString = SHADER_STRING
     
     if ( (!CGSizeEqualToSize(oldInputSize, inputTextureSize)) && (!CGSizeEqualToSize(newSize, CGSizeZero)) )
     {
-        if (GPUImageRotationSwapsWidthAndHeight(inputRotation))
-        {
-            [self setAspectRatio:(inputTextureSize.width / inputTextureSize.height)];
-        }
-        else
-        {
-            [self setAspectRatio:(inputTextureSize.height / inputTextureSize.width)];
-        }
+        [self adjustAspectRatio];
     }
 }
 
@@ -132,6 +145,7 @@ NSString *const kGPUImageBulgeDistortionFragmentShaderString = SHADER_STRING
 {
     [super setInputRotation:newInputRotation atIndex:textureIndex];
     [self setCenter:self.center];
+    [self adjustAspectRatio];
 }
 
 - (void)setRadius:(CGFloat)newValue;

@@ -116,6 +116,8 @@ NSString *const kGPUImageGaussianBlurPositionFragmentShaderString = SHADER_STRIN
 
 @interface GPUImageGaussianBlurPositionFilter ()
 
+- (void)adjustAspectRatio;
+
 @property (readwrite, nonatomic) CGFloat aspectRatio;
 
 @end
@@ -157,25 +159,44 @@ NSString *const kGPUImageGaussianBlurPositionFragmentShaderString = SHADER_STRIN
                       secondStageFragmentShaderFromString:nil];
 }
 
+- (void)adjustAspectRatio;
+{
+    if (GPUImageRotationSwapsWidthAndHeight(inputRotation))
+    {
+        [self setAspectRatio:(inputTextureSize.width / inputTextureSize.height)];
+    }
+    else
+    {
+        [self setAspectRatio:(inputTextureSize.height / inputTextureSize.width)];
+    }
+}
+
+- (void)forceProcessingAtSize:(CGSize)frameSize;
+{
+    [super forceProcessingAtSize:frameSize];
+    [self adjustAspectRatio];
+}
+
 - (void)setInputSize:(CGSize)newSize atIndex:(NSInteger)textureIndex;
 {
     CGSize oldInputSize = inputTextureSize;
     [super setInputSize:newSize atIndex:textureIndex];
-
+    
     if ( (!CGSizeEqualToSize(oldInputSize, inputTextureSize)) && (!CGSizeEqualToSize(newSize, CGSizeZero)) )
     {
-        if (GPUImageRotationSwapsWidthAndHeight(inputRotation))
-        {
-            [self setAspectRatio:(inputTextureSize.width / inputTextureSize.height)];
-        }
-        else
-        {
-            [self setAspectRatio:(inputTextureSize.height / inputTextureSize.width)];
-        }
+        [self adjustAspectRatio];
     }
 }
 
-#pragma mark Getters and Setters
+- (void)setInputRotation:(GPUImageRotationMode)newInputRotation atIndex:(NSInteger)textureIndex;
+{
+    [super setInputRotation:newInputRotation atIndex:textureIndex];
+    [self setBlurCenter:self.blurCenter];    
+    [self adjustAspectRatio];
+}
+
+#pragma mark -
+#pragma mark Accessors
 
 - (void)setBlurSize:(CGFloat)newValue;
 {
@@ -190,8 +211,8 @@ NSString *const kGPUImageGaussianBlurPositionFragmentShaderString = SHADER_STRIN
 - (void) setBlurCenter:(CGPoint)blurCenter;
 {
     _blurCenter = blurCenter;
-
-    [self setPoint:_blurCenter forUniform:blurCenterUniform program:secondFilterProgram];
+    CGPoint rotatedPoint = [self rotatedPoint:blurCenter forRotation:inputRotation];
+    [self setPoint:rotatedPoint forUniform:blurCenterUniform program:secondFilterProgram];
 }
 
 - (void) setBlurRadius:(CGFloat)blurRadius;

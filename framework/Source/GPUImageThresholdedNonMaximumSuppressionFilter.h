@@ -9,4 +9,6 @@
  */
 @property(readwrite, nonatomic) CGFloat threshold;
 
+- (id)initWithPackedColorspace:(BOOL)inputUsesPackedColorspace;
+
 @end

@@ -116,14 +116,25 @@
 
     if ([GPUImageContext supportsFastTextureUpload])
     {
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
 #if defined(__IPHONE_6_0)
         CVReturn err = CVOpenGLESTextureCacheCreate(kCFAllocatorDefault, NULL, [[GPUImageContext sharedImageProcessingContext] context], NULL, &rawDataTextureCache);
 #else
         CVReturn err = CVOpenGLESTextureCacheCreate(kCFAllocatorDefault, NULL, (__bridge void *)[[GPUImageContext sharedImageProcessingContext] context], NULL, &rawDataTextureCache);
 #endif
-        if (err) 
+#else
+        CGLContextObj context = (__bridge void *)[[GPUImageContext sharedImageProcessingContext] context];
+        CVReturn err = CVOpenGLTextureCacheCreate(kCFAllocatorDefault,
+                                                  NULL,
+                                                  context,
+                                                  CGLGetPixelFormat(context),
+                                                  NULL,
+                                                  &rawDataTextureCache);
+#endif
+        
+        if (err)
         {
-            NSAssert(NO, @"Error at CVOpenGLESTextureCacheCreate %d", err);
+            NSAssert(NO, @"Error at CVOpenGL(ES)TextureCacheCreate %d", err);
         }
         
         // Code originally sourced from http://allmybrain.com/2011/12/08/rendering-to-a-texture-with-ios-5-texture-cache-api/
@@ -154,6 +165,7 @@
                             attrs,
                             &renderTarget);
         
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
         CVOpenGLESTextureCacheCreateTextureFromImage (kCFAllocatorDefault,
                                                       rawDataTextureCache, renderTarget,
                                                       NULL, // texture attributes
@@ -165,13 +177,30 @@
                                                       GL_UNSIGNED_BYTE,
                                                       0,
                                                       &renderTexture);
+#else
+        CVOpenGLTextureCacheCreateTextureFromImage (kCFAllocatorDefault,
+                                                    rawDataTextureCache, renderTarget,
+                                                    NULL,
+                                                    &renderTexture);
+#endif
+        
         CFRelease(attrs);
         CFRelease(empty);
+        
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
         glBindTexture(CVOpenGLESTextureGetTarget(renderTexture), CVOpenGLESTextureGetName(renderTexture));
+#else
+        glBindTexture(CVOpenGLTextureGetTarget(renderTexture), CVOpenGLTextureGetName(renderTexture));
+#endif
+        
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
         
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, CVOpenGLESTextureGetName(renderTexture), 0);
+#else
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, CVOpenGLTextureGetName(renderTexture), 0);
+#endif
     }
     else
     {
@@ -179,8 +208,13 @@
         glGenRenderbuffers(1, &dataRenderbuffer);
         glBindRenderbuffer(GL_RENDERBUFFER, dataRenderbuffer);
         
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
         glRenderbufferStorage(GL_RENDERBUFFER, GL_RGBA8_OES, (int)imageSize.width, (int)imageSize.height);
-        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, dataRenderbuffer);	
+#else
+        glRenderbufferStorage(GL_RENDERBUFFER, GL_RGBA8, (int)imageSize.width, (int)imageSize.height);
+#endif
+        
+        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, dataRenderbuffer);
 	}
 	GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
     
@@ -208,6 +242,21 @@
         {
             glDeleteRenderbuffers(1, &dataRenderbuffer);
             dataRenderbuffer = 0;
+        }
+
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+        if (rawDataTextureCache)
+        {
+            CVOpenGLESTextureCacheFlush(rawDataTextureCache, 0);
+            CFRelease(rawDataTextureCache);
+            rawDataTextureCache = 0;
+        }
+#endif
+        
+        if (renderTarget)
+        {
+            CVPixelBufferRelease(renderTarget);
+            renderTarget = 0;
         }
     });
 }

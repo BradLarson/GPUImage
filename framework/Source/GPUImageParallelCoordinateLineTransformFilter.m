@@ -17,12 +17,44 @@ NSString *const kGPUImageHoughAccumulationFragmentShaderString = SHADER_STRING
  
  void main()
  {
-//     gl_FragColor = vec4(scalingFactor, scalingFactor, scalingFactor, 1.0);
      gl_FragColor = vec4(0.004, 0.004, 0.004, 1.0);
  }
 );
+
+// highp - 16-bit, floating point range: -2^62 to 2^62, integer range: -2^16 to 2^16
+// NOTE: See below for where I'm tacking on the required extension as a prefix
+NSString *const kGPUImageHoughAccumulationFBOReadFragmentShaderString = SHADER_STRING
+(
+// const lowp float scalingFactor = 0.004;
+ const lowp float scalingFactor = 0.1;
+
+ void main()
+ {
+     mediump vec4 fragmentData = gl_LastFragData[0];
+     
+     fragmentData.r = fragmentData.r + scalingFactor;
+     fragmentData.g = scalingFactor * floor(fragmentData.r) + fragmentData.g;
+     fragmentData.b = scalingFactor * floor(fragmentData.g) + fragmentData.b;
+     fragmentData.a = scalingFactor * floor(fragmentData.b) + fragmentData.a;
+     
+     fragmentData = fract(fragmentData);
+     
+     gl_FragColor = vec4(fragmentData.rgb, 1.0);
+ }
+);
+
 #else
 NSString *const kGPUImageHoughAccumulationFragmentShaderString = SHADER_STRING
+(
+ const float scalingFactor = 1.0 / 256.0;
+ 
+ void main()
+ {
+     gl_FragColor = vec4(0.004, 0.004, 0.004, 1.0);
+ }
+);
+
+NSString *const kGPUImageHoughAccumulationFBOReadFragmentShaderString = SHADER_STRING
 (
  const float scalingFactor = 1.0 / 256.0;
  
@@ -47,10 +79,22 @@ NSString *const kGPUImageHoughAccumulationFragmentShaderString = SHADER_STRING
 
 - (id)init;
 {
-    if (!(self = [super initWithVertexShaderFromString:kGPUImageHoughAccumulationVertexShaderString fragmentShaderFromString:kGPUImageHoughAccumulationFragmentShaderString]))
+    NSString *fragmentShaderToUse = nil;
+    
+    if ([GPUImageContext deviceSupportsFramebufferReads])
+    {
+        fragmentShaderToUse = [NSString stringWithFormat:@"#extension GL_EXT_shader_framebuffer_fetch : require\n %@",kGPUImageHoughAccumulationFBOReadFragmentShaderString];
+    }
+    else
+    {
+        fragmentShaderToUse = kGPUImageHoughAccumulationFragmentShaderString;
+    }
+
+    if (!(self = [super initWithVertexShaderFromString:kGPUImageHoughAccumulationVertexShaderString fragmentShaderFromString:fragmentShaderToUse]))
     {
         return nil;
     }
+    
     
     return self;
 }
@@ -97,6 +141,10 @@ NSString *const kGPUImageHoughAccumulationFragmentShaderString = SHADER_STRING
 
 - (void)renderToTextureWithVertices:(const GLfloat *)vertices textureCoordinates:(const GLfloat *)textureCoordinates sourceTexture:(GLuint)sourceTexture;
 {
+    // we need a normal color texture for this filter
+    NSAssert(self.outputTextureOptions.internalFormat == GL_RGBA, @"The output texture format for this filter must be GL_RGBA.");
+    NSAssert(self.outputTextureOptions.type == GL_UNSIGNED_BYTE, @"The type of the output texture of this filter must be GL_UNSIGNED_BYTE.");
+    
     if (self.preventRendering)
     {
         return;
@@ -181,14 +229,24 @@ NSString *const kGPUImageHoughAccumulationFragmentShaderString = SHADER_STRING
     glClearColor(0.0, 0.0, 0.0, 1.0);
     glClear(GL_COLOR_BUFFER_BIT);
     
-    glBlendEquation(GL_FUNC_ADD);
-    glBlendFunc(GL_ONE, GL_ONE);
-    glEnable(GL_BLEND);
+    if (![GPUImageContext deviceSupportsFramebufferReads])
+    {
+        glBlendEquation(GL_FUNC_ADD);
+        glBlendFunc(GL_ONE, GL_ONE);
+        glEnable(GL_BLEND);
+    }
+    else
+    {
+        glLineWidth(1);
+    }
     
 	glVertexAttribPointer(filterPositionAttribute, 2, GL_FLOAT, 0, 0, lineCoordinates);
     glDrawArrays(GL_LINES, 0, (linePairsToRender * 4));
     
-    glDisable(GL_BLEND);
+    if (![GPUImageContext deviceSupportsFramebufferReads])
+    {
+        glDisable(GL_BLEND);
+    }
 }
 
 @end

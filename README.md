@@ -214,10 +214,17 @@ There are currently 125 built-in filters, divided into the following categories:
 - **GPUImageSobelEdgeDetectionFilter**: Sobel edge detection, with edges highlighted in white
   - *texelWidth*: 
   - *texelHeight*: These parameters affect the visibility of the detected edges
+  - *edgeStrength*: Adjusts the dynamic range of the filter. Higher values lead to stronger edges, but can saturate the intensity colorspace. Default is 1.0.
+
+- **GPUImagePrewittEdgeDetectionFilter**: Prewitt edge detection, with edges highlighted in white
+  - *texelWidth*: 
+  - *texelHeight*: These parameters affect the visibility of the detected edges
+  - *edgeStrength*: Adjusts the dynamic range of the filter. Higher values lead to stronger edges, but can saturate the intensity colorspace. Default is 1.0.
 
 - **GPUImageThresholdEdgeDetectionFilter**: Performs Sobel edge detection, but applies a threshold instead of giving gradual strength values
   - *texelWidth*: 
   - *texelHeight*: These parameters affect the visibility of the detected edges
+  - *edgeStrength*: Adjusts the dynamic range of the filter. Higher values lead to stronger edges, but can saturate the intensity colorspace. Default is 1.0.
   - *threshold*: Any edge above this threshold will be black, and anything below white. Ranges from 0.0 to 1.0, with 0.8 as the default
 
 - **GPUImageCannyEdgeDetectionFilter**: This uses the full Canny process to highlight one-pixel-wide edges
@@ -379,10 +386,13 @@ There are currently 125 built-in filters, divided into the following categories:
 - **GPUImageSketchFilter**: Converts video to look like a sketch. This is just the Sobel edge detection filter with the colors inverted
   - *texelWidth*: 
   - *texelHeight*: These parameters affect the visibility of the detected edges
+  - *edgeStrength*: Adjusts the dynamic range of the filter. Higher values lead to stronger edges, but can saturate the intensity colorspace. Default is 1.0.
 
 - **GPUImageThresholdSketchFilter**: Same as the sketch filter, only the edges are thresholded instead of being grayscale
   - *texelWidth*: 
   - *texelHeight*: These parameters affect the visibility of the detected edges
+  - *edgeStrength*: Adjusts the dynamic range of the filter. Higher values lead to stronger edges, but can saturate the intensity colorspace. Default is 1.0.
+  - *threshold*: Any edge above this threshold will be black, and anything below white. Ranges from 0.0 to 1.0, with 0.8 as the default
 
 - **GPUImageToonFilter**: This uses Sobel edge detection to place a black border around objects, and then it quantizes the colors present in the image to give a cartoon-like quality to the image.
   - *texelWidth*: 
@@ -484,6 +494,10 @@ As a note: if you run into the error "Unknown class GPUImageView in Interface Bu
 Also, if you need to deploy this to iOS 4.x, it appears that the current version of Xcode (4.3) requires that you weak-link the Core Video framework in your final application or you see crashes with the message "Symbol not found: _CVOpenGLESTextureCacheCreate" when you create an archive for upload to the App Store or for ad hoc distribution. To do this, go to your project's Build Phases tab, expand the Link Binary With Libraries group, and find CoreVideo.framework in the list. Change the setting for it in the far right of the list from Required to Optional.
 
 Additionally, this is an ARC-enabled framework, so if you want to use this within a manual reference counted application targeting iOS 4.x, you'll need to add -fobjc-arc to your Other Linker Flags as well.
+
+### Building static library at the command line ###
+
+If you don't want to include the project as a dependency in your application's Xcode project, you can build a universal static library for the iOS Simulator or device. To do this, run `build.sh` at the command line. The resulting library and header files will be located at `build/Release-iphone`. You may also change the version of the iOS SDK by changing the `IOSSDK_VER` variable in `build.sh` (all available versions can be found using `xcodebuild -showsdks`).
 
 ## Performing common tasks ##
 

@@ -21,6 +21,7 @@
 
     lookupImageSource = [[GPUImagePicture alloc] initWithImage:image];
     GPUImageLookupFilter *lookupFilter = [[GPUImageLookupFilter alloc] init];
+    [self addFilter:lookupFilter];
 
     [lookupImageSource addTarget:lookupFilter atTextureLocation:1];
     [lookupImageSource processImage];

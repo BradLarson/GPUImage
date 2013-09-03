@@ -27,7 +27,10 @@ static void *openGLESContextQueueKey;
 
 	openGLESContextQueueKey = &openGLESContextQueueKey;
     _contextQueue = dispatch_queue_create("com.sunsetlakesoftware.GPUImage.openGLESContextQueue", NULL);
+#if (!defined(__IPHONE_6_0) || (__IPHONE_OS_VERSION_MAX_ALLOWED < __IPHONE_6_0))
+#else
 	dispatch_queue_set_specific(_contextQueue, openGLESContextQueueKey, (__bridge void *)self, NULL);
+#endif
     shaderProgramCache = [[NSMutableDictionary alloc] init];
     
     return self;
@@ -129,6 +132,17 @@ static void *openGLESContextQueueKey;
     return supportsRedTextures;
 }
 
++ (BOOL)deviceSupportsFramebufferReads;
+{
+    static dispatch_once_t pred;
+    static BOOL supportsFramebufferReads = NO;
+    
+    dispatch_once(&pred, ^{
+        supportsFramebufferReads = [GPUImageContext deviceSupportsOpenGLESExtension:@"GL_EXT_shader_framebuffer_fetch"];
+    });
+    
+    return supportsFramebufferReads;
+}
 
 + (CGSize)sizeThatFitsWithinATextureForSize:(CGSize)inputSize;
 {

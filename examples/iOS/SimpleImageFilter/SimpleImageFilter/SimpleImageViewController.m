@@ -49,10 +49,9 @@
 
 - (IBAction)updateSliderValue:(id)sender
 {
-//    [(GPUImageSepiaFilter *)sepiaFilter setIntensity:[(UISlider *)sender value]];
-    CGFloat midpoint = [(UISlider *)sender value];
-    [(GPUImageTiltShiftFilter *)sepiaFilter setTopFocusLevel:midpoint - 0.1];
-    [(GPUImageTiltShiftFilter *)sepiaFilter setBottomFocusLevel:midpoint + 0.1];
+//    CGFloat midpoint = [(UISlider *)sender value];
+//    [(GPUImageTiltShiftFilter *)sepiaFilter setTopFocusLevel:midpoint - 0.1];
+//    [(GPUImageTiltShiftFilter *)sepiaFilter setBottomFocusLevel:midpoint + 0.1];
 
     [sourcePicture processImage];
 }
@@ -65,8 +64,8 @@
     UIImage *inputImage = [UIImage imageNamed:@"WID-small.jpg"]; // The WID.jpg example is greater than 2048 pixels tall, so it fails on older devices
     
     sourcePicture = [[GPUImagePicture alloc] initWithImage:inputImage smoothlyScaleOutput:YES];
-//    sepiaFilter = [[GPUImageSepiaFilter alloc] init];
-    sepiaFilter = [[GPUImageTiltShiftFilter alloc] init];
+//    sepiaFilter = [[GPUImageTiltShiftFilter alloc] init];
+    sepiaFilter = [[GPUImageSobelEdgeDetectionFilter alloc] init];
     
     GPUImageView *imageView = (GPUImageView *)self.view;
     [sepiaFilter forceProcessingAtSize:imageView.sizeInPixels]; // This is now needed to make the filter run at the smaller output size
@@ -105,7 +104,8 @@
     UIImage *currentFilteredImage = [vignetteImageFilter imageFromCurrentlyProcessedOutput];
         
     // Do a simpler image filtering
-    GPUImageSketchFilter *stillImageFilter2 = [[GPUImageSketchFilter alloc] init];
+//    GPUImageSketchFilter *stillImageFilter2 = [[GPUImageSketchFilter alloc] init];
+    GPUImageSobelEdgeDetectionFilter *stillImageFilter2 = [[GPUImageSobelEdgeDetectionFilter alloc] init];
 //    GPUImageUnsharpMaskFilter *stillImageFilter2 = [[GPUImageUnsharpMaskFilter alloc] init];
 //    GPUImageSepiaFilter *stillImageFilter2 = [[GPUImageSepiaFilter alloc] init];
     UIImage *quickFilteredImage = [stillImageFilter2 imageByFilteringImage:inputImage];

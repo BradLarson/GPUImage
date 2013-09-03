@@ -21,6 +21,7 @@ NSString *const kGPUImageSobelEdgeDetectionFragmentShaderString = SHADER_STRING
  varying vec2 bottomRightTextureCoordinate;
 
  uniform sampler2D inputImageTexture;
+ uniform float edgeStrength;
  
  void main()
  {
@@ -35,7 +36,7 @@ NSString *const kGPUImageSobelEdgeDetectionFragmentShaderString = SHADER_STRING
     float h = -topLeftIntensity - 2.0 * topIntensity - topRightIntensity + bottomLeftIntensity + 2.0 * bottomIntensity + bottomRightIntensity;
     float v = -bottomLeftIntensity - 2.0 * leftIntensity - topLeftIntensity + bottomRightIntensity + 2.0 * rightIntensity + topRightIntensity;
     
-    float mag = length(vec2(h, v));
+    float mag = length(vec2(h, v)) * edgeStrength;
     
     gl_FragColor = vec4(vec3(mag), 1.0);
  }
@@ -56,7 +57,8 @@ NSString *const kGPUImageSobelEdgeDetectionFragmentShaderString = SHADER_STRING
  varying vec2 bottomRightTextureCoordinate;
  
  uniform sampler2D inputImageTexture;
- 
+ uniform float edgeStrength;
+
  void main()
  {
      float bottomLeftIntensity = texture2D(inputImageTexture, bottomLeftTextureCoordinate).r;
@@ -70,7 +72,7 @@ NSString *const kGPUImageSobelEdgeDetectionFragmentShaderString = SHADER_STRING
      float h = -topLeftIntensity - 2.0 * topIntensity - topRightIntensity + bottomLeftIntensity + 2.0 * bottomIntensity + bottomRightIntensity;
      float v = -bottomLeftIntensity - 2.0 * leftIntensity - topLeftIntensity + bottomRightIntensity + 2.0 * rightIntensity + topRightIntensity;
      
-     float mag = length(vec2(h, v));
+     float mag = length(vec2(h, v)) * edgeStrength;
      
      gl_FragColor = vec4(vec3(mag), 1.0);
  }
@@ -81,6 +83,7 @@ NSString *const kGPUImageSobelEdgeDetectionFragmentShaderString = SHADER_STRING
 
 @synthesize texelWidth = _texelWidth; 
 @synthesize texelHeight = _texelHeight; 
+@synthesize edgeStrength = _edgeStrength;
 
 #pragma mark -
 #pragma mark Initialization and teardown
@@ -108,7 +111,9 @@ NSString *const kGPUImageSobelEdgeDetectionFragmentShaderString = SHADER_STRING
     
     texelWidthUniform = [secondFilterProgram uniformIndex:@"texelWidth"];
     texelHeightUniform = [secondFilterProgram uniformIndex:@"texelHeight"];
+    edgeStrengthUniform = [secondFilterProgram uniformIndex:@"edgeStrength"];
     
+    self.edgeStrength = 1.0;
     return self;
 }
 
@@ -118,11 +123,23 @@ NSString *const kGPUImageSobelEdgeDetectionFragmentShaderString = SHADER_STRING
     {
         _texelWidth = 1.0 / filterFrameSize.width;
         _texelHeight = 1.0 / filterFrameSize.height;
-
+        
         runSynchronouslyOnVideoProcessingQueue(^{
-            [self setFloat:_texelWidth forUniform:texelWidthUniform program:secondFilterProgram];
-            [self setFloat:_texelHeight forUniform:texelHeightUniform program:secondFilterProgram];
+            [GPUImageContext setActiveShaderProgram:secondFilterProgram];
+            glUniform1f(texelWidthUniform, _texelWidth);
+            glUniform1f(texelHeightUniform, _texelHeight);
         });
+    }
+}
+
+- (void)setUniformsForProgramAtIndex:(NSUInteger)programIndex;
+{
+    [super setUniformsForProgramAtIndex:programIndex];
+    
+    if (programIndex == 1)
+    {
+        glUniform1f(texelWidthUniform, _texelWidth);
+        glUniform1f(texelHeightUniform, _texelHeight);
     }
 }
 
@@ -154,6 +171,14 @@ NSString *const kGPUImageSobelEdgeDetectionFragmentShaderString = SHADER_STRING
 
     [self setFloat:_texelHeight forUniform:texelHeightUniform program:secondFilterProgram];
 }
+
+- (void)setEdgeStrength:(CGFloat)newValue;
+{
+    _edgeStrength = newValue;
+    
+    [self setFloat:_edgeStrength forUniform:edgeStrengthUniform program:secondFilterProgram];
+}
+
 
 @end
 

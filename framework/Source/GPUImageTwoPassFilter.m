@@ -187,11 +187,11 @@
                                                             filterTextureCache, renderTarget,
                                                             NULL, // texture attributes
                                                             GL_TEXTURE_2D,
-                                                            GL_RGBA, // opengl format
+                                                            self.outputTextureOptions.internalFormat, // opengl format
                                                             (int)currentFBOSize.width,
                                                             (int)currentFBOSize.height,
-                                                            GL_BGRA, // native iOS format
-                                                            GL_UNSIGNED_BYTE,
+                                                            self.outputTextureOptions.format, // native iOS format
+                                                            self.outputTextureOptions.type,
                                                             0,
                                                             &renderTexture);
         if (err)
@@ -203,8 +203,8 @@
         CFRelease(empty);
         glBindTexture(CVOpenGLESTextureGetTarget(renderTexture), CVOpenGLESTextureGetName(renderTexture));
         secondFilterOutputTexture = CVOpenGLESTextureGetName(renderTexture);
-        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, self.outputTextureOptions.wrapS);
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, self.outputTextureOptions.wrapT);
         
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, CVOpenGLESTextureGetName(renderTexture), 0);
         
@@ -221,7 +221,15 @@
         //            }
         //            else
         //            {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (int)currentFBOSize.width, (int)currentFBOSize.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+        glTexImage2D(GL_TEXTURE_2D,
+                     0,
+                     self.outputTextureOptions.internalFormat,
+                     (int)currentFBOSize.width,
+                     (int)currentFBOSize.height,
+                     0,
+                     self.outputTextureOptions.format,
+                     self.outputTextureOptions.type,
+                     0);
         //            }
         
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, secondFilterOutputTexture, 0);
@@ -344,14 +352,16 @@
         [super renderToTextureWithVertices:vertices textureCoordinates:textureCoordinates sourceTexture:sourceTexture];
     }
     
+    
     // Run the second stage of the two-pass filter
+    [GPUImageContext setActiveShaderProgram:secondFilterProgram];
+    glActiveTexture(GL_TEXTURE2);
+    glBindTexture(GL_TEXTURE_2D, 0);
+    glActiveTexture(GL_TEXTURE3);
+    glBindTexture(GL_TEXTURE_2D, 0);
     [self setSecondFilterFBO];
     
-    [GPUImageContext setActiveShaderProgram:secondFilterProgram];
     [self setUniformsForProgramAtIndex:1];
-
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
     
     if (!currentlyReceivingMonochromeInput)
     {
@@ -369,6 +379,9 @@
 	glUniform1i(secondFilterInputTextureUniform, 3);
     
     glVertexAttribPointer(secondFilterPositionAttribute, 2, GL_FLOAT, 0, 0, vertices);
+
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
 
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
