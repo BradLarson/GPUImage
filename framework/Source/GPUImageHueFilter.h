@@ -3,7 +3,7 @@
 
 @interface GPUImageHueFilter : GPUImageFilter
 {
-    GLfloat hueAdjustUniform;
+    GLint hueAdjustUniform;
     
 }
 @property (nonatomic, readwrite) CGFloat hue;
