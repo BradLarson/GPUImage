@@ -134,6 +134,7 @@
         runSynchronouslyOnVideoProcessingQueue(^{
             [self destroyDisplayFramebuffer];
             [self createDisplayFramebuffer];
+            [self recalculateViewGeometry];
         });
     }
 }
