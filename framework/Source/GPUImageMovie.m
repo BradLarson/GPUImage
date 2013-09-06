@@ -200,9 +200,7 @@
                 });
             } else {
                 [weakSelf endProcessing];
-                if ([self.delegate respondsToSelector:@selector(didCompletePlayingMovie)]) {
-                    [self.delegate didCompletePlayingMovie];
-                }
+                [weakSelf notifyDelegate];
             }
 
         }
@@ -248,6 +246,7 @@
             if (!keepLooping) {
                 videoEncodingIsFinished = YES;
                 [self endProcessing];
+                [self notifyDelegate];
             }
         }
     }
@@ -256,6 +255,7 @@
         if (reader.status == AVAssetWriterStatusCompleted) 
         {
             [self endProcessing];
+            [self notifyDelegate];
         }
     }
 }
@@ -407,6 +407,14 @@
         [reader cancelReading];
     }
     [self endProcessing];
+    [self notifyDelegate];
+}
+
+- (void) notifyDelegate
+{
+    if ([self.delegate respondsToSelector:@selector(didCompletePlayingMovie)]) {
+        [self.delegate didCompletePlayingMovie];
+    }
 }
 
 @end
