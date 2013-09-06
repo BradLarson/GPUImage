@@ -58,6 +58,7 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 @synthesize audioInputReadyCallback;
 @synthesize enabled;
 @synthesize shouldInvalidateAudioSampleWhenDone = _shouldInvalidateAudioSampleWhenDone;
+@synthesize paused = _paused;
 
 @synthesize delegate = _delegate;
 
@@ -388,7 +389,7 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
         
 //        NSLog(@"Recorded audio sample time: %lld, %d, %lld", currentSampleTime.value, currentSampleTime.timescale, currentSampleTime.epoch);
         void(^write)() = ^() {
-            while( ! assetWriterAudioInput.readyForMoreMediaData && ! _encodingLiveVideo ) {
+            while( ! assetWriterAudioInput.readyForMoreMediaData && ! _encodingLiveVideo && ! audioEncodingIsFinished ) {
                 NSDate *maxDate = [NSDate dateWithTimeIntervalSinceNow:0.5];
                 //NSLog(@"audio waiting...");
                 [[NSRunLoop currentRunLoop] runUntilDate:maxDate];
@@ -429,8 +430,15 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
         }
         videoQueue = dispatch_queue_create("com.sunsetlakesoftware.GPUImage.videoReadingQueue", NULL);
         [assetWriterVideoInput requestMediaDataWhenReadyOnQueue:videoQueue usingBlock:^{
+            if( _paused )
+            {
+                //NSLog(@"video requestMediaDataWhenReadyOnQueue paused");
+                // if we don't sleep, we'll get called back almost immediately, chewing up CPU
+                usleep(10000);
+                return;
+            }
             //NSLog(@"video requestMediaDataWhenReadyOnQueue begin");
-            while( assetWriterVideoInput.readyForMoreMediaData )
+            while( assetWriterVideoInput.readyForMoreMediaData && ! _paused )
             {
                 if( ! videoInputReadyCallback() && ! videoEncodingIsFinished )
                 {
@@ -451,8 +459,15 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
     {
         audioQueue = dispatch_queue_create("com.sunsetlakesoftware.GPUImage.audioReadingQueue", NULL);
         [assetWriterAudioInput requestMediaDataWhenReadyOnQueue:audioQueue usingBlock:^{
+            if( _paused )
+            {
+                //NSLog(@"audio requestMediaDataWhenReadyOnQueue paused");
+                // if we don't sleep, we'll get called back almost immediately, chewing up CPU
+                usleep(10000);
+                return;
+            }
             //NSLog(@"audio requestMediaDataWhenReadyOnQueue begin");
-            while( assetWriterAudioInput.readyForMoreMediaData )
+            while( assetWriterAudioInput.readyForMoreMediaData && ! _paused )
             {
                 if( ! audioInputReadyCallback() && ! audioEncodingIsFinished )
                 {
@@ -680,7 +695,7 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
     }
 
     void(^write)() = ^() {
-        while( ! assetWriterVideoInput.readyForMoreMediaData && ! _encodingLiveVideo ) {
+        while( ! assetWriterVideoInput.readyForMoreMediaData && ! _encodingLiveVideo && ! videoEncodingIsFinished ) {
             NSDate *maxDate = [NSDate dateWithTimeIntervalSinceNow:0.1];
             //NSLog(@"video waiting...");
             [[NSRunLoop currentRunLoop] runUntilDate:maxDate];

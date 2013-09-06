@@ -48,6 +48,7 @@ extern NSString *const kGPUImageColorSwizzlingFragmentShaderString;
 @property(nonatomic, readonly) CMTime duration;
 @property(nonatomic, assign) CGAffineTransform transform;
 @property(nonatomic, copy) NSArray *metaData;
+@property(nonatomic, assign, getter = isPaused) BOOL paused;
 
 // Initialization and teardown
 - (id)initWithMovieURL:(NSURL *)newMovieURL size:(CGSize)newSize;
