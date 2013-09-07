@@ -361,12 +361,19 @@ NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = SHAD
 - (void)removeInputsAndOutputs;
 {
     [_captureSession beginConfiguration];
-    [_captureSession removeInput:videoInput];
-    [_captureSession removeOutput:videoOutput];
+    if (videoInput) {
+        [_captureSession removeInput:videoInput];
+        [_captureSession removeOutput:videoOutput];
+        videoInput = nil;
+        videoOutput = nil;
+    }
     if (_microphone != nil)
     {
         [_captureSession removeInput:audioInput];
         [_captureSession removeOutput:audioOutput];
+        audioInput = nil;
+        audioOutput = nil;
+        _microphone = nil;
     }
     [_captureSession commitConfiguration];
 }
