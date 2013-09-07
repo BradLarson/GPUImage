@@ -83,6 +83,8 @@ NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = SHAD
 
     
     int imageBufferWidth, imageBufferHeight;
+    
+    BOOL addedAudioInputsDueToEncodingTarget;
 }
 
 - (void)updateOrientationSendToTargets;
@@ -313,15 +315,68 @@ NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = SHAD
     }
 }
 
+- (BOOL)addAudioInputsAndOutputs
+{
+    if (audioOutput)
+        return NO;
+    
+    [_captureSession beginConfiguration];
+    
+    _microphone = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeAudio];
+    audioInput = [AVCaptureDeviceInput deviceInputWithDevice:_microphone error:nil];
+    if ([_captureSession canAddInput:audioInput])
+    {
+        [_captureSession addInput:audioInput];
+    }
+    audioOutput = [[AVCaptureAudioDataOutput alloc] init];
+    
+    if ([_captureSession canAddOutput:audioOutput])
+    {
+        [_captureSession addOutput:audioOutput];
+    }
+    else
+    {
+        NSLog(@"Couldn't add audio output");
+    }
+    [audioOutput setSampleBufferDelegate:self queue:audioProcessingQueue];
+    
+    [_captureSession commitConfiguration];
+    return YES;
+}
+
+- (BOOL)removeAudioInputsAndOutputs
+{
+    if (!audioOutput)
+        return NO;
+    
+    [_captureSession beginConfiguration];
+    [_captureSession removeInput:audioInput];
+    [_captureSession removeOutput:audioOutput];
+    audioInput = nil;
+    audioOutput = nil;
+    _microphone = nil;
+    [_captureSession commitConfiguration];
+    return YES;
+}
+
 - (void)removeInputsAndOutputs;
 {
-    [_captureSession removeInput:videoInput];
-    [_captureSession removeOutput:videoOutput];
+    [_captureSession beginConfiguration];
+    if (videoInput) {
+        [_captureSession removeInput:videoInput];
+        [_captureSession removeOutput:videoOutput];
+        videoInput = nil;
+        videoOutput = nil;
+    }
     if (_microphone != nil)
     {
         [_captureSession removeInput:audioInput];
         [_captureSession removeOutput:audioOutput];
+        audioInput = nil;
+        audioOutput = nil;
+        _microphone = nil;
     }
+    [_captureSession commitConfiguration];
 }
 
 #pragma mark -
@@ -870,45 +925,16 @@ NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = SHAD
 
 - (void)setAudioEncodingTarget:(GPUImageMovieWriter *)newValue;
 {
-    runSynchronouslyOnVideoProcessingQueue(^{
-        [_captureSession beginConfiguration];
-        
-        if (newValue == nil)
-        {
-            if (audioOutput)
-            {
-                [_captureSession removeInput:audioInput];
-                [_captureSession removeOutput:audioOutput];
-                audioInput = nil;
-                audioOutput = nil;
-                _microphone = nil;
-            }
-        }
-        else
-        {
-            _microphone = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeAudio];
-            audioInput = [AVCaptureDeviceInput deviceInputWithDevice:_microphone error:nil];
-            if ([_captureSession canAddInput:audioInput])
-            {
-                [_captureSession addInput:audioInput];
-            }
-            audioOutput = [[AVCaptureAudioDataOutput alloc] init];
-            
-            if ([_captureSession canAddOutput:audioOutput])
-            {
-                [_captureSession addOutput:audioOutput];
-            }
-            else
-            {
-                NSLog(@"Couldn't add audio output");
-            }
-            [audioOutput setSampleBufferDelegate:self queue:audioProcessingQueue];
-        }
-        
-        [_captureSession commitConfiguration];
-        
-        [super setAudioEncodingTarget:newValue];
-    });
+    if (newValue) {
+        /* Add audio inputs and outputs, if necessary */
+        addedAudioInputsDueToEncodingTarget |= [self addAudioInputsAndOutputs];
+    } else if (addedAudioInputsDueToEncodingTarget) {
+        /* Remove audio inputs and outputs, if they were added by previously setting the audio encoding target */
+        [self removeAudioInputsAndOutputs];
+        addedAudioInputsDueToEncodingTarget = NO;
+    }
+    
+    [super setAudioEncodingTarget:newValue];
 }
 
 - (void)updateOrientationSendToTargets;
