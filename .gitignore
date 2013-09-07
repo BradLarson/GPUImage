@@ -8,6 +8,7 @@ examples/FilterShowcase/build*
  
 # Exclude OS X folder attributes
 .DS_Store
+.svn
  
 # Exclude user-specific XCode 3 and 4 files
 *.mode1

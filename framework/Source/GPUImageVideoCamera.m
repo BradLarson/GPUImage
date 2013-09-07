@@ -2,13 +2,30 @@
 #import "GPUImageMovieWriter.h"
 #import "GPUImageFilter.h"
 
+// Color Conversion Constants (YUV to RGB) including adjustment from 16-235/16-240 (video range)
+
+// BT.601, which is the standard for SDTV.
+const GLfloat kColorConversion601[] = {
+    1.164,  1.164, 1.164,
+    0.0, -0.392, 2.017,
+    1.596, -0.813,   0.0,
+};
+
+// BT.709, which is the standard for HDTV.
+const GLfloat kColorConversion709[] = {
+    1.164,  1.164, 1.164,
+    0.0, -0.213, 2.112,
+    1.793, -0.533,   0.0,
+};
+
 NSString *const kGPUImageYUVVideoRangeConversionForRGFragmentShaderString = SHADER_STRING
 (
  varying highp vec2 textureCoordinate;
  
  uniform sampler2D luminanceTexture;
  uniform sampler2D chrominanceTexture;
- 
+ uniform mediump mat3 colorConversionMatrix;
+
  void main()
  {
      mediump vec3 yuv;
@@ -16,18 +33,7 @@ NSString *const kGPUImageYUVVideoRangeConversionForRGFragmentShaderString = SHAD
      
      yuv.x = texture2D(luminanceTexture, textureCoordinate).r;
      yuv.yz = texture2D(chrominanceTexture, textureCoordinate).rg - vec2(0.5, 0.5);
-     
-     // BT.601, which is the standard for SDTV is provided as a reference
-     /*
-      rgb = mat3(      1,       1,       1,
-      0, -.39465, 2.03211,
-      1.13983, -.58060,       0) * yuv;
-      */
-     
-     // Using BT.709 which is the standard for HDTV
-     rgb = mat3(      1,       1,       1,
-                0, -.21482, 2.12798,
-                1.28033, -.38059,       0) * yuv;
+     rgb = colorConversionMatrix * yuv;
      
      gl_FragColor = vec4(rgb, 1);
  }
@@ -39,7 +45,8 @@ NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = SHAD
  
  uniform sampler2D luminanceTexture;
  uniform sampler2D chrominanceTexture;
- 
+ uniform mediump mat3 colorConversionMatrix;
+
  void main()
  {
      mediump vec3 yuv;
@@ -47,22 +54,11 @@ NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = SHAD
      
      yuv.x = texture2D(luminanceTexture, textureCoordinate).r;
      yuv.yz = texture2D(chrominanceTexture, textureCoordinate).ra - vec2(0.5, 0.5);
-     
-     // BT.601, which is the standard for SDTV is provided as a reference
-     /*
-      rgb = mat3(      1,       1,       1,
-      0, -.39465, 2.03211,
-      1.13983, -.58060,       0) * yuv;
-      */
-     
-     // Using BT.709 which is the standard for HDTV
-     rgb = mat3(      1,       1,       1,
-                0, -.21482, 2.12798,
-                1.28033, -.38059,       0) * yuv;
-     
+     rgb = colorConversionMatrix * yuv;
+
      gl_FragColor = vec4(rgb, 1);
  }
- );
+);
 
 
 #pragma mark -
@@ -81,7 +77,10 @@ NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = SHAD
     GLProgram *yuvConversionProgram;
     GLint yuvConversionPositionAttribute, yuvConversionTextureCoordinateAttribute;
     GLint yuvConversionLuminanceTextureUniform, yuvConversionChrominanceTextureUniform;
+    GLint yuvConversionMatrixUniform;
     GLuint yuvConversionFramebuffer;
+    const GLfloat *_preferredConversion;
+
     
     int imageBufferWidth, imageBufferHeight;
 }
@@ -132,6 +131,7 @@ NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = SHAD
     capturePaused = NO;
     outputRotation = kGPUImageNoRotation;
     captureAsYUV = YES;
+    _preferredConversion = kColorConversion709;
 
     runSynchronouslyOnVideoProcessingQueue(^{
         
@@ -169,7 +169,8 @@ NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = SHAD
             yuvConversionTextureCoordinateAttribute = [yuvConversionProgram attributeIndex:@"inputTextureCoordinate"];
             yuvConversionLuminanceTextureUniform = [yuvConversionProgram uniformIndex:@"luminanceTexture"];
             yuvConversionChrominanceTextureUniform = [yuvConversionProgram uniformIndex:@"chrominanceTexture"];
-            
+            yuvConversionMatrixUniform = [yuvConversionProgram uniformIndex:@"colorConversionMatrix"];
+
             [GPUImageContext setActiveShaderProgram:yuvConversionProgram];
             
             glEnableVertexAttribArray(yuvConversionPositionAttribute);
@@ -559,7 +560,14 @@ NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = SHAD
     CVImageBufferRef cameraFrame = CMSampleBufferGetImageBuffer(sampleBuffer);
     int bufferWidth = CVPixelBufferGetWidth(cameraFrame);
     int bufferHeight = CVPixelBufferGetHeight(cameraFrame);
-    
+    CFTypeRef colorAttachments = CVBufferGetAttachment(cameraFrame, kCVImageBufferYCbCrMatrixKey, NULL);
+    if (colorAttachments == kCVImageBufferYCbCrMatrix_ITU_R_601_4) {
+        _preferredConversion = kColorConversion601;
+    }
+    else {
+        _preferredConversion = kColorConversion709;
+    }
+
 	CMTime currentTime = CMSampleBufferGetPresentationTimeStamp(sampleBuffer);
 
     [GPUImageContext useImageProcessingContext];
@@ -757,6 +765,8 @@ NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = SHAD
 	glBindTexture(GL_TEXTURE_2D, chrominanceTexture);
 	glUniform1i(yuvConversionChrominanceTextureUniform, 5);
 
+    glUniformMatrix3fv(yuvConversionMatrixUniform, 1, GL_FALSE, _preferredConversion);
+
     glVertexAttribPointer(yuvConversionPositionAttribute, 2, GL_FLOAT, 0, 0, squareVertices);
 	glVertexAttribPointer(yuvConversionTextureCoordinateAttribute, 2, GL_FLOAT, 0, 0, textureCoordinates);
     
@@ -926,8 +936,8 @@ NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = SHAD
                 {
                     case UIInterfaceOrientationPortrait:outputRotation = kGPUImageRotateRight; break;
                     case UIInterfaceOrientationPortraitUpsideDown:outputRotation = kGPUImageRotateLeft; break;
-                    case UIInterfaceOrientationLandscapeLeft:outputRotation = kGPUImageNoRotation; break;
-                    case UIInterfaceOrientationLandscapeRight:outputRotation = kGPUImageRotate180; break;
+                    case UIInterfaceOrientationLandscapeLeft:outputRotation = kGPUImageRotate180; break;
+                    case UIInterfaceOrientationLandscapeRight:outputRotation = kGPUImageNoRotation; break;
                 }
             }
         }
@@ -937,20 +947,20 @@ NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = SHAD
             {
                 switch(_outputImageOrientation)
                 {
-                    case UIInterfaceOrientationPortrait:outputRotation = kGPUImageRotateRight; break;
-                    case UIInterfaceOrientationPortraitUpsideDown:outputRotation = kGPUImageRotateLeft; break;
-                    case UIInterfaceOrientationLandscapeLeft:outputRotation = kGPUImageRotate180; break;
-                    case UIInterfaceOrientationLandscapeRight:outputRotation = kGPUImageNoRotation; break;
+                    case UIInterfaceOrientationPortrait:outputRotation = kGPUImageRotateRightFlipVertical; break;
+                    case UIInterfaceOrientationPortraitUpsideDown:outputRotation = kGPUImageRotateRightFlipHorizontal; break;
+                    case UIInterfaceOrientationLandscapeLeft:outputRotation = kGPUImageFlipHorizonal; break;
+                    case UIInterfaceOrientationLandscapeRight:outputRotation = kGPUImageFlipVertical; break;
                 }
             }
             else
             {
                 switch(_outputImageOrientation)
                 {
-                    case UIInterfaceOrientationPortrait:outputRotation = kGPUImageRotateRightFlipVertical; break;
-                    case UIInterfaceOrientationPortraitUpsideDown:outputRotation = kGPUImageRotateRight; break;
-                    case UIInterfaceOrientationLandscapeLeft:outputRotation = kGPUImageFlipVertical; break;
-                    case UIInterfaceOrientationLandscapeRight:outputRotation = kGPUImageFlipHorizonal; break;
+                    case UIInterfaceOrientationPortrait:outputRotation = kGPUImageRotateRight; break;
+                    case UIInterfaceOrientationPortraitUpsideDown:outputRotation = kGPUImageRotateLeft; break;
+                    case UIInterfaceOrientationLandscapeLeft:outputRotation = kGPUImageNoRotation; break;
+                    case UIInterfaceOrientationLandscapeRight:outputRotation = kGPUImageRotate180; break;
                 }
             }
         }
