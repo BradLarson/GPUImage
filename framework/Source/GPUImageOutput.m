@@ -456,8 +456,10 @@ void reportAvailableMemoryForGPUImage(NSString *tag)
 - (void)setAudioEncodingTarget:(GPUImageMovieWriter *)newValue;
 {    
     _audioEncodingTarget = newValue;
-    
-    _audioEncodingTarget.hasAudioTrack = YES;
+    if( ! _audioEncodingTarget.hasAudioTrack )
+    {
+        _audioEncodingTarget.hasAudioTrack = YES;
+    }
 }
 
 @end
