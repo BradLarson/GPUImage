@@ -256,7 +256,7 @@
         return;
     }
 
-    __weak GPUImageMovie *weakSelf = self;
+    __unsafe_unretained GPUImageMovie *weakSelf = self;
 
     if (synchronizedMovieWriter != nil)
     {
@@ -336,7 +336,7 @@
 	CMTime outputItemTime = [playerItemOutput itemTimeForHostTime:nextVSync];
 
 	if ([playerItemOutput hasNewPixelBufferForItemTime:outputItemTime]) {
-        __weak GPUImageMovie *weakSelf = self;
+        __unsafe_unretained GPUImageMovie *weakSelf = self;
 		CVPixelBufferRef pixelBuffer = [playerItemOutput copyPixelBufferForItemTime:outputItemTime itemTimeForDisplay:NULL];
         if( pixelBuffer )
             runSynchronouslyOnVideoProcessingQueue(^{
@@ -373,7 +373,7 @@
                 previousActualFrameTime = CFAbsoluteTimeGetCurrent();
             }
 
-            __weak GPUImageMovie *weakSelf = self;
+            __unsafe_unretained GPUImageMovie *weakSelf = self;
             runSynchronouslyOnVideoProcessingQueue(^{
                 [weakSelf processMovieFrame:sampleBufferRef];
                 CMSampleBufferInvalidate(sampleBufferRef);
