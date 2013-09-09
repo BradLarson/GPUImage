@@ -289,8 +289,6 @@ void reportAvailableMemoryForGPUImage(NSString *tag)
 {
     GPUImagePicture *stillImageSource = [[GPUImagePicture alloc] initWithCGImage:imageToFilter];
     
-    [self prepareForImageCapture];
-    
     [stillImageSource addTarget:(id<GPUImageInput>)self];
     [stillImageSource processImage];
     
