@@ -146,10 +146,7 @@
 
 - (void)dealloc
 {
-    runSynchronouslyOnVideoProcessingQueue(^{
-        [displayLink removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
-        displayLink = nil;
-    });
+    [self endProcessing];
     if ([GPUImageContext supportsFastTextureUpload])
     {
         CFRelease(coreVideoTextureCache);
@@ -621,6 +618,11 @@
 {
     keepLooping = NO;
     [displayLink setPaused:YES];
+    runSynchronouslyOnVideoProcessingQueue(^{
+        [displayLink removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+        displayLink = nil;
+        [playerItemOutput setDelegate:nil queue:nil];
+    });
 
     for (id<GPUImageInput> currentTarget in targets)
     {
