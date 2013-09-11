@@ -302,20 +302,22 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 
 - (void)finishRecording;
 {
-    [self finishRecordingWithCompletionHandler:nil];
+    [self finishRecordingWithCompletionHandler:NULL];
 }
 
 - (void)finishRecordingWithCompletionHandler:(void (^)(void))handler;
 {
     runSynchronouslyOnVideoProcessingQueue(^{
-        if (assetWriter.status == AVAssetWriterStatusCompleted || assetWriter.status == AVAssetWriterStatusCancelled
-            || assetWriter.status == AVAssetWriterStatusUnknown)
-        {
-            return;
-        }
-
-        isRecording = NO;
+        
         dispatch_sync(movieWritingQueue, ^{
+            isRecording = NO;
+            
+            if (assetWriter.status == AVAssetWriterStatusCompleted || assetWriter.status == AVAssetWriterStatusCancelled || assetWriter.status == AVAssetWriterStatusUnknown)
+            {
+                if (handler)
+                    runAsynchronouslyOnVideoProcessingQueue(handler);
+                return;
+            }
             if( assetWriter.status == AVAssetWriterStatusWriting && ! videoEncodingIsFinished )
             {
                 videoEncodingIsFinished = YES;
@@ -329,7 +331,8 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 #if (!defined(__IPHONE_6_0) || (__IPHONE_OS_VERSION_MAX_ALLOWED < __IPHONE_6_0))
             // Not iOS 6 SDK
             [assetWriter finishWriting];
-            if (handler) handler();
+            if (handler)
+                runAsynchronouslyOnVideoProcessingQueue(handler);
 #else
             // iOS 6 SDK
             if ([assetWriter respondsToSelector:@selector(finishWritingWithCompletionHandler:)]) {
@@ -342,7 +345,8 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
                 [assetWriter finishWriting];
 #pragma clang diagnostic pop
-                if (handler) handler();
+                if (handler)
+                    runAsynchronouslyOnVideoProcessingQueue(handler);
             }
 #endif
         });
