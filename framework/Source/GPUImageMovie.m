@@ -622,6 +622,7 @@
         [displayLink removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
         displayLink = nil;
         [playerItemOutput setDelegate:nil queue:nil];
+        [_playerItem removeOutput:playerItemOutput];
     });
 
     for (id<GPUImageInput> currentTarget in targets)
