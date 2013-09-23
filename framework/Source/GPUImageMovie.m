@@ -457,6 +457,8 @@
 
     CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
 
+    //NSLog(@"Read a video frame: %@", CFBridgingRelease(CMTimeCopyDescription(kCFAllocatorDefault, currentSampleTime)));
+
     if ([GPUImageContext supportsFastTextureUpload])
     {
         CVOpenGLESTextureRef luminanceTextureRef = NULL;
@@ -652,8 +654,8 @@
 
 - (void)convertYUVToRGBOutput;
 {
-    [GPUImageContext setActiveShaderProgram:yuvConversionProgram];
     [self setYUVConversionFBO];
+    [GPUImageContext setActiveShaderProgram:yuvConversionProgram];
 
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
