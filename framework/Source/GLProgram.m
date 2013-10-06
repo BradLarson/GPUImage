@@ -114,7 +114,9 @@ typedef void (*GLLogFunction) (GLuint program,
     
     glGetShaderiv(*shader, GL_COMPILE_STATUS, &status);
 
+#ifndef DEBUG
 	if (status != GL_TRUE)
+#endif
 	{
 		GLint logLength;
 		glGetShaderiv(*shader, GL_INFO_LOG_LENGTH, &logLength);
@@ -201,7 +203,7 @@ typedef void (*GLLogFunction) (GLuint program,
     char *logBytes = malloc(logLength);
     logFunc(object, logLength, &charsWritten, logBytes);
     NSString *log = [[NSString alloc] initWithBytes:logBytes 
-                                              length:logLength 
+                                              length:charsWritten
                                             encoding:NSUTF8StringEncoding];
     free(logBytes);
     return log;

@@ -338,7 +338,7 @@
         if( pixelBuffer )
             runSynchronouslyOnVideoProcessingQueue(^{
                 [weakSelf processMovieFrame:pixelBuffer withSampleTime:outputItemTime];
-                CFRelease(pixelBuffer);
+                CVBufferRelease(pixelBuffer);
             });
 	}
 }
@@ -436,7 +436,9 @@
     
     CMTime currentSampleTime = CMSampleBufferGetOutputPresentationTimeStamp(movieSampleBuffer);
     CVImageBufferRef movieFrame = CMSampleBufferGetImageBuffer(movieSampleBuffer);
+    CFRetain(movieFrame);
     [self processMovieFrame:movieFrame withSampleTime:currentSampleTime];
+    CFRelease(movieFrame);
 }
 
 - (void)processMovieFrame:(CVPixelBufferRef)movieFrame withSampleTime:(CMTime)currentSampleTime
