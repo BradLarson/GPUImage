@@ -704,6 +704,19 @@ NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = SHAD
 
         CFRetain(sampleBuffer);
         runAsynchronouslyOnVideoProcessingQueue(^{
+            // JVA: 7/7/13
+            // Just need the decibels…
+            if (self.delegate)
+            {
+                NSInteger channelCount = 0;
+                float decibels = 0.f;
+                for (AVCaptureAudioChannel *audioChannel in [connection audioChannels]){
+                    decibels += [audioChannel averagePowerLevel];
+                    //            peakHoldValue += [audioChannel peakHoldLevel];
+                    channelCount += 1;
+                }
+                [self.delegate updateAudioLevel:decibels/channelCount];
+            }
             [self processAudioSampleBuffer:sampleBuffer];
             CFRelease(sampleBuffer);
 //            dispatch_semaphore_signal(frameRenderingSemaphore);
@@ -719,7 +732,7 @@ NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = SHAD
         CFRetain(sampleBuffer);
         runAsynchronouslyOnVideoProcessingQueue(^{
             //Feature Detection Hook.
-            if (self.delegate)
+            if (self.delegate && [self.delegate respondsToSelector:@selector(willOutputSampleBuffer:)])
             {
                 [self.delegate willOutputSampleBuffer:sampleBuffer];
             }

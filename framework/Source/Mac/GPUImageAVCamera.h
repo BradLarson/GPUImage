@@ -7,6 +7,8 @@
 //Delegate Protocal for Face Detection.
 @protocol GPUImageVideoCameraDelegate <NSObject>
 
+-(void)updateAudioLevel:(float)decibels;
+
 @optional
 - (void)willOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer;
 @end

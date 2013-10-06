@@ -241,6 +241,28 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
     assetWriterPixelBufferInput = [AVAssetWriterInputPixelBufferAdaptor assetWriterInputPixelBufferAdaptorWithAssetWriterInput:assetWriterVideoInput sourcePixelBufferAttributes:sourcePixelBufferAttributesDictionary];
     
     [assetWriter addInput:assetWriterVideoInput];
+
+    // ***** JVA
+    // Add the audio input
+    AudioChannelLayout acl;
+    bzero( &acl, sizeof(acl));
+    acl.mChannelLayoutTag = kAudioChannelLayoutTag_Mono;
+    NSDictionary* audioOutputSettings = nil;
+    audioOutputSettings = [NSDictionary dictionaryWithObjectsAndKeys:
+                           [ NSNumber numberWithInt: kAudioFormatMPEG4AAC ], AVFormatIDKey,
+                           [ NSNumber numberWithInt: 1 ], AVNumberOfChannelsKey,
+                           [ NSNumber numberWithFloat: 44100.0 ], AVSampleRateKey,
+                           [ NSNumber numberWithInt: 64000 ], AVEncoderBitRateKey,
+                           [ NSData dataWithBytes: &acl length: sizeof( acl ) ], AVChannelLayoutKey,
+                           nil];
+
+    AVAssetWriterInput *_audioWriterInput = [AVAssetWriterInput
+                                             assetWriterInputWithMediaType: AVMediaTypeAudio
+                                             outputSettings: audioOutputSettings ];
+
+    _audioWriterInput.expectsMediaDataInRealTime = YES;
+
+    [assetWriter addInput:_audioWriterInput];
 }
 
 - (void)startRecording;
