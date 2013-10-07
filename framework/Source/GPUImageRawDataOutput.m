@@ -472,4 +472,14 @@
     }
 }
 
+- (void)setImageSize:(CGSize)newImageSize {
+    imageSize = newImageSize;
+    [self destroyDataFBO];
+    if (_rawBytesForImage != NULL && (![GPUImageContext supportsFastTextureUpload]))
+    {
+        free(_rawBytesForImage);
+        _rawBytesForImage = NULL;
+    }
+}
+
 @end
