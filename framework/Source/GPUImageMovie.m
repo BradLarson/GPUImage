@@ -302,6 +302,7 @@
     runSynchronouslyOnVideoProcessingQueue(^{
         displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(displayLinkCallback:)];
         [displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+        [displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:UITrackingRunLoopMode];
         [displayLink setPaused:YES];
 
         dispatch_queue_t videoProcessingQueue = [GPUImageContext sharedContextQueue];
@@ -624,6 +625,7 @@
     [displayLink setPaused:YES];
     runSynchronouslyOnVideoProcessingQueue(^{
         [displayLink removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+        [displayLink removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:UITrackingRunLoopMode];
         displayLink = nil;
         [playerItemOutput setDelegate:nil queue:nil];
         [_playerItem removeOutput:playerItemOutput];
