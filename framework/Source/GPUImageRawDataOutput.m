@@ -383,6 +383,13 @@
 
 - (void)endProcessing;
 {
+    runSynchronouslyOnVideoProcessingQueue(^{
+        [GPUImageContext useImageProcessingContext];
+        if ([GPUImageContext supportsFastTextureUpload])
+        {
+            CVPixelBufferUnlockBaseAddress(renderTarget, 0);
+        }
+    });
 }
 
 - (BOOL)shouldIgnoreUpdatesToThisTarget;
