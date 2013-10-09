@@ -70,8 +70,6 @@ NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = SHAD
 	AVCaptureAudioDataOutput *audioOutput;
     NSDate *startingCaptureTime;
 	
-	NSInteger _frameRate;
-    
     dispatch_queue_t cameraProcessingQueue, audioProcessingQueue;
     
     GLProgram *yuvConversionProgram;
@@ -102,6 +100,7 @@ NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = SHAD
 @synthesize outputImageOrientation = _outputImageOrientation;
 @synthesize delegate = _delegate;
 @synthesize horizontallyMirrorFrontFacingCamera = _horizontallyMirrorFrontFacingCamera, horizontallyMirrorRearFacingCamera = _horizontallyMirrorRearFacingCamera;
+@synthesize frameRate = _frameRate;
 
 #pragma mark -
 #pragma mark Initialization and teardown
@@ -521,7 +520,7 @@ NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = SHAD
 	[_captureSession commitConfiguration];
 }
 
-- (void)setFrameRate:(NSInteger)frameRate;
+- (void)setFrameRate:(int32_t)frameRate;
 {
 	_frameRate = frameRate;
 	
@@ -542,11 +541,14 @@ NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = SHAD
             
             for (AVCaptureConnection *connection in videoOutput.connections)
             {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
                 if ([connection respondsToSelector:@selector(setVideoMinFrameDuration:)])
                     connection.videoMinFrameDuration = CMTimeMake(1, _frameRate);
                 
                 if ([connection respondsToSelector:@selector(setVideoMaxFrameDuration:)])
                     connection.videoMaxFrameDuration = CMTimeMake(1, _frameRate);
+#pragma clang diagnostic pop
             }
         }
         
@@ -568,18 +570,21 @@ NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = SHAD
             
             for (AVCaptureConnection *connection in videoOutput.connections)
             {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
                 if ([connection respondsToSelector:@selector(setVideoMinFrameDuration:)])
                     connection.videoMinFrameDuration = kCMTimeInvalid; // This sets videoMinFrameDuration back to default
                 
                 if ([connection respondsToSelector:@selector(setVideoMaxFrameDuration:)])
                     connection.videoMaxFrameDuration = kCMTimeInvalid; // This sets videoMaxFrameDuration back to default
+#pragma clang diagnostic pop
             }
         }
         
 	}
 }
 
-- (NSInteger)frameRate;
+- (int32_t)frameRate;
 {
 	return _frameRate;
 }
