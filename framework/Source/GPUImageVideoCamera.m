@@ -527,25 +527,55 @@ NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = SHAD
 	
 	if (_frameRate > 0)
 	{
-		for (AVCaptureConnection *connection in videoOutput.connections)
-		{
-			if ([connection respondsToSelector:@selector(setVideoMinFrameDuration:)])
-				connection.videoMinFrameDuration = CMTimeMake(1, _frameRate);
-			
-			if ([connection respondsToSelector:@selector(setVideoMaxFrameDuration:)])
-				connection.videoMaxFrameDuration = CMTimeMake(1, _frameRate);
-		}
+		if ([_inputCamera respondsToSelector:@selector(setActiveVideoMinFrameDuration:)] &&
+            [_inputCamera respondsToSelector:@selector(setActiveVideoMaxFrameDuration:)]) {
+            
+            NSError *error;
+            [_inputCamera lockForConfiguration:&error];
+            if (error == nil) {
+                [_inputCamera setActiveVideoMinFrameDuration:CMTimeMake(1, _frameRate)];
+                [_inputCamera setActiveVideoMaxFrameDuration:CMTimeMake(1, _frameRate)];
+            }
+            [_inputCamera unlockForConfiguration];
+            
+        } else {
+            
+            for (AVCaptureConnection *connection in videoOutput.connections)
+            {
+                if ([connection respondsToSelector:@selector(setVideoMinFrameDuration:)])
+                    connection.videoMinFrameDuration = CMTimeMake(1, _frameRate);
+                
+                if ([connection respondsToSelector:@selector(setVideoMaxFrameDuration:)])
+                    connection.videoMaxFrameDuration = CMTimeMake(1, _frameRate);
+            }
+        }
+        
 	}
 	else
 	{
-		for (AVCaptureConnection *connection in videoOutput.connections)
-		{
-			if ([connection respondsToSelector:@selector(setVideoMinFrameDuration:)])
-				connection.videoMinFrameDuration = kCMTimeInvalid; // This sets videoMinFrameDuration back to default
-			
-			if ([connection respondsToSelector:@selector(setVideoMaxFrameDuration:)])
-				connection.videoMaxFrameDuration = kCMTimeInvalid; // This sets videoMaxFrameDuration back to default
-		}
+		if ([_inputCamera respondsToSelector:@selector(setActiveVideoMinFrameDuration:)] &&
+            [_inputCamera respondsToSelector:@selector(setActiveVideoMaxFrameDuration:)]) {
+            
+            NSError *error;
+            [_inputCamera lockForConfiguration:&error];
+            if (error == nil) {
+                [_inputCamera setActiveVideoMinFrameDuration:kCMTimeInvalid];
+                [_inputCamera setActiveVideoMaxFrameDuration:kCMTimeInvalid];
+            }
+            [_inputCamera unlockForConfiguration];
+            
+        } else {
+            
+            for (AVCaptureConnection *connection in videoOutput.connections)
+            {
+                if ([connection respondsToSelector:@selector(setVideoMinFrameDuration:)])
+                    connection.videoMinFrameDuration = kCMTimeInvalid; // This sets videoMinFrameDuration back to default
+                
+                if ([connection respondsToSelector:@selector(setVideoMaxFrameDuration:)])
+                    connection.videoMaxFrameDuration = kCMTimeInvalid; // This sets videoMaxFrameDuration back to default
+            }
+        }
+        
 	}
 }
 
