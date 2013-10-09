@@ -129,7 +129,7 @@ NSString *const kGPUImageLineGeneratorFragmentShaderString = SHADER_STRING
         glEnable(GL_BLEND);
         
         glVertexAttribPointer(filterPositionAttribute, 2, GL_FLOAT, 0, 0, lineCoordinates);
-        glDrawArrays(GL_LINES, 0, (numberOfLines * 2));
+        glDrawArrays(GL_LINES, 0, ((unsigned int)numberOfLines * 2));
         
         glDisable(GL_BLEND);
 

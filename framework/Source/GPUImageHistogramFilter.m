@@ -287,19 +287,19 @@ NSString *const kGPUImageHistogramAccumulationFragmentShaderString = SHADER_STRI
     glBlendFunc(GL_ONE, GL_ONE);
     glEnable(GL_BLEND);
     
-	glVertexAttribPointer(filterPositionAttribute, 4, GL_UNSIGNED_BYTE, 0, (_downsamplingFactor - 1) * 4, vertexSamplingCoordinates);
+	glVertexAttribPointer(filterPositionAttribute, 4, GL_UNSIGNED_BYTE, 0, ((unsigned int)_downsamplingFactor - 1) * 4, vertexSamplingCoordinates);
     glDrawArrays(GL_POINTS, 0, inputTextureSize.width * inputTextureSize.height / (CGFloat)_downsamplingFactor);
 
     if (histogramType == kGPUImageHistogramRGB)
     {
         [GPUImageContext setActiveShaderProgram:secondFilterProgram];
         
-        glVertexAttribPointer(secondFilterPositionAttribute, 4, GL_UNSIGNED_BYTE, 0, (_downsamplingFactor - 1) * 4, vertexSamplingCoordinates);
+        glVertexAttribPointer(secondFilterPositionAttribute, 4, GL_UNSIGNED_BYTE, 0, ((unsigned int)_downsamplingFactor - 1) * 4, vertexSamplingCoordinates);
         glDrawArrays(GL_POINTS, 0, inputTextureSize.width * inputTextureSize.height / (CGFloat)_downsamplingFactor);
 
         [GPUImageContext setActiveShaderProgram:thirdFilterProgram];
         
-        glVertexAttribPointer(thirdFilterPositionAttribute, 4, GL_UNSIGNED_BYTE, 0, (_downsamplingFactor - 1) * 4, vertexSamplingCoordinates);
+        glVertexAttribPointer(thirdFilterPositionAttribute, 4, GL_UNSIGNED_BYTE, 0, ((unsigned int)_downsamplingFactor - 1) * 4, vertexSamplingCoordinates);
         glDrawArrays(GL_POINTS, 0, inputTextureSize.width * inputTextureSize.height / (CGFloat)_downsamplingFactor);
     }
     
