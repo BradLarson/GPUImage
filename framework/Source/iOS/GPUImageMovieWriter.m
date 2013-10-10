@@ -16,6 +16,29 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
  }
 );
 
+@interface RenderObjects : NSObject {
+@public
+    CVPixelBufferRef buffer;
+    CVOpenGLESTextureRef texture;
+}
+@end
+
+@implementation RenderObjects
+
++ (RenderObjects*)renderObjectsWith:(CVOpenGLESTextureRef)texture and:(CVPixelBufferRef)buffer {
+    RenderObjects *obj = [[self alloc] init];
+    obj->texture = texture;
+    obj->buffer = buffer;
+    return obj;
+}
+
+- (void)dealloc {
+    if( texture )
+        CFRelease(texture);
+    CVPixelBufferRelease(buffer);
+}
+
+@end
 
 @interface GPUImageMovieWriter ()
 {
@@ -41,9 +64,8 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 // Frame rendering
 - (void)createDataFBO;
 - (void)destroyDataFBO;
-- (void)setFilterFBO;
-
-- (void)renderAtInternalSize;
+- (RenderObjects*)setFilterFBO;
+- (RenderObjects*)renderAtInternalSize;
 
 @end
 
@@ -544,34 +566,30 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
             {
                 CFRelease(coreVideoTextureCache);
             }
-            
-            if (renderTexture)
-            {
-                CFRelease(renderTexture);
-            }
-            if (renderTarget)
-            {
-                CVPixelBufferRelease(renderTarget);
-            }
-            
         }
     });
 }
 
-- (void)setFilterFBO;
+- (RenderObjects*)setFilterFBO;
 {
     if (!movieFramebuffer)
     {
         [self createDataFBO];
     }
 
+    RenderObjects *renderObjects = nil;
+
     // we need to create a new pixel buffer each time because [AVAssetWriterInputPixelBufferAdaptor appendPixelBuffer:withPresentationTime:]
     // says: "Do not modify a CVPixelBuffer or its contents after you have passed it to this method."
     // and if we ignore that, we occasionally get odd output
     if( [GPUImageContext supportsFastTextureUpload] ) {
 
+        CVPixelBufferRef renderTarget = nil;
+
         // Code originally sourced from http://allmybrain.com/2011/12/08/rendering-to-a-texture-with-ios-5-texture-cache-api/
         CVPixelBufferPoolCreatePixelBuffer (NULL, [assetWriterPixelBufferInput pixelBufferPool], &renderTarget);
+
+        CVOpenGLESTextureRef renderTexture = nil;
 
         CVOpenGLESTextureCacheCreateTextureFromImage (kCFAllocatorDefault, coreVideoTextureCache, renderTarget,
                                                       NULL, // texture attributes
@@ -594,17 +612,22 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
         GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
     
         NSAssert(status == GL_FRAMEBUFFER_COMPLETE, @"Incomplete filter FBO: %d", status);
+
+        renderObjects = [RenderObjects renderObjectsWith:renderTexture and:renderTarget];
     }
     else
         glBindFramebuffer(GL_FRAMEBUFFER, movieFramebuffer);
     
     glViewport(0, 0, (int)videoSize.width, (int)videoSize.height);
+
+    return renderObjects;
 }
 
-- (void)renderAtInternalSize;
+// Render the frame with swizzled colors, so that they can be uploaded quickly as BGRA frames
+- (RenderObjects*)renderAtInternalSize;
 {
     [GPUImageContext useImageProcessingContext];
-    [self setFilterFBO];
+    RenderObjects *renderObjects = [self setFilterFBO];
     
     [GPUImageContext setActiveShaderProgram:colorSwizzlingProgram];
     
@@ -636,6 +659,8 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
     
     glFinish();
+
+    return renderObjects;
 }
 
 #pragma mark -
@@ -674,29 +699,29 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
         return;
     }
     
-    // Render the frame with swizzled colors, so that they can be uploaded quickly as BGRA frames
-    [self renderAtInternalSize];
+
     
-    CVPixelBufferRef pixel_buffer = NULL;
+    RenderObjects *renderObjects = nil;
     
     if ([GPUImageContext supportsFastTextureUpload])
     {
-        pixel_buffer = renderTarget;
-        CVPixelBufferLockBaseAddress(pixel_buffer, kCVPixelBufferLock_ReadOnly);
+        renderObjects = [self renderAtInternalSize];
+        CVPixelBufferLockBaseAddress(renderObjects->buffer, kCVPixelBufferLock_ReadOnly);
     }
     else
     {
-        CVReturn status = CVPixelBufferPoolCreatePixelBuffer (NULL, [assetWriterPixelBufferInput pixelBufferPool], &pixel_buffer);
-        if ((pixel_buffer == NULL) || (status != kCVReturnSuccess))
+        [self renderAtInternalSize];
+        renderObjects = [[RenderObjects alloc] init];
+        CVReturn status = CVPixelBufferPoolCreatePixelBuffer (NULL, [assetWriterPixelBufferInput pixelBufferPool], &renderObjects->buffer);
+        if ((renderObjects->buffer == NULL) || (status != kCVReturnSuccess))
         {
-            CVPixelBufferRelease(pixel_buffer);
             return;
         }
         else
         {
-            CVPixelBufferLockBaseAddress(pixel_buffer, kCVPixelBufferLock_ReadOnly);
+            CVPixelBufferLockBaseAddress(renderObjects->buffer, kCVPixelBufferLock_ReadOnly);
             
-            GLubyte *pixelBufferData = (GLubyte *)CVPixelBufferGetBaseAddress(pixel_buffer);
+            GLubyte *pixelBufferData = (GLubyte *)CVPixelBufferGetBaseAddress(renderObjects->buffer);
             glReadPixels(0, 0, videoSize.width, videoSize.height, GL_RGBA, GL_UNSIGNED_BYTE, pixelBufferData);
         }
     }
@@ -711,7 +736,7 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
         {
             NSLog(@"2: Had to drop a video frame: %@", CFBridgingRelease(CMTimeCopyDescription(kCFAllocatorDefault, frameTime)));
         }
-        else if(![assetWriterPixelBufferInput appendPixelBuffer:pixel_buffer withPresentationTime:frameTime])
+        else if(![assetWriterPixelBufferInput appendPixelBuffer:renderObjects->buffer withPresentationTime:frameTime])
         {
             NSLog(@"Problem appending pixel buffer at time: %@", CFBridgingRelease(CMTimeCopyDescription(kCFAllocatorDefault, frameTime)));
         }
@@ -719,21 +744,9 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
         {
             //NSLog(@"Wrote a video frame: %@", CFBridgingRelease(CMTimeCopyDescription(kCFAllocatorDefault, frameTime)));
         }
-        CVPixelBufferUnlockBaseAddress(pixel_buffer, kCVPixelBufferLock_ReadOnly);
+        CVPixelBufferUnlockBaseAddress(renderObjects->buffer, kCVPixelBufferLock_ReadOnly);
 
         previousFrameTime = frameTime;
-        
-        CVPixelBufferRelease(pixel_buffer);
-
-        if( [GPUImageContext supportsFastTextureUpload] ) {
-            if( renderTexture ) {
-                // this gets re-created for each frame by CVOpenGLESTextureCacheCreateTextureFromImage()
-                CFRelease(renderTexture);
-                renderTexture = nil;
-            }
-            // we've passed ownership to AVAssetWriterInputPixelBufferAdaptor
-            renderTarget = nil;
-        }
     };
 
     if( _encodingLiveVideo )
