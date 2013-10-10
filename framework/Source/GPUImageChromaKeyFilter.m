@@ -95,14 +95,14 @@ NSString *const kGPUImageChromaKeyFragmentShaderString = SHADER_STRING
     [self setVec3:colorToReplace forUniform:colorToReplaceUniform program:filterProgram];
 }
 
-- (void)setThresholdSensitivity:(CGFloat)newValue;
+- (void)setThresholdSensitivity:(GLfloat)newValue;
 {
     _thresholdSensitivity = newValue;
     
     [self setFloat:_thresholdSensitivity forUniform:thresholdSensitivityUniform program:filterProgram];
 }
 
-- (void)setSmoothing:(CGFloat)newValue;
+- (void)setSmoothing:(GLfloat)newValue;
 {
     _smoothing = newValue;
     

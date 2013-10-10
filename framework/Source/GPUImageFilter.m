@@ -252,8 +252,6 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
 {
     GPUImagePicture *stillImageSource = [[GPUImagePicture alloc] initWithCGImage:imageToFilter];
     
-    [self prepareForImageCapture];
-    
     [stillImageSource addTarget:self];
     [stillImageSource processImage];
     
@@ -491,7 +489,14 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
         1.0f, 0.0f,
         1.0f, 1.0f,
     };
-    
+
+    static const GLfloat rotateRightHorizontalFlipTextureCoordinates[] = {
+        1.0f, 1.0f,
+        1.0f, 0.0f,
+        0.0f, 1.0f,
+        0.0f, 0.0f,
+    };
+
     static const GLfloat rotate180TextureCoordinates[] = {
         1.0f, 1.0f,
         0.0f, 1.0f,
@@ -507,6 +512,7 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
         case kGPUImageFlipVertical: return verticalFlipTextureCoordinates;
         case kGPUImageFlipHorizonal: return horizontalFlipTextureCoordinates;
         case kGPUImageRotateRightFlipVertical: return rotateRightVerticalFlipTextureCoordinates;
+        case kGPUImageRotateRightFlipHorizontal: return rotateRightHorizontalFlipTextureCoordinates;
         case kGPUImageRotate180: return rotate180TextureCoordinates;
     }
 }
@@ -848,6 +854,11 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
         {
             rotatedPoint.x = pointToRotate.y;
             rotatedPoint.y = pointToRotate.x;
+        }; break;
+        case kGPUImageRotateRightFlipHorizontal:
+        {
+            rotatedPoint.x = 1.0 - pointToRotate.y;
+            rotatedPoint.y = 1.0 - pointToRotate.x;
         }; break;
         case kGPUImageRotate180:
         {

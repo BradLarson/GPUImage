@@ -4,6 +4,12 @@
 #import "GPUImageContext.h"
 #import "GPUImageOutput.h"
 
+extern const GLfloat kColorConversion601[];
+extern const GLfloat kColorConversion709[];
+extern NSString *const kGPUImageYUVVideoRangeConversionForRGFragmentShaderString;
+extern NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString;
+
+
 //Delegate Protocal for Face Detection.
 @protocol GPUImageVideoCameraDelegate <NSObject>
 
@@ -48,7 +54,7 @@
 /**
  Setting this to 0 or below will set the frame rate back to the default setting for a particular preset.
  */
-@property (readwrite) NSInteger frameRate;
+@property (readwrite) int32_t frameRate;
 
 /// Easy way to tell which cameras are present on device
 @property (readonly, getter = isFrontFacingCameraPresent) BOOL frontFacingCameraPresent;
@@ -78,6 +84,17 @@
  @param cameraPosition Camera to capture from
  */
 - (id)initWithSessionPreset:(NSString *)sessionPreset cameraPosition:(AVCaptureDevicePosition)cameraPosition;
+
+/** Add audio capture to the session. Adding inputs and outputs freezes the capture session momentarily, so you
+    can use this method to add the audio inputs and outputs early, if you're going to set the audioEncodingTarget 
+    later. Returns YES is the audio inputs and outputs were added, or NO if they had already been added.
+ */
+- (BOOL)addAudioInputsAndOutputs;
+
+/** Remove the audio capture inputs and outputs from this session. Returns YES if the audio inputs and outputs
+    were removed, or NO is they hadn't already been added.
+ */
+- (BOOL)removeAudioInputsAndOutputs;
 
 /** Tear down the capture session
  */

@@ -260,7 +260,9 @@
         
         CIImage *outputImage = [sepiaCoreImageFilter outputImage];
 
-        [coreImageContext drawImage:outputImage atPoint:CGPointMake(0.0, 0.0) fromRect:[inputImage extent]];
+        CGFloat scale = UIScreen.mainScreen.scale;
+        CGRect s = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width * scale, [[UIScreen mainScreen] bounds].size.height * scale);
+        [coreImageContext drawImage:outputImage inRect:s fromRect:[inputImage extent]];
         
         [self.openGLESContext presentRenderbuffer:GL_RENDERBUFFER];
         elapsedTime = CFAbsoluteTimeGetCurrent() - startTime;
