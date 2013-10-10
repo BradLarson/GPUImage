@@ -481,17 +481,12 @@
                 [self createYUVConversionFBO];
             }
 
+            CVPixelBufferLockBaseAddress(movieFrame, kCVPixelBufferLock_ReadOnly);
+
             CVReturn err;
             // Y-plane
             glActiveTexture(GL_TEXTURE4);
-            if ([GPUImageContext deviceSupportsRedTextures])
-            {
-                err = CVOpenGLESTextureCacheCreateTextureFromImage(kCFAllocatorDefault, coreVideoTextureCache, movieFrame, NULL, GL_TEXTURE_2D, GL_LUMINANCE, bufferWidth, bufferHeight, GL_LUMINANCE, GL_UNSIGNED_BYTE, 0, &luminanceTextureRef);
-            }
-            else
-            {
-                err = CVOpenGLESTextureCacheCreateTextureFromImage(kCFAllocatorDefault, coreVideoTextureCache, movieFrame, NULL, GL_TEXTURE_2D, GL_LUMINANCE, bufferWidth, bufferHeight, GL_LUMINANCE, GL_UNSIGNED_BYTE, 0, &luminanceTextureRef);
-            }
+            err = CVOpenGLESTextureCacheCreateTextureFromImage(kCFAllocatorDefault, coreVideoTextureCache, movieFrame, NULL, GL_TEXTURE_2D, GL_LUMINANCE, bufferWidth, bufferHeight, GL_LUMINANCE, GL_UNSIGNED_BYTE, 0, &luminanceTextureRef);
             if (err)
             {
                 NSLog(@"Error at CVOpenGLESTextureCacheCreateTextureFromImage %d", err);
@@ -504,14 +499,7 @@
 
             // UV-plane
             glActiveTexture(GL_TEXTURE5);
-            if ([GPUImageContext deviceSupportsRedTextures])
-            {
-                err = CVOpenGLESTextureCacheCreateTextureFromImage(kCFAllocatorDefault, coreVideoTextureCache, movieFrame, NULL, GL_TEXTURE_2D, GL_LUMINANCE_ALPHA, bufferWidth/2, bufferHeight/2, GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE, 1, &chrominanceTextureRef);
-            }
-            else
-            {
-                err = CVOpenGLESTextureCacheCreateTextureFromImage(kCFAllocatorDefault, coreVideoTextureCache, movieFrame, NULL, GL_TEXTURE_2D, GL_LUMINANCE_ALPHA, bufferWidth/2, bufferHeight/2, GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE, 1, &chrominanceTextureRef);
-            }
+            err = CVOpenGLESTextureCacheCreateTextureFromImage(kCFAllocatorDefault, coreVideoTextureCache, movieFrame, NULL, GL_TEXTURE_2D, GL_LUMINANCE_ALPHA, bufferWidth/2, bufferHeight/2, GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE, 1, &chrominanceTextureRef);
             if (err)
             {
                 NSLog(@"Error at CVOpenGLESTextureCacheCreateTextureFromImage %d", err);
@@ -527,6 +515,8 @@
                 [self convertYUVToRGBOutput];
             }
 
+            CVPixelBufferUnlockBaseAddress(movieFrame, kCVPixelBufferLock_ReadOnly);
+
             for (id<GPUImageInput> currentTarget in targets)
             {
                 NSInteger indexOfObject = [targets indexOfObject:currentTarget];
@@ -539,14 +529,13 @@
                 [currentTarget newFrameReadyAtTime:currentSampleTime atIndex:targetTextureIndex];
             }
 
-            CVPixelBufferUnlockBaseAddress(movieFrame, 0);
-            CVOpenGLESTextureCacheFlush(coreVideoTextureCache, 0);
             CFRelease(luminanceTextureRef);
             CFRelease(chrominanceTextureRef);
+            CVOpenGLESTextureCacheFlush(coreVideoTextureCache, 0);
         }
         else
         {
-            CVPixelBufferLockBaseAddress(movieFrame, 0);
+            CVPixelBufferLockBaseAddress(movieFrame, kCVPixelBufferLock_ReadOnly);
 
             CVReturn err = CVOpenGLESTextureCacheCreateTextureFromImage(kCFAllocatorDefault, coreVideoTextureCache, movieFrame, NULL, GL_TEXTURE_2D, GL_RGBA, bufferWidth, bufferHeight, GL_BGRA, GL_UNSIGNED_BYTE, 0, &texture);
 
@@ -576,7 +565,7 @@
                 [currentTarget newFrameReadyAtTime:currentSampleTime atIndex:targetTextureIndex];
             }
 
-            CVPixelBufferUnlockBaseAddress(movieFrame, 0);
+            CVPixelBufferUnlockBaseAddress(movieFrame, kCVPixelBufferLock_ReadOnly);
             CVOpenGLESTextureCacheFlush(coreVideoTextureCache, 0);
             CFRelease(texture);
             
@@ -586,7 +575,7 @@
     else
     {
         // Upload to texture
-        CVPixelBufferLockBaseAddress(movieFrame, 0);
+        CVPixelBufferLockBaseAddress(movieFrame, kCVPixelBufferLock_ReadOnly);
         
         glBindTexture(GL_TEXTURE_2D, outputTexture);
         // Using BGRA extension to pull in video frame data directly
@@ -609,7 +598,7 @@
             [currentTarget setInputSize:currentSize atIndex:targetTextureIndex];
             [currentTarget newFrameReadyAtTime:currentSampleTime atIndex:targetTextureIndex];
         }
-        CVPixelBufferUnlockBaseAddress(movieFrame, 0);
+        CVPixelBufferUnlockBaseAddress(movieFrame, kCVPixelBufferLock_ReadOnly);
     }
     
     if (_runBenchmark)

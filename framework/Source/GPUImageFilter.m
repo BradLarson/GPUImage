@@ -174,7 +174,7 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
 {
     GPUImageFilter *filter = (__bridge_transfer GPUImageFilter*)info;
     
-    CVPixelBufferUnlockBaseAddress([filter renderTarget], 0);
+    CVPixelBufferUnlockBaseAddress([filter renderTarget], kCVPixelBufferLock_ReadOnly);
     if ([filter renderTarget]) {
         CFRelease([filter renderTarget]);
     }
@@ -210,7 +210,7 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
             //        glFlush();
             glFinish();
             CFRetain(renderTarget); // I need to retain the pixel buffer here and release in the data source callback to prevent its bytes from being prematurely deallocated during a photo write operation
-            CVPixelBufferLockBaseAddress(renderTarget, 0);
+            CVPixelBufferLockBaseAddress(renderTarget, kCVPixelBufferLock_ReadOnly);
             self.preventRendering = YES; // Locks don't seem to work, so prevent any rendering to the filter which might overwrite the pixel buffer data until done processing
             rawImagePixels = (GLubyte *)CVPixelBufferGetBaseAddress(renderTarget);
             dataProvider = CGDataProviderCreateWithData((__bridge_retained void*)self, rawImagePixels, paddedBytesForImage, dataProviderUnlockCallback);
@@ -525,9 +525,8 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
     {
         return;
     }
-    
-    [GPUImageContext setActiveShaderProgram:filterProgram];
     [self setFilterFBO];
+    [GPUImageContext setActiveShaderProgram:filterProgram];
     [self setUniformsForProgramAtIndex:0];
     
     glClearColor(backgroundColorRed, backgroundColorGreen, backgroundColorBlue, backgroundColorAlpha);

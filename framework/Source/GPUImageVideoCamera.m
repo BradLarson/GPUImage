@@ -645,7 +645,9 @@ NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = SHAD
                 [self destroyYUVConversionFBO];
                 [self createYUVConversionFBO];
             }
-            
+
+            CVPixelBufferLockBaseAddress(cameraFrame, kCVPixelBufferLock_ReadOnly);
+
             CVReturn err;
             // Y-plane
             glActiveTexture(GL_TEXTURE4);
@@ -694,16 +696,17 @@ NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = SHAD
                 [self convertYUVToRGBOutput];
             }
 
+            CVPixelBufferUnlockBaseAddress(cameraFrame, kCVPixelBufferLock_ReadOnly);
+
             [self updateTargetsForVideoCameraUsingCacheTextureAtWidth:bufferWidth height:bufferHeight time:currentTime];
             
-            CVPixelBufferUnlockBaseAddress(cameraFrame, 0);
-            CVOpenGLESTextureCacheFlush(coreVideoTextureCache, 0);
             CFRelease(luminanceTextureRef);
             CFRelease(chrominanceTextureRef);
+            CVOpenGLESTextureCacheFlush(coreVideoTextureCache, 0);
         }
         else
         {
-            CVPixelBufferLockBaseAddress(cameraFrame, 0);
+            CVPixelBufferLockBaseAddress(cameraFrame, kCVPixelBufferLock_ReadOnly);
             
             CVReturn err = CVOpenGLESTextureCacheCreateTextureFromImage(kCFAllocatorDefault, coreVideoTextureCache, cameraFrame, NULL, GL_TEXTURE_2D, GL_RGBA, bufferWidth, bufferHeight, GL_BGRA, GL_UNSIGNED_BYTE, 0, &texture);
             
@@ -723,7 +726,7 @@ NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = SHAD
             
             [self updateTargetsForVideoCameraUsingCacheTextureAtWidth:bufferWidth height:bufferHeight time:currentTime];
 
-            CVPixelBufferUnlockBaseAddress(cameraFrame, 0);
+            CVPixelBufferUnlockBaseAddress(cameraFrame, kCVPixelBufferLock_ReadOnly);
             CVOpenGLESTextureCacheFlush(coreVideoTextureCache, 0);
             CFRelease(texture);
 
@@ -745,7 +748,7 @@ NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = SHAD
     }
     else
     {
-        CVPixelBufferLockBaseAddress(cameraFrame, 0);
+        CVPixelBufferLockBaseAddress(cameraFrame, kCVPixelBufferLock_ReadOnly);
         
         glBindTexture(GL_TEXTURE_2D, outputTexture);
         
@@ -771,7 +774,7 @@ NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = SHAD
             }
         }
         
-        CVPixelBufferUnlockBaseAddress(cameraFrame, 0);
+        CVPixelBufferUnlockBaseAddress(cameraFrame, kCVPixelBufferLock_ReadOnly);
         
         if (_runBenchmark)
         {

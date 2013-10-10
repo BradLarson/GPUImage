@@ -719,7 +719,7 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
         {
             //NSLog(@"Wrote a video frame: %@", CFBridgingRelease(CMTimeCopyDescription(kCFAllocatorDefault, frameTime)));
         }
-        CVPixelBufferUnlockBaseAddress(pixel_buffer, 0);
+        CVPixelBufferUnlockBaseAddress(pixel_buffer, kCVPixelBufferLock_ReadOnly);
 
         previousFrameTime = frameTime;
         

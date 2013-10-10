@@ -387,7 +387,7 @@
         [GPUImageContext useImageProcessingContext];
         if ([GPUImageContext supportsFastTextureUpload])
         {
-            CVPixelBufferUnlockBaseAddress(renderTarget, 0);
+            CVPixelBufferUnlockBaseAddress(renderTarget, kCVPixelBufferLock_ReadOnly);
         }
     });
 }
@@ -440,7 +440,7 @@
             [GPUImageContext useImageProcessingContext];
             if ([GPUImageContext supportsFastTextureUpload])
             {
-                CVPixelBufferUnlockBaseAddress(renderTarget, 0);
+                CVPixelBufferUnlockBaseAddress(renderTarget, kCVPixelBufferLock_ReadOnly);
                 //            CVOpenGLESTextureCacheFlush(rawDataTextureCache, 0);
             }
             
@@ -449,7 +449,7 @@
             if ([GPUImageContext supportsFastTextureUpload])
             {
                 glFinish();
-                CVPixelBufferLockBaseAddress(renderTarget, 0);
+                CVPixelBufferLockBaseAddress(renderTarget, kCVPixelBufferLock_ReadOnly);
                 _rawBytesForImage = (GLubyte *)CVPixelBufferGetBaseAddress(renderTarget);
             }
             else
