@@ -187,6 +187,7 @@
     
     [inputAsset loadValuesAsynchronouslyForKeys:[NSArray arrayWithObject:@"tracks"] completionHandler: ^{
         runSynchronouslyOnVideoProcessingQueue(^{
+            [GPUImageContext useImageProcessingContext];
             NSError *error = nil;
             AVKeyValueStatus tracksStatus = [inputAsset statusOfValueForKey:@"tracks" error:&error];
             if (!tracksStatus == AVKeyValueStatusLoaded)
@@ -338,6 +339,7 @@
 		CVPixelBufferRef pixelBuffer = [playerItemOutput copyPixelBufferForItemTime:outputItemTime itemTimeForDisplay:NULL];
         if( pixelBuffer )
             runSynchronouslyOnVideoProcessingQueue(^{
+                [GPUImageContext useImageProcessingContext];
                 [weakSelf processMovieFrame:pixelBuffer withSampleTime:outputItemTime];
                 CVBufferRelease(pixelBuffer);
             });
@@ -373,6 +375,7 @@
 
             __unsafe_unretained GPUImageMovie *weakSelf = self;
             runSynchronouslyOnVideoProcessingQueue(^{
+                [GPUImageContext useImageProcessingContext];
                 [weakSelf processMovieFrame:sampleBufferRef];
                 CMSampleBufferInvalidate(sampleBufferRef);
                 CFRelease(sampleBufferRef);
