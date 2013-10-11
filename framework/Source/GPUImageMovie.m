@@ -447,11 +447,11 @@
 
 - (void)processMovieFrame:(CVPixelBufferRef)movieFrame withSampleTime:(CMTime)currentSampleTime
 {
-    int bufferHeight = CVPixelBufferGetHeight(movieFrame);
+    int bufferHeight = (int) CVPixelBufferGetHeight(movieFrame);
 #if TARGET_IPHONE_SIMULATOR
-    int bufferWidth = CVPixelBufferGetBytesPerRow(movieFrame) / 4; // This works around certain movie frame types on the Simulator (see https://github.com/BradLarson/GPUImage/issues/424)
+    int bufferWidth = (int) CVPixelBufferGetBytesPerRow(movieFrame) / 4; // This works around certain movie frame types on the Simulator (see https://github.com/BradLarson/GPUImage/issues/424)
 #else
-    int bufferWidth = CVPixelBufferGetWidth(movieFrame);
+    int bufferWidth = (int) CVPixelBufferGetWidth(movieFrame);
 #endif
     CFTypeRef colorAttachments = CVBufferGetAttachment(movieFrame, kCVImageBufferYCbCrMatrixKey, NULL);
     if (colorAttachments == kCVImageBufferYCbCrMatrix_ITU_R_601_4) {

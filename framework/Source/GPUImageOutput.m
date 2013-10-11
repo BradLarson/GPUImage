@@ -18,7 +18,7 @@ void runOnMainQueueWithoutDeadlocking(void (^block)(void))
 void runSynchronouslyOnVideoProcessingQueue(void (^block)(void))
 {
     dispatch_queue_t videoProcessingQueue = [GPUImageContext sharedContextQueue];
-#if (!defined(__IPHONE_6_0) || (__IPHONE_OS_VERSION_MAX_ALLOWED < __IPHONE_6_0))
+#if (!defined(__IPHONE_6_0) || (__IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_6_0))
     if (dispatch_get_current_queue() == videoProcessingQueue)
 #else
 	if (dispatch_get_specific([GPUImageContext contextKey]))
@@ -35,7 +35,7 @@ void runAsynchronouslyOnVideoProcessingQueue(void (^block)(void))
 {
     dispatch_queue_t videoProcessingQueue = [GPUImageContext sharedContextQueue];
     
-#if (!defined(__IPHONE_6_0) || (__IPHONE_OS_VERSION_MAX_ALLOWED < __IPHONE_6_0))
+#if (!defined(__IPHONE_6_0) || (__IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_6_0))
     if (dispatch_get_current_queue() == videoProcessingQueue)
 #else
     if (dispatch_get_specific([GPUImageContext contextKey]))
@@ -288,8 +288,6 @@ void reportAvailableMemoryForGPUImage(NSString *tag)
 - (CGImageRef)newCGImageByFilteringCGImage:(CGImageRef)imageToFilter orientation:(UIImageOrientation)orientation;
 {
     GPUImagePicture *stillImageSource = [[GPUImagePicture alloc] initWithCGImage:imageToFilter];
-    
-    [self prepareForImageCapture];
     
     [stillImageSource addTarget:(id<GPUImageInput>)self];
     [stillImageSource processImage];

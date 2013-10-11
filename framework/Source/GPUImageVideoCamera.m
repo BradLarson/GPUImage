@@ -70,8 +70,6 @@ NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = SHAD
 	AVCaptureAudioDataOutput *audioOutput;
     NSDate *startingCaptureTime;
 	
-	NSInteger _frameRate;
-    
     dispatch_queue_t cameraProcessingQueue, audioProcessingQueue;
     
     GLProgram *yuvConversionProgram;
@@ -102,6 +100,7 @@ NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = SHAD
 @synthesize outputImageOrientation = _outputImageOrientation;
 @synthesize delegate = _delegate;
 @synthesize horizontallyMirrorFrontFacingCamera = _horizontallyMirrorFrontFacingCamera, horizontallyMirrorRearFacingCamera = _horizontallyMirrorRearFacingCamera;
+@synthesize frameRate = _frameRate;
 
 #pragma mark -
 #pragma mark Initialization and teardown
@@ -521,35 +520,71 @@ NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = SHAD
 	[_captureSession commitConfiguration];
 }
 
-- (void)setFrameRate:(NSInteger)frameRate;
+- (void)setFrameRate:(int32_t)frameRate;
 {
 	_frameRate = frameRate;
 	
 	if (_frameRate > 0)
 	{
-		for (AVCaptureConnection *connection in videoOutput.connections)
-		{
-			if ([connection respondsToSelector:@selector(setVideoMinFrameDuration:)])
-				connection.videoMinFrameDuration = CMTimeMake(1, _frameRate);
-			
-			if ([connection respondsToSelector:@selector(setVideoMaxFrameDuration:)])
-				connection.videoMaxFrameDuration = CMTimeMake(1, _frameRate);
-		}
+		if ([_inputCamera respondsToSelector:@selector(setActiveVideoMinFrameDuration:)] &&
+            [_inputCamera respondsToSelector:@selector(setActiveVideoMaxFrameDuration:)]) {
+            
+            NSError *error;
+            [_inputCamera lockForConfiguration:&error];
+            if (error == nil) {
+                [_inputCamera setActiveVideoMinFrameDuration:CMTimeMake(1, _frameRate)];
+                [_inputCamera setActiveVideoMaxFrameDuration:CMTimeMake(1, _frameRate)];
+            }
+            [_inputCamera unlockForConfiguration];
+            
+        } else {
+            
+            for (AVCaptureConnection *connection in videoOutput.connections)
+            {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+                if ([connection respondsToSelector:@selector(setVideoMinFrameDuration:)])
+                    connection.videoMinFrameDuration = CMTimeMake(1, _frameRate);
+                
+                if ([connection respondsToSelector:@selector(setVideoMaxFrameDuration:)])
+                    connection.videoMaxFrameDuration = CMTimeMake(1, _frameRate);
+#pragma clang diagnostic pop
+            }
+        }
+        
 	}
 	else
 	{
-		for (AVCaptureConnection *connection in videoOutput.connections)
-		{
-			if ([connection respondsToSelector:@selector(setVideoMinFrameDuration:)])
-				connection.videoMinFrameDuration = kCMTimeInvalid; // This sets videoMinFrameDuration back to default
-			
-			if ([connection respondsToSelector:@selector(setVideoMaxFrameDuration:)])
-				connection.videoMaxFrameDuration = kCMTimeInvalid; // This sets videoMaxFrameDuration back to default
-		}
+		if ([_inputCamera respondsToSelector:@selector(setActiveVideoMinFrameDuration:)] &&
+            [_inputCamera respondsToSelector:@selector(setActiveVideoMaxFrameDuration:)]) {
+            
+            NSError *error;
+            [_inputCamera lockForConfiguration:&error];
+            if (error == nil) {
+                [_inputCamera setActiveVideoMinFrameDuration:kCMTimeInvalid];
+                [_inputCamera setActiveVideoMaxFrameDuration:kCMTimeInvalid];
+            }
+            [_inputCamera unlockForConfiguration];
+            
+        } else {
+            
+            for (AVCaptureConnection *connection in videoOutput.connections)
+            {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+                if ([connection respondsToSelector:@selector(setVideoMinFrameDuration:)])
+                    connection.videoMinFrameDuration = kCMTimeInvalid; // This sets videoMinFrameDuration back to default
+                
+                if ([connection respondsToSelector:@selector(setVideoMaxFrameDuration:)])
+                    connection.videoMaxFrameDuration = kCMTimeInvalid; // This sets videoMaxFrameDuration back to default
+#pragma clang diagnostic pop
+            }
+        }
+        
 	}
 }
 
-- (NSInteger)frameRate;
+- (int32_t)frameRate;
 {
 	return _frameRate;
 }
@@ -613,8 +648,8 @@ NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = SHAD
     
     CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
     CVImageBufferRef cameraFrame = CMSampleBufferGetImageBuffer(sampleBuffer);
-    int bufferWidth = CVPixelBufferGetWidth(cameraFrame);
-    int bufferHeight = CVPixelBufferGetHeight(cameraFrame);
+    int bufferWidth = (int) CVPixelBufferGetWidth(cameraFrame);
+    int bufferHeight = (int) CVPixelBufferGetHeight(cameraFrame);
     CFTypeRef colorAttachments = CVBufferGetAttachment(cameraFrame, kCVImageBufferYCbCrMatrixKey, NULL);
     if (colorAttachments == kCVImageBufferYCbCrMatrix_ITU_R_601_4) {
         _preferredConversion = kColorConversion601;
@@ -756,7 +791,7 @@ NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = SHAD
         
         // Using BGRA extension to pull in video frame data directly
         // The use of bytesPerRow / 4 accounts for a display glitch present in preview video frames when using the photo preset on the camera
-        size_t bytesPerRow = CVPixelBufferGetBytesPerRow(cameraFrame);
+        int bytesPerRow = (int) CVPixelBufferGetBytesPerRow(cameraFrame);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, bytesPerRow / 4, bufferHeight, 0, GL_BGRA, GL_UNSIGNED_BYTE, CVPixelBufferGetBaseAddress(cameraFrame));
         
         for (id<GPUImageInput> currentTarget in targets)

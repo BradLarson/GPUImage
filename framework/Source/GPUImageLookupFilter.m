@@ -11,15 +11,15 @@ NSString *const kGPUImageLookupFragmentShaderString = SHADER_STRING
  
  void main()
  {
-     lowp vec4 textureColor = texture2D(inputImageTexture, textureCoordinate);
+     highp vec4 textureColor = texture2D(inputImageTexture, textureCoordinate);
      
-     mediump float blueColor = textureColor.b * 63.0;
+     highp float blueColor = textureColor.b * 63.0;
      
-     mediump vec2 quad1;
+     highp vec2 quad1;
      quad1.y = floor(floor(blueColor) / 8.0);
      quad1.x = floor(blueColor) - (quad1.y * 8.0);
      
-     mediump vec2 quad2;
+     highp vec2 quad2;
      quad2.y = floor(ceil(blueColor) / 8.0);
      quad2.x = ceil(blueColor) - (quad2.y * 8.0);
      

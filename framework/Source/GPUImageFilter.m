@@ -252,8 +252,6 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
 {
     GPUImagePicture *stillImageSource = [[GPUImagePicture alloc] initWithCGImage:imageToFilter];
     
-    [self prepareForImageCapture];
-    
     [stillImageSource addTarget:self];
     [stillImageSource processImage];
     
