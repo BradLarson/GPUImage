@@ -54,7 +54,7 @@ extern NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString
 /**
  Setting this to 0 or below will set the frame rate back to the default setting for a particular preset.
  */
-@property (readwrite) NSInteger frameRate;
+@property (readwrite) int32_t frameRate;
 
 /// Easy way to tell which cameras are present on device
 @property (readonly, getter = isFrontFacingCameraPresent) BOOL frontFacingCameraPresent;
