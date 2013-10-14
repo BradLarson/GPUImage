@@ -962,6 +962,11 @@ NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = SHAD
 #pragma mark -
 #pragma mark Accessors
 
+-(BOOL)isCapturing
+{
+    return capturePaused;
+}
+
 - (void)setAudioEncodingTarget:(GPUImageMovieWriter *)newValue;
 {
     if (newValue) {
