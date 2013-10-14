@@ -133,6 +133,8 @@
         movieWriter.paused = YES;
         NSLog(@"Movie paused");
     }
+    
+    NSLog(@"Recorded %f seconds", CMTimeGetSeconds(movieWriter.duration));
 }
 
 - (IBAction)stopRecord:(UIButton *)sender
