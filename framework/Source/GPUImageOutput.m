@@ -328,7 +328,7 @@ void reportAvailableMemoryForGPUImage(NSString *tag)
 
 - (CGImageRef)newCGImageFromCurrentlyProcessedOutput;
 {
-	UIDeviceOrientation deviceOrientation = UIDeviceOrientationUnknown;
+	UIDeviceOrientation deviceOrientation = [[UIDevice currentDevice] orientation];
     UIImageOrientation imageOrientation = UIImageOrientationLeft;
 	switch (deviceOrientation)
     {
@@ -354,7 +354,7 @@ void reportAvailableMemoryForGPUImage(NSString *tag)
 
 - (UIImage *)imageFromCurrentlyProcessedOutput;
 {
-	UIDeviceOrientation deviceOrientation = UIDeviceOrientationUnknown;
+	UIDeviceOrientation deviceOrientation = [[UIDevice currentDevice] orientation];
     UIImageOrientation imageOrientation = UIImageOrientationLeft;
 	switch (deviceOrientation)
     {
