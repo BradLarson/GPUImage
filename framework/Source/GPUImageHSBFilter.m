@@ -157,36 +157,36 @@ float rscale, gscale, bscale;
  *	lummat -
  *		make a luminance marix
  */
-static void lummat(mat)
-float mat[4][4];
-{
-    float mmat[4][4];
-    float rwgt, gwgt, bwgt;
-    
-    rwgt = RLUM;
-    gwgt = GLUM;
-    bwgt = BLUM;
-    mmat[0][0] = rwgt;
-    mmat[0][1] = rwgt;
-    mmat[0][2] = rwgt;
-    mmat[0][3] = 0.0;
-    
-    mmat[1][0] = gwgt;
-    mmat[1][1] = gwgt;
-    mmat[1][2] = gwgt;
-    mmat[1][3] = 0.0;
-    
-    mmat[2][0] = bwgt;
-    mmat[2][1] = bwgt;
-    mmat[2][2] = bwgt;
-    mmat[2][3] = 0.0;
-    
-    mmat[3][0] = 0.0;
-    mmat[3][1] = 0.0;
-    mmat[3][2] = 0.0;
-    mmat[3][3] = 1.0;
-    matrixmult(mmat,mat,mat);
-}
+//static void lummat(mat)
+//float mat[4][4];
+//{
+//    float mmat[4][4];
+//    float rwgt, gwgt, bwgt;
+//    
+//    rwgt = RLUM;
+//    gwgt = GLUM;
+//    bwgt = BLUM;
+//    mmat[0][0] = rwgt;
+//    mmat[0][1] = rwgt;
+//    mmat[0][2] = rwgt;
+//    mmat[0][3] = 0.0;
+//    
+//    mmat[1][0] = gwgt;
+//    mmat[1][1] = gwgt;
+//    mmat[1][2] = gwgt;
+//    mmat[1][3] = 0.0;
+//    
+//    mmat[2][0] = bwgt;
+//    mmat[2][1] = bwgt;
+//    mmat[2][2] = bwgt;
+//    mmat[2][3] = 0.0;
+//    
+//    mmat[3][0] = 0.0;
+//    mmat[3][1] = 0.0;
+//    mmat[3][2] = 0.0;
+//    mmat[3][3] = 1.0;
+//    matrixmult(mmat,mat,mat);
+//}
 
 /*
  *	saturatemat -
@@ -239,33 +239,33 @@ float sat;
  *	offsetmat -
  *		offset r, g, and b
  */
-static void offsetmat(mat,roffset,goffset,boffset)
-float mat[4][4];
-float roffset, goffset, boffset;
-{
-    float mmat[4][4];
-    
-    mmat[0][0] = 1.0;
-    mmat[0][1] = 0.0;
-    mmat[0][2] = 0.0;
-    mmat[0][3] = 0.0;
-    
-    mmat[1][0] = 0.0;
-    mmat[1][1] = 1.0;
-    mmat[1][2] = 0.0;
-    mmat[1][3] = 0.0;
-    
-    mmat[2][0] = 0.0;
-    mmat[2][1] = 0.0;
-    mmat[2][2] = 1.0;
-    mmat[2][3] = 0.0;
-    
-    mmat[3][0] = roffset;
-    mmat[3][1] = goffset;
-    mmat[3][2] = boffset;
-    mmat[3][3] = 1.0;
-    matrixmult(mmat,mat,mat);
-}
+//static void offsetmat(mat,roffset,goffset,boffset)
+//float mat[4][4];
+//float roffset, goffset, boffset;
+//{
+//    float mmat[4][4];
+//    
+//    mmat[0][0] = 1.0;
+//    mmat[0][1] = 0.0;
+//    mmat[0][2] = 0.0;
+//    mmat[0][3] = 0.0;
+//    
+//    mmat[1][0] = 0.0;
+//    mmat[1][1] = 1.0;
+//    mmat[1][2] = 0.0;
+//    mmat[1][3] = 0.0;
+//    
+//    mmat[2][0] = 0.0;
+//    mmat[2][1] = 0.0;
+//    mmat[2][2] = 1.0;
+//    mmat[2][3] = 0.0;
+//    
+//    mmat[3][0] = roffset;
+//    mmat[3][1] = goffset;
+//    mmat[3][2] = boffset;
+//    mmat[3][3] = 1.0;
+//    matrixmult(mmat,mat,mat);
+//}
 
 /*
  *	xrotate -
@@ -399,35 +399,35 @@ float dx, dy;
  *	simplehuerotatemat -
  *		simple hue rotation. This changes luminance
  */
-static void simplehuerotatemat(mat,rot)
-float mat[4][4];
-float rot;
-{
-    float mag;
-    float xrs, xrc;
-    float yrs, yrc;
-    float zrs, zrc;
-    
-    /* rotate the grey vector into positive Z */
-    mag = sqrt(2.0);
-    xrs = 1.0/mag;
-    xrc = 1.0/mag;
-    xrotatemat(mat,xrs,xrc);
-    
-    mag = sqrt(3.0);
-    yrs = -1.0/mag;
-    yrc = sqrt(2.0)/mag;
-    yrotatemat(mat,yrs,yrc);
-    
-    /* rotate the hue */
-    zrs = sin(rot*M_PI/180.0);
-    zrc = cos(rot*M_PI/180.0);
-    zrotatemat(mat,zrs,zrc);
-    
-    /* rotate the grey vector back into place */
-    yrotatemat(mat,-yrs,yrc);
-    xrotatemat(mat,-xrs,xrc);
-}
+//static void simplehuerotatemat(mat,rot)
+//float mat[4][4];
+//float rot;
+//{
+//    float mag;
+//    float xrs, xrc;
+//    float yrs, yrc;
+//    float zrs, zrc;
+//    
+//    /* rotate the grey vector into positive Z */
+//    mag = sqrt(2.0);
+//    xrs = 1.0/mag;
+//    xrc = 1.0/mag;
+//    xrotatemat(mat,xrs,xrc);
+//    
+//    mag = sqrt(3.0);
+//    yrs = -1.0/mag;
+//    yrc = sqrt(2.0)/mag;
+//    yrotatemat(mat,yrs,yrc);
+//    
+//    /* rotate the hue */
+//    zrs = sin(rot*M_PI/180.0);
+//    zrc = cos(rot*M_PI/180.0);
+//    zrotatemat(mat,zrs,zrc);
+//    
+//    /* rotate the grey vector back into place */
+//    yrotatemat(mat,-yrs,yrc);
+//    xrotatemat(mat,-xrs,xrc);
+//}
 
 /*
  *	huerotatemat -
