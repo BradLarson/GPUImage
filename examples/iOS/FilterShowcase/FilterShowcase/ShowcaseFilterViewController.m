@@ -1154,7 +1154,7 @@
             self.filterSettingsSlider.hidden = NO;
             
             [self.filterSettingsSlider setMinimumValue:1.0];
-            [self.filterSettingsSlider setMaximumValue:7.0];
+            [self.filterSettingsSlider setMaximumValue:14.0];
             [self.filterSettingsSlider setValue:2.0];
             
             filter = [[GPUImageGaussianBlurFilter alloc] init];
@@ -1589,7 +1589,7 @@
         case GPUIMAGE_PERLINNOISE:  [(GPUImagePerlinNoiseFilter *)filter setScale:[(UISlider *)sender value]]; break;
         case GPUIMAGE_MOSAIC:  [(GPUImageMosaicFilter *)filter setDisplayTileSize:CGSizeMake([(UISlider *)sender value], [(UISlider *)sender value])]; break;
         case GPUIMAGE_VIGNETTE: [(GPUImageVignetteFilter *)filter setVignetteEnd:[(UISlider *)sender value]]; break;
-        case GPUIMAGE_GAUSSIAN: [(GPUImageGaussianBlurFilter *)filter setBlurRadiusInPixels:round([(UISlider*)sender value])]; break;
+        case GPUIMAGE_GAUSSIAN: [(GPUImageGaussianBlurFilter *)filter setBlurRadiusInPixels:[(UISlider*)sender value]]; break;
 //        case GPUIMAGE_GAUSSIAN: [(GPUImageGaussianBlurFilter *)filter setBlurPasses:round([(UISlider*)sender value])]; break;
 //        case GPUIMAGE_BILATERAL: [(GPUImageBilateralFilter *)filter setBlurSize:[(UISlider*)sender value]]; break;
         case GPUIMAGE_BILATERAL: [(GPUImageBilateralFilter *)filter setDistanceNormalizationFactor:[(UISlider*)sender value]]; break;
