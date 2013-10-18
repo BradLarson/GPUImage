@@ -3,7 +3,7 @@
 @class GPUImageGaussianBlurFilter;
 @class GPUImageXYDerivativeFilter;
 @class GPUImageGrayscaleFilter;
-@class GPUImageFastBlurFilter;
+@class GPUImageGaussianBlurFilter;
 @class GPUImageThresholdedNonMaximumSuppressionFilter;
 @class GPUImageColorPackingFilter;
 
@@ -13,7 +13,7 @@
  
  First pass: reduce to luminance and take the derivative of the luminance texture (GPUImageXYDerivativeFilter)
  
- Second pass: blur the derivative (GPUImageFastBlurFilter)
+ Second pass: blur the derivative (GPUImageGaussianBlurFilter)
  
  Third pass: apply the Harris corner detection calculation
  
@@ -23,7 +23,7 @@
 @interface GPUImageHarrisCornerDetectionFilter : GPUImageFilterGroup
 {
     GPUImageXYDerivativeFilter *derivativeFilter;
-    GPUImageFastBlurFilter *blurFilter;
+    GPUImageGaussianBlurFilter *blurFilter;
     GPUImageFilter *harrisCornerDetectionFilter;
     GPUImageThresholdedNonMaximumSuppressionFilter *nonMaximumSuppressionFilter;
     GPUImageColorPackingFilter *colorPackingFilter;

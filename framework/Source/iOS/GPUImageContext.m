@@ -98,9 +98,28 @@ static void *openGLESContextQueueKey;
 
 + (GLint)maximumTextureUnitsForThisDevice;
 {
-    GLint maxTextureUnits; 
-    glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &maxTextureUnits);
+    static dispatch_once_t pred;
+    static GLint maxTextureUnits = 0;
+
+    dispatch_once(&pred, ^{
+        [self useImageProcessingContext];
+        glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &maxTextureUnits);
+    });
+    
     return maxTextureUnits;
+}
+
++ (GLint)maximumVaryingVectorsForThisDevice;
+{
+    static dispatch_once_t pred;
+    static GLint maxVaryingVectors = 0;
+
+    dispatch_once(&pred, ^{
+        [self useImageProcessingContext];
+        glGetIntegerv(GL_MAX_VARYING_VECTORS, &maxVaryingVectors);
+    });
+
+    return maxVaryingVectors;
 }
 
 + (BOOL)deviceSupportsOpenGLESExtension:(NSString *)extension;

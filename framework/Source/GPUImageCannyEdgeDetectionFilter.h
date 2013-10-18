@@ -1,7 +1,7 @@
 #import "GPUImageFilterGroup.h"
 
 @class GPUImageGrayscaleFilter;
-@class GPUImageSingleComponentFastBlurFilter;
+@class GPUImageSingleComponentGaussianBlurFilter;
 @class GPUimageDirectionalSobelEdgeDetectionFilter;
 @class GPUImageDirectionalNonMaximumSuppressionFilter;
 @class GPUImageWeakPixelInclusionFilter;
@@ -22,7 +22,7 @@
 @interface GPUImageCannyEdgeDetectionFilter : GPUImageFilterGroup
 {
     GPUImageGrayscaleFilter *luminanceFilter;
-    GPUImageSingleComponentFastBlurFilter *blurFilter;
+    GPUImageSingleComponentGaussianBlurFilter *blurFilter;
     GPUimageDirectionalSobelEdgeDetectionFilter *edgeDetectionFilter;
     GPUImageDirectionalNonMaximumSuppressionFilter *nonMaximumSuppressionFilter;
     GPUImageWeakPixelInclusionFilter *weakPixelInclusionFilter;

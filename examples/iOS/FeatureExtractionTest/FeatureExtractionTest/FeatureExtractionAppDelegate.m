@@ -105,7 +105,31 @@
     [averageLuminosity setLuminosityProcessingFinishedBlock:^(CGFloat luminosity, CMTime frameTime) {
         NSLog(@"Luminosity: %f", luminosity);
     }];
+
+    // Testing Gaussian blur
+    UIImage *gaussianBlurInput = [UIImage imageNamed:@"GaussianTest.png"];
+    GPUImagePicture *gaussianImage = [[GPUImagePicture alloc] initWithImage:gaussianBlurInput];
+    GPUImageGaussianBlurFilter *gaussianBlur = [[GPUImageGaussianBlurFilter alloc] init];
+    gaussianBlur.blurRadiusInPixels = 2.0;
+    [gaussianImage addTarget:gaussianBlur];
+    [gaussianImage processImage];
+    UIImage *gaussianOutput = [gaussianBlur imageFromCurrentlyProcessedOutput];
+    [self saveImage:gaussianOutput fileName:@"Gaussian-GPUImage.png"];
+
+    CIContext *coreImageContext = [CIContext contextWithEAGLContext:[[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2]];
+
+//    CIContext *coreImageContext = [CIContext contextWithOptions:nil];
+    CIImage *inputCIGaussianImage = [[CIImage alloc] initWithCGImage:gaussianBlurInput.CGImage];
+    CIFilter *gaussianBlurCIFilter = [CIFilter filterWithName:@"CIGaussianBlur"
+                                     keysAndValues: kCIInputImageKey, inputCIGaussianImage,
+                                                    @"inputRadius", [NSNumber numberWithFloat:2.0], nil];
+    CIImage *coreImageResult = [gaussianBlurCIFilter outputImage];
+    CGImageRef resultRef = [coreImageContext createCGImage:coreImageResult fromRect:CGRectMake(0, 0, gaussianBlurInput.size.width, gaussianBlurInput.size.height)];
+    UIImage *coreImageResult2 = [UIImage imageWithCGImage:resultRef];
+    [self saveImage:coreImageResult2 fileName:@"Gaussian-CoreImage.png"];
     
+    CGImageRelease(resultRef);
+
     [chairPicture removeAllTargets];
     [chairPicture addTarget:averageColor];
     [chairPicture addTarget:averageLuminosity];

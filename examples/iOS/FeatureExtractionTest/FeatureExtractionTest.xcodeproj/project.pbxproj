@@ -20,6 +20,8 @@
 		BC18E0CA156C836400AB8026 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC18E0C9156C836400AB8026 /* AVFoundation.framework */; };
 		BC18E0CC156C881700AB8026 /* 71yih.png in Resources */ = {isa = PBXBuildFile; fileRef = BC18E0CB156C881700AB8026 /* 71yih.png */; };
 		BC46D52415D03D9C00CC63CA /* LBPTest.png in Resources */ = {isa = PBXBuildFile; fileRef = BC46D52315D03D9C00CC63CA /* LBPTest.png */; };
+		BC8A581C1810782200E6B507 /* GaussianTest.png in Resources */ = {isa = PBXBuildFile; fileRef = BC8A581B1810782200E6B507 /* GaussianTest.png */; };
+		BC8A58211810862F00E6B507 /* CoreImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC8A58201810862F00E6B507 /* CoreImage.framework */; };
 		BCA464C9162785EA00C0F68E /* LineTest.png in Resources */ = {isa = PBXBuildFile; fileRef = BCA464C8162785EA00C0F68E /* LineTest.png */; };
 		BCB3C3F916BCA61A003D26B0 /* Icon-72.png in Resources */ = {isa = PBXBuildFile; fileRef = BCB3C3F416BCA61A003D26B0 /* Icon-72.png */; };
 		BCB3C3FA16BCA61A003D26B0 /* Icon-72@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BCB3C3F516BCA61A003D26B0 /* Icon-72@2x.png */; };
@@ -75,6 +77,8 @@
 		BC18E0C9156C836400AB8026 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		BC18E0CB156C881700AB8026 /* 71yih.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 71yih.png; sourceTree = "<group>"; };
 		BC46D52315D03D9C00CC63CA /* LBPTest.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = LBPTest.png; sourceTree = "<group>"; };
+		BC8A581B1810782200E6B507 /* GaussianTest.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = GaussianTest.png; sourceTree = "<group>"; };
+		BC8A58201810862F00E6B507 /* CoreImage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreImage.framework; path = System/Library/Frameworks/CoreImage.framework; sourceTree = SDKROOT; };
 		BCA464C8162785EA00C0F68E /* LineTest.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = LineTest.png; sourceTree = "<group>"; };
 		BCB3C3F416BCA61A003D26B0 /* Icon-72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-72.png"; path = "../../SharedIcons/Icon-72.png"; sourceTree = "<group>"; };
 		BCB3C3F516BCA61A003D26B0 /* Icon-72@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-72@2x.png"; path = "../../SharedIcons/Icon-72@2x.png"; sourceTree = "<group>"; };
@@ -91,6 +95,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BC8A58211810862F00E6B507 /* CoreImage.framework in Frameworks */,
 				BCF867031725A53400912E34 /* libGPUImage.a in Frameworks */,
 				BC18E0CA156C836400AB8026 /* AVFoundation.framework in Frameworks */,
 				BC18E0C8156C835E00AB8026 /* OpenGLES.framework in Frameworks */,
@@ -127,6 +132,7 @@
 			isa = PBXGroup;
 			children = (
 				BC18E0B1156C830F00AB8026 /* GPUImage.xcodeproj */,
+				BC8A58201810862F00E6B507 /* CoreImage.framework */,
 				BC18E09A156C822E00AB8026 /* UIKit.framework */,
 				BC18E09C156C822E00AB8026 /* Foundation.framework */,
 				BC18E09E156C822E00AB8026 /* CoreGraphics.framework */,
@@ -152,6 +158,7 @@
 		BC18E0A1156C822E00AB8026 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				BC8A581B1810782200E6B507 /* GaussianTest.png */,
 				BCB3C3F416BCA61A003D26B0 /* Icon-72.png */,
 				BCB3C3F516BCA61A003D26B0 /* Icon-72@2x.png */,
 				BCB3C3F616BCA61A003D26B0 /* Icon.png */,
@@ -262,6 +269,7 @@
 				BC46D52415D03D9C00CC63CA /* LBPTest.png in Resources */,
 				BCB79DC715E9754000965D92 /* ChairTest.png in Resources */,
 				BCA464C9162785EA00C0F68E /* LineTest.png in Resources */,
+				BC8A581C1810782200E6B507 /* GaussianTest.png in Resources */,
 				BCF2860F1628A5140051E9C5 /* LineTest2.png in Resources */,
 				BCB3C3F916BCA61A003D26B0 /* Icon-72.png in Resources */,
 				BCB3C3FA16BCA61A003D26B0 /* Icon-72@2x.png in Resources */,

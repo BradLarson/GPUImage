@@ -1,10 +1,10 @@
 #import "GPUImageCannyEdgeDetectionFilter.h"
 
 #import "GPUImageGrayscaleFilter.h"
-#import "GPUImageSingleComponentFastBlurFilter.h"
 #import "GPUImageDirectionalSobelEdgeDetectionFilter.h"
 #import "GPUImageDirectionalNonMaximumSuppressionFilter.h"
 #import "GPUImageWeakPixelInclusionFilter.h"
+#import "GPUImageSingleComponentGaussianBlurFilter.h"
 
 @implementation GPUImageCannyEdgeDetectionFilter
 
@@ -26,7 +26,7 @@
     [self addFilter:luminanceFilter];
     
     // Second pass: apply a variable Gaussian blur
-    blurFilter = [[GPUImageSingleComponentFastBlurFilter alloc] init];
+    blurFilter = [[GPUImageSingleComponentGaussianBlurFilter alloc] init];
     [self addFilter:blurFilter];
     
     // Third pass: run the Sobel edge detection, with calculated gradient directions, on this blurred image

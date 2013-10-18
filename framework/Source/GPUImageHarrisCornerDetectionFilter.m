@@ -2,9 +2,9 @@
 #import "GPUImageGaussianBlurFilter.h"
 #import "GPUImageXYDerivativeFilter.h"
 #import "GPUImageGrayscaleFilter.h"
-#import "GPUImageFastBlurFilter.h"
 #import "GPUImageThresholdedNonMaximumSuppressionFilter.h"
 #import "GPUImageColorPackingFilter.h"
+#import "GPUImageGaussianBlurFilter.h"
 
 @interface GPUImageHarrisCornerDetectionFilter()
 
@@ -111,7 +111,7 @@ NSString *const kGPUImageHarrisCornerDetectionFragmentShaderString = SHADER_STRI
 #endif
 
     // Second pass: blur the derivative
-    blurFilter = [[GPUImageFastBlurFilter alloc] init];
+    blurFilter = [[GPUImageGaussianBlurFilter alloc] init];
     [self addFilter:blurFilter];
     
 #ifdef DEBUGFEATUREDETECTION

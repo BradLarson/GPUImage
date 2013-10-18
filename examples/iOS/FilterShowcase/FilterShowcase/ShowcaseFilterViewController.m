@@ -1153,22 +1153,12 @@
             self.title = @"Gaussian Blur";
             self.filterSettingsSlider.hidden = NO;
             
-            [self.filterSettingsSlider setMinimumValue:0.0];
-            [self.filterSettingsSlider setMaximumValue:10.0];
-            [self.filterSettingsSlider setValue:1.0];
+            [self.filterSettingsSlider setMinimumValue:1.0];
+            [self.filterSettingsSlider setMaximumValue:7.0];
+            [self.filterSettingsSlider setValue:2.0];
             
             filter = [[GPUImageGaussianBlurFilter alloc] init];
         }; break;
-        case GPUIMAGE_FASTBLUR:
-        {
-            self.title = @"Fast Blur";
-            self.filterSettingsSlider.hidden = NO;
-            [self.filterSettingsSlider setMinimumValue:1.0];
-            [self.filterSettingsSlider setMaximumValue:10.0];
-            [self.filterSettingsSlider setValue:1.0];
-
-            filter = [[GPUImageFastBlurFilter alloc] init];
-		}; break;
         case GPUIMAGE_BOXBLUR:
         {
             self.title = @"Box Blur";
@@ -1599,11 +1589,10 @@
         case GPUIMAGE_PERLINNOISE:  [(GPUImagePerlinNoiseFilter *)filter setScale:[(UISlider *)sender value]]; break;
         case GPUIMAGE_MOSAIC:  [(GPUImageMosaicFilter *)filter setDisplayTileSize:CGSizeMake([(UISlider *)sender value], [(UISlider *)sender value])]; break;
         case GPUIMAGE_VIGNETTE: [(GPUImageVignetteFilter *)filter setVignetteEnd:[(UISlider *)sender value]]; break;
-        case GPUIMAGE_GAUSSIAN: [(GPUImageGaussianBlurFilter *)filter setBlurSize:[(UISlider*)sender value]]; break;
+        case GPUIMAGE_GAUSSIAN: [(GPUImageGaussianBlurFilter *)filter setBlurRadiusInPixels:round([(UISlider*)sender value])]; break;
+//        case GPUIMAGE_GAUSSIAN: [(GPUImageGaussianBlurFilter *)filter setBlurPasses:round([(UISlider*)sender value])]; break;
 //        case GPUIMAGE_BILATERAL: [(GPUImageBilateralFilter *)filter setBlurSize:[(UISlider*)sender value]]; break;
         case GPUIMAGE_BILATERAL: [(GPUImageBilateralFilter *)filter setDistanceNormalizationFactor:[(UISlider*)sender value]]; break;
-        case GPUIMAGE_FASTBLUR: [(GPUImageFastBlurFilter *)filter setBlurPasses:round([(UISlider*)sender value])]; break;
-//        case GPUIMAGE_FASTBLUR: [(GPUImageFastBlurFilter *)filter setBlurSize:[(UISlider*)sender value]]; break;
         case GPUIMAGE_MOTIONBLUR: [(GPUImageMotionBlurFilter *)filter setBlurAngle:[(UISlider*)sender value]]; break;
         case GPUIMAGE_ZOOMBLUR: [(GPUImageZoomBlurFilter *)filter setBlurSize:[(UISlider*)sender value]]; break;
         case GPUIMAGE_OPACITY:  [(GPUImageOpacityFilter *)filter setOpacity:[(UISlider *)sender value]]; break;

@@ -3,7 +3,6 @@
 #import "GPUImageParallelCoordinateLineTransformFilter.h"
 #import "GPUImageThresholdedNonMaximumSuppressionFilter.h"
 #import "GPUImageCannyEdgeDetectionFilter.h"
-#import "GPUImageFastBlurFilter.h"
 
 // This applies a Hough transform to detect lines in a scene. It starts with a thresholded Sobel edge detection pass,
 // then takes those edge points in and applies a Hough transform to convert them to lines. The intersection of these lines

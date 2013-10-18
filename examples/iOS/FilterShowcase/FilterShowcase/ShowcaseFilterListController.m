@@ -173,7 +173,6 @@
         case GPUIMAGE_KUWAHARARADIUS3: cell.textLabel.text = @"Kuwahara (fixed radius)"; break;
         case GPUIMAGE_VIGNETTE: cell.textLabel.text = @"Vignette"; break;
         case GPUIMAGE_GAUSSIAN: cell.textLabel.text = @"Gaussian blur"; break;
-        case GPUIMAGE_FASTBLUR: cell.textLabel.text = @"Gaussian blur (optimized)"; break;
         case GPUIMAGE_MEDIAN: cell.textLabel.text = @"Median (3x3)"; break;
         case GPUIMAGE_BILATERAL: cell.textLabel.text = @"Bilateral blur"; break;
         case GPUIMAGE_MOTIONBLUR: cell.textLabel.text = @"Motion blur"; break;
