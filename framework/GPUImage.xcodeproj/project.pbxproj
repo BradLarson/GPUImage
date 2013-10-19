@@ -126,6 +126,8 @@
 		BC7CC69D1562C4BB00468085 /* GPUImageCrosshairGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = BC7CC69B1562C4BA00468085 /* GPUImageCrosshairGenerator.m */; };
 		BC7D95D51523EE67000DF037 /* GPUImageStillCamera.h in Headers */ = {isa = PBXBuildFile; fileRef = BC7D95D31523EE67000DF037 /* GPUImageStillCamera.h */; };
 		BC7D95D61523EE67000DF037 /* GPUImageStillCamera.m in Sources */ = {isa = PBXBuildFile; fileRef = BC7D95D41523EE67000DF037 /* GPUImageStillCamera.m */; };
+		BC8A583C1813060F00E6B507 /* GPUImageiOSBlurFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = BC8A583A1813060F00E6B507 /* GPUImageiOSBlurFilter.h */; };
+		BC8A583D1813060F00E6B507 /* GPUImageiOSBlurFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = BC8A583B1813060F00E6B507 /* GPUImageiOSBlurFilter.m */; };
 		BC95C4081622763D002C4BC7 /* GPUImageHoughTransformLineDetector.h in Headers */ = {isa = PBXBuildFile; fileRef = BC95C4061622763D002C4BC7 /* GPUImageHoughTransformLineDetector.h */; };
 		BC95C4091622763D002C4BC7 /* GPUImageHoughTransformLineDetector.m in Sources */ = {isa = PBXBuildFile; fileRef = BC95C4071622763D002C4BC7 /* GPUImageHoughTransformLineDetector.m */; };
 		BC982B5314F07F790001FF6F /* GPUImageColorInvertFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = BC982B4F14F07F790001FF6F /* GPUImageColorInvertFilter.h */; };
@@ -472,6 +474,8 @@
 		BC7CC69B1562C4BA00468085 /* GPUImageCrosshairGenerator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GPUImageCrosshairGenerator.m; path = Source/GPUImageCrosshairGenerator.m; sourceTree = SOURCE_ROOT; };
 		BC7D95D31523EE67000DF037 /* GPUImageStillCamera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GPUImageStillCamera.h; path = Source/GPUImageStillCamera.h; sourceTree = SOURCE_ROOT; };
 		BC7D95D41523EE67000DF037 /* GPUImageStillCamera.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GPUImageStillCamera.m; path = Source/GPUImageStillCamera.m; sourceTree = SOURCE_ROOT; };
+		BC8A583A1813060F00E6B507 /* GPUImageiOSBlurFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GPUImageiOSBlurFilter.h; path = Source/GPUImageiOSBlurFilter.h; sourceTree = SOURCE_ROOT; };
+		BC8A583B1813060F00E6B507 /* GPUImageiOSBlurFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GPUImageiOSBlurFilter.m; path = Source/GPUImageiOSBlurFilter.m; sourceTree = SOURCE_ROOT; };
 		BC95C4061622763D002C4BC7 /* GPUImageHoughTransformLineDetector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GPUImageHoughTransformLineDetector.h; path = Source/GPUImageHoughTransformLineDetector.h; sourceTree = SOURCE_ROOT; };
 		BC95C4071622763D002C4BC7 /* GPUImageHoughTransformLineDetector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GPUImageHoughTransformLineDetector.m; path = Source/GPUImageHoughTransformLineDetector.m; sourceTree = SOURCE_ROOT; };
 		BC982B4F14F07F790001FF6F /* GPUImageColorInvertFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GPUImageColorInvertFilter.h; path = Source/GPUImageColorInvertFilter.h; sourceTree = SOURCE_ROOT; };
@@ -1087,6 +1091,8 @@
 				BCBC604C16C58B0900B11741 /* GPUImageMotionBlurFilter.m */,
 				BCBC605516C8527C00B11741 /* GPUImageZoomBlurFilter.h */,
 				BCBC605616C8527C00B11741 /* GPUImageZoomBlurFilter.m */,
+				BC8A583A1813060F00E6B507 /* GPUImageiOSBlurFilter.h */,
+				BC8A583B1813060F00E6B507 /* GPUImageiOSBlurFilter.m */,
 			);
 			name = "Image processing";
 			sourceTree = "<group>";
@@ -1176,6 +1182,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BC8A583C1813060F00E6B507 /* GPUImageiOSBlurFilter.h in Headers */,
 				BCF866C8172589A500912E34 /* GPUImage.h in Headers */,
 				BC245DCA14DDBED7009FE7EB /* GPUImageFilter.h in Headers */,
 				BCB5E75C14E2086300701302 /* GPUImageView.h in Headers */,
@@ -1552,6 +1559,7 @@
 				BC0690BE157C1B38009274F9 /* GPUImageOpeningFilter.m in Sources */,
 				BC0690C2157C2368009274F9 /* GPUImageClosingFilter.m in Sources */,
 				BC0690D1157C2EBA009274F9 /* GPUImageRGBDilationFilter.m in Sources */,
+				BC8A583D1813060F00E6B507 /* GPUImageiOSBlurFilter.m in Sources */,
 				BC0690D6157C31C9009274F9 /* GPUImageRGBErosionFilter.m in Sources */,
 				BC0690DA157C33B9009274F9 /* GPUImageRGBOpeningFilter.m in Sources */,
 				BC0690DE157C344D009274F9 /* GPUImageRGBClosingFilter.m in Sources */,

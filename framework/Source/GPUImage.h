@@ -151,3 +151,4 @@
 #import "GPUImageMotionBlurFilter.h"
 #import "GPUImageZoomBlurFilter.h"
 #import "GPUImageLaplacianFilter.h"
+#import "GPUImageiOSBlurFilter.h"

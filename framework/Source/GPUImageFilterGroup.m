@@ -159,7 +159,6 @@
     }
 }
 
-
 - (CGSize)maximumOutputSize;
 {
     // I'm temporarily disabling adjustments for smaller output sizes until I figure out how to make this work better

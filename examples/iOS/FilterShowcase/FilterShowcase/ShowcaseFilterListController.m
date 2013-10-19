@@ -180,6 +180,7 @@
         case GPUIMAGE_BOXBLUR: cell.textLabel.text = @"Box blur"; break;
         case GPUIMAGE_GAUSSIAN_SELECTIVE: cell.textLabel.text = @"Gaussian selective blur"; break;
         case GPUIMAGE_GAUSSIAN_POSITION: cell.textLabel.text = @"Gaussian (centered)"; break;
+        case GPUIMAGE_IOSBLUR: cell.textLabel.text = @"iOS 7 blur"; break;
         case GPUIMAGE_UIELEMENT: cell.textLabel.text = @"UI element"; break;
 		case GPUIMAGE_CUSTOM: cell.textLabel.text = @"Custom"; break;
         case GPUIMAGE_FILECONFIG: cell.textLabel.text = @"Filter Chain"; break;

@@ -1195,6 +1195,13 @@
             
             filter = [[GPUImageZoomBlurFilter alloc] init];
         }; break;
+        case GPUIMAGE_IOSBLUR:
+        {
+            self.title = @"iOS 7 Blur";
+            self.filterSettingsSlider.hidden = YES;
+            
+            filter = [[GPUImageiOSBlurFilter alloc] init];
+        }; break;
         case GPUIMAGE_UIELEMENT:
         {
             self.title = @"UI Element";
