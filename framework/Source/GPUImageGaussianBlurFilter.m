@@ -54,13 +54,13 @@
       uniform float texelWidthOffset;\n\
       uniform float texelHeightOffset;\n\
       \n\
-      varying vec2 blurCoordinates[%d];\n\
+      varying vec2 blurCoordinates[%lu];\n\
       \n\
       void main()\n\
       {\n\
           gl_Position = position;\n\
           \n\
-          vec2 singleStepOffset = vec2(texelWidthOffset, texelHeightOffset);\n", (blurRadius * 2 + 1) ];
+          vec2 singleStepOffset = vec2(texelWidthOffset, texelHeightOffset);\n", (unsigned long)(blurRadius * 2 + 1) ];
 
     // Inner offset loop
     for (NSUInteger currentBlurCoordinateIndex = 0; currentBlurCoordinateIndex < (blurRadius * 2 + 1); currentBlurCoordinateIndex++)
@@ -68,15 +68,15 @@
         NSInteger offsetFromCenter = currentBlurCoordinateIndex - blurRadius;
         if (offsetFromCenter < 0)
         {
-            [shaderString appendFormat:@"blurCoordinates[%d] = inputTextureCoordinate.xy - singleStepOffset * %f;\n", currentBlurCoordinateIndex, (GLfloat)(-offsetFromCenter)];
+            [shaderString appendFormat:@"blurCoordinates[%ld] = inputTextureCoordinate.xy - singleStepOffset * %f;\n", (unsigned long)currentBlurCoordinateIndex, (GLfloat)(-offsetFromCenter)];
         }
         else if (offsetFromCenter > 0)
         {
-            [shaderString appendFormat:@"blurCoordinates[%d] = inputTextureCoordinate.xy + singleStepOffset * %f;\n", currentBlurCoordinateIndex, (GLfloat)(offsetFromCenter)];
+            [shaderString appendFormat:@"blurCoordinates[%ld] = inputTextureCoordinate.xy + singleStepOffset * %f;\n", (unsigned long)currentBlurCoordinateIndex, (GLfloat)(offsetFromCenter)];
         }
         else
         {
-            [shaderString appendFormat:@"blurCoordinates[%d] = inputTextureCoordinate.xy;\n", currentBlurCoordinateIndex];
+            [shaderString appendFormat:@"blurCoordinates[%ld] = inputTextureCoordinate.xy;\n", (unsigned long)currentBlurCoordinateIndex];
         }
     }
     
@@ -128,7 +128,7 @@
     [shaderString appendFormat:@"\
      uniform sampler2D inputImageTexture;\n\
      \n\
-     varying vec2 blurCoordinates[%d];\n\
+     varying vec2 blurCoordinates[%lu];\n\
      \n\
      void main()\n\
      {\n\
@@ -141,11 +141,11 @@
         NSInteger offsetFromCenter = currentBlurCoordinateIndex - blurRadius;
         if (offsetFromCenter < 0)
         {
-            [shaderString appendFormat:@"sum += texture2D(inputImageTexture, blurCoordinates[%d]) * %f;\n", currentBlurCoordinateIndex, standardGaussianWeights[-offsetFromCenter]];
+            [shaderString appendFormat:@"sum += texture2D(inputImageTexture, blurCoordinates[%lu]) * %f;\n", (unsigned long)currentBlurCoordinateIndex, standardGaussianWeights[-offsetFromCenter]];
         }
         else
         {
-            [shaderString appendFormat:@"sum += texture2D(inputImageTexture, blurCoordinates[%d]) * %f;\n", currentBlurCoordinateIndex, standardGaussianWeights[offsetFromCenter]];
+            [shaderString appendFormat:@"sum += texture2D(inputImageTexture, blurCoordinates[%lu]) * %f;\n", (unsigned long)currentBlurCoordinateIndex, standardGaussianWeights[offsetFromCenter]];
         }
     }
 
@@ -210,21 +210,21 @@
      uniform float texelWidthOffset;\n\
      uniform float texelHeightOffset;\n\
      \n\
-     varying vec2 blurCoordinates[%d];\n\
+     varying vec2 blurCoordinates[%lu];\n\
      \n\
      void main()\n\
      {\n\
         gl_Position = position;\n\
         \n\
-        vec2 singleStepOffset = vec2(texelWidthOffset, texelHeightOffset);\n", 1 + (numberOfOptimizedOffsets * 2)];
+        vec2 singleStepOffset = vec2(texelWidthOffset, texelHeightOffset);\n", (unsigned long)(1 + (numberOfOptimizedOffsets * 2))];
 
     // Inner offset loop
     [shaderString appendString:@"blurCoordinates[0] = inputTextureCoordinate.xy;\n"];
     for (NSUInteger currentOptimizedOffset = 0; currentOptimizedOffset < numberOfOptimizedOffsets; currentOptimizedOffset++)
     {
         [shaderString appendFormat:@"\
-         blurCoordinates[%d] = inputTextureCoordinate.xy + singleStepOffset * %f;\n\
-         blurCoordinates[%d] = inputTextureCoordinate.xy - singleStepOffset * %f;\n", (currentOptimizedOffset * 2) + 1, optimizedGaussianOffsets[currentOptimizedOffset], (currentOptimizedOffset * 2) + 2, optimizedGaussianOffsets[currentOptimizedOffset]];
+         blurCoordinates[%lu] = inputTextureCoordinate.xy + singleStepOffset * %f;\n\
+         blurCoordinates[%lu] = inputTextureCoordinate.xy - singleStepOffset * %f;\n", (unsigned long)((currentOptimizedOffset * 2) + 1), optimizedGaussianOffsets[currentOptimizedOffset], (unsigned long)((currentOptimizedOffset * 2) + 2), optimizedGaussianOffsets[currentOptimizedOffset]];
     }
     
     // Footer
@@ -288,7 +288,7 @@
      uniform float texelWidthOffset;\n\
      uniform float texelHeightOffset;\n\
      \n\
-     varying vec2 blurCoordinates[%d];\n\
+     varying vec2 blurCoordinates[%lu];\n\
      \n\
      void main()\n\
      {\n\
@@ -304,14 +304,18 @@
         GLfloat secondWeight = standardGaussianWeights[currentBlurCoordinateIndex * 2 + 2];
         GLfloat optimizedWeight = firstWeight + secondWeight;
 
-        [shaderString appendFormat:@"sum += texture2D(inputImageTexture, blurCoordinates[%d]) * %f;\n", (currentBlurCoordinateIndex * 2) + 1, optimizedWeight];
-        [shaderString appendFormat:@"sum += texture2D(inputImageTexture, blurCoordinates[%d]) * %f;\n", (currentBlurCoordinateIndex * 2) + 2, optimizedWeight];
+        [shaderString appendFormat:@"sum += texture2D(inputImageTexture, blurCoordinates[%lu]) * %f;\n", (unsigned long)((currentBlurCoordinateIndex * 2) + 1), optimizedWeight];
+        [shaderString appendFormat:@"sum += texture2D(inputImageTexture, blurCoordinates[%lu]) * %f;\n", (unsigned long)((currentBlurCoordinateIndex * 2) + 2), optimizedWeight];
     }
     
     // If the number of required samples exceeds the amount we can pass in via varyings, we have to do dependent texture reads in the fragment shader
     if (trueNumberOfOptimizedOffsets > numberOfOptimizedOffsets)
     {
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
         [shaderString appendString:@"highp vec2 singleStepOffset = vec2(texelWidthOffset, texelHeightOffset);\n"];
+#else
+        [shaderString appendString:@"vec2 singleStepOffset = vec2(texelWidthOffset, texelHeightOffset);\n"];
+#endif
 
         for (NSUInteger currentOverlowTextureRead = numberOfOptimizedOffsets; currentOverlowTextureRead < trueNumberOfOptimizedOffsets; currentOverlowTextureRead++)
         {

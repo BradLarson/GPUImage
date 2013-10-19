@@ -211,7 +211,7 @@
 {
     cornerDetector.threshold = 0.4;
     cornerDetector.sensitivity = 4.0;
-    cornerDetector.blurSize = 1.0;
+//    cornerDetector.blurSize = 1.0;
     [pictureInput removeAllTargets];
     
     [pictureInput addTarget:cornerDetector];
