@@ -11,21 +11,10 @@
 #pragma mark -
 #pragma mark Initialization and teardown
 
-- (id) initWithFirstStageVertexShaderFromString:(NSString *)firstStageVertexShaderString 
-             firstStageFragmentShaderFromString:(NSString *)firstStageFragmentShaderString 
-              secondStageVertexShaderFromString:(NSString *)secondStageVertexShaderString
-            secondStageFragmentShaderFromString:(NSString *)secondStageFragmentShaderString
+- (id)initWithFirstStageVertexShaderFromString:(NSString *)firstStageVertexShaderString firstStageFragmentShaderFromString:(NSString *)firstStageFragmentShaderString secondStageVertexShaderFromString:(NSString *)secondStageVertexShaderString secondStageFragmentShaderFromString:(NSString *)secondStageFragmentShaderString
 {
-    
-//    NSString *currentGaussianBlurVertexShader = [GPUImageGaussianBlurFilter vertexShaderForStandardGaussianOfRadius:4 sigma:2.0];
-//    NSString *currentGaussianBlurFragmentShader = [GPUImageGaussianBlurFilter fragmentShaderForStandardGaussianOfRadius:4 sigma:2.0];
-    NSString *currentGaussianBlurVertexShader = [GPUImageGaussianBlurFilter vertexShaderForOptimizedGaussianOfRadius:4 sigma:2.0];
-    NSString *currentGaussianBlurFragmentShader = [GPUImageGaussianBlurFilter fragmentShaderForOptimizedGaussianOfRadius:4 sigma:2.0];
-    
-    if (!(self = [super initWithFirstStageVertexShaderFromString:firstStageVertexShaderString ? firstStageVertexShaderString : currentGaussianBlurVertexShader
-                              firstStageFragmentShaderFromString:firstStageFragmentShaderString ? firstStageFragmentShaderString : currentGaussianBlurFragmentShader
-                               secondStageVertexShaderFromString:secondStageVertexShaderString ? secondStageVertexShaderString : currentGaussianBlurVertexShader
-                             secondStageFragmentShaderFromString:secondStageFragmentShaderString ? secondStageFragmentShaderString : currentGaussianBlurFragmentShader])) {
+    if (!(self = [super initWithFirstStageVertexShaderFromString:firstStageVertexShaderString firstStageFragmentShaderFromString:firstStageFragmentShaderString secondStageVertexShaderFromString:secondStageVertexShaderString secondStageFragmentShaderFromString:secondStageFragmentShaderString]))
+    {
         return nil;
     }
     
@@ -33,17 +22,18 @@
     _blurRadiusInPixels = 2.0;
     shouldResizeBlurRadiusWithImageSize = NO;
     
-//    NSLog(@"Optimized vertex shader: \n%@", [GPUImageGaussianBlurFilter vertexShaderForOptimizedGaussianOfRadius:4 sigma:1.833333]);
-//    NSLog(@"Optimized fragment shader: \n%@", [GPUImageGaussianBlurFilter fragmentShaderForOptimizedGaussianOfRadius:4 sigma:1.833333]);
     return self;
 }
 
 - (id)init;
 {
-    return [self initWithFirstStageVertexShaderFromString:nil
-                       firstStageFragmentShaderFromString:nil
-                        secondStageVertexShaderFromString:nil
-                      secondStageFragmentShaderFromString:nil];
+    //    NSString *currentGaussianBlurVertexShader = [GPUImageGaussianBlurFilter vertexShaderForStandardGaussianOfRadius:4 sigma:2.0];
+    //    NSString *currentGaussianBlurFragmentShader = [GPUImageGaussianBlurFilter fragmentShaderForStandardGaussianOfRadius:4 sigma:2.0];
+
+    NSString *currentGaussianBlurVertexShader = [[self class] vertexShaderForOptimizedBlurOfRadius:4 sigma:2.0];
+    NSString *currentGaussianBlurFragmentShader = [[self class] fragmentShaderForOptimizedBlurOfRadius:4 sigma:2.0];
+
+    return [self initWithFirstStageVertexShaderFromString:currentGaussianBlurVertexShader firstStageFragmentShaderFromString:currentGaussianBlurFragmentShader secondStageVertexShaderFromString:currentGaussianBlurVertexShader secondStageFragmentShaderFromString:currentGaussianBlurFragmentShader];
 }
 
 #pragma mark -
@@ -51,7 +41,7 @@
 
 // "Implementation limit of 32 varying components exceeded" - Max number of varyings for these GPUs
 
-+ (NSString *)vertexShaderForStandardGaussianOfRadius:(NSUInteger)blurRadius sigma:(CGFloat)sigma;
++ (NSString *)vertexShaderForStandardBlurOfRadius:(NSUInteger)blurRadius sigma:(CGFloat)sigma;
 {
 //    NSLog(@"Max varyings: %d", [GPUImageContext maximumVaryingVectorsForThisDevice]);
     NSMutableString *shaderString = [[NSMutableString alloc] init];
@@ -96,7 +86,7 @@
     return shaderString;
 }
 
-+ (NSString *)fragmentShaderForStandardGaussianOfRadius:(NSUInteger)blurRadius sigma:(CGFloat)sigma;
++ (NSString *)fragmentShaderForStandardBlurOfRadius:(NSUInteger)blurRadius sigma:(CGFloat)sigma;
 {
     // First, generate the normal Gaussian weights for a given sigma
     GLfloat *standardGaussianWeights = calloc(blurRadius + 1, sizeof(GLfloat));
@@ -168,7 +158,7 @@
     return shaderString;
 }
 
-+ (NSString *)vertexShaderForOptimizedGaussianOfRadius:(NSUInteger)blurRadius sigma:(CGFloat)sigma;
++ (NSString *)vertexShaderForOptimizedBlurOfRadius:(NSUInteger)blurRadius sigma:(CGFloat)sigma;
 {
     if (blurRadius == 0)
     {
@@ -245,7 +235,7 @@
     return shaderString;
 }
 
-+ (NSString *)fragmentShaderForOptimizedGaussianOfRadius:(NSUInteger)blurRadius sigma:(CGFloat)sigma;
++ (NSString *)fragmentShaderForOptimizedBlurOfRadius:(NSUInteger)blurRadius sigma:(CGFloat)sigma;
 {
     if (blurRadius == 0)
     {
@@ -455,16 +445,23 @@
 {
     // 7.0 is the limit for blur size for hardcoded varying offsets
 
-    if (newValue != _blurRadiusInPixels)
+    if (round(newValue) != _blurRadiusInPixels)
     {
-        _blurRadiusInPixels = round(newValue); // For now, only do even blur sizes (based on a multiple of two of the sigma)
-//        _blurRadiusInPixels = (round(newValue * 2.0)) / 2.0; // Only take this in half-pixel steps to minimize shader creation, yet provide single pixel blur resolution
+        _blurRadiusInPixels = round(newValue); // For now, only do integral sigmas
         
-        NSString *newGaussianBlurVertexShader = [GPUImageGaussianBlurFilter vertexShaderForOptimizedGaussianOfRadius:(_blurRadiusInPixels * 2) sigma:_blurRadiusInPixels];
-        NSString *newGaussianBlurFragmentShader = [GPUImageGaussianBlurFilter fragmentShaderForOptimizedGaussianOfRadius:(_blurRadiusInPixels * 2) sigma:_blurRadiusInPixels];
-//        NSString *newGaussianBlurVertexShader = [GPUImageGaussianBlurFilter vertexShaderForOptimizedGaussianOfRadius:round(_blurRadiusInPixels * 2)/2 sigma:_blurRadiusInPixels];
-//        NSString *newGaussianBlurFragmentShader = [GPUImageGaussianBlurFilter fragmentShaderForOptimizedGaussianOfRadius:round(_blurRadiusInPixels * 2)/2 sigma:_blurRadiusInPixels];
+        // Calculate the number of pixels to sample from by setting a bottom limit for the contribution of the outermost pixel
+        CGFloat minimumWeightToFindEdgeOfSamplingArea = 1.0/256.0;
+        NSUInteger calculatedSampleRadius = floor(sqrt(-2.0 * pow(_blurRadiusInPixels, 2.0) * log(minimumWeightToFindEdgeOfSamplingArea * sqrt(2.0 * M_PI * pow(_blurRadiusInPixels, 2.0))) ));
+        calculatedSampleRadius += calculatedSampleRadius % 2; // There's nothing to gain from handling odd radius sizes, due to the optimizations I use
+        
+//        NSLog(@"Blur radius: %f, calculated sample radius: %d", _blurRadiusInPixels, calculatedSampleRadius);
+//        
+        NSString *newGaussianBlurVertexShader = [[self class] vertexShaderForOptimizedBlurOfRadius:calculatedSampleRadius sigma:_blurRadiusInPixels];
+        NSString *newGaussianBlurFragmentShader = [[self class] fragmentShaderForOptimizedBlurOfRadius:calculatedSampleRadius sigma:_blurRadiusInPixels];
 
+//        NSLog(@"Optimized vertex shader: \n%@", newGaussianBlurVertexShader);
+//        NSLog(@"Optimized fragment shader: \n%@", newGaussianBlurFragmentShader);
+//        
         [self switchToVertexShader:newGaussianBlurVertexShader fragmentShader:newGaussianBlurFragmentShader];
     }
     shouldResizeBlurRadiusWithImageSize = NO;

@@ -2,9 +2,12 @@
 #import <OpenGLES/EAGLDrawable.h>
 #import <AVFoundation/AVFoundation.h>
 
+#define MAXSHADERPROGRAMSALLOWEDINCACHE 40
+
 @interface GPUImageContext()
 {
     NSMutableDictionary *shaderProgramCache;
+    NSMutableArray *shaderProgramUsageHistory;
     EAGLSharegroup *_sharegroup;
 }
 
@@ -33,6 +36,7 @@ static void *openGLESContextQueueKey;
 	dispatch_queue_set_specific(_contextQueue, openGLESContextQueueKey, (__bridge void *)self, NULL);
 #endif
     shaderProgramCache = [[NSMutableDictionary alloc] init];
+    shaderProgramUsageHistory = [[NSMutableArray alloc] init];
     
     return self;
 }
@@ -201,6 +205,16 @@ static void *openGLESContextQueueKey;
     {
         programFromCache = [[GLProgram alloc] initWithVertexShaderString:vertexShaderString fragmentShaderString:fragmentShaderString];
         [shaderProgramCache setObject:programFromCache forKey:lookupKeyForShaderProgram];
+//        [shaderProgramUsageHistory addObject:lookupKeyForShaderProgram];
+//        if ([shaderProgramUsageHistory count] >= MAXSHADERPROGRAMSALLOWEDINCACHE)
+//        {
+//            for (NSUInteger currentShaderProgramRemovedFromCache = 0; currentShaderProgramRemovedFromCache < 10; currentShaderProgramRemovedFromCache++)
+//            {
+//                NSString *shaderProgramToRemoveFromCache = [shaderProgramUsageHistory objectAtIndex:0];
+//                [shaderProgramUsageHistory removeObjectAtIndex:0];
+//                [shaderProgramCache removeObjectForKey:shaderProgramToRemoveFromCache];
+//            }
+//        }
     }
     
     return programFromCache;

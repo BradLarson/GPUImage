@@ -7,6 +7,7 @@
 @interface GPUImageGaussianBlurFilter : GPUImageTwoPassTextureSamplingFilter 
 {
     BOOL shouldResizeBlurRadiusWithImageSize;
+    CGFloat _blurRadiusInPixels;
 }
 
 /** A multiplier for the blur size, ranging from 0.0 on up, with a default of 1.0
@@ -25,10 +26,10 @@
 /// The number of times to sequentially blur the incoming image. The more passes, the slower the filter.
 @property(readwrite, nonatomic) NSUInteger blurPasses;
 
-+ (NSString *)vertexShaderForStandardGaussianOfRadius:(NSUInteger)blurRadius sigma:(CGFloat)sigma;
-+ (NSString *)fragmentShaderForStandardGaussianOfRadius:(NSUInteger)blurRadius sigma:(CGFloat)sigma;
-+ (NSString *)vertexShaderForOptimizedGaussianOfRadius:(NSUInteger)blurRadius sigma:(CGFloat)sigma;
-+ (NSString *)fragmentShaderForOptimizedGaussianOfRadius:(NSUInteger)blurRadius sigma:(CGFloat)sigma;
++ (NSString *)vertexShaderForStandardBlurOfRadius:(NSUInteger)blurRadius sigma:(CGFloat)sigma;
++ (NSString *)fragmentShaderForStandardBlurOfRadius:(NSUInteger)blurRadius sigma:(CGFloat)sigma;
++ (NSString *)vertexShaderForOptimizedBlurOfRadius:(NSUInteger)blurRadius sigma:(CGFloat)sigma;
++ (NSString *)fragmentShaderForOptimizedBlurOfRadius:(NSUInteger)blurRadius sigma:(CGFloat)sigma;
 
 - (void)switchToVertexShader:(NSString *)newVertexShader fragmentShader:(NSString *)newFragmentShader;
 
