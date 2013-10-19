@@ -2,7 +2,7 @@
 
 @implementation GPUImageGaussianBlurFilter
 
-@synthesize blurSize = _blurSize;
+@synthesize texelSpacingMultiplier = _texelSpacingMultiplier;
 @synthesize blurRadiusInPixels = _blurRadiusInPixels;
 @synthesize blurRadiusAsFractionOfImageWidth  = _blurRadiusAsFractionOfImageWidth;
 @synthesize blurRadiusAsFractionOfImageHeight = _blurRadiusAsFractionOfImageHeight;
@@ -18,7 +18,7 @@
         return nil;
     }
     
-    self.blurSize = 1.0;
+    self.texelSpacingMultiplier = 1.0;
     _blurRadiusInPixels = 2.0;
     shouldResizeBlurRadiusWithImageSize = NO;
     
@@ -430,12 +430,12 @@
 #pragma mark -
 #pragma mark Accessors
 
-- (void)setBlurSize:(CGFloat)newValue;
+- (void)setTexelSpacingMultiplier:(CGFloat)newValue;
 {
-    _blurSize = newValue;
+    _texelSpacingMultiplier = newValue;
     
-    _verticalTexelSpacing = _blurSize;
-    _horizontalTexelSpacing = _blurSize;
+    _verticalTexelSpacing = _texelSpacingMultiplier;
+    _horizontalTexelSpacing = _texelSpacingMultiplier;
     
     [self setupFilterForSize:[self sizeOfFBO]];
 }

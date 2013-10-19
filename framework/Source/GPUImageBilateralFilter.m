@@ -204,7 +204,7 @@ NSString *const kGPUImageBilateralFilterFragmentShaderString = SHADER_STRING
     firstDistanceNormalizationFactorUniform  = [filterProgram uniformIndex:@"distanceNormalizationFactor"];
     secondDistanceNormalizationFactorUniform = [filterProgram uniformIndex:@"distanceNormalizationFactor"];
 
-    self.blurSize = 4.0;
+    self.texelSpacingMultiplier = 4.0;
     self.distanceNormalizationFactor = 8.0;
 
     

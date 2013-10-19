@@ -10,11 +10,11 @@
     CGFloat _blurRadiusInPixels;
 }
 
-/** A multiplier for the blur size, ranging from 0.0 on up, with a default of 1.0
+/** A multiplier for the spacing between texels, ranging from 0.0 on up, with a default of 1.0. Adjusting this may slightly increase the blur strength, but will introduce artifacts in the result.
  */
-@property (readwrite, nonatomic) CGFloat blurSize;
+@property (readwrite, nonatomic) CGFloat texelSpacingMultiplier;
 
-/** A radius in pixels (in 0.5 pixel increments) to use for the blur, with a default of 2.0
+/** A radius in pixels to use for the blur, with a default of 2.0. This adjusts the sigma variable in the Gaussian distribution function.
  */
 @property (readwrite, nonatomic) CGFloat blurRadiusInPixels;
 
