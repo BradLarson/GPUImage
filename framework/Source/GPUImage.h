@@ -152,3 +152,4 @@
 #import "GPUImageZoomBlurFilter.h"
 #import "GPUImageLaplacianFilter.h"
 #import "GPUImageiOSBlurFilter.h"
+#import "GPUImageLuminanceRangeFilter.h"

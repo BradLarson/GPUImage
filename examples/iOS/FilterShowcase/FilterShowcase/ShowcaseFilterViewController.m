@@ -1486,6 +1486,20 @@
             
             [colorGenerator addTarget:filterView];
         }
+        else if (filterType == GPUIMAGE_IOSBLUR)
+        {
+            [videoCamera removeAllTargets];
+            [videoCamera addTarget:filterView];
+            GPUImageCropFilter *cropFilter = [[GPUImageCropFilter alloc] init];
+            cropFilter.cropRegion = CGRectMake(0.0, 0.5, 1.0, 0.5);
+            [videoCamera addTarget:cropFilter];
+            [cropFilter addTarget:filter];
+            
+            CGRect currentViewFrame = filterView.bounds;
+            GPUImageView *blurOverlayView = [[GPUImageView alloc] initWithFrame:CGRectMake(0.0, round(currentViewFrame.size.height / 2.0), currentViewFrame.size.width, currentViewFrame.size.height - round(currentViewFrame.size.height / 2.0))];
+            [filterView addSubview:blurOverlayView];
+            [filter addTarget:blurOverlayView];
+        }
         else if (filterType == GPUIMAGE_MOTIONDETECTOR)
         {
             faceView = [[UIView alloc] initWithFrame:CGRectMake(100.0, 100.0, 100.0, 100.0)];

@@ -106,15 +106,6 @@
         NSLog(@"Luminosity: %f", luminosity);
     }];
 
-    // Testing iOS blur
-    UIImage *iOSBlurInput = [UIImage imageNamed:@"iOSHomeScreen.png"];
-    GPUImagePicture *iOSBlurImage = [[GPUImagePicture alloc] initWithImage:iOSBlurInput];
-    GPUImageiOSBlurFilter *iOSBlur = [[GPUImageiOSBlurFilter alloc] init];
-    [iOSBlurImage addTarget:iOSBlur];
-    [iOSBlurImage processImage];
-    UIImage *iOSBlurOutput = [iOSBlur imageFromCurrentlyProcessedOutput];
-    [self saveImage:iOSBlurOutput fileName:@"iOSBlur-GPUImage.png"];
-    
     // Testing Gaussian blur
     UIImage *gaussianBlurInput = [UIImage imageNamed:@"GaussianTest.png"];
     GPUImagePicture *gaussianImage = [[GPUImagePicture alloc] initWithImage:gaussianBlurInput];

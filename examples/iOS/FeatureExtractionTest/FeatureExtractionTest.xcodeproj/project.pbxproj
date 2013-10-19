@@ -22,7 +22,6 @@
 		BC46D52415D03D9C00CC63CA /* LBPTest.png in Resources */ = {isa = PBXBuildFile; fileRef = BC46D52315D03D9C00CC63CA /* LBPTest.png */; };
 		BC8A581C1810782200E6B507 /* GaussianTest.png in Resources */ = {isa = PBXBuildFile; fileRef = BC8A581B1810782200E6B507 /* GaussianTest.png */; };
 		BC8A58211810862F00E6B507 /* CoreImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC8A58201810862F00E6B507 /* CoreImage.framework */; };
-		BC8A584018130DCD00E6B507 /* iOSHomeScreen.png in Resources */ = {isa = PBXBuildFile; fileRef = BC8A583F18130DCD00E6B507 /* iOSHomeScreen.png */; };
 		BCA464C9162785EA00C0F68E /* LineTest.png in Resources */ = {isa = PBXBuildFile; fileRef = BCA464C8162785EA00C0F68E /* LineTest.png */; };
 		BCB3C3F916BCA61A003D26B0 /* Icon-72.png in Resources */ = {isa = PBXBuildFile; fileRef = BCB3C3F416BCA61A003D26B0 /* Icon-72.png */; };
 		BCB3C3FA16BCA61A003D26B0 /* Icon-72@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BCB3C3F516BCA61A003D26B0 /* Icon-72@2x.png */; };
@@ -80,7 +79,6 @@
 		BC46D52315D03D9C00CC63CA /* LBPTest.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = LBPTest.png; sourceTree = "<group>"; };
 		BC8A581B1810782200E6B507 /* GaussianTest.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = GaussianTest.png; sourceTree = "<group>"; };
 		BC8A58201810862F00E6B507 /* CoreImage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreImage.framework; path = System/Library/Frameworks/CoreImage.framework; sourceTree = SDKROOT; };
-		BC8A583F18130DCD00E6B507 /* iOSHomeScreen.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iOSHomeScreen.png; sourceTree = "<group>"; };
 		BCA464C8162785EA00C0F68E /* LineTest.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = LineTest.png; sourceTree = "<group>"; };
 		BCB3C3F416BCA61A003D26B0 /* Icon-72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-72.png"; path = "../../SharedIcons/Icon-72.png"; sourceTree = "<group>"; };
 		BCB3C3F516BCA61A003D26B0 /* Icon-72@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-72@2x.png"; path = "../../SharedIcons/Icon-72@2x.png"; sourceTree = "<group>"; };
@@ -160,7 +158,6 @@
 		BC18E0A1156C822E00AB8026 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				BC8A583F18130DCD00E6B507 /* iOSHomeScreen.png */,
 				BC8A581B1810782200E6B507 /* GaussianTest.png */,
 				BCB3C3F416BCA61A003D26B0 /* Icon-72.png */,
 				BCB3C3F516BCA61A003D26B0 /* Icon-72@2x.png */,
@@ -266,7 +263,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BC8A584018130DCD00E6B507 /* iOSHomeScreen.png in Resources */,
 				BC18E0A5156C822E00AB8026 /* InfoPlist.strings in Resources */,
 				BC18E0CC156C881700AB8026 /* 71yih.png in Resources */,
 				BCD9A356157EC35E00C41504 /* 8pixeltest.png in Resources */,
