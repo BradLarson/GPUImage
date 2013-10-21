@@ -1567,7 +1567,6 @@
 				BC0690BE157C1B38009274F9 /* GPUImageOpeningFilter.m in Sources */,
 				BC0690C2157C2368009274F9 /* GPUImageClosingFilter.m in Sources */,
 				BC0690D1157C2EBA009274F9 /* GPUImageRGBDilationFilter.m in Sources */,
-				BC8A583D1813060F00E6B507 /* GPUImageiOSBlurFilter.m in Sources */,
 				BC0690D6157C31C9009274F9 /* GPUImageRGBErosionFilter.m in Sources */,
 				BC0690DA157C33B9009274F9 /* GPUImageRGBOpeningFilter.m in Sources */,
 				BC0690DE157C344D009274F9 /* GPUImageRGBClosingFilter.m in Sources */,
@@ -1622,6 +1621,7 @@
 				BC6C55411730679D00EB222D /* GPUImageLaplacianFilter.m in Sources */,
 				BCB030BF173400BC001A1A20 /* GPUImageThreeInputFilter.m in Sources */,
 				D443237B17C81C0C00204484 /* GPUImageMovieComposition.m in Sources */,
+				BC8A583D1813060F00E6B507 /* GPUImageiOSBlurFilter.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

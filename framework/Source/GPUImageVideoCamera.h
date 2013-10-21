@@ -146,6 +146,8 @@ extern NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString
  */
 - (CGFloat)averageFrameDurationDuringCapture;
 
+- (void)resetBenchmarkAverage;
+
 + (BOOL)isBackFacingCameraPresent;
 + (BOOL)isFrontFacingCameraPresent;
 

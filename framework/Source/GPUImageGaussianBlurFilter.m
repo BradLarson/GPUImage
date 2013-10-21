@@ -27,12 +27,9 @@
 
 - (id)init;
 {
-    //    NSString *currentGaussianBlurVertexShader = [GPUImageGaussianBlurFilter vertexShaderForStandardGaussianOfRadius:4 sigma:2.0];
-    //    NSString *currentGaussianBlurFragmentShader = [GPUImageGaussianBlurFilter fragmentShaderForStandardGaussianOfRadius:4 sigma:2.0];
-
     NSString *currentGaussianBlurVertexShader = [[self class] vertexShaderForOptimizedBlurOfRadius:4 sigma:2.0];
     NSString *currentGaussianBlurFragmentShader = [[self class] fragmentShaderForOptimizedBlurOfRadius:4 sigma:2.0];
-
+    
     return [self initWithFirstStageVertexShaderFromString:currentGaussianBlurVertexShader firstStageFragmentShaderFromString:currentGaussianBlurFragmentShader secondStageVertexShaderFromString:currentGaussianBlurVertexShader secondStageFragmentShaderFromString:currentGaussianBlurFragmentShader];
 }
 
@@ -427,6 +424,7 @@
         glEnableVertexAttribArray(secondFilterTextureCoordinateAttribute);
         
         [self setupFilterForSize:[self sizeOfFBO]];
+        glFinish();
     });
 
 }

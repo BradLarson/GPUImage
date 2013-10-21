@@ -923,6 +923,12 @@ NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = SHAD
     return (totalFrameTimeDuringCapture / (CGFloat)(numberOfFramesCaptured - INITIALFRAMESTOIGNOREFORBENCHMARK)) * 1000.0;
 }
 
+- (void)resetBenchmarkAverage;
+{
+    numberOfFramesCaptured = 0;
+    totalFrameTimeDuringCapture = 0.0;
+}
+
 #pragma mark -
 #pragma mark AVCaptureVideoDataOutputSampleBufferDelegate
 

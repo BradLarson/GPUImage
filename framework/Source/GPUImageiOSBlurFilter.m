@@ -37,7 +37,6 @@
     self.initialFilters = [NSArray arrayWithObject:saturationFilter];
     self.terminalFilter = luminanceRangeFilter;
     
-//    self.blurRadiusInPixels = 24.0;
     self.blurRadiusInPixels = 12.0;
     self.saturation = 0.8;
     self.downsampling = 4.0;

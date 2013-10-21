@@ -1,5 +1,7 @@
 #import "VideoFilteringDisplayController.h"
 
+#define BLURSIGMA 4.0
+
 @implementation VideoFilteringDisplayController
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -71,6 +73,7 @@
 		NSLog(@"Couldn't add video output");
 	}
     
+//    [captureSession setSessionPreset:AVCaptureSessionPreset1280x720];
     [captureSession setSessionPreset:AVCaptureSessionPreset640x480];
 }
 
@@ -117,6 +120,8 @@
     [EAGLContext setCurrentContext:self.openGLESContext];
 
     videoDisplayView = [[GLKView alloc] initWithFrame:self.view.bounds context:self.openGLESContext];
+    videoDisplayView.contentScaleFactor = [[UIScreen mainScreen] scale];
+
 //    videoDisplayView.frame = self.view.bounds;
     [self.view addSubview:videoDisplayView];
     
@@ -128,12 +133,20 @@
 
 //    [videoDisplayView bindDrawable];
 
-    coreImageContext = [CIContext contextWithEAGLContext:self.openGLESContext];
+    // Disable color correction to provide a more fair benchmark
+    NSMutableDictionary *options = [[NSMutableDictionary alloc] init];
+    [options setObject: [NSNull null] forKey: kCIContextWorkingColorSpace];
+    coreImageContext = [CIContext contextWithEAGLContext:self.openGLESContext options:options];
+    
+    
+//    sepiaCoreImageFilter = [CIFilter filterWithName:@"CIGaussianBlur"];
+//    [sepiaCoreImageFilter setValue:[NSNumber numberWithFloat:BLURSIGMA] forKey:@"inputRadius"];
 
-    
-    
-    sepiaCoreImageFilter = [CIFilter filterWithName:@"CISepiaTone"];
-    [sepiaCoreImageFilter setValue:[NSNumber numberWithFloat:1.0] forKey:@"inputIntensity"];
+//    sepiaCoreImageFilter = [CIFilter filterWithName:@"CISepiaTone"];
+//    [sepiaCoreImageFilter setValue:[NSNumber numberWithFloat:1.0] forKey:@"inputIntensity"];
+
+    coreImageFilter = [CIFilter filterWithName:@"CIGammaAdjust"];
+    [coreImageFilter setValue:[NSNumber numberWithFloat:0.75] forKey:@"inputPower"];
     
     [self startAVFoundationVideoProcessing];
     processUsingCPU = NO;
@@ -158,6 +171,7 @@
 
         NSLog(@"End Core Image");
 
+        sleep(1);
         [self displayVideoForGPUImage];
     });
 }
@@ -169,15 +183,21 @@
 
     NSLog(@"Start GPU Image");
     videoCamera = [[GPUImageVideoCamera alloc] initWithSessionPreset:AVCaptureSessionPreset640x480 cameraPosition:AVCaptureDevicePositionBack];
+//    videoCamera = [[GPUImageVideoCamera alloc] initWithSessionPreset:AVCaptureSessionPreset1280x720 cameraPosition:AVCaptureDevicePositionBack];
     videoCamera.runBenchmark = YES;
     videoCamera.outputImageOrientation = UIInterfaceOrientationPortrait;
     
-    sepiaFilter = [[GPUImageSepiaFilter alloc] init];
+//    sepiaFilter = [[GPUImageSepiaFilter alloc] init];
+//    sepiaFilter = [[GPUImageiOSBlurFilter alloc] init];
+//    sepiaFilter = [[GPUImageGaussianBlurFilter alloc] init];
+//    [(GPUImageGaussianBlurFilter *)sepiaFilter setBlurRadiusInPixels:BLURSIGMA];
+    benchmarkedGPUImageFilter = [[GPUImageGammaFilter alloc] init];
+    [(GPUImageGammaFilter *)benchmarkedGPUImageFilter setGamma:0.75];
     
-    [videoCamera addTarget:sepiaFilter];
+    [videoCamera addTarget:benchmarkedGPUImageFilter];
     filterView = [[GPUImageView alloc] initWithFrame:self.view.bounds];
     [self.view addSubview:filterView];
-    [sepiaFilter addTarget:filterView];
+    [benchmarkedGPUImageFilter addTarget:filterView];
     
     [videoCamera startCameraCapture];
 
@@ -216,7 +236,6 @@
         CFAbsoluteTime elapsedTime, startTime = CFAbsoluteTimeGetCurrent();
 
         unsigned char *data = (unsigned char *)CVPixelBufferGetBaseAddress(pixelBuffer);
-//		int bytesPerRow = CVPixelBufferGetBytesPerRow(pixelBuffer);
 
         int bufferHeight = CVPixelBufferGetHeight(pixelBuffer);
         int bufferWidth = CVPixelBufferGetWidth(pixelBuffer);
@@ -256,12 +275,14 @@
 
         CIImage *inputImage = [CIImage imageWithCVPixelBuffer:pixelBuffer];
         inputImage = [inputImage imageByApplyingTransform:CGAffineTransformMakeRotation(-M_PI / 2.0)];
-        [sepiaCoreImageFilter setValue:inputImage forKey:kCIInputImageKey];
+        [coreImageFilter setValue:inputImage forKey:kCIInputImageKey];
         
-        CIImage *outputImage = [sepiaCoreImageFilter outputImage];
+        CIImage *outputImage = [coreImageFilter outputImage];
 
-        CGFloat scale = UIScreen.mainScreen.scale;
-        CGRect s = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width * scale, [[UIScreen mainScreen] bounds].size.height * scale);
+//        CGFloat scale = UIScreen.mainScreen.scale;
+//        CGRect s = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width * scale, [[UIScreen mainScreen] bounds].size.height * scale);
+        CGRect s = CGRectMake(0, 0, 480, 640);
+//        CGRect s = CGRectMake(0, 0, 720, 1280);
         [coreImageContext drawImage:outputImage inRect:s fromRect:[inputImage extent]];
         
         [self.openGLESContext presentRenderbuffer:GL_RENDERBUFFER];

@@ -22,7 +22,7 @@ http://www.sunsetlakesoftware.com/2010/10/22/gpu-accelerated-video-processing-ma
 
 and found that there was a lot of boilerplate code I had to write in its creation. Therefore, I put together this framework that encapsulates a lot of the common tasks you'll encounter when processing images and video and made it so that you don't need to care about the OpenGL ES 2.0 underpinnings.
 
-In initial benchmarks, this framework significantly outperforms Core Image when handling video, taking only 2.5 ms on an iPhone 4 to upload a frame from the camera, apply a sepia filter, and display, versus 149 ms for the same operation using Core Image. CPU-based processing takes 460 ms, making GPUImage 60X faster than Core Image on this hardware, and 184X faster than CPU-bound processing. On an iPhone 4S, GPUImage is only 13X faster than Core Image, and 102X faster than CPU-bound processing.
+This framework compares favorably to Core Image when handling video, taking only 2.5 ms on an iPhone 4 to upload a frame from the camera, apply a gamma filter, and display, versus 106 ms for the same operation using Core Image. CPU-based processing takes 460 ms, making GPUImage 40X faster than Core Image for this operation on this hardware, and 184X faster than CPU-bound processing. On an iPhone 4S, GPUImage is only 4X faster than Core Image for this case, and 102X faster than CPU-bound processing. However, for more complex operations like Gaussian blurs at larger radii, Core Image currently outpaces GPUImage.
 
 ## License ##
 
@@ -203,6 +203,11 @@ There are currently 125 built-in filters, divided into the following categories:
   - *blurSize*: A multiplier for the size of the blur, ranging from 0.0 on up, with a default of 1.0
   - *blurCenter*: Center for the blur, defaults to 0.5, 0.5
   - *blurRadius*: Radius for the blur, defaults to 1.0
+
+- **GPUImageiOSBlurFilter**: An attempt to replicate the background blur used on iOS 7 in places like the control center.
+  - *blurRadiusInPixels*: A radius in pixels to use for the blur, with a default of 12.0. This adjusts the sigma variable in the Gaussian distribution function.
+  - *saturation*: Saturation ranges from 0.0 (fully desaturated) to 2.0 (max saturation), with 0.8 as the normal level
+  - *downsampling*: The degree to which to downsample, then upsample the incoming image to minimize computations within the Gaussian blur, with a default of 4.0.
 
 - **GPUImageMedianFilter**: Takes the median value of the three color components, over a 3x3 area
 
