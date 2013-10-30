@@ -1,15 +1,41 @@
 #import "GPUImageFilter.h"
 
-@interface GPUImageToneCurveFilter : GPUImageFilter
+@interface GPUImageCurveData : NSObject
+
+- (id)initWithACVData:(NSData*)data;
+- (id)initWithACV:(NSString*)curveFilename;
+- (id)initWithACVURL:(NSURL*)curveFileURL;
 
 @property(readwrite, nonatomic, copy) NSArray *redControlPoints;
 @property(readwrite, nonatomic, copy) NSArray *greenControlPoints;
 @property(readwrite, nonatomic, copy) NSArray *blueControlPoints;
 @property(readwrite, nonatomic, copy) NSArray *rgbCompositeControlPoints;
 
-// Initialization and teardown
-- (id)initWithACVData:(NSData*)data;
+@property(readonly, nonatomic) NSArray *rgbCompositeCurve;
+@property(readonly, nonatomic) NSArray *redCurve;
+@property(readonly, nonatomic) NSArray *greenCurve;
+@property(readonly, nonatomic) NSArray *blueCurve;
 
+// Curve calculation
+- (NSMutableArray *)getPreparedSplineCurve:(NSArray *)points;
+- (NSMutableArray *)splineCurve:(NSArray *)points;
+- (NSMutableArray *)secondDerivative:(NSArray *)cgPoints;
+
+@end
+
+@interface GPUImageToneCurveFilter : GPUImageFilter
+
+@property(readwrite, nonatomic, copy) NSArray *redControlPoints DEPRECATED_ATTRIBUTE;
+@property(readwrite, nonatomic, copy) NSArray *greenControlPoints DEPRECATED_ATTRIBUTE;
+@property(readwrite, nonatomic, copy) NSArray *blueControlPoints DEPRECATED_ATTRIBUTE;
+@property(readwrite, nonatomic, copy) NSArray *rgbCompositeControlPoints DEPRECATED_ATTRIBUTE;
+
+@property(readwrite, nonatomic) GPUImageCurveData *curveData;
+
+// Initialization and teardown
+- (id)initWithCurveData:(GPUImageCurveData *)curveData;
+
+- (id)initWithACVData:(NSData*)data;
 - (id)initWithACV:(NSString*)curveFilename;
 - (id)initWithACVURL:(NSURL*)curveFileURL;
 
@@ -21,10 +47,7 @@
 - (void)setPointsWithACV:(NSString*)curveFilename;
 - (void)setPointsWithACVURL:(NSURL*)curveFileURL;
 
-// Curve calculation
-- (NSMutableArray *)getPreparedSplineCurve:(NSArray *)points;
-- (NSMutableArray *)splineCurve:(NSArray *)points;
-- (NSMutableArray *)secondDerivative:(NSArray *)cgPoints;
+// Deprecated because this is an internal method.
 - (void)updateToneCurveTexture;
-   
+
 @end
