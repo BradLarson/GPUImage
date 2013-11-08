@@ -1002,9 +1002,14 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
 
 - (void)endProcessing 
 {
-    for (id<GPUImageInput> currentTarget in targets)
+    if (!isEndProcessing)
     {
-        [currentTarget endProcessing];
+        isEndProcessing = YES;
+        
+        for (id<GPUImageInput> currentTarget in targets)
+        {
+            [currentTarget endProcessing];
+        }
     }
 }
 
