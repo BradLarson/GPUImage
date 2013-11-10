@@ -13,8 +13,16 @@ NSString *const kGPUImageScreenBlendFragmentShaderString = SHADER_STRING
  {
      mediump vec4 textureColor = texture2D(inputImageTexture, textureCoordinate);
      mediump vec4 textureColor2 = texture2D(inputImageTexture2, textureCoordinate2);
-     mediump vec4 whiteColor = vec4(1.0);
-     gl_FragColor = whiteColor - ((whiteColor - textureColor2) * (whiteColor - textureColor));
+     
+     // premultiply RGB with alpha
+     textureColor.rgb *= textureColor.a;
+     textureColor2.rgb *= textureColor2.a;
+     
+     mediump vec4 textureOut = textureColor2 + textureColor - textureColor2 * textureColor;
+     // factor out the resulting alpha from RGB
+     textureOut.rgb /= textureOut.a;
+     
+     gl_FragColor = textureOut;
  }
 );
 #else
@@ -30,8 +38,16 @@ NSString *const kGPUImageScreenBlendFragmentShaderString = SHADER_STRING
  {
      vec4 textureColor = texture2D(inputImageTexture, textureCoordinate);
      vec4 textureColor2 = texture2D(inputImageTexture2, textureCoordinate2);
-     vec4 whiteColor = vec4(1.0);
-     gl_FragColor = whiteColor - ((whiteColor - textureColor2) * (whiteColor - textureColor));
+     
+     // premultiply RGB with alpha
+     textureColor.rgb *= textureColor.a;
+     textureColor2.rgb *= textureColor2.a;
+     
+     vec4 textureOut = textureColor2 + textureColor - textureColor2 * textureColor;
+     // factor out the resulting alpha from RGB
+     textureOut.rgb /= textureOut.a;
+     
+     gl_FragColor = textureOut;
  }
 );
 #endif
