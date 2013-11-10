@@ -101,29 +101,39 @@
     GLenum format = GL_BGRA;
     
     if (!shouldRedrawUsingCoreGraphics) {
-        /* Check that the bitmap pixel format is compatible with GL */
-        CGBitmapInfo bitmapInfo = CGImageGetBitmapInfo(newImageSource);
-        if ((bitmapInfo & kCGBitmapFloatComponents) != 0) {
-            /* We don't support float components for use directly in GL */
+        /* Check that the memory layout is compatible with GL, as we cannot use glPixelStore to
+         * tell GL about the memory layout with GLES.
+         */
+        if (CGImageGetBytesPerRow(newImageSource) != CGImageGetWidth(newImageSource) * 4 ||
+            CGImageGetBitsPerPixel(newImageSource) != 32 ||
+            CGImageGetBitsPerComponent(newImageSource) != 8)
+        {
             shouldRedrawUsingCoreGraphics = YES;
         } else {
-            CGBitmapInfo byteOrderInfo = bitmapInfo & kCGBitmapByteOrderMask;
-            if (byteOrderInfo == kCGBitmapByteOrder32Little) {
-                /* Little endian, for alpha-first we can use this bitmap directly in GL */
-                CGImageAlphaInfo alphaInfo = bitmapInfo & kCGBitmapAlphaInfoMask;
-                if (alphaInfo != kCGImageAlphaPremultipliedFirst && alphaInfo != kCGImageAlphaFirst &&
-                    alphaInfo != kCGImageAlphaNoneSkipFirst) {
-                    shouldRedrawUsingCoreGraphics = YES;
-                }
-            } else if (byteOrderInfo == kCGBitmapByteOrderDefault || byteOrderInfo == kCGBitmapByteOrder32Big) {
-                /* Big endian, for alpha-last we can use this bitmap directly in GL */
-                CGImageAlphaInfo alphaInfo = bitmapInfo & kCGBitmapAlphaInfoMask;
-                if (alphaInfo != kCGImageAlphaPremultipliedLast && alphaInfo != kCGImageAlphaLast &&
-                    alphaInfo != kCGImageAlphaNoneSkipLast) {
-                    shouldRedrawUsingCoreGraphics = YES;
-                } else {
-                    /* Can access directly using GL_RGBA pixel format */
-                    format = GL_RGBA;
+            /* Check that the bitmap pixel format is compatible with GL */
+            CGBitmapInfo bitmapInfo = CGImageGetBitmapInfo(newImageSource);
+            if ((bitmapInfo & kCGBitmapFloatComponents) != 0) {
+                /* We don't support float components for use directly in GL */
+                shouldRedrawUsingCoreGraphics = YES;
+            } else {
+                CGBitmapInfo byteOrderInfo = bitmapInfo & kCGBitmapByteOrderMask;
+                if (byteOrderInfo == kCGBitmapByteOrder32Little) {
+                    /* Little endian, for alpha-first we can use this bitmap directly in GL */
+                    CGImageAlphaInfo alphaInfo = bitmapInfo & kCGBitmapAlphaInfoMask;
+                    if (alphaInfo != kCGImageAlphaPremultipliedFirst && alphaInfo != kCGImageAlphaFirst &&
+                        alphaInfo != kCGImageAlphaNoneSkipFirst) {
+                        shouldRedrawUsingCoreGraphics = YES;
+                    }
+                } else if (byteOrderInfo == kCGBitmapByteOrderDefault || byteOrderInfo == kCGBitmapByteOrder32Big) {
+                    /* Big endian, for alpha-last we can use this bitmap directly in GL */
+                    CGImageAlphaInfo alphaInfo = bitmapInfo & kCGBitmapAlphaInfoMask;
+                    if (alphaInfo != kCGImageAlphaPremultipliedLast && alphaInfo != kCGImageAlphaLast &&
+                        alphaInfo != kCGImageAlphaNoneSkipLast) {
+                        shouldRedrawUsingCoreGraphics = YES;
+                    } else {
+                        /* Can access directly using GL_RGBA pixel format */
+                        format = GL_RGBA;
+                    }
                 }
             }
         }
