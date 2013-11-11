@@ -4,6 +4,7 @@
 @interface GPUImageFilterGroup : GPUImageOutput <GPUImageInput, GPUImageTextureDelegate>
 {
     NSMutableArray *filters;
+    BOOL isEndProcessing;
 }
 
 @property(readwrite, nonatomic, strong) GPUImageOutput<GPUImageInput> *terminalFilter;
