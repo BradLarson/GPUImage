@@ -704,8 +704,8 @@ NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = SHAD
 
         CFRetain(sampleBuffer);
         runAsynchronouslyOnVideoProcessingQueue(^{
-            // JVA: 7/7/13
-            // Just need the decibels…
+
+				// Update delegate with decibels
             if (self.delegate)
             {
                 NSInteger channelCount = 0;

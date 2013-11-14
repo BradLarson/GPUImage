@@ -242,7 +242,6 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
     
     [assetWriter addInput:assetWriterVideoInput];
 
-    // ***** JVA
     // Add the audio input
     AudioChannelLayout acl;
     bzero( &acl, sizeof(acl));
