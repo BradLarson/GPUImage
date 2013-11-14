@@ -112,6 +112,8 @@
 - (void)processAudioSampleBuffer:(CMSampleBufferRef)sampleBuffer;
 
 /** Allow custom audio inputs
+  @param newValue MovieWriter target
+  @param microphone Audio source
  */
 - (void)setAudioEncodingTarget:(GPUImageMovieWriter *)newValue withAudioInput:(AVCaptureDevice*)microphone;
 
