@@ -111,6 +111,10 @@
  */
 - (void)processAudioSampleBuffer:(CMSampleBufferRef)sampleBuffer;
 
+/** Allow custom audio inputs
+ */
+- (void)setAudioEncodingTarget:(GPUImageMovieWriter *)newValue withAudioInput:(AVCaptureDevice*)microphone;
+
 /** Get the position (front, rear) of the source camera
  */
 - (AVCaptureDevicePosition)cameraPosition;
