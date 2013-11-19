@@ -173,7 +173,6 @@
         case GPUIMAGE_KUWAHARARADIUS3: cell.textLabel.text = @"Kuwahara (fixed radius)"; break;
         case GPUIMAGE_VIGNETTE: cell.textLabel.text = @"Vignette"; break;
         case GPUIMAGE_GAUSSIAN: cell.textLabel.text = @"Gaussian blur"; break;
-        case GPUIMAGE_FASTBLUR: cell.textLabel.text = @"Gaussian blur (optimized)"; break;
         case GPUIMAGE_MEDIAN: cell.textLabel.text = @"Median (3x3)"; break;
         case GPUIMAGE_BILATERAL: cell.textLabel.text = @"Bilateral blur"; break;
         case GPUIMAGE_MOTIONBLUR: cell.textLabel.text = @"Motion blur"; break;
@@ -181,6 +180,7 @@
         case GPUIMAGE_BOXBLUR: cell.textLabel.text = @"Box blur"; break;
         case GPUIMAGE_GAUSSIAN_SELECTIVE: cell.textLabel.text = @"Gaussian selective blur"; break;
         case GPUIMAGE_GAUSSIAN_POSITION: cell.textLabel.text = @"Gaussian (centered)"; break;
+        case GPUIMAGE_IOSBLUR: cell.textLabel.text = @"iOS 7 blur"; break;
         case GPUIMAGE_UIELEMENT: cell.textLabel.text = @"UI element"; break;
 		case GPUIMAGE_CUSTOM: cell.textLabel.text = @"Custom"; break;
         case GPUIMAGE_FILECONFIG: cell.textLabel.text = @"Filter Chain"; break;

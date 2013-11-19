@@ -74,7 +74,7 @@
     pixelSizeOfImage = CGSizeMake(widthOfImage, heightOfImage);
     CGSize pixelSizeToUseForTexture = pixelSizeOfImage;
     
-    BOOL shouldRedrawUsingCoreGraphics = YES;
+    BOOL shouldRedrawUsingCoreGraphics = NO;
     
     // For now, deal with images larger than the maximum texture size by resizing to be within that limit
     CGSize scaledImageSizeToFitOnGPU = [GPUImageContext sizeThatFitsWithinATextureForSize:pixelSizeOfImage];
@@ -98,12 +98,52 @@
     
     GLubyte *imageData = NULL;
     CFDataRef dataFromImageDataProvider;
+    GLenum format = GL_BGRA;
+    
+    if (!shouldRedrawUsingCoreGraphics) {
+        /* Check that the memory layout is compatible with GL, as we cannot use glPixelStore to
+         * tell GL about the memory layout with GLES.
+         */
+        if (CGImageGetBytesPerRow(newImageSource) != CGImageGetWidth(newImageSource) * 4 ||
+            CGImageGetBitsPerPixel(newImageSource) != 32 ||
+            CGImageGetBitsPerComponent(newImageSource) != 8)
+        {
+            shouldRedrawUsingCoreGraphics = YES;
+        } else {
+            /* Check that the bitmap pixel format is compatible with GL */
+            CGBitmapInfo bitmapInfo = CGImageGetBitmapInfo(newImageSource);
+            if ((bitmapInfo & kCGBitmapFloatComponents) != 0) {
+                /* We don't support float components for use directly in GL */
+                shouldRedrawUsingCoreGraphics = YES;
+            } else {
+                CGBitmapInfo byteOrderInfo = bitmapInfo & kCGBitmapByteOrderMask;
+                if (byteOrderInfo == kCGBitmapByteOrder32Little) {
+                    /* Little endian, for alpha-first we can use this bitmap directly in GL */
+                    CGImageAlphaInfo alphaInfo = bitmapInfo & kCGBitmapAlphaInfoMask;
+                    if (alphaInfo != kCGImageAlphaPremultipliedFirst && alphaInfo != kCGImageAlphaFirst &&
+                        alphaInfo != kCGImageAlphaNoneSkipFirst) {
+                        shouldRedrawUsingCoreGraphics = YES;
+                    }
+                } else if (byteOrderInfo == kCGBitmapByteOrderDefault || byteOrderInfo == kCGBitmapByteOrder32Big) {
+                    /* Big endian, for alpha-last we can use this bitmap directly in GL */
+                    CGImageAlphaInfo alphaInfo = bitmapInfo & kCGBitmapAlphaInfoMask;
+                    if (alphaInfo != kCGImageAlphaPremultipliedLast && alphaInfo != kCGImageAlphaLast &&
+                        alphaInfo != kCGImageAlphaNoneSkipLast) {
+                        shouldRedrawUsingCoreGraphics = YES;
+                    } else {
+                        /* Can access directly using GL_RGBA pixel format */
+                        format = GL_RGBA;
+                    }
+                }
+            }
+        }
+    }
     
     //    CFAbsoluteTime elapsedTime, startTime = CFAbsoluteTimeGetCurrent();
     
     if (shouldRedrawUsingCoreGraphics)
     {
-        // For resized image, redraw
+        // For resized or incompatible image: redraw
         imageData = (GLubyte *) calloc(1, (int)pixelSizeToUseForTexture.width * (int)pixelSizeToUseForTexture.height * 4);
         
         CGColorSpaceRef genericRGBColorspace = CGColorSpaceCreateDeviceRGB();
@@ -148,7 +188,7 @@
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         }
         // no need to use self.outputTextureOptions here since pictures need this texture formats and type
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (int)pixelSizeToUseForTexture.width, (int)pixelSizeToUseForTexture.height, 0, GL_BGRA, GL_UNSIGNED_BYTE, imageData);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (int)pixelSizeToUseForTexture.width, (int)pixelSizeToUseForTexture.height, 0, format, GL_UNSIGNED_BYTE, imageData);
         
         if (self.shouldSmoothlyScaleOutput)
         {
@@ -170,7 +210,7 @@
 }
 
 // ARC forbids explicit message send of 'release'; since iOS 6 even for dispatch_release() calls: stripping it out in that case is required.
-#if ( (__IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_6_0) || (!defined(__IPHONE_6_0)) )
+#if ( (__IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_7_0) || (!defined(__IPHONE_7_0)) )
 - (void)dealloc;
 {
     if (imageUpdateSemaphore != NULL)

@@ -559,10 +559,6 @@
             [self.filterSettingsSlider setMaximumValue:1.0];
             [self.filterSettingsSlider setValue:1.0];
 
-//            [self.filterSettingsSlider setMinimumValue:0.0];
-//            [self.filterSettingsSlider setMaximumValue:0.5];
-//            [self.filterSettingsSlider setValue:0.1];
-
             filter = [[GPUImageCannyEdgeDetectionFilter alloc] init];
         }; break;
         case GPUIMAGE_THRESHOLDEDGEDETECTION:
@@ -663,9 +659,9 @@
             self.title = @"Smooth Toon";
             self.filterSettingsSlider.hidden = NO;
             
-            [self.filterSettingsSlider setMinimumValue:0.0];
-            [self.filterSettingsSlider setMaximumValue:1.0];
-            [self.filterSettingsSlider setValue:0.5];
+            [self.filterSettingsSlider setMinimumValue:1.0];
+            [self.filterSettingsSlider setMaximumValue:6.0];
+            [self.filterSettingsSlider setValue:1.0];
             
             filter = [[GPUImageSmoothToonFilter alloc] init];
         }; break;            
@@ -1153,26 +1149,20 @@
             self.title = @"Gaussian Blur";
             self.filterSettingsSlider.hidden = NO;
             
-            [self.filterSettingsSlider setMinimumValue:0.0];
-            [self.filterSettingsSlider setMaximumValue:10.0];
-            [self.filterSettingsSlider setValue:1.0];
+            [self.filterSettingsSlider setMinimumValue:1.0];
+            [self.filterSettingsSlider setMaximumValue:24.0];
+            [self.filterSettingsSlider setValue:2.0];
             
             filter = [[GPUImageGaussianBlurFilter alloc] init];
         }; break;
-        case GPUIMAGE_FASTBLUR:
-        {
-            self.title = @"Fast Blur";
-            self.filterSettingsSlider.hidden = NO;
-            [self.filterSettingsSlider setMinimumValue:1.0];
-            [self.filterSettingsSlider setMaximumValue:10.0];
-            [self.filterSettingsSlider setValue:1.0];
-
-            filter = [[GPUImageFastBlurFilter alloc] init];
-		}; break;
         case GPUIMAGE_BOXBLUR:
         {
             self.title = @"Box Blur";
-            self.filterSettingsSlider.hidden = YES;
+            self.filterSettingsSlider.hidden = NO;
+            
+            [self.filterSettingsSlider setMinimumValue:1.0];
+            [self.filterSettingsSlider setMaximumValue:24.0];
+            [self.filterSettingsSlider setValue:2.0];
             
             filter = [[GPUImageBoxBlurFilter alloc] init];
 		}; break;
@@ -1204,6 +1194,13 @@
             [self.filterSettingsSlider setValue:1.0];
             
             filter = [[GPUImageZoomBlurFilter alloc] init];
+        }; break;
+        case GPUIMAGE_IOSBLUR:
+        {
+            self.title = @"iOS 7 Blur";
+            self.filterSettingsSlider.hidden = YES;
+            
+            filter = [[GPUImageiOSBlurFilter alloc] init];
         }; break;
         case GPUIMAGE_UIELEMENT:
         {
@@ -1456,7 +1453,7 @@
             // Provide a blurred image for a cool-looking background
             GPUImageGaussianBlurFilter *gaussianBlur = [[GPUImageGaussianBlurFilter alloc] init];
             [videoCamera addTarget:gaussianBlur];
-            gaussianBlur.blurSize = 2.0;
+            gaussianBlur.blurRadiusInPixels = 5.0;
 
             GPUImageAlphaBlendFilter *blendFilter = [[GPUImageAlphaBlendFilter alloc] init];
             blendFilter.mix = 1.0;
@@ -1488,6 +1485,20 @@
             }];
             
             [colorGenerator addTarget:filterView];
+        }
+        else if (filterType == GPUIMAGE_IOSBLUR)
+        {
+            [videoCamera removeAllTargets];
+            [videoCamera addTarget:filterView];
+            GPUImageCropFilter *cropFilter = [[GPUImageCropFilter alloc] init];
+            cropFilter.cropRegion = CGRectMake(0.0, 0.5, 1.0, 0.5);
+            [videoCamera addTarget:cropFilter];
+            [cropFilter addTarget:filter];
+            
+            CGRect currentViewFrame = filterView.bounds;
+            GPUImageView *blurOverlayView = [[GPUImageView alloc] initWithFrame:CGRectMake(0.0, round(currentViewFrame.size.height / 2.0), currentViewFrame.size.width, currentViewFrame.size.height - round(currentViewFrame.size.height / 2.0))];
+            [filterView addSubview:blurOverlayView];
+            [filter addTarget:blurOverlayView];
         }
         else if (filterType == GPUIMAGE_MOTIONDETECTOR)
         {
@@ -1533,6 +1544,7 @@
 
 - (IBAction)updateFilterFromSlider:(id)sender;
 {
+    [videoCamera resetBenchmarkAverage];
     switch(filterType)
     {
         case GPUIMAGE_SEPIA: [(GPUImageSepiaFilter *)filter setIntensity:[(UISlider *)sender value]]; break;
@@ -1567,7 +1579,7 @@
         case GPUIMAGE_PREWITTEDGEDETECTION: [(GPUImagePrewittEdgeDetectionFilter *)filter setEdgeStrength:[(UISlider *)sender value]]; break;
         case GPUIMAGE_SKETCH: [(GPUImageSketchFilter *)filter setEdgeStrength:[(UISlider *)sender value]]; break;
         case GPUIMAGE_THRESHOLD: [(GPUImageLuminanceThresholdFilter *)filter setThreshold:[(UISlider *)sender value]]; break;
-        case GPUIMAGE_ADAPTIVETHRESHOLD: [(GPUImageAdaptiveThresholdFilter *)filter setBlurSize:[(UISlider*)sender value]]; break;
+        case GPUIMAGE_ADAPTIVETHRESHOLD: [(GPUImageAdaptiveThresholdFilter *)filter setBlurRadiusInPixels:[(UISlider*)sender value]]; break;
         case GPUIMAGE_AVERAGELUMINANCETHRESHOLD: [(GPUImageAverageLuminanceThresholdFilter *)filter setThresholdMultiplier:[(UISlider *)sender value]]; break;
         case GPUIMAGE_DISSOLVE: [(GPUImageDissolveBlendFilter *)filter setMix:[(UISlider *)sender value]]; break;
         case GPUIMAGE_POISSONBLEND: [(GPUImagePoissonBlendFilter *)filter setMix:[(UISlider *)sender value]]; break;
@@ -1579,7 +1591,7 @@
         case GPUIMAGE_KUWAHARA: [(GPUImageKuwaharaFilter *)filter setRadius:round([(UISlider *)sender value])]; break;
         case GPUIMAGE_SWIRL: [(GPUImageSwirlFilter *)filter setAngle:[(UISlider *)sender value]]; break;
         case GPUIMAGE_EMBOSS: [(GPUImageEmbossFilter *)filter setIntensity:[(UISlider *)sender value]]; break;
-        case GPUIMAGE_CANNYEDGEDETECTION: [(GPUImageCannyEdgeDetectionFilter *)filter setBlurSize:[(UISlider*)sender value]]; break;
+        case GPUIMAGE_CANNYEDGEDETECTION: [(GPUImageCannyEdgeDetectionFilter *)filter setBlurTexelSpacingMultiplier:[(UISlider*)sender value]]; break;
 //        case GPUIMAGE_CANNYEDGEDETECTION: [(GPUImageCannyEdgeDetectionFilter *)filter setLowerThreshold:[(UISlider*)sender value]]; break;
         case GPUIMAGE_HARRISCORNERDETECTION: [(GPUImageHarrisCornerDetectionFilter *)filter setThreshold:[(UISlider*)sender value]]; break;
         case GPUIMAGE_NOBLECORNERDETECTION: [(GPUImageNobleCornerDetectionFilter *)filter setThreshold:[(UISlider*)sender value]]; break;
@@ -1587,7 +1599,7 @@
         case GPUIMAGE_HOUGHTRANSFORMLINEDETECTOR: [(GPUImageHoughTransformLineDetector *)filter setLineDetectionThreshold:[(UISlider*)sender value]]; break;
 //        case GPUIMAGE_HARRISCORNERDETECTION: [(GPUImageHarrisCornerDetectionFilter *)filter setSensitivity:[(UISlider*)sender value]]; break;
         case GPUIMAGE_THRESHOLDEDGEDETECTION: [(GPUImageThresholdEdgeDetectionFilter *)filter setThreshold:[(UISlider *)sender value]]; break;
-        case GPUIMAGE_SMOOTHTOON: [(GPUImageSmoothToonFilter *)filter setBlurSize:[(UISlider*)sender value]]; break;
+        case GPUIMAGE_SMOOTHTOON: [(GPUImageSmoothToonFilter *)filter setBlurRadiusInPixels:[(UISlider*)sender value]]; break;
         case GPUIMAGE_THRESHOLDSKETCH: [(GPUImageThresholdSketchFilter *)filter setThreshold:[(UISlider *)sender value]]; break;
 //        case GPUIMAGE_BULGE: [(GPUImageBulgeDistortionFilter *)filter setRadius:[(UISlider *)sender value]]; break;
         case GPUIMAGE_BULGE: [(GPUImageBulgeDistortionFilter *)filter setScale:[(UISlider *)sender value]]; break;
@@ -1599,11 +1611,11 @@
         case GPUIMAGE_PERLINNOISE:  [(GPUImagePerlinNoiseFilter *)filter setScale:[(UISlider *)sender value]]; break;
         case GPUIMAGE_MOSAIC:  [(GPUImageMosaicFilter *)filter setDisplayTileSize:CGSizeMake([(UISlider *)sender value], [(UISlider *)sender value])]; break;
         case GPUIMAGE_VIGNETTE: [(GPUImageVignetteFilter *)filter setVignetteEnd:[(UISlider *)sender value]]; break;
-        case GPUIMAGE_GAUSSIAN: [(GPUImageGaussianBlurFilter *)filter setBlurSize:[(UISlider*)sender value]]; break;
+        case GPUIMAGE_BOXBLUR: [(GPUImageBoxBlurFilter *)filter setBlurRadiusInPixels:[(UISlider*)sender value]]; break;
+        case GPUIMAGE_GAUSSIAN: [(GPUImageGaussianBlurFilter *)filter setBlurRadiusInPixels:[(UISlider*)sender value]]; break;
+//        case GPUIMAGE_GAUSSIAN: [(GPUImageGaussianBlurFilter *)filter setBlurPasses:round([(UISlider*)sender value])]; break;
 //        case GPUIMAGE_BILATERAL: [(GPUImageBilateralFilter *)filter setBlurSize:[(UISlider*)sender value]]; break;
         case GPUIMAGE_BILATERAL: [(GPUImageBilateralFilter *)filter setDistanceNormalizationFactor:[(UISlider*)sender value]]; break;
-        case GPUIMAGE_FASTBLUR: [(GPUImageFastBlurFilter *)filter setBlurPasses:round([(UISlider*)sender value])]; break;
-//        case GPUIMAGE_FASTBLUR: [(GPUImageFastBlurFilter *)filter setBlurSize:[(UISlider*)sender value]]; break;
         case GPUIMAGE_MOTIONBLUR: [(GPUImageMotionBlurFilter *)filter setBlurAngle:[(UISlider*)sender value]]; break;
         case GPUIMAGE_ZOOMBLUR: [(GPUImageZoomBlurFilter *)filter setBlurSize:[(UISlider*)sender value]]; break;
         case GPUIMAGE_OPACITY:  [(GPUImageOpacityFilter *)filter setOpacity:[(UISlider *)sender value]]; break;

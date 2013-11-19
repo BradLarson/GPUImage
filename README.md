@@ -22,7 +22,7 @@ http://www.sunsetlakesoftware.com/2010/10/22/gpu-accelerated-video-processing-ma
 
 and found that there was a lot of boilerplate code I had to write in its creation. Therefore, I put together this framework that encapsulates a lot of the common tasks you'll encounter when processing images and video and made it so that you don't need to care about the OpenGL ES 2.0 underpinnings.
 
-In initial benchmarks, this framework significantly outperforms Core Image when handling video, taking only 2.5 ms on an iPhone 4 to upload a frame from the camera, apply a sepia filter, and display, versus 149 ms for the same operation using Core Image. CPU-based processing takes 460 ms, making GPUImage 60X faster than Core Image on this hardware, and 184X faster than CPU-bound processing. On an iPhone 4S, GPUImage is only 13X faster than Core Image, and 102X faster than CPU-bound processing.
+This framework compares favorably to Core Image when handling video, taking only 2.5 ms on an iPhone 4 to upload a frame from the camera, apply a gamma filter, and display, versus 106 ms for the same operation using Core Image. CPU-based processing takes 460 ms, making GPUImage 40X faster than Core Image for this operation on this hardware, and 184X faster than CPU-bound processing. On an iPhone 4S, GPUImage is only 4X faster than Core Image for this case, and 102X faster than CPU-bound processing. However, for more complex operations like Gaussian blurs at larger radii, Core Image currently outpaces GPUImage.
 
 ## License ##
 
@@ -134,6 +134,7 @@ There are currently 125 built-in filters, divided into the following categories:
   - *threshold*: The luminance threshold, from 0.0 to 1.0, with a default of 0.5
 
 - **GPUImageAdaptiveThresholdFilter**: Determines the local luminance around a pixel, then turns the pixel black if it is below that local luminance and white if above. This can be useful for picking out text under varying lighting conditions.
+  - *blurRadiusInPixels*: A multiplier for the background averaging blur radius in pixels, with a default of 4.
 
 - **GPUImageAverageLuminanceThresholdFilter**: This applies a thresholding operation where the threshold is continually adjusted based on the average luminance of the scene.
   - *thresholdMultiplier*: This is a factor that the average luminance will be multiplied by in order to arrive at the final threshold to use. By default, this is 1.0.
@@ -167,23 +168,32 @@ There are currently 125 built-in filters, divided into the following categories:
   - *sharpness*: The sharpness adjustment to apply (-4.0 - 4.0, with 0.0 as the default)
 
 - **GPUImageUnsharpMaskFilter**: Applies an unsharp mask
-  - *blurSize*: A multiplier for the underlying blur size, ranging from 0.0 on up, with a default of 1.0
+  - *blurRadiusInPixels*: The blur radius of the underlying Gaussian blur. The default is 4.0.
   - *intensity*: The strength of the sharpening, from 0.0 on up, with a default of 1.0
 
-- **GPUImageFastBlurFilter**: A hardware-accelerated 9-hit Gaussian blur of an image
-  - *blurPasses*: The number of times to re-apply this blur on an image. More passes lead to a blurrier image, yet they require more processing power. The default is 1.
+- **GPUImageGaussianBlurFilter**: A hardware-optimized, variable-radius Gaussian blur
+  - *texelSpacingMultiplier*: A multiplier for the spacing between texels, ranging from 0.0 on up, with a default of 1.0. Adjusting this may slightly increase the blur strength, but will introduce artifacts in the result. Highly recommend using other parameters first, before touching this one.
+  - *blurRadiusInPixels*: A radius in pixels to use for the blur, with a default of 2.0. This adjusts the sigma variable in the Gaussian distribution function.
+  - *blurRadiusAsFractionOfImageWidth*: 
+  - *blurRadiusAsFractionOfImageHeight*: Setting these properties will allow the blur radius to scale with the size of the image
+  - *blurPasses*: The number of times to sequentially blur the incoming image. The more passes, the slower the filter.
 
-- **GPUImageSingleComponentFastBlurFilter**: A modification of the GPUImageFastBlurFilter to only operate on the red component
-  - *blurPasses*: The number of times to re-apply this blur on an image. More passes lead to a blurrier image, yet they require more processing power. The default is 1.
-
-- **GPUImageGaussianBlurFilter**: A more generalized 9x9 Gaussian blur filter
-  - *blurSize*: A multiplier for the size of the blur, ranging from 0.0 on up, with a default of 1.0
+- **GPUImageBoxBlurFilter**: A hardware-optimized, variable-radius box blur
+  - *texelSpacingMultiplier*: A multiplier for the spacing between texels, ranging from 0.0 on up, with a default of 1.0. Adjusting this may slightly increase the blur strength, but will introduce artifacts in the result. Highly recommend using other parameters first, before touching this one.
+  - *blurRadiusInPixels*: A radius in pixels to use for the blur, with a default of 2.0. This adjusts the sigma variable in the Gaussian distribution function.
+  - *blurRadiusAsFractionOfImageWidth*: 
+  - *blurRadiusAsFractionOfImageHeight*: Setting these properties will allow the blur radius to scale with the size of the image
+  - *blurPasses*: The number of times to sequentially blur the incoming image. The more passes, the slower the filter.
 
 - **GPUImageSingleComponentGaussianBlurFilter**: A modification of the GPUImageGaussianBlurFilter that operates only on the red component
-  - *blurSize*: A multiplier for the size of the blur, ranging from 0.0 on up, with a default of 1.0
+  - *texelSpacingMultiplier*: A multiplier for the spacing between texels, ranging from 0.0 on up, with a default of 1.0. Adjusting this may slightly increase the blur strength, but will introduce artifacts in the result. Highly recommend using other parameters first, before touching this one.
+  - *blurRadiusInPixels*: A radius in pixels to use for the blur, with a default of 2.0. This adjusts the sigma variable in the Gaussian distribution function.
+  - *blurRadiusAsFractionOfImageWidth*: 
+  - *blurRadiusAsFractionOfImageHeight*: Setting these properties will allow the blur radius to scale with the size of the image
+  - *blurPasses*: The number of times to sequentially blur the incoming image. The more passes, the slower the filter.
 
 - **GPUImageGaussianSelectiveBlurFilter**: A Gaussian blur that preserves focus within a circular region
-  - *blurSize*: A multiplier for the size of the blur, ranging from 0.0 on up, with a default of 1.0
+  - *blurRadiusInPixels*: A radius in pixels to use for the blur, with a default of 5.0. This adjusts the sigma variable in the Gaussian distribution function.
   - *excludeCircleRadius*: The radius of the circular area being excluded from the blur
   - *excludeCirclePoint*: The center of the circular area being excluded from the blur
   - *excludeBlurSize*: The size of the area between the blurred portion and the clear circle 
@@ -194,19 +204,22 @@ There are currently 125 built-in filters, divided into the following categories:
   - *blurCenter*: Center for the blur, defaults to 0.5, 0.5
   - *blurRadius*: Radius for the blur, defaults to 1.0
 
+- **GPUImageiOSBlurFilter**: An attempt to replicate the background blur used on iOS 7 in places like the control center.
+  - *blurRadiusInPixels*: A radius in pixels to use for the blur, with a default of 12.0. This adjusts the sigma variable in the Gaussian distribution function.
+  - *saturation*: Saturation ranges from 0.0 (fully desaturated) to 2.0 (max saturation), with 0.8 as the normal level
+  - *downsampling*: The degree to which to downsample, then upsample the incoming image to minimize computations within the Gaussian blur, with a default of 4.0.
+
 - **GPUImageMedianFilter**: Takes the median value of the three color components, over a 3x3 area
 
 - **GPUImageBilateralFilter**: A bilateral blur, which tries to blur similar color values while preserving sharp edges
-  - *blurSize*: A multiplier for the size of the blur, ranging from 0.0 on up, with a default of 4.0
+  - *texelSpacingMultiplier*: A multiplier for the spacing between texel reads, ranging from 0.0 on up, with a default of 4.0
   - *distanceNormalizationFactor*: A normalization factor for the distance between central color and sample color, with a default of 8.0.
 
 - **GPUImageTiltShiftFilter**: A simulated tilt shift lens effect
-  - *blurSize*: A multiplier for the size of the out-of-focus blur, ranging from 0.0 on up, with a default of 2.0
+  - *blurRadiusInPixels*: The radius of the underlying blur, in pixels. This is 7.0 by default.
   - *topFocusLevel*: The normalized location of the top of the in-focus area in the image, this value should be lower than bottomFocusLevel, default 0.4
   - *bottomFocusLevel*: The normalized location of the bottom of the in-focus area in the image, this value should be higher than topFocusLevel, default 0.6
   - *focusFallOffRate*: The rate at which the image gets blurry away from the in-focus region, default 0.2
-
-- **GPUImageBoxBlurFilter**: A hardware-accelerated 9-hit box blur of an image
 
 - **GPUImage3x3ConvolutionFilter**: Runs a 3x3 convolution kernel against the image
   - *convolutionKernel*: The convolution kernel is a 3x3 matrix of values to apply to the pixel and its 8 surrounding pixels. The matrix is specified in row-major order, with the top left pixel being one.one and the bottom right three.three. If the values in the matrix don't add up to 1.0, the image could be brightened or darkened.
@@ -230,22 +243,23 @@ There are currently 125 built-in filters, divided into the following categories:
 - **GPUImageCannyEdgeDetectionFilter**: This uses the full Canny process to highlight one-pixel-wide edges
   - *texelWidth*: 
   - *texelHeight*: These parameters affect the visibility of the detected edges
-  - *blurSize*: A multiplier for the prepass blur size, ranging from 0.0 on up, with a default of 1.0
+  - *blurRadiusInPixels*: The underlying blur radius for the Gaussian blur. Default is 2.0.
+  - *blurTexelSpacingMultiplier*: The underlying blur texel spacing multiplier. Default is 1.0.
   - *upperThreshold*: Any edge with a gradient magnitude above this threshold will pass and show up in the final result. Default is 0.4.
   - *lowerThreshold*: Any edge with a gradient magnitude below this threshold will fail and be removed from the final result. Default is 0.1.
 
 - **GPUImageHarrisCornerDetectionFilter**: Runs the Harris corner detection algorithm on an input image, and produces an image with those corner points as white pixels and everything else black. The cornersDetectedBlock can be set, and you will be provided with a list of corners (in normalized 0..1 X, Y coordinates) within that callback for whatever additional operations you want to perform.
-  - *blurSize*: The relative size of the blur applied as part of the corner detection implementation. The default is 1.0.
+  - *blurRadiusInPixels*: The radius of the underlying Gaussian blur. The default is 2.0.
   - *sensitivity*: An internal scaling factor applied to adjust the dynamic range of the cornerness maps generated in the filter. The default is 5.0.
   - *threshold*: The threshold at which a point is detected as a corner. This can vary significantly based on the size, lighting conditions, and iOS device camera type, so it might take a little experimentation to get right for your cases. Default is 0.20.
 
 - **GPUImageNobleCornerDetectionFilter**: Runs the Noble variant on the Harris corner detector. It behaves as described above for the Harris detector.
-  - *blurSize*: The relative size of the blur applied as part of the corner detection implementation. The default is 1.0.
+  - *blurRadiusInPixels*: The radius of the underlying Gaussian blur. The default is 2.0.
   - *sensitivity*: An internal scaling factor applied to adjust the dynamic range of the cornerness maps generated in the filter. The default is 5.0.
   - *threshold*: The threshold at which a point is detected as a corner. This can vary significantly based on the size, lighting conditions, and iOS device camera type, so it might take a little experimentation to get right for your cases. Default is 0.2.
 
 - **GPUImageShiTomasiCornerDetectionFilter**: Runs the Shi-Tomasi feature detector. It behaves as described above for the Harris detector.
-  - *blurSize*: The relative size of the blur applied as part of the corner detection implementation. The default is 1.0.
+  - *blurRadiusInPixels*: The radius of the underlying Gaussian blur. The default is 2.0.
   - *sensitivity*: An internal scaling factor applied to adjust the dynamic range of the cornerness maps generated in the filter. The default is 1.5.
   - *threshold*: The threshold at which a point is detected as a corner. This can vary significantly based on the size, lighting conditions, and iOS device camera type, so it might take a little experimentation to get right for your cases. Default is 0.2.
 
@@ -403,7 +417,7 @@ There are currently 125 built-in filters, divided into the following categories:
 - **GPUImageSmoothToonFilter**: This uses a similar process as the GPUImageToonFilter, only it precedes the toon effect with a Gaussian blur to smooth out noise.
   - *texelWidth*: 
   - *texelHeight*: These parameters affect the visibility of the detected edges
-  - *blurSize*: A multiplier for the prepass blur size, ranging from 0.0 on up, with a default of 0.5
+  - *blurRadiusInPixels*: The radius of the underlying Gaussian blur. The default is 2.0.
   - *threshold*: The sensitivity of the edge detection, with lower values being more sensitive. Ranges from 0.0 to 1.0, with 0.2 as the default
   - *quantizationLevels*: The number of color levels to represent in the final image. Default is 10.0
 

@@ -31,7 +31,7 @@
                 NSLog(@"Fragment shader compile log: %@", fragLog);
                 NSString *vertLog = [secondFilterProgram vertexShaderLog];
                 NSLog(@"Vertex shader compile log: %@", vertLog);
-                filterProgram = nil;
+                secondFilterProgram = nil;
                 NSAssert(NO, @"Filter shader link failed");
             }
         }

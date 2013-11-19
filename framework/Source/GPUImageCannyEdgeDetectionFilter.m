@@ -1,16 +1,17 @@
 #import "GPUImageCannyEdgeDetectionFilter.h"
 
 #import "GPUImageGrayscaleFilter.h"
-#import "GPUImageSingleComponentFastBlurFilter.h"
 #import "GPUImageDirectionalSobelEdgeDetectionFilter.h"
 #import "GPUImageDirectionalNonMaximumSuppressionFilter.h"
 #import "GPUImageWeakPixelInclusionFilter.h"
+#import "GPUImageSingleComponentGaussianBlurFilter.h"
 
 @implementation GPUImageCannyEdgeDetectionFilter
 
 @synthesize upperThreshold;
 @synthesize lowerThreshold;
-@synthesize blurSize;
+@synthesize blurRadiusInPixels;
+@synthesize blurTexelSpacingMultiplier;
 @synthesize texelWidth;
 @synthesize texelHeight;
 
@@ -26,7 +27,7 @@
     [self addFilter:luminanceFilter];
     
     // Second pass: apply a variable Gaussian blur
-    blurFilter = [[GPUImageSingleComponentFastBlurFilter alloc] init];
+    blurFilter = [[GPUImageSingleComponentGaussianBlurFilter alloc] init];
     [self addFilter:blurFilter];
     
     // Third pass: run the Sobel edge detection, with calculated gradient directions, on this blurred image
@@ -50,7 +51,8 @@
 //    self.terminalFilter = nonMaximumSuppressionFilter;
     self.terminalFilter = weakPixelInclusionFilter;
     
-    self.blurSize = 1.0;
+    self.blurRadiusInPixels = 2.0;
+    self.blurTexelSpacingMultiplier = 1.0;
     self.upperThreshold = 0.4;
     self.lowerThreshold = 0.1;
     
@@ -60,14 +62,24 @@
 #pragma mark -
 #pragma mark Accessors
 
-- (void)setBlurSize:(CGFloat)newValue;
+- (void)setBlurRadiusInPixels:(CGFloat)newValue;
 {
-    blurFilter.blurSize = newValue;
+    blurFilter.blurRadiusInPixels = newValue;
 }
 
-- (CGFloat)blurSize;
+- (CGFloat)blurRadiusInPixels;
 {
-    return blurFilter.blurSize;
+    return blurFilter.blurRadiusInPixels;
+}
+
+- (void)setBlurTexelSpacingMultiplier:(CGFloat)newValue;
+{
+    blurFilter.texelSpacingMultiplier = newValue;
+}
+
+- (CGFloat)blurTexelSpacingMultiplier;
+{
+    return blurFilter.texelSpacingMultiplier;
 }
 
 - (void)setTexelWidth:(CGFloat)newValue;

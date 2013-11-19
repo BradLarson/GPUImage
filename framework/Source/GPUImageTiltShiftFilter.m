@@ -55,7 +55,7 @@ NSString *const kGPUImageTiltShiftFragmentShaderString = SHADER_STRING
 
 @implementation GPUImageTiltShiftFilter
 
-@synthesize blurSize;
+@synthesize blurRadiusInPixels;
 @synthesize topFocusLevel = _topFocusLevel;
 @synthesize bottomFocusLevel = _bottomFocusLevel;
 @synthesize focusFallOffRate = _focusFallOffRate;
@@ -87,7 +87,7 @@ NSString *const kGPUImageTiltShiftFragmentShaderString = SHADER_STRING
     self.topFocusLevel = 0.4;
     self.bottomFocusLevel = 0.6;
     self.focusFallOffRate = 0.2;
-    self.blurSize = 2.0;
+    self.blurRadiusInPixels = 7.0;
     
     return self;
 }
@@ -95,14 +95,14 @@ NSString *const kGPUImageTiltShiftFragmentShaderString = SHADER_STRING
 #pragma mark -
 #pragma mark Accessors
 
-- (void)setBlurSize:(CGFloat)newValue;
+- (void)setBlurRadiusInPixels:(CGFloat)newValue;
 {
-    blurFilter.blurSize = newValue;
+    blurFilter.blurRadiusInPixels = newValue;
 }
 
-- (CGFloat)blurSize;
+- (CGFloat)blurRadiusInPixels;
 {
-    return blurFilter.blurSize;
+    return blurFilter.blurRadiusInPixels;
 }
 
 - (void)setTopFocusLevel:(CGFloat)newValue;

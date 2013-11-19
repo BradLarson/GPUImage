@@ -1,7 +1,7 @@
 #import "GPUImageFilterGroup.h"
 
 @class GPUImageGrayscaleFilter;
-@class GPUImageSingleComponentFastBlurFilter;
+@class GPUImageSingleComponentGaussianBlurFilter;
 @class GPUimageDirectionalSobelEdgeDetectionFilter;
 @class GPUImageDirectionalNonMaximumSuppressionFilter;
 @class GPUImageWeakPixelInclusionFilter;
@@ -22,7 +22,7 @@
 @interface GPUImageCannyEdgeDetectionFilter : GPUImageFilterGroup
 {
     GPUImageGrayscaleFilter *luminanceFilter;
-    GPUImageSingleComponentFastBlurFilter *blurFilter;
+    GPUImageSingleComponentGaussianBlurFilter *blurFilter;
     GPUimageDirectionalSobelEdgeDetectionFilter *edgeDetectionFilter;
     GPUImageDirectionalNonMaximumSuppressionFilter *nonMaximumSuppressionFilter;
     GPUImageWeakPixelInclusionFilter *weakPixelInclusionFilter;
@@ -43,9 +43,13 @@
  */
 @property(readwrite, nonatomic) CGFloat texelHeight; 
 
-/** A multiplier for the blur size, ranging from 0.0 on up, with a default of 1.0
+/** The underlying blur radius for the Gaussian blur. Default is 2.0.
  */
-@property (readwrite, nonatomic) CGFloat blurSize;
+@property (readwrite, nonatomic) CGFloat blurRadiusInPixels;
+
+/** The underlying blur texel spacing multiplier. Default is 1.0.
+ */
+@property (readwrite, nonatomic) CGFloat blurTexelSpacingMultiplier;
 
 /** Any edge with a gradient magnitude above this threshold will pass and show up in the final result.
  */

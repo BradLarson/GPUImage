@@ -159,7 +159,6 @@
     }
 }
 
-
 - (CGSize)maximumOutputSize;
 {
     // I'm temporarily disabling adjustments for smaller output sizes until I figure out how to make this work better
@@ -183,9 +182,14 @@
 
 - (void)endProcessing;
 {
-    for (GPUImageOutput<GPUImageInput> *currentFilter in _initialFilters)
+    if (!isEndProcessing)
     {
-        [currentFilter endProcessing];
+        isEndProcessing = YES;
+        
+        for (id<GPUImageInput> currentTarget in targets)
+        {
+            [currentTarget endProcessing];
+        }
     }
 }
 

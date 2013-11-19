@@ -23,6 +23,7 @@ typedef enum { kGPUImageNoRotation, kGPUImageRotateLeft, kGPUImageRotateRight, k
 + (void)setActiveShaderProgram:(GLProgram *)shaderProgram;
 + (GLint)maximumTextureSizeForThisDevice;
 + (GLint)maximumTextureUnitsForThisDevice;
++ (GLint)maximumVaryingVectorsForThisDevice;
 + (BOOL)deviceSupportsOpenGLESExtension:(NSString *)extension;
 + (BOOL)deviceSupportsRedTextures;
 + (BOOL)deviceSupportsFramebufferReads;

@@ -48,7 +48,6 @@
 #import "GPUImageDarkenBlendFilter.h"
 #import "GPUImageLightenBlendFilter.h"
 #import "GPUImageSwirlFilter.h"
-#import "GPUImageFastBlurFilter.h"
 #import "GPUImageSourceOverBlendFilter.h"
 #import "GPUImageColorBurnBlendFilter.h"
 #import "GPUImageColorDodgeBlendFilter.h"
@@ -152,3 +151,5 @@
 #import "GPUImageMotionBlurFilter.h"
 #import "GPUImageZoomBlurFilter.h"
 #import "GPUImageLaplacianFilter.h"
+#import "GPUImageiOSBlurFilter.h"
+#import "GPUImageLuminanceRangeFilter.h"

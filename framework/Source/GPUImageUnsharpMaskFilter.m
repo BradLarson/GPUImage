@@ -49,7 +49,7 @@ NSString *const kGPUImageUnsharpMaskFragmentShaderString = SHADER_STRING
 
 @implementation GPUImageUnsharpMaskFilter
 
-@synthesize blurSize;
+@synthesize blurRadiusInPixels;
 @synthesize intensity = _intensity;
 
 - (id)init;
@@ -74,7 +74,7 @@ NSString *const kGPUImageUnsharpMaskFragmentShaderString = SHADER_STRING
     self.terminalFilter = unsharpMaskFilter;
     
     self.intensity = 1.0;
-    self.blurSize = 1.0;
+    self.blurRadiusInPixels = 4.0;
     
     return self;
 }
@@ -82,14 +82,14 @@ NSString *const kGPUImageUnsharpMaskFragmentShaderString = SHADER_STRING
 #pragma mark -
 #pragma mark Accessors
 
-- (void)setBlurSize:(CGFloat)newValue;
+- (void)setBlurRadiusInPixels:(CGFloat)newValue;
 {
-    blurFilter.blurSize = newValue;
+    blurFilter.blurRadiusInPixels = newValue;
 }
 
-- (CGFloat)blurSize;
+- (CGFloat)blurRadiusInPixels;
 {
-    return blurFilter.blurSize;
+    return blurFilter.blurRadiusInPixels;
 }
 
 - (void)setIntensity:(CGFloat)newValue;
