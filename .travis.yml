@@ -10,7 +10,7 @@ before_install:
 script:
     #- pod lib lint
     - xctool -project framework/GPUImage.xcodeproj -scheme 'GPUImage' -configuration Release -sdk iphonesimulator -arch i386 build
-    - xctool -project framework/GPUImageMac.xcodeproj -scheme 'GPUImageMac'
+    - xctool -project framework/GPUImageMac.xcodeproj -scheme 'GPUImage'
     - xctool -project examples/Mac/FilterShowcase/FilterShowcase.xcodeproj -scheme 'FilterShowcase'
     - xctool -project examples/Mac/MultiViewFilterExample/MultiViewFilterExample.xcodeproj -scheme 'MultiViewFilterExample'
     - xctool -project examples/Mac/SimplePhotoFilter/SimplePhotoFilter.xcodeproj -scheme 'SimplePhotoFilter'
