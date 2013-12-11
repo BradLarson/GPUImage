@@ -30,9 +30,10 @@
     [rawDataInput addTarget:customFilter];
     [customFilter addTarget:rawDataOutput];
     
+    __unsafe_unretained GPUImageRawDataOutput * weakOutput = rawDataOutput;
     [rawDataOutput setNewFrameAvailableBlock:^{
-        GLubyte *outputBytes = [rawDataOutput rawBytesForImage];
-        NSInteger bytesPerRow = [rawDataOutput bytesPerRowInOutput];
+        GLubyte *outputBytes = [weakOutput rawBytesForImage];
+        NSInteger bytesPerRow = [weakOutput bytesPerRowInOutput];
         NSLog(@"Bytes per row: %d", bytesPerRow);
         for (unsigned int yIndex = 0; yIndex < 10; yIndex++)
         {

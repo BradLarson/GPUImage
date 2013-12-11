@@ -170,6 +170,7 @@
     [pictureInput removeAllTargets];
     [pictureInput addTarget:lineDetector];
     
+    __unsafe_unretained GPUImageHoughTransformLineDetector * weakDetector = lineDetector;
     [lineDetector setLinesDetectedBlock:^(GLfloat* lineArray, NSUInteger linesDetected, CMTime frameTime){
         NSLog(@"Number of lines: %d", linesDetected);
         
@@ -191,7 +192,7 @@
 
         dispatch_async(dispatch_get_main_queue(), ^{
             NSUInteger currentImageIndex = 0;
-            for (UIImage *currentImage in lineDetector.intermediateImages)
+            for (UIImage *currentImage in weakDetector.intermediateImages)
             {
                 [self saveImage:currentImage fileName:[NSString stringWithFormat:@"%@-%@-%d.png", detectorName, pictureName, currentImageIndex]];
                 
@@ -216,7 +217,7 @@
     
     [pictureInput addTarget:cornerDetector];
     
-    
+    __unsafe_unretained GPUImageHarrisCornerDetectionFilter * weakDetector = cornerDetector;
     [cornerDetector setCornersDetectedBlock:^(GLfloat* cornerArray, NSUInteger cornersDetected, CMTime frameTime) {
         GPUImageCrosshairGenerator *crosshairGenerator = [[GPUImageCrosshairGenerator alloc] init];
         crosshairGenerator.crosshairWidth = 10.0;
@@ -237,7 +238,7 @@
         
         dispatch_async(dispatch_get_main_queue(), ^{
             NSUInteger currentImageIndex = 0;
-            for (UIImage *currentImage in cornerDetector.intermediateImages)
+            for (UIImage *currentImage in weakDetector.intermediateImages)
             {
                 [self saveImage:currentImage fileName:[NSString stringWithFormat:@"%@-%@-%d.png", detectorName, pictureName, currentImageIndex]];
                 

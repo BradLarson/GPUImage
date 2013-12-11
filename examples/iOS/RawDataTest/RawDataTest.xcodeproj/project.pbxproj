@@ -25,6 +25,7 @@
 		BCF1E6241569D42A006B155F /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCF1E6221569D42A006B155F /* QuartzCore.framework */; };
 		BCF1E63F156AAB4E006B155F /* CalculationShader.fsh in Resources */ = {isa = PBXBuildFile; fileRef = BCF1E63E156AAB4E006B155F /* CalculationShader.fsh */; };
 		BCF8671D1725A63600912E34 /* libGPUImage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BCF867181725A62900912E34 /* libGPUImage.a */; };
+		E5066F4C1855A96B008C7682 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E5066F4B1855A96B008C7682 /* Default-568h@2x.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -74,6 +75,7 @@
 		BCF1E6221569D42A006B155F /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		BCF1E6251569D453006B155F /* GPUImage.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = GPUImage.xcodeproj; path = ../../../framework/GPUImage.xcodeproj; sourceTree = "<group>"; };
 		BCF1E63E156AAB4E006B155F /* CalculationShader.fsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = CalculationShader.fsh; sourceTree = "<group>"; };
+		E5066F4B1855A96B008C7682 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -99,6 +101,7 @@
 		BCF1E5F71569D372006B155F = {
 			isa = PBXGroup;
 			children = (
+				E5066F4B1855A96B008C7682 /* Default-568h@2x.png */,
 				BCF1E60C1569D372006B155F /* RawDataTest */,
 				BCF1E6051569D372006B155F /* Frameworks */,
 				BCF1E6031569D372006B155F /* Products */,
@@ -193,7 +196,7 @@
 			isa = PBXProject;
 			attributes = {
 				CLASSPREFIX = RawDataTest;
-				LastUpgradeCheck = 0430;
+				LastUpgradeCheck = 0500;
 				ORGANIZATIONNAME = "Cell Phone";
 			};
 			buildConfigurationList = BCF1E5FC1569D372006B155F /* Build configuration list for PBXProject "RawDataTest" */;
@@ -246,6 +249,7 @@
 				BCB3C41116BCA74F003D26B0 /* Icon-72.png in Resources */,
 				BCB3C41216BCA74F003D26B0 /* Icon-72@2x.png in Resources */,
 				BCB3C41316BCA74F003D26B0 /* Icon@2x.png in Resources */,
+				E5066F4C1855A96B008C7682 /* Default-568h@2x.png in Resources */,
 				BCB3C41816BCA75A003D26B0 /* Icon.png in Resources */,
 				BCB3C41916BCA75A003D26B0 /* iTunesArtwork.png in Resources */,
 			);
@@ -289,8 +293,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -302,11 +311,15 @@
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = "../../../framework/**";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.1;
+				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -316,14 +329,22 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = "../../../framework/**";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.1;

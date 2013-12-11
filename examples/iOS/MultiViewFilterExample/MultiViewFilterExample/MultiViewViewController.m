@@ -20,7 +20,7 @@
 - (void)loadView
 {    
     CGRect mainScreenFrame = [[UIScreen mainScreen] applicationFrame];	
-	UIView *primaryView = [[UIView alloc] initWithFrame:mainScreenFrame];
+	UIView *primaryView = [[[UIView alloc] initWithFrame:mainScreenFrame] autorelease];
     primaryView.backgroundColor = [UIColor blueColor];
 	self.view = primaryView;
 
@@ -38,9 +38,9 @@
     [self.view addSubview:view3];
     [self.view addSubview:view4];
     
-    GPUImageFilter *filter1 = [[GPUImageFilter alloc] initWithFragmentShaderFromFile:@"Shader1"];
-    GPUImageFilter *filter2 = [[GPUImageFilter alloc] initWithFragmentShaderFromFile:@"Shader2"];
-    GPUImageSepiaFilter *filter3 = [[GPUImageSepiaFilter alloc] init];
+    GPUImageFilter *filter1 = [[[GPUImageFilter alloc] initWithFragmentShaderFromFile:@"Shader1"] autorelease];
+    GPUImageFilter *filter2 = [[[GPUImageFilter alloc] initWithFragmentShaderFromFile:@"Shader2"] autorelease];
+    GPUImageSepiaFilter *filter3 = [[[GPUImageSepiaFilter alloc] init] autorelease];
 
 //    GPUImageBrightnessFilter *filter1 = [[GPUImageBrightnessFilter alloc] init];
 //    GPUImageBrightnessFilter *filter2 = [[GPUImageBrightnessFilter alloc] init];
