@@ -120,15 +120,13 @@
                 if (byteOrderInfo == kCGBitmapByteOrder32Little) {
                     /* Little endian, for alpha-first we can use this bitmap directly in GL */
                     CGImageAlphaInfo alphaInfo = bitmapInfo & kCGBitmapAlphaInfoMask;
-                    if (alphaInfo != kCGImageAlphaPremultipliedFirst && alphaInfo != kCGImageAlphaFirst &&
-                        alphaInfo != kCGImageAlphaNoneSkipFirst) {
+                    if (alphaInfo != kCGImageAlphaPremultipliedFirst && alphaInfo != kCGImageAlphaNoneSkipFirst) {
                         shouldRedrawUsingCoreGraphics = YES;
                     }
                 } else if (byteOrderInfo == kCGBitmapByteOrderDefault || byteOrderInfo == kCGBitmapByteOrder32Big) {
                     /* Big endian, for alpha-last we can use this bitmap directly in GL */
                     CGImageAlphaInfo alphaInfo = bitmapInfo & kCGBitmapAlphaInfoMask;
-                    if (alphaInfo != kCGImageAlphaPremultipliedLast && alphaInfo != kCGImageAlphaLast &&
-                        alphaInfo != kCGImageAlphaNoneSkipLast) {
+                    if (alphaInfo != kCGImageAlphaPremultipliedLast && alphaInfo != kCGImageAlphaNoneSkipLast) {
                         shouldRedrawUsingCoreGraphics = YES;
                     } else {
                         /* Can access directly using GL_RGBA pixel format */
