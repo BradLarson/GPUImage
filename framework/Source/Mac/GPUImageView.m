@@ -310,13 +310,15 @@
     
     switch(rotationMode)
     {
-        case kGPUImageNoRotation: return noRotationTextureCoordinates;
         case kGPUImageRotateLeft: return rotateLeftTextureCoordinates;
         case kGPUImageRotateRight: return rotateRightTextureCoordinates;
         case kGPUImageFlipVertical: return verticalFlipTextureCoordinates;
         case kGPUImageFlipHorizonal: return horizontalFlipTextureCoordinates;
         case kGPUImageRotateRightFlipVertical: return rotateRightVerticalFlipTextureCoordinates;
         case kGPUImageRotate180: return rotate180TextureCoordinates;
+        case kGPUImageNoRotation:
+        default:
+            return noRotationTextureCoordinates;
     }
 }
 
