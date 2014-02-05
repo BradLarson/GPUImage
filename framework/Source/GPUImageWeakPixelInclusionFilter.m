@@ -20,6 +20,8 @@ NSString *const kGPUImageWeakPixelInclusionFragmentShaderString = SHADER_STRING
  varying vec2 bottomRightTextureCoordinate;
  
  uniform sampler2D inputImageTexture;
+ uniform vec4 fillColor;
+ uniform vec4 pixelColor;
  
  void main()
  {
@@ -36,8 +38,12 @@ NSString *const kGPUImageWeakPixelInclusionFragmentShaderString = SHADER_STRING
      float pixelIntensitySum = bottomLeftIntensity + topRightIntensity + topLeftIntensity + bottomRightIntensity + leftIntensity + rightIntensity + bottomIntensity + topIntensity + centerIntensity;
      float sumTest = step(1.5, pixelIntensitySum);
      float pixelTest = step(0.01, centerIntensity);
-          
-     gl_FragColor = vec4(vec3(sumTest * pixelTest), 1.0);
+     
+     // JA - Added user definable colors
+     float overallTest = sumTest * pixelTest;
+     gl_FragColor = vec4(overallTest * pixelColor + (1.0 - overallTest) * fillColor);
+
+     //gl_FragColor = vec4(vec3(sumTest * pixelTest), 1.0);
  }
 );
 #else
@@ -56,6 +62,8 @@ NSString *const kGPUImageWeakPixelInclusionFragmentShaderString = SHADER_STRING
  varying vec2 bottomRightTextureCoordinate;
  
  uniform sampler2D inputImageTexture;
+ uniform vec4 fillColor;
+ uniform vec4 pixelColor;
  
  void main()
  {
@@ -73,7 +81,11 @@ NSString *const kGPUImageWeakPixelInclusionFragmentShaderString = SHADER_STRING
      float sumTest = step(1.5, pixelIntensitySum);
      float pixelTest = step(0.01, centerIntensity);
      
-     gl_FragColor = vec4(vec3(sumTest * pixelTest), 1.0);
+     // JA - Added user definable colors
+     float overallTest = sumTest * pixelTest;
+     gl_FragColor = vec4(overallTest * pixelColor + (1.0 - overallTest) * fillColor);
+     
+     //gl_FragColor = vec4(vec3(sumTest * pixelTest), 1.0);
  }
 );
 #endif
@@ -88,7 +100,26 @@ NSString *const kGPUImageWeakPixelInclusionFragmentShaderString = SHADER_STRING
 		return nil;
     }
     
+    fillColorUniform = [filterProgram uniformIndex:@"fillColor"];
+    pixelColorUniform = [filterProgram uniformIndex:@"pixelColor"];
+    
+    [self setFillColor:(GPUVector4){0.0, 0.0, 0.0, 1.0}];
+    [self setPixelColor:(GPUVector4){1.0, 1.0, 1.0, 1.0}];
     return self;
 }
 
+#pragma mark -
+#pragma mark Accessors
+
+- (void)setFillColor:(GPUVector4)fillColor
+{
+	_fillColor = fillColor;
+	[self setVec4:fillColor forUniform:fillColorUniform program:filterProgram];
+}
+
+-(void)setPixelColor:(GPUVector4)pixelColor
+{
+    _pixelColor = pixelColor;
+    [self setVec4:pixelColor forUniform:pixelColorUniform program:filterProgram];
+}
 @end
