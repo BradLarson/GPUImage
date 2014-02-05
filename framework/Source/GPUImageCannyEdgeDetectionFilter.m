@@ -122,4 +122,24 @@
     return nonMaximumSuppressionFilter.lowerThreshold;
 }
 
+-(void)setEdgeColor:(GPUVector4)edgeColor
+{
+    [weakPixelInclusionFilter setPixelColor:edgeColor];
+}
+
+-(GPUVector4)edgeColor
+{
+    return weakPixelInclusionFilter.pixelColor;
+}
+
+-(void)setFillColor:(GPUVector4)fillColor
+{
+    [weakPixelInclusionFilter setFillColor:fillColor];
+}
+
+-(GPUVector4)fillColor
+{
+    return weakPixelInclusionFilter.fillColor;
+}
+
 @end

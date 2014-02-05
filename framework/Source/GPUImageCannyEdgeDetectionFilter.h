@@ -59,4 +59,12 @@
  */
 @property(readwrite, nonatomic) CGFloat lowerThreshold; 
 
+/** This is the edge color for the final result.
+ */
+@property(readwrite, nonatomic) GPUVector4 edgeColor;
+
+/** This is the fill color for the final result.
+ */
+@property(readwrite, nonatomic) GPUVector4 fillColor;
+
 @end
