@@ -146,10 +146,6 @@
 
 - (void)dealloc
 {
-    runSynchronouslyOnVideoProcessingQueue(^{
-        [displayLink removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
-        displayLink = nil;
-    });
     if ([GPUImageContext supportsFastTextureUpload])
     {
         CFRelease(coreVideoTextureCache);
@@ -637,6 +633,11 @@
         [self.delegate didCompletePlayingMovie];
     }
     self.delegate = nil;
+    
+    runSynchronouslyOnVideoProcessingQueue(^{
+        [displayLink removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+        displayLink = nil;
+    });
 }
 
 - (void)cancelProcessing
