@@ -40,11 +40,9 @@ NSString *const kGPUImageWeakPixelInclusionFragmentShaderString = SHADER_STRING
      float pixelTest = step(0.01, centerIntensity);
      
      // JA - Added user definable colors
-     if( sumTest * pixelTest > 0.0 )
-         gl_FragColor = pixelColor;
-     else
-         gl_FragColor = fillColor;
-     
+     float overallTest = sumTest * pixelTest;
+     gl_FragColor = vec4(overallTest * pixelColor + (1.0 - overallTest) * fillColor);
+
      //gl_FragColor = vec4(vec3(sumTest * pixelTest), 1.0);
  }
 );
@@ -84,10 +82,8 @@ NSString *const kGPUImageWeakPixelInclusionFragmentShaderString = SHADER_STRING
      float pixelTest = step(0.01, centerIntensity);
      
      // JA - Added user definable colors
-     if( sumTest * pixelTest > 0.0 )
-         gl_FragColor = pixelColor;
-     else
-         gl_FragColor = fillColor;
+     float overallTest = sumTest * pixelTest;
+     gl_FragColor = vec4(overallTest * pixelColor + (1.0 - overallTest) * fillColor);
      
      //gl_FragColor = vec4(vec3(sumTest * pixelTest), 1.0);
  }
