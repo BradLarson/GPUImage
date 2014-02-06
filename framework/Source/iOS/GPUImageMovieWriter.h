@@ -25,8 +25,6 @@ extern NSString *const kGPUImageColorSwizzlingFragmentShaderString;
 	dispatch_queue_t movieWritingQueue;
     
     CVOpenGLESTextureCacheRef coreVideoTextureCache;
-    CVPixelBufferRef renderTarget;
-    CVOpenGLESTextureRef renderTexture;
 
     CGSize videoSize;
     GPUImageRotationMode inputRotation;

@@ -13,7 +13,7 @@ void GPUImageCreateResizedSampleBuffer(CVPixelBufferRef cameraFrame, CGSize fina
     
     CGSize originalSize = CGSizeMake(CVPixelBufferGetWidth(cameraFrame), CVPixelBufferGetHeight(cameraFrame));
 
-    CVPixelBufferLockBaseAddress(cameraFrame, 0);
+    CVPixelBufferLockBaseAddress(cameraFrame, kCVPixelBufferLock_ReadOnly);
     GLubyte *sourceImageBytes =  CVPixelBufferGetBaseAddress(cameraFrame);
     CGDataProviderRef dataProvider = CGDataProviderCreateWithData(NULL, sourceImageBytes, CVPixelBufferGetBytesPerRow(cameraFrame) * originalSize.height, NULL);
     CGColorSpaceRef genericRGBColorspace = CGColorSpaceCreateDeviceRGB();
@@ -27,7 +27,8 @@ void GPUImageCreateResizedSampleBuffer(CVPixelBufferRef cameraFrame, CGSize fina
     CGContextRelease(imageContext);
     CGColorSpaceRelease(genericRGBColorspace);
     CGDataProviderRelease(dataProvider);
-    
+    CVPixelBufferUnlockBaseAddress(cameraFrame, kCVPixelBufferLock_ReadOnly);
+
     CVPixelBufferRef pixel_buffer = NULL;
     CVPixelBufferCreateWithBytes(kCFAllocatorDefault, finalSize.width, finalSize.height, kCVPixelFormatType_32BGRA, imageData, finalSize.width * 4, stillImageDataReleaseCallback, NULL, NULL, &pixel_buffer);
     CMVideoFormatDescriptionRef videoInfo = NULL;
