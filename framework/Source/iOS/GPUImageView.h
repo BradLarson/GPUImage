@@ -37,4 +37,6 @@ typedef enum {
 
 - (void)setCurrentlyReceivingMonochromeInput:(BOOL)newValue;
 
+- (void)clearContext;
+
 @end

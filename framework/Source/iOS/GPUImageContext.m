@@ -193,6 +193,7 @@ static void *openGLESContextQueueKey;
 
 - (void)presentBufferForDisplay;
 {
+    if(_context!=nil)
     [self.context presentRenderbuffer:GL_RENDERBUFFER];
 }
 

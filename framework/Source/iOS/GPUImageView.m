@@ -147,7 +147,10 @@
         [self destroyDisplayFramebuffer];
     });
 }
-
+- (void)clearContext
+{
+    [EAGLContext setCurrentContext:nil];
+}
 #pragma mark -
 #pragma mark Managing the display FBOs
 
