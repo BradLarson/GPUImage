@@ -209,6 +209,10 @@
     AVAssetReader *assetReader = [AVAssetReader assetReaderWithAsset:self.asset error:&error];
 
     NSDictionary *outputSettings = @{(id)kCVPixelBufferPixelFormatTypeKey: @(kCVPixelFormatType_420YpCbCr8BiPlanarFullRange)};
+    if (![GPUImageContext supportsFastTextureUpload]) {
+        // force RGB format for simulator
+        outputSettings = @{(id)kCVPixelBufferPixelFormatTypeKey: @(kCVPixelFormatType_32BGRA)};
+    }
     // Maybe set alwaysCopiesSampleData to NO on iOS 5.0 for faster video decoding
     AVAssetReaderTrackOutput *readerVideoTrackOutput = [AVAssetReaderTrackOutput assetReaderTrackOutputWithTrack:[[self.asset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0] outputSettings:outputSettings];
     readerVideoTrackOutput.alwaysCopiesSampleData = NO;
@@ -583,6 +587,8 @@
     }
     else
     {
+        [self initializeOutputTextureIfNeeded];
+        
         // Upload to texture
         CVPixelBufferLockBaseAddress(movieFrame, 0);
         
@@ -605,6 +611,8 @@
             NSInteger targetTextureIndex = [[targetTextureIndices objectAtIndex:indexOfObject] integerValue];
 
             [currentTarget setInputSize:currentSize atIndex:targetTextureIndex];
+            [currentTarget setInputTexture:outputTexture atIndex:targetTextureIndex];
+            [currentTarget setTextureDelegate:self atIndex:targetTextureIndex];
             [currentTarget newFrameReadyAtTime:currentSampleTime atIndex:targetTextureIndex];
         }
         CVPixelBufferUnlockBaseAddress(movieFrame, 0);
