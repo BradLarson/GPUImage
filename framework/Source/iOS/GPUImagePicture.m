@@ -242,6 +242,9 @@
     
     if (dispatch_semaphore_wait(imageUpdateSemaphore, DISPATCH_TIME_NOW) != 0)
     {
+		if (completion != nil) {
+            completion();
+        }
         return NO;
     }
     
