@@ -82,6 +82,10 @@
     [positionAverageColor setColorAverageProcessingFinishedBlock:^(CGFloat redComponent, CGFloat greenComponent, CGFloat blueComponent, CGFloat alphaComponent, CMTime frameTime) {
 //        NSLog(@"GPU Average R: %f, G: %f, A: %f", redComponent, greenComponent, alphaComponent);
         CGPoint currentTrackingLocation = CGPointMake(1.0 - (greenComponent / alphaComponent), (redComponent / alphaComponent));
+        if (isnan(currentTrackingLocation.x) || isnan(currentTrackingLocation.y)) {
+//            NSLog(@"NaN in currentTrackingLocation");
+            return;
+        }
 //        NSLog(@"Centroid from GPU: %f, %f", currentTrackingLocation.x, currentTrackingLocation.y);
         //                NSLog(@"Average color: %f, %f, %f, %f", redComponent, greenComponent, blueComponent, alphaComponent);
         CGSize currentViewSize = weakSelf.view.bounds.size;
