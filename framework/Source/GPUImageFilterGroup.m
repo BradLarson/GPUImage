@@ -193,14 +193,6 @@
     }
 }
 
-- (void)conserveMemoryForNextFrame;
-{
-    for (GPUImageOutput<GPUImageInput> *currentFilter in _initialFilters)
-    {
-        [currentFilter conserveMemoryForNextFrame];
-    }
-}
-
 - (BOOL)wantsMonochromeInput;
 {
     BOOL allInputsWantMonochromeInput = YES;

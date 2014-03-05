@@ -245,13 +245,7 @@
         return NO;
     }
     
-    runAsynchronouslyOnVideoProcessingQueue(^{
-        
-        if (MAX(pixelSizeOfImage.width, pixelSizeOfImage.height) > 1000.0)
-        {
-            [self conserveMemoryForNextFrame];
-        }
-        
+    runAsynchronouslyOnVideoProcessingQueue(^{        
         for (id<GPUImageInput> currentTarget in targets)
         {
             NSInteger indexOfObject = [targets indexOfObject:currentTarget];

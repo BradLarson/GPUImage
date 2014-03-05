@@ -780,11 +780,6 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
     textureDelegate = newTextureDelegate;
 }
 
-- (void)conserveMemoryForNextFrame;
-{
-    
-}
-
 - (BOOL)wantsMonochromeInput;
 {
     return NO;

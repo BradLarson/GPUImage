@@ -384,28 +384,6 @@
     glClear(GL_COLOR_BUFFER_BIT);
 
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-
-    // Release the first FBO early
-    if (shouldConserveMemoryForNextFrame)
-    {
-        [firstTextureDelegate textureNoLongerNeededForTarget:self];
-
-        glDeleteFramebuffers(1, &filterFramebuffer);
-        filterFramebuffer = 0;
-        
-        if (outputTexture)
-        {
-            glDeleteTextures(1, &outputTexture);
-            outputTexture = 0;
-        }
-        
-        shouldConserveMemoryForNextFrame = NO;
-    }
-}
-
-// Clear this out because I want to release the input texture as soon as the first pass is finished, not just after the whole rendering has completed
-- (void)releaseInputTexturesIfNeeded;
-{
 }
 
 - (void)prepareForImageCapture;

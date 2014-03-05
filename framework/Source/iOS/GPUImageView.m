@@ -446,11 +446,6 @@
     textureDelegate = newTextureDelegate;
 }
 
-- (void)conserveMemoryForNextFrame;
-{
-    
-}
-
 - (BOOL)wantsMonochromeInput;
 {
     return NO;

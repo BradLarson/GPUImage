@@ -447,15 +447,6 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
     [self setFilterFBO];
 }
 
-- (void)releaseInputTexturesIfNeeded;
-{
-    if (shouldConserveMemoryForNextFrame)
-    {
-        [firstTextureDelegate textureNoLongerNeededForTarget:self];
-        shouldConserveMemoryForNextFrame = NO;
-    }
-}
-
 #pragma mark -
 #pragma mark Rendering
 
@@ -561,8 +552,6 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
     {
         self.frameProcessingCompletionBlock(self, frameTime);
     }
-    
-    [self releaseInputTexturesIfNeeded];
     
     for (id<GPUImageInput> currentTarget in targets)
     {
@@ -1031,24 +1020,6 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
 - (void)setTextureDelegate:(id<GPUImageTextureDelegate>)newTextureDelegate atIndex:(NSInteger)textureIndex;
 {
     firstTextureDelegate = newTextureDelegate;
-}
-
-- (void)conserveMemoryForNextFrame;
-{
-    if (overrideInputSize)
-    {
-        return;
-    }
-    
-    shouldConserveMemoryForNextFrame = YES;
-
-    for (id<GPUImageInput> currentTarget in targets)
-    {
-        if (currentTarget != self.targetToIgnoreForUpdates)
-        {
-            [currentTarget conserveMemoryForNextFrame];
-        }
-    }
 }
 
 - (BOOL)wantsMonochromeInput;

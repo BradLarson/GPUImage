@@ -87,8 +87,6 @@ NSString *const kGPUImageLuminanceFragmentShaderString = SHADER_STRING
         self.frameProcessingCompletionBlock(self, frameTime);
     }
     
-    [self releaseInputTexturesIfNeeded];
-    
     for (id<GPUImageInput> currentTarget in targets)
     {
         if (currentTarget != self.targetToIgnoreForUpdates)

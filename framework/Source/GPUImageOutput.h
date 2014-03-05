@@ -50,7 +50,6 @@ void reportAvailableMemoryForGPUImage(NSString *tag);
     NSUInteger outputTextureRetainCount;
     
     __unsafe_unretained id<GPUImageTextureDelegate> firstTextureDelegate;
-    BOOL shouldConserveMemoryForNextFrame;
     
     BOOL allTargetsWantMonochromeData;
 }
@@ -131,6 +130,5 @@ void reportAvailableMemoryForGPUImage(NSString *tag);
 - (BOOL)providesMonochromeOutput;
 
 - (void)prepareForImageCapture;
-- (void)conserveMemoryForNextFrame;
 
 @end

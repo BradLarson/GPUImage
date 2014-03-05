@@ -51,7 +51,6 @@ typedef enum { kGPUImageNoRotation, kGPUImageRotateLeft, kGPUImageRotateRight, k
 - (void)endProcessing;
 - (BOOL)shouldIgnoreUpdatesToThisTarget;
 - (BOOL)enabled;
-- (void)conserveMemoryForNextFrame;
 - (BOOL)wantsMonochromeInput;
 - (void)setCurrentlyReceivingMonochromeInput:(BOOL)newValue;
 @end

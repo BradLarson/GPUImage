@@ -112,17 +112,6 @@ NSString *const kGPUImageThreeInputTextureVertexShaderString = SHADER_STRING
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 }
 
-- (void)releaseInputTexturesIfNeeded;
-{
-    if (shouldConserveMemoryForNextFrame)
-    {
-        [firstTextureDelegate textureNoLongerNeededForTarget:self];
-        [secondTextureDelegate textureNoLongerNeededForTarget:self];
-        [thirdTextureDelegate textureNoLongerNeededForTarget:self];
-        shouldConserveMemoryForNextFrame = NO;
-    }
-}
-
 #pragma mark -
 #pragma mark GPUImageInput
 

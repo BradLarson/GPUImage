@@ -310,19 +310,6 @@ void reportAvailableMemoryForGPUImage(NSString *tag)
     
 }
 
-- (void)conserveMemoryForNextFrame;
-{
-    shouldConserveMemoryForNextFrame = YES;
-    
-    for (id<GPUImageInput> currentTarget in targets)
-    {
-        if (currentTarget != self.targetToIgnoreForUpdates)
-        {
-            [currentTarget conserveMemoryForNextFrame];
-        }
-    }
-}
-
 #pragma mark -
 #pragma mark Platform-specific image output methods
 
