@@ -391,6 +391,7 @@
 
 - (void)setInputTexture:(GLuint)newInputTexture atIndex:(NSInteger)textureIndex;
 {
+    NSLog(@"Setting input texture: %d", newInputTexture);
     inputTextureForDisplay = newInputTexture;
 }
 

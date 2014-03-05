@@ -1,4 +1,5 @@
 #import "GPUImageContext.h"
+#import "GPUImageFramebuffer.h"
 
 #if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
 #import <UIKit/UIKit.h>
@@ -15,16 +16,6 @@ typedef NS_ENUM(NSInteger, UIImageOrientation) {
     UIImageOrientationRightMirrored, // vertical flip
 };
 #endif
-
-typedef struct GPUTextureOptions {
-    GLenum minFilter;
-    GLenum magFilter;
-    GLenum wrapS;
-    GLenum wrapT;
-    GLenum internalFormat;
-    GLenum format;
-    GLenum type;
-} GPUTextureOptions;
 
 void runOnMainQueueWithoutDeadlocking(void (^block)(void));
 void runSynchronouslyOnVideoProcessingQueue(void (^block)(void));
@@ -46,6 +37,8 @@ void reportAvailableMemoryForGPUImage(NSString *tag);
  */
 @interface GPUImageOutput : NSObject <GPUImageTextureDelegate>
 {
+    GPUImageFramebuffer *framebuffer;
+    
     NSMutableArray *targets, *targetTextureIndices;
     
     GLuint outputTexture;

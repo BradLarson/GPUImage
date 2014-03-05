@@ -286,6 +286,11 @@ NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = SHAD
 	return self;
 }
 
+- (GLuint)textureForOutput;
+{
+    return outputTexture;
+}
+
 - (void)dealloc 
 {
     [self stopCameraCapture];

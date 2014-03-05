@@ -1,10 +1,6 @@
-#import <Foundation/Foundation.h>
-#import <OpenGLES/EAGL.h>
-#import <OpenGLES/ES2/gl.h>
-#import <OpenGLES/ES2/glext.h>
-#import <QuartzCore/QuartzCore.h>
-#import <CoreMedia/CoreMedia.h>
 #import "GLProgram.h"
+#import "GPUImageFramebuffer.h"
+#import "GPUImageFramebufferCache.h"
 
 #define GPUImageRotationSwapsWidthAndHeight(rotation) ((rotation) == kGPUImageRotateLeft || (rotation) == kGPUImageRotateRight || (rotation) == kGPUImageRotateRightFlipVertical || (rotation) == kGPUImageRotateRightFlipHorizontal)
 
@@ -15,10 +11,13 @@ typedef enum { kGPUImageNoRotation, kGPUImageRotateLeft, kGPUImageRotateRight, k
 @property(readonly, nonatomic) dispatch_queue_t contextQueue;
 @property(readwrite, retain, nonatomic) GLProgram *currentShaderProgram;
 @property(readonly, retain, nonatomic) EAGLContext *context;
+@property(readonly) CVOpenGLESTextureCacheRef coreVideoTextureCache;
+@property(readonly) GPUImageFramebufferCache *framebufferCache;
 
 + (void *)contextKey;
 + (GPUImageContext *)sharedImageProcessingContext;
 + (dispatch_queue_t)sharedContextQueue;
++ (GPUImageFramebufferCache *)sharedFramebufferCache;
 + (void)useImageProcessingContext;
 + (void)setActiveShaderProgram:(GLProgram *)shaderProgram;
 + (GLint)maximumTextureSizeForThisDevice;

@@ -421,11 +421,24 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
         [self createFilterFBOofSize:currentFBOSize];
         [self setupFilterForSize:currentFBOSize];
     }
+
+    if (framebuffer == nil)
+    {
+        CGSize currentFBOSize = [self sizeOfFBO];
+        if ((currentFBOSize.width > 1.0) && (currentFBOSize.height > 1.0))
+        {
+            framebuffer = [[GPUImageContext sharedFramebufferCache] fetchFramebufferForSize:[self sizeOfFBO] textureOptions:self.outputTextureOptions];
+            NSLog(@"Grabbing framebuffer: %@", framebuffer);
+        }
+    }
     
-    glBindFramebuffer(GL_FRAMEBUFFER, filterFramebuffer);
+    [framebuffer activateFramebuffer];
+    NSLog(@"Activating framebuffer: %@", framebuffer);
     
-    CGSize currentFBOSize = [self sizeOfFBO];
-    glViewport(0, 0, (int)currentFBOSize.width, (int)currentFBOSize.height);
+//    glBindFramebuffer(GL_FRAMEBUFFER, filterFramebuffer);
+//    
+//    CGSize currentFBOSize = [self sizeOfFBO];
+//    glViewport(0, 0, (int)currentFBOSize.width, (int)currentFBOSize.height);
 }
 
 - (void)setOutputFBO;
@@ -557,11 +570,13 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
         {
             NSInteger indexOfObject = [targets indexOfObject:currentTarget];
             NSInteger textureIndex = [[targetTextureIndices objectAtIndex:indexOfObject] integerValue];
-            
-            if ([GPUImageContext supportsFastTextureUpload] && preparedToCaptureImage)
-            {
-                [self setInputTextureForTarget:currentTarget atIndex:textureIndex];
-            }
+
+            [self setInputTextureForTarget:currentTarget atIndex:textureIndex];
+
+//            if ([GPUImageContext supportsFastTextureUpload] && preparedToCaptureImage)
+//            {
+//                [self setInputTextureForTarget:currentTarget atIndex:textureIndex];
+//            }
             
             [currentTarget setInputSize:[self outputFrameSize] atIndex:textureIndex];
             [currentTarget newFrameReadyAtTime:frameTime atIndex:textureIndex];

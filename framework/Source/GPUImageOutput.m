@@ -124,7 +124,9 @@ void reportAvailableMemoryForGPUImage(NSString *tag)
 
 - (GLuint)textureForOutput;
 {
-    return outputTexture;
+    return [framebuffer texture];
+//    
+//    return outputTexture;
 }
 
 - (void)notifyTargetsAboutNewOutputTexture;

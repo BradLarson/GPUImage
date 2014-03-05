@@ -248,6 +248,11 @@
 				CLASSPREFIX = Showcase;
 				LastUpgradeCheck = 0500;
 				ORGANIZATIONNAME = "Cell Phone";
+				TargetAttributes = {
+					BC982B0114F046AC0001FF6F = {
+						DevelopmentTeam = J2U2U9GBML;
+					};
+				};
 			};
 			buildConfigurationList = BC982AFC14F046AC0001FF6F /* Build configuration list for PBXProject "FilterShowcase" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -424,10 +429,13 @@
 		BC982B1B14F046AC0001FF6F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "FilterShowcase/FilterShowcase-Prefix.pch";
 				INFOPLIST_FILE = "FilterShowcase/FilterShowcase-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -435,10 +443,13 @@
 		BC982B1C14F046AC0001FF6F /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "FilterShowcase/FilterShowcase-Prefix.pch";
 				INFOPLIST_FILE = "FilterShowcase/FilterShowcase-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
