@@ -527,7 +527,7 @@ NSString *const kGPUImageToneCurveFragmentShaderString = SHADER_STRING
 #pragma mark -
 #pragma mark Rendering
 
-- (void)renderToTextureWithVertices:(const GLfloat *)vertices textureCoordinates:(const GLfloat *)textureCoordinates sourceTexture:(GLuint)sourceTexture;
+- (void)renderToTextureWithVertices:(const GLfloat *)vertices textureCoordinates:(const GLfloat *)textureCoordinates;
 {
     if (self.preventRendering)
     {
@@ -535,13 +535,14 @@ NSString *const kGPUImageToneCurveFragmentShaderString = SHADER_STRING
     }
     
     [GPUImageContext setActiveShaderProgram:filterProgram];
-    [self setFilterFBO];
+    outputFramebuffer = [[GPUImageContext sharedFramebufferCache] fetchFramebufferForSize:[self sizeOfFBO] textureOptions:self.outputTextureOptions];
+    [outputFramebuffer activateFramebuffer];
     
     glClearColor(backgroundColorRed, backgroundColorGreen, backgroundColorBlue, backgroundColorAlpha);
     glClear(GL_COLOR_BUFFER_BIT);
     
   	glActiveTexture(GL_TEXTURE2);
-  	glBindTexture(GL_TEXTURE_2D, sourceTexture);
+  	glBindTexture(GL_TEXTURE_2D, [firstInputFramebuffer texture]);
   	glUniform1i(filterInputTextureUniform, 2);	
     
     glActiveTexture(GL_TEXTURE3);
@@ -551,7 +552,8 @@ NSString *const kGPUImageToneCurveFragmentShaderString = SHADER_STRING
     glVertexAttribPointer(filterPositionAttribute, 2, GL_FLOAT, 0, 0, vertices);
     glVertexAttribPointer(filterTextureCoordinateAttribute, 2, GL_FLOAT, 0, 0, textureCoordinates);
     
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);    
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+    [firstInputFramebuffer unlock];
 }
 
 #pragma mark -

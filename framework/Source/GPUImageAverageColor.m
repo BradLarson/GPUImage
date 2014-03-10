@@ -185,16 +185,6 @@ NSString *const kGPUImageColorAveragingFragmentShaderString = SHADER_STRING
 #pragma mark -
 #pragma mark Managing the display FBOs
 
-- (void)recreateFilterFBO
-{
-    cachedMaximumOutputSize = CGSizeZero;
-    [self destroyFilterFBO];    
-    [self deleteOutputTexture];
-    [self initializeOutputTextureIfNeeded];
-    
-    [self setFilterFBO];
-}
-
 - (void)createFilterFBOofSize:(CGSize)currentFBOSize;
 {
     // Create framebuffers for each level
@@ -255,7 +245,7 @@ NSString *const kGPUImageColorAveragingFragmentShaderString = SHADER_STRING
     });
 }
 
-- (void)renderToTextureWithVertices:(const GLfloat *)vertices textureCoordinates:(const GLfloat *)textureCoordinates sourceTexture:(GLuint)sourceTexture;
+- (void)renderToTextureWithVertices:(const GLfloat *)vertices textureCoordinates:(const GLfloat *)textureCoordinates;
 {
     if (self.preventRendering)
     {
@@ -267,7 +257,7 @@ NSString *const kGPUImageColorAveragingFragmentShaderString = SHADER_STRING
     glVertexAttribPointer(filterPositionAttribute, 2, GL_FLOAT, 0, 0, vertices);
     glVertexAttribPointer(filterTextureCoordinateAttribute, 2, GL_FLOAT, 0, 0, textureCoordinates);
 
-    GLuint currentTexture = sourceTexture;
+    GLuint currentTexture = [firstInputFramebuffer texture];
     
     NSUInteger numberOfStageFramebuffers = [stageFramebuffers count];
     for (NSUInteger currentStage = 0; currentStage < numberOfStageFramebuffers; currentStage++)

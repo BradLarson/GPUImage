@@ -14,12 +14,11 @@
 
     runSynchronouslyOnVideoProcessingQueue(^{
         [GPUImageContext useImageProcessingContext];
-
-        [self deleteOutputTexture];
     });
     
-    outputTexture = newInputTexture;
     textureSize = newTextureSize;
+
+    // TODO: mesh this with the new framebuffer structure
     
     return self;
 }

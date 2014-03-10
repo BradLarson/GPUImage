@@ -41,34 +41,34 @@ NSString *const kGPUImageLuminanceFragmentShaderString = SHADER_STRING
 #endif
 
 
-- (void)renderToTextureWithVertices:(const GLfloat *)vertices textureCoordinates:(const GLfloat *)textureCoordinates sourceTexture:(GLuint)sourceTexture;
+- (void)renderToTextureWithVertices:(const GLfloat *)vertices textureCoordinates:(const GLfloat *)textureCoordinates;
 {
     if (!currentlyReceivingMonochromeInput)
     {
-        [super renderToTextureWithVertices:vertices textureCoordinates:textureCoordinates sourceTexture:sourceTexture];
+        [super renderToTextureWithVertices:vertices textureCoordinates:textureCoordinates];
     }
 }
 
-- (void)setInputTexture:(GLuint)newInputTexture atIndex:(NSInteger)textureIndex;
-{
-    [super setInputTexture:newInputTexture atIndex:textureIndex];
-    if (currentlyReceivingMonochromeInput)
-    {
-        [self notifyTargetsAboutNewOutputTexture];
-    }
-}
+//- (void)setInputTexture:(GLuint)newInputTexture atIndex:(NSInteger)textureIndex;
+//{
+//    [super setInputTexture:newInputTexture atIndex:textureIndex];
+//    if (currentlyReceivingMonochromeInput)
+//    {
+//        [self notifyTargetsAboutNewOutputTexture];
+//    }
+//}
 
-- (GLuint)textureForOutput;
-{
-    if (currentlyReceivingMonochromeInput)
-    {
-        return filterSourceTexture;
-    }
-    else
-    {
-        return outputTexture;
-    }
-}
+//- (GLuint)textureForOutput;
+//{
+//    if (currentlyReceivingMonochromeInput)
+//    {
+//        return filterSourceTexture;
+//    }
+//    else
+//    {
+//        return outputTexture;
+//    }
+//}
 
 - (BOOL)wantsMonochromeInput;
 {
@@ -80,46 +80,47 @@ NSString *const kGPUImageLuminanceFragmentShaderString = SHADER_STRING
     return YES;
 }
 
-- (void)informTargetsAboutNewFrameAtTime:(CMTime)frameTime;
-{
-    if (self.frameProcessingCompletionBlock != NULL)
-    {
-        self.frameProcessingCompletionBlock(self, frameTime);
-    }
-    
-    for (id<GPUImageInput> currentTarget in targets)
-    {
-        if (currentTarget != self.targetToIgnoreForUpdates)
-        {
-            NSInteger indexOfObject = [targets indexOfObject:currentTarget];
-            NSInteger textureIndex = [[targetTextureIndices objectAtIndex:indexOfObject] integerValue];
-            
-            if ([GPUImageContext supportsFastTextureUpload] && preparedToCaptureImage)
-            {
-                [self setInputTextureForTarget:currentTarget atIndex:textureIndex];
-            }
-
-            if (currentlyReceivingMonochromeInput)
-            {
-                [currentTarget setInputRotation:inputRotation atIndex:textureIndex];
-                
-                CGSize sizeToRotate = [self outputFrameSize];
-                CGSize rotatedSize = sizeToRotate;
-                if (GPUImageRotationSwapsWidthAndHeight(inputRotation))
-                {
-                    rotatedSize.width = sizeToRotate.height;
-                    rotatedSize.height = sizeToRotate.width;
-                }
-                [currentTarget setInputSize:rotatedSize atIndex:textureIndex];
-            }
-            else
-            {
-                [currentTarget setInputSize:[self outputFrameSize] atIndex:textureIndex];
-            }
-            [currentTarget newFrameReadyAtTime:frameTime atIndex:textureIndex];
-        }
-    }
-}
+// TODO: Rewrite this based on the new GPUImageFilter implementation
+//- (void)informTargetsAboutNewFrameAtTime:(CMTime)frameTime;
+//{
+//    if (self.frameProcessingCompletionBlock != NULL)
+//    {
+//        self.frameProcessingCompletionBlock(self, frameTime);
+//    }
+//    
+//    for (id<GPUImageInput> currentTarget in targets)
+//    {
+//        if (currentTarget != self.targetToIgnoreForUpdates)
+//        {
+//            NSInteger indexOfObject = [targets indexOfObject:currentTarget];
+//            NSInteger textureIndex = [[targetTextureIndices objectAtIndex:indexOfObject] integerValue];
+//            
+//            if ([GPUImageContext supportsFastTextureUpload] && preparedToCaptureImage)
+//            {
+//                [self setInputTextureForTarget:currentTarget atIndex:textureIndex];
+//            }
+//
+//            if (currentlyReceivingMonochromeInput)
+//            {
+//                [currentTarget setInputRotation:inputRotation atIndex:textureIndex];
+//                
+//                CGSize sizeToRotate = [self outputFrameSize];
+//                CGSize rotatedSize = sizeToRotate;
+//                if (GPUImageRotationSwapsWidthAndHeight(inputRotation))
+//                {
+//                    rotatedSize.width = sizeToRotate.height;
+//                    rotatedSize.height = sizeToRotate.width;
+//                }
+//                [currentTarget setInputSize:rotatedSize atIndex:textureIndex];
+//            }
+//            else
+//            {
+//                [currentTarget setInputSize:[self outputFrameSize] atIndex:textureIndex];
+//            }
+//            [currentTarget newFrameReadyAtTime:frameTime atIndex:textureIndex];
+//        }
+//    }
+//}
 
 #pragma mark -
 #pragma mark Initialization and teardown

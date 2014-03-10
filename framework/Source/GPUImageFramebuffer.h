@@ -32,5 +32,7 @@ typedef struct GPUTextureOptions {
 - (void)lock;
 - (void)unlock;
 - (void)clearAllLocks;
+- (void)disableReferenceCounting;
+- (void)enableReferenceCounting;
 
 @end

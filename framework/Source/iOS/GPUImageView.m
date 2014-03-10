@@ -10,7 +10,7 @@
 
 @interface GPUImageView () 
 {
-    GLuint inputTextureForDisplay;
+    GPUImageFramebuffer *inputFramebufferForDisplay;
     GLuint displayRenderbuffer, displayFramebuffer;
     
     GLProgram *displayProgram;
@@ -372,7 +372,7 @@
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
         glActiveTexture(GL_TEXTURE4);
-        glBindTexture(GL_TEXTURE_2D, inputTextureForDisplay);
+        glBindTexture(GL_TEXTURE_2D, [inputFramebufferForDisplay texture]);
         glUniform1i(displayInputTextureUniform, 4);
         
         glVertexAttribPointer(displayPositionAttribute, 2, GL_FLOAT, 0, 0, imageVertices);
@@ -381,6 +381,8 @@
         glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
         
         [self presentFramebuffer];
+        [inputFramebufferForDisplay unlock];
+        inputFramebufferForDisplay = nil;
     });
 }
 
@@ -389,10 +391,10 @@
     return 0;
 }
 
-- (void)setInputTexture:(GLuint)newInputTexture atIndex:(NSInteger)textureIndex;
+- (void)setInputFramebuffer:(GPUImageFramebuffer *)newInputFramebuffer atIndex:(NSInteger)textureIndex;
 {
-    NSLog(@"Setting input texture: %d", newInputTexture);
-    inputTextureForDisplay = newInputTexture;
+    inputFramebufferForDisplay = newInputFramebuffer;
+    [inputFramebufferForDisplay lock];
 }
 
 - (void)setInputRotation:(GPUImageRotationMode)newInputRotation atIndex:(NSInteger)textureIndex;
@@ -439,11 +441,6 @@
 - (BOOL)shouldIgnoreUpdatesToThisTarget;
 {
     return NO;
-}
-
-- (void)setTextureDelegate:(id<GPUImageTextureDelegate>)newTextureDelegate atIndex:(NSInteger)textureIndex;
-{
-    textureDelegate = newTextureDelegate;
 }
 
 - (BOOL)wantsMonochromeInput;

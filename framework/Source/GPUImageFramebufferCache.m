@@ -52,20 +52,15 @@
     }
     else
     {
-        NSLog(@"Existing cached textures for hash: %@", lookupHash);
-
         // Something found, pull the old framebuffer and decrement the count
         NSInteger currentTextureID = (numberOfMatchingTextures - 1);
         while ((framebufferFromCache == nil) && (currentTextureID >= 0))
         {
             NSString *textureHash = [NSString stringWithFormat:@"%@-%d", lookupHash, currentTextureID];
-            NSLog(@"Looking up texture hash of %@", textureHash);
-//            NSLog(@"Cache size: %d", [framebufferCache countLimit]);
             framebufferFromCache = [framebufferCache objectForKey:textureHash];
             // Test the values in the cache first, to see if they got invalidated behind our back
             if (framebufferFromCache != nil)
             {
-                NSLog(@"Withdrawing texture hash of %@", textureHash);
                 // Withdraw this from the cache while it's in use
                 [framebufferCache removeObjectForKey:textureHash];
             }
@@ -73,7 +68,6 @@
         }
         
         currentTextureID++;
-        NSLog(@"Setting new count to %d for hash: %@", currentTextureID, lookupHash);
 
         [framebufferTypeCounts setObject:[NSNumber numberWithInteger:currentTextureID] forKey:lookupHash];
         
@@ -82,7 +76,6 @@
             NSLog(@"Cached textures were nil for hash: %@", lookupHash);
 
             framebufferFromCache = [[GPUImageFramebuffer alloc] initWithSize:framebufferSize textureOptions:textureOptions];
-
         }
     }
 
@@ -116,7 +109,6 @@
 
     NSString *textureHash = [NSString stringWithFormat:@"%@-%d", lookupHash, numberOfMatchingTextures];
     
-    NSLog(@"Returning framebuffer: %@ with hash: %@", framebuffer, textureHash);
     [framebufferCache setObject:framebuffer forKey:textureHash cost:round(framebufferSize.width * framebufferSize.height * 4.0)];
 //    [framebufferCache setObject:framebuffer forKey:textureHash];
     [framebufferTypeCounts setObject:[NSNumber numberWithInteger:(numberOfMatchingTextures + 1)] forKey:lookupHash];

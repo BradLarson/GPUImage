@@ -2,10 +2,6 @@
 
 @interface GPUImageBuffer()
 
-//Texture management
-- (GLuint)generateTexture;
-- (void)removeTexture:(GLuint)textureToRemove;
-
 @end
 
 @implementation GPUImageBuffer
@@ -22,9 +18,8 @@
         return nil;
     }
     
-    bufferedTextures = [[NSMutableArray alloc] init];
-    [self initializeOutputTextureIfNeeded];
-    [bufferedTextures addObject:[NSNumber numberWithInt:outputTexture]];
+    bufferedFramebuffers = [[NSMutableArray alloc] init];
+//    [bufferedTextures addObject:[NSNumber numberWithInt:outputTexture]];
     _bufferSize = 1;
     
     return self;
@@ -32,9 +27,9 @@
 
 - (void)dealloc
 {
-    for (NSNumber *currentTextureName in bufferedTextures)
+    for (GPUImageFramebuffer *currentFramebuffer in bufferedFramebuffers)
     {
-        [self removeTexture:[currentTextureName intValue]];
+        [currentFramebuffer unlock];
     }
 }
 
@@ -43,8 +38,6 @@
 
 - (void)newFrameReadyAtTime:(CMTime)frameTime atIndex:(NSInteger)textureIndex;
 {
-    outputTextureRetainCount = [targets count];
-
     static const GLfloat imageVertices[] = {
         -1.0f, -1.0f,
         1.0f, -1.0f,
@@ -60,9 +53,9 @@
     // Move the last frame to the back of the buffer, if needed
     if (_bufferSize > 1)
     {
-        NSNumber *lastTextureName = [bufferedTextures objectAtIndex:0];
-        [bufferedTextures removeObjectAtIndex:0];
-        [bufferedTextures addObject:lastTextureName];
+        NSNumber *lastFramebuffer = [bufferedFramebuffers objectAtIndex:0];
+        [bufferedFramebuffers removeObjectAtIndex:0];
+        [bufferedFramebuffers addObject:lastFramebuffer];
     }
     else
     {
@@ -71,10 +64,10 @@
     }    
     
     // Render the new frame to the back of the buffer
-    [self renderToTextureWithVertices:imageVertices textureCoordinates:[[self class] textureCoordinatesForRotation:inputRotation] sourceTexture:filterSourceTexture];
+    [self renderToTextureWithVertices:imageVertices textureCoordinates:[[self class] textureCoordinatesForRotation:inputRotation]];
 }
 
-- (void)renderToTextureWithVertices:(const GLfloat *)vertices textureCoordinates:(const GLfloat *)textureCoordinates sourceTexture:(GLuint)sourceTexture;
+- (void)renderToTextureWithVertices:(const GLfloat *)vertices textureCoordinates:(const GLfloat *)textureCoordinates;
 {
     if (self.preventRendering)
     {
@@ -82,23 +75,24 @@
     }
     
     [GPUImageContext setActiveShaderProgram:filterProgram];
-    [self setFilterFBO];
+    outputFramebuffer = [[GPUImageContext sharedFramebufferCache] fetchFramebufferForSize:[self sizeOfFBO] textureOptions:self.outputTextureOptions];
+    [outputFramebuffer activateFramebuffer];
+    [bufferedFramebuffers addObject:outputFramebuffer];
+    // TODO: Instead of redrawing these into textures, capture the incoming framebuffer and prevent it from returning to the pool
     
-    glBindTexture(GL_TEXTURE_2D, [[bufferedTextures lastObject] intValue]);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, [[bufferedTextures lastObject] intValue], 0);
-        
     glClearColor(backgroundColorRed, backgroundColorGreen, backgroundColorBlue, backgroundColorAlpha);
     glClear(GL_COLOR_BUFFER_BIT);
     
 	glActiveTexture(GL_TEXTURE2);
-	glBindTexture(GL_TEXTURE_2D, sourceTexture);
+	glBindTexture(GL_TEXTURE_2D, [firstInputFramebuffer texture]);
 	
 	glUniform1i(filterInputTextureUniform, 2);	
     
     glVertexAttribPointer(filterPositionAttribute, 2, GL_FLOAT, 0, 0, vertices);
 	glVertexAttribPointer(filterTextureCoordinateAttribute, 2, GL_FLOAT, 0, 0, textureCoordinates);
     
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);    
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+    [firstInputFramebuffer unlock];
 }
 
 - (void)prepareForImageCapture;
@@ -109,54 +103,9 @@
 #pragma mark -
 #pragma mark Managing targets
 
-- (GLuint)textureForOutput;
+- (GPUImageFramebuffer *)framebufferForOutput;
 {
-    return [[bufferedTextures objectAtIndex:0] intValue];
-}
-
-#pragma mark -
-#pragma mark Texture management
-
-- (GLuint)generateTexture;
-{
-    __block GLuint newTextureName = 0;
-
-    runSynchronouslyOnVideoProcessingQueue(^{
-        [GPUImageContext useImageProcessingContext];
-
-        glActiveTexture(GL_TEXTURE0);
-        glGenTextures(1, &newTextureName);
-        glBindTexture(GL_TEXTURE_2D, newTextureName);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, self.outputTextureOptions.minFilter);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, self.outputTextureOptions.magFilter);
-        // This is necessary for non-power-of-two textures
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, self.outputTextureOptions.wrapS);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, self.outputTextureOptions.wrapT);
-        
-        CGSize currentFBOSize = [self sizeOfFBO];
-        glTexImage2D(GL_TEXTURE_2D,
-                     0,
-                     self.outputTextureOptions.internalFormat,
-                     (int)currentFBOSize.width,
-                     (int)currentFBOSize.height,
-                     0,
-                     self.outputTextureOptions.format,
-                     self.outputTextureOptions.type,
-                     0);
-        glBindTexture(GL_TEXTURE_2D, 0);
-        
-    });
-
-    return newTextureName;
-}
-
-- (void)removeTexture:(GLuint)textureToRemove;
-{
-    runSynchronouslyOnVideoProcessingQueue(^{
-        [GPUImageContext useImageProcessingContext];
-
-        glDeleteTextures(1, &textureToRemove);
-    });
+    return [bufferedFramebuffers objectAtIndex:0];
 }
 
 #pragma mark -
@@ -174,7 +123,7 @@
         NSUInteger texturesToAdd = newValue - _bufferSize;
         for (NSUInteger currentTextureIndex = 0; currentTextureIndex < texturesToAdd; currentTextureIndex++)
         {
-            [bufferedTextures addObject:[NSNumber numberWithInt:[self generateTexture]]];
+            // TODO: Deal with the growth of the size of the buffer by rotating framebuffers, no textures
         }
     }
     else
@@ -182,9 +131,11 @@
         NSUInteger texturesToRemove = _bufferSize - newValue;
         for (NSUInteger currentTextureIndex = 0; currentTextureIndex < texturesToRemove; currentTextureIndex++)
         {
-            NSNumber *lastTextureName = [bufferedTextures lastObject];
-            [bufferedTextures removeObjectAtIndex:([bufferedTextures count] - 1)];
-            [self removeTexture:[lastTextureName intValue]];
+            GPUImageFramebuffer *lastFramebuffer = [bufferedFramebuffers lastObject];
+            [bufferedFramebuffers removeObjectAtIndex:([bufferedFramebuffers count] - 1)];
+            
+            [lastFramebuffer unlock];
+            lastFramebuffer = nil;
         }
     }
 

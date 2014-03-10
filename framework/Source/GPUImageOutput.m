@@ -111,22 +111,19 @@ void reportAvailableMemoryForGPUImage(NSString *tag)
 - (void)dealloc 
 {
     [self removeAllTargets];
-    [self deleteOutputTexture];
 }
 
 #pragma mark -
 #pragma mark Managing targets
 
-- (void)setInputTextureForTarget:(id<GPUImageInput>)target atIndex:(NSInteger)inputTextureIndex;
+- (void)setInputFramebufferForTarget:(id<GPUImageInput>)target atIndex:(NSInteger)inputTextureIndex;
 {
-    [target setInputTexture:[self textureForOutput] atIndex:inputTextureIndex];
+    [target setInputFramebuffer:[self framebufferForOutput] atIndex:inputTextureIndex];
 }
 
-- (GLuint)textureForOutput;
+- (GPUImageFramebuffer *)framebufferForOutput;
 {
-    return [framebuffer texture];
-//    
-//    return outputTexture;
+    return outputFramebuffer;
 }
 
 - (void)notifyTargetsAboutNewOutputTexture;
@@ -136,7 +133,7 @@ void reportAvailableMemoryForGPUImage(NSString *tag)
         NSInteger indexOfObject = [targets indexOfObject:currentTarget];
         NSInteger textureIndex = [[targetTextureIndices objectAtIndex:indexOfObject] integerValue];
         
-        [self setInputTextureForTarget:currentTarget atIndex:textureIndex];
+        [self setInputFramebufferForTarget:currentTarget atIndex:textureIndex];
     }
 }
 
@@ -165,8 +162,7 @@ void reportAvailableMemoryForGPUImage(NSString *tag)
     
     cachedMaximumOutputSize = CGSizeZero;
     runSynchronouslyOnVideoProcessingQueue(^{
-        [self setInputTextureForTarget:newTarget atIndex:textureLocation];
-        [newTarget setTextureDelegate:self atIndex:textureLocation];
+        [self setInputFramebufferForTarget:newTarget atIndex:textureLocation];
         [targets addObject:newTarget];
         [targetTextureIndices addObject:[NSNumber numberWithInteger:textureLocation]];
         
@@ -192,9 +188,7 @@ void reportAvailableMemoryForGPUImage(NSString *tag)
     NSInteger textureIndexOfTarget = [[targetTextureIndices objectAtIndex:indexOfObject] integerValue];
 
     runSynchronouslyOnVideoProcessingQueue(^{
-        [targetToRemove setInputTexture:0 atIndex:textureIndexOfTarget];
         [targetToRemove setInputSize:CGSizeZero atIndex:textureIndexOfTarget];
-        [targetToRemove setTextureDelegate:nil atIndex:textureIndexOfTarget];
 		[targetToRemove setInputRotation:kGPUImageNoRotation atIndex:textureIndexOfTarget];
 
         [targetTextureIndices removeObjectAtIndex:indexOfObject];
@@ -212,9 +206,7 @@ void reportAvailableMemoryForGPUImage(NSString *tag)
             NSInteger indexOfObject = [targets indexOfObject:targetToRemove];
             NSInteger textureIndexOfTarget = [[targetTextureIndices objectAtIndex:indexOfObject] integerValue];
             
-            [targetToRemove setInputTexture:0 atIndex:textureIndexOfTarget];
             [targetToRemove setInputSize:CGSizeZero atIndex:textureIndexOfTarget];
-            [targetToRemove setTextureDelegate:nil atIndex:textureIndexOfTarget];
             [targetToRemove setInputRotation:kGPUImageNoRotation atIndex:textureIndexOfTarget];
         }
         [targets removeAllObjects];
@@ -227,39 +219,6 @@ void reportAvailableMemoryForGPUImage(NSString *tag)
 #pragma mark -
 #pragma mark Manage the output texture
 
-- (void)initializeOutputTextureIfNeeded;
-{
-    runSynchronouslyOnVideoProcessingQueue(^{
-        if (!outputTexture)
-        {
-            [GPUImageContext useImageProcessingContext];
-            
-            glActiveTexture(GL_TEXTURE0);
-            glGenTextures(1, &outputTexture);
-            glBindTexture(GL_TEXTURE_2D, outputTexture);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, self.outputTextureOptions.minFilter);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, self.outputTextureOptions.magFilter);
-            // This is necessary for non-power-of-two textures
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, self.outputTextureOptions.wrapS);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, self.outputTextureOptions.wrapT);
-            glBindTexture(GL_TEXTURE_2D, 0);
-        }
-    });
-}
-
-- (void)deleteOutputTexture;
-{
-    runSynchronouslyOnVideoProcessingQueue(^{
-        [GPUImageContext useImageProcessingContext];
-
-        if (outputTexture)
-        {
-            glDeleteTextures(1, &outputTexture);
-            outputTexture = 0;
-        }
-    });
-}
-
 - (void)forceProcessingAtSize:(CGSize)frameSize;
 {
     
@@ -267,11 +226,6 @@ void reportAvailableMemoryForGPUImage(NSString *tag)
 
 - (void)forceProcessingAtSizeRespectingAspectRatio:(CGSize)frameSize;
 {
-}
-
-- (void)cleanupOutputImage;
-{
-    NSLog(@"WARNING: Undefined image cleanup");
 }
 
 #pragma mark -
@@ -424,18 +378,6 @@ void reportAvailableMemoryForGPUImage(NSString *tag)
 }
 
 #endif
-
-#pragma mark -
-#pragma mark GPUImageTextureDelegate methods
-
-- (void)textureNoLongerNeededForTarget:(id<GPUImageInput>)textureTarget;
-{
-    outputTextureRetainCount--;
-    if (outputTextureRetainCount < 1)
-    {
-        [self cleanupOutputImage];
-    }
-}
 
 #pragma mark -
 #pragma mark Accessors

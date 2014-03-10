@@ -38,12 +38,9 @@ typedef enum { kGPUImageNoRotation, kGPUImageRotateLeft, kGPUImageRotateRight, k
 
 @end
 
-@protocol GPUImageTextureDelegate;
-
 @protocol GPUImageInput <NSObject>
 - (void)newFrameReadyAtTime:(CMTime)frameTime atIndex:(NSInteger)textureIndex;
-- (void)setInputTexture:(GLuint)newInputTexture atIndex:(NSInteger)textureIndex;
-- (void)setTextureDelegate:(id<GPUImageTextureDelegate>)newTextureDelegate atIndex:(NSInteger)textureIndex;
+- (void)setInputFramebuffer:(GPUImageFramebuffer *)newInputFramebuffer atIndex:(NSInteger)textureIndex;
 - (NSInteger)nextAvailableTextureIndex;
 - (void)setInputSize:(CGSize)newSize atIndex:(NSInteger)textureIndex;
 - (void)setInputRotation:(GPUImageRotationMode)newInputRotation atIndex:(NSInteger)textureIndex;
@@ -54,8 +51,3 @@ typedef enum { kGPUImageNoRotation, kGPUImageRotateLeft, kGPUImageRotateRight, k
 - (BOOL)wantsMonochromeInput;
 - (void)setCurrentlyReceivingMonochromeInput:(BOOL)newValue;
 @end
-
-@protocol GPUImageTextureDelegate <NSObject>
-- (void)textureNoLongerNeededForTarget:(id<GPUImageInput>)textureTarget;
-@end
-

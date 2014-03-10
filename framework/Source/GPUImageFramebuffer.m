@@ -10,6 +10,7 @@
 #else
 #endif
     NSUInteger framebufferReferenceCount;
+    BOOL referenceCountingDisabled;
 }
 
 - (void)generateFramebuffer;
@@ -36,7 +37,8 @@
     _textureOptions = fboTextureOptions;
     _size = framebufferSize;
     framebufferReferenceCount = 0;
-    
+    referenceCountingDisabled = NO;
+
     NSLog(@"Creating framebuffer: %@ at size %f, %f", self, _size.width, _size.height);
 
     [self generateFramebuffer];
@@ -191,11 +193,21 @@
 
 - (void)lock;
 {
+    if (referenceCountingDisabled)
+    {
+        return;
+    }
+    
     framebufferReferenceCount++;
 }
 
 - (void)unlock;
 {
+    if (referenceCountingDisabled)
+    {
+        return;
+    }
+
     NSAssert(framebufferReferenceCount > 0, @"Tried to overrelease a framebuffer");
     framebufferReferenceCount--;
     if (framebufferReferenceCount < 1)
@@ -209,4 +221,13 @@
     framebufferReferenceCount = 0;
 }
 
+- (void)disableReferenceCounting;
+{
+    referenceCountingDisabled = YES;
+}
+
+- (void)enableReferenceCounting;
+{
+    referenceCountingDisabled = NO;
+}
 @end

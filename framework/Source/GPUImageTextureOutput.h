@@ -5,7 +5,7 @@
 
 @interface GPUImageTextureOutput : NSObject <GPUImageInput>
 {
-    __unsafe_unretained id<GPUImageTextureDelegate> textureDelegate;
+    GPUImageFramebuffer *firstInputFramebuffer;
 }
 
 @property(readwrite, unsafe_unretained, nonatomic) id<GPUImageTextureOutputDelegate> delegate;

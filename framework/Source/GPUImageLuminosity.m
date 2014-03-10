@@ -173,7 +173,7 @@ NSString *const kGPUImageLuminosityFragmentShaderString = SHADER_STRING
 	[secondFilterProgram addAttribute:@"inputTextureCoordinate"];
 }
 
-- (void)renderToTextureWithVertices:(const GLfloat *)vertices textureCoordinates:(const GLfloat *)textureCoordinates sourceTexture:(GLuint)sourceTexture;
+- (void)renderToTextureWithVertices:(const GLfloat *)vertices textureCoordinates:(const GLfloat *)textureCoordinates;
 {
     if (self.preventRendering)
     {
@@ -196,7 +196,7 @@ NSString *const kGPUImageLuminosityFragmentShaderString = SHADER_STRING
 #endif
     glViewport(0, 0, (int)currentStageSize.width, (int)currentStageSize.height);
 
-    GLuint currentTexture = sourceTexture;
+    GLuint currentTexture = [firstInputFramebuffer texture];
 
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);

@@ -35,21 +35,15 @@ void reportAvailableMemoryForGPUImage(NSString *tag);
  
  Source objects upload still image frames to OpenGL ES as textures, then hand those textures off to the next objects in the processing chain.
  */
-@interface GPUImageOutput : NSObject <GPUImageTextureDelegate>
+@interface GPUImageOutput : NSObject
 {
-    GPUImageFramebuffer *framebuffer;
+    GPUImageFramebuffer *outputFramebuffer;
     
     NSMutableArray *targets, *targetTextureIndices;
     
-    GLuint outputTexture;
     CGSize inputTextureSize, cachedMaximumOutputSize, forcedMaximumSize;
     
     BOOL overrideInputSize;
-    
-    BOOL processingLargeImage;
-    NSUInteger outputTextureRetainCount;
-    
-    __unsafe_unretained id<GPUImageTextureDelegate> firstTextureDelegate;
     
     BOOL allTargetsWantMonochromeData;
 }
@@ -63,8 +57,8 @@ void reportAvailableMemoryForGPUImage(NSString *tag);
 @property(readwrite, nonatomic) GPUTextureOptions outputTextureOptions;
 
 /// @name Managing targets
-- (void)setInputTextureForTarget:(id<GPUImageInput>)target atIndex:(NSInteger)inputTextureIndex;
-- (GLuint)textureForOutput;
+- (void)setInputFramebufferForTarget:(id<GPUImageInput>)target atIndex:(NSInteger)inputTextureIndex;
+- (GPUImageFramebuffer *)framebufferForOutput;
 - (void)notifyTargetsAboutNewOutputTexture;
 
 /** Returns an array of the current targets.
@@ -101,11 +95,8 @@ void reportAvailableMemoryForGPUImage(NSString *tag);
 
 /// @name Manage the output texture
 
-- (void)initializeOutputTextureIfNeeded;
-- (void)deleteOutputTexture;
 - (void)forceProcessingAtSize:(CGSize)frameSize;
 - (void)forceProcessingAtSizeRespectingAspectRatio:(CGSize)frameSize;
-- (void)cleanupOutputImage;
 
 /// @name Still image processing
 

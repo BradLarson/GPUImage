@@ -25,7 +25,7 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
     GLint colorSwizzlingPositionAttribute, colorSwizzlingTextureCoordinateAttribute;
     GLint colorSwizzlingInputTextureUniform;
 
-    GLuint inputTextureForMovieRendering;
+    GPUImageFramebuffer *firstInputFramebuffer;
     
     CMTime startTime, previousFrameTime, previousAudioTime;
 
@@ -618,7 +618,7 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
     const GLfloat *textureCoordinates = [GPUImageFilter textureCoordinatesForRotation:inputRotation];
     
 	glActiveTexture(GL_TEXTURE4);
-	glBindTexture(GL_TEXTURE_2D, inputTextureForMovieRendering);
+	glBindTexture(GL_TEXTURE_2D, [firstInputFramebuffer texture]);
 	glUniform1i(colorSwizzlingInputTextureUniform, 4);	
     
     glVertexAttribPointer(colorSwizzlingPositionAttribute, 2, GL_FLOAT, 0, 0, squareVertices);
@@ -732,9 +732,10 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
     return 0;
 }
 
-- (void)setInputTexture:(GLuint)newInputTexture atIndex:(NSInteger)textureIndex;
+- (void)setInputFramebuffer:(GPUImageFramebuffer *)newInputFramebuffer atIndex:(NSInteger)textureIndex;
 {
-    inputTextureForMovieRendering = newInputTexture;
+    firstInputFramebuffer = newInputFramebuffer;
+    [firstInputFramebuffer lock];
 }
 
 - (void)setInputRotation:(GPUImageRotationMode)newInputRotation atIndex:(NSInteger)textureIndex;
@@ -773,11 +774,6 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 - (BOOL)shouldIgnoreUpdatesToThisTarget;
 {
     return NO;
-}
-
-- (void)setTextureDelegate:(id<GPUImageTextureDelegate>)newTextureDelegate atIndex:(NSInteger)textureIndex;
-{
-    textureDelegate = newTextureDelegate;
 }
 
 - (BOOL)wantsMonochromeInput;

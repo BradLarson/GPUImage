@@ -23,8 +23,6 @@ extern NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString
 */
 @interface GPUImageVideoCamera : GPUImageOutput <AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptureAudioDataOutputSampleBufferDelegate>
 {
-    CVOpenGLESTextureCacheRef coreVideoTextureCache;    
-
     NSUInteger numberOfFramesCaptured;
     CGFloat totalFrameTimeDuringCapture;
     
