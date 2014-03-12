@@ -5,7 +5,7 @@
 
 @interface GPUImageMovie () <AVPlayerItemOutputPullDelegate>
 {
-    BOOL audioEncodingIsFinished, videoEncodingIsFinished;
+    BOOL audioEncodingIsFinished, videoEncodingIsFinished, hasAudioTrack;
     GPUImageMovieWriter *synchronizedMovieWriter;
     CVOpenGLESTextureCacheRef coreVideoTextureCache;
     AVAssetReader *reader;
@@ -25,6 +25,11 @@
     const GLfloat *_preferredConversion;
 
     int imageBufferWidth, imageBufferHeight;
+
+    AVAudioPlayer *audioPlayer;
+    CFAbsoluteTime startActualFrameTime;
+    CGFloat currentVideoTime;
+
 }
 
 - (void)processAsset;
@@ -168,6 +173,7 @@
 
 - (void)startProcessing
 {
+    currentVideoTime = 0.0f;
     if( self.playerItem ) {
         [self processPlayerItem];
         return;
@@ -185,59 +191,69 @@
   
     NSDictionary *inputOptions = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES] forKey:AVURLAssetPreferPreciseDurationAndTimingKey];
     AVURLAsset *inputAsset = [[AVURLAsset alloc] initWithURL:self.url options:inputOptions];
-    
+    if (self.playSound)
+    {
+        [self setupSound];
+    }
     GPUImageMovie __block *blockSelf = self;
     
     [inputAsset loadValuesAsynchronouslyForKeys:[NSArray arrayWithObject:@"tracks"] completionHandler: ^{
-        runSynchronouslyOnVideoProcessingQueue(^{
+        //runSynchronouslyOnVideoProcessingQueue(^{
             NSError *error = nil;
             AVKeyValueStatus tracksStatus = [inputAsset statusOfValueForKey:@"tracks" error:&error];
-            if (!tracksStatus == AVKeyValueStatusLoaded)
+            if (tracksStatus != AVKeyValueStatusLoaded)
             {
                 return;
             }
             blockSelf.asset = inputAsset;
+            startActualFrameTime = CFAbsoluteTimeGetCurrent() - currentVideoTime;
             [blockSelf processAsset];
             blockSelf = nil;
-        });
+        //});
     }];
 }
 
-- (AVAssetReader*)createAssetReader
+- (void)setupSound {
+    NSError *error;
+    audioPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:self.url error:&error];
+
+    if (error) {
+        NSLog(@"Failed to initialise sound with error:%@",error);
+    }
+    [audioPlayer prepareToPlay];
+}
+
+
+
+- (void)processAsset
 {
     NSError *error = nil;
-    AVAssetReader *assetReader = [AVAssetReader assetReaderWithAsset:self.asset error:&error];
+    reader = [AVAssetReader assetReaderWithAsset:self.asset error:&error];
+    CMTimeRange timeRange = CMTimeRangeMake(CMTimeMakeWithSeconds(currentVideoTime, 1000), kCMTimePositiveInfinity);
 
     NSDictionary *outputSettings = @{(id)kCVPixelBufferPixelFormatTypeKey: @(kCVPixelFormatType_420YpCbCr8BiPlanarFullRange)};
     // Maybe set alwaysCopiesSampleData to NO on iOS 5.0 for faster video decoding
     AVAssetReaderTrackOutput *readerVideoTrackOutput = [AVAssetReaderTrackOutput assetReaderTrackOutputWithTrack:[[self.asset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0] outputSettings:outputSettings];
     readerVideoTrackOutput.alwaysCopiesSampleData = NO;
-    [assetReader addOutput:readerVideoTrackOutput];
+    [reader addOutput:readerVideoTrackOutput];
+    [reader setTimeRange:timeRange];
 
     NSArray *audioTracks = [self.asset tracksWithMediaType:AVMediaTypeAudio];
     BOOL shouldRecordAudioTrack = (([audioTracks count] > 0) && (self.audioEncodingTarget != nil) );
+    hasAudioTrack = [audioTracks count] > 0;
     AVAssetReaderTrackOutput *readerAudioTrackOutput = nil;
 
     if (shouldRecordAudioTrack)
     {
         [self.audioEncodingTarget setShouldInvalidateAudioSampleWhenDone:YES];
-        
+
         // This might need to be extended to handle movies with more than one audio track
         AVAssetTrack* audioTrack = [audioTracks objectAtIndex:0];
         readerAudioTrackOutput = [AVAssetReaderTrackOutput assetReaderTrackOutputWithTrack:audioTrack outputSettings:nil];
         readerAudioTrackOutput.alwaysCopiesSampleData = NO;
-        [assetReader addOutput:readerAudioTrackOutput];
+        [reader addOutput:readerAudioTrackOutput];
     }
 
-    return assetReader;
-}
-
-- (void)processAsset
-{
-    reader = [self createAssetReader];
-
-    AVAssetReaderOutput *readerVideoTrackOutput = nil;
-    AVAssetReaderOutput *readerAudioTrackOutput = nil;
 
     audioEncodingIsFinished = YES;
     for( AVAssetReaderOutput *output in reader.outputs ) {
@@ -254,6 +270,12 @@
     {
             NSLog(@"Error reading from file at URL: %@", self.url);
         return;
+    }
+
+    if (self.playSound && hasAudioTrack)
+    {
+        [audioPlayer setCurrentTime:currentVideoTime];
+        [audioPlayer play];
     }
 
     __unsafe_unretained GPUImageMovie *weakSelf = self;
@@ -353,6 +375,7 @@
         CMSampleBufferRef sampleBufferRef = [readerVideoTrackOutput copyNextSampleBuffer];
         if (sampleBufferRef) 
         {
+            CMTime currentSampleTime = CMSampleBufferGetOutputPresentationTimeStamp(sampleBufferRef);
             //NSLog(@"read a video frame: %@", CFBridgingRelease(CMTimeCopyDescription(kCFAllocatorDefault, CMSampleBufferGetOutputPresentationTimeStamp(sampleBufferRef))));
             if (_playAtActualSpeed)
             {
@@ -363,15 +386,32 @@
                 
                 CGFloat frameTimeDifference = CMTimeGetSeconds(differenceFromLastFrame);
                 CGFloat actualTimeDifference = currentActualTime - previousActualFrameTime;
-                
-                if (frameTimeDifference > actualTimeDifference)
+
+
+                CGFloat frameTimeOffset= CMTimeGetSeconds(currentSampleTime);
+                CGFloat actualTimeOffset = currentActualTime - startActualFrameTime;
+
+
+                if (self.playSound && hasAudioTrack)
                 {
-                    usleep(1000000.0 * (frameTimeDifference - actualTimeDifference));
+                    actualTimeOffset = [audioPlayer currentTime];
+                }
+
+
+//                if (frameTimeDifference > actualTimeDifference)
+//                {
+//                    usleep(1000000.0 * (frameTimeDifference - actualTimeDifference));
+//                }
+                if (frameTimeOffset - actualTimeOffset > 0.0f)
+                {
+                    usleep(1000000.0 * (frameTimeOffset - actualTimeOffset));
                 }
                 
                 previousFrameTime = currentSampleTime;
                 previousActualFrameTime = CFAbsoluteTimeGetCurrent();
             }
+
+            currentVideoTime = CMTimeGetSeconds(currentSampleTime);
 
             __unsafe_unretained GPUImageMovie *weakSelf = self;
             runSynchronouslyOnVideoProcessingQueue(^{
@@ -444,11 +484,11 @@
 
 - (void)processMovieFrame:(CVPixelBufferRef)movieFrame withSampleTime:(CMTime)currentSampleTime
 {
-    int bufferHeight = (int) CVPixelBufferGetHeight(movieFrame);
+    int bufferHeight = CVPixelBufferGetHeight(movieFrame);
 #if TARGET_IPHONE_SIMULATOR
-    int bufferWidth = (int) CVPixelBufferGetBytesPerRow(movieFrame) / 4; // This works around certain movie frame types on the Simulator (see https://github.com/BradLarson/GPUImage/issues/424)
+    int bufferWidth = CVPixelBufferGetBytesPerRow(movieFrame) / 4; // This works around certain movie frame types on the Simulator (see https://github.com/BradLarson/GPUImage/issues/424)
 #else
-    int bufferWidth = (int) CVPixelBufferGetWidth(movieFrame);
+    int bufferWidth = CVPixelBufferGetWidth(movieFrame);
 #endif
     CFTypeRef colorAttachments = CVBufferGetAttachment(movieFrame, kCVImageBufferYCbCrMatrixKey, NULL);
     if (colorAttachments == kCVImageBufferYCbCrMatrix_ITU_R_601_4) {
@@ -631,6 +671,11 @@
     {
         [synchronizedMovieWriter setVideoInputReadyCallback:^{return NO;}];
         [synchronizedMovieWriter setAudioInputReadyCallback:^{return NO;}];
+    }
+
+    if (audioPlayer != nil)
+    {
+        [audioPlayer stop];
     }
 
     if ([self.delegate respondsToSelector:@selector(didCompletePlayingMovie)]) {
