@@ -2,6 +2,13 @@
 
 #import "GPUImageStillCamera.h"
 
+// If you want to use the method capturePhotoAsSampleBufferWithCompletionHandler:
+// you must set CAPTURE_COMPLETION_HANDLER to 1 in GPUImageStillCamera.m which prevents
+// the CVPixelBufferPixelFormatTypeKey from being set, as well as lets capturePhotoAsSampleBufferWithCompletionHandler:
+// do its work. However, if you do this you cannot use any of the photo capture methods to take a photo if you also
+// supply filter.
+#define CAPTURE_COMPLETION_HANDLER 1
+
 void stillImageDataReleaseCallback(void *releaseRefCon, const void *baseAddress)
 {
     free((void *)baseAddress);
@@ -77,34 +84,36 @@ void GPUImageCreateResizedSampleBuffer(CVPixelBufferRef cameraFrame, CGSize fina
    
     // Having a still photo input set to BGRA and video to YUV doesn't work well, so since I don't have YUV resizing for iPhone 4 yet, kick back to BGRA for that device
 //    if (captureAsYUV && [GPUImageContext supportsFastTextureUpload])
-    if (captureAsYUV && [GPUImageContext deviceSupportsRedTextures])
-    {
-        BOOL supportsFullYUVRange = NO;
-        NSArray *supportedPixelFormats = photoOutput.availableImageDataCVPixelFormatTypes;
-        for (NSNumber *currentPixelFormat in supportedPixelFormats)
-        {
-            if ([currentPixelFormat intValue] == kCVPixelFormatType_420YpCbCr8BiPlanarFullRange)
-            {
-                supportsFullYUVRange = YES;
-            }
-        }
-        
-        if (supportsFullYUVRange)
-        {
-            [photoOutput setOutputSettings:[NSDictionary dictionaryWithObject:[NSNumber numberWithInt:kCVPixelFormatType_420YpCbCr8BiPlanarFullRange] forKey:(id)kCVPixelBufferPixelFormatTypeKey]];
-        }
-        else
-        {
-            [photoOutput setOutputSettings:[NSDictionary dictionaryWithObject:[NSNumber numberWithInt:kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange] forKey:(id)kCVPixelBufferPixelFormatTypeKey]];
-        }
-    }
-    else
-    {
-        captureAsYUV = NO;
-        [photoOutput setOutputSettings:[NSDictionary dictionaryWithObject:[NSNumber numberWithInt:kCVPixelFormatType_32BGRA] forKey:(id)kCVPixelBufferPixelFormatTypeKey]];
-        [videoOutput setVideoSettings:[NSDictionary dictionaryWithObject:[NSNumber numberWithInt:kCVPixelFormatType_32BGRA] forKey:(id)kCVPixelBufferPixelFormatTypeKey]];
-    }
-    
+//	if (!CAPTURE_COMPLETION_HANDLER) {
+//		if (captureAsYUV && [GPUImageContext deviceSupportsRedTextures])
+//		{
+//			BOOL supportsFullYUVRange = NO;
+//			NSArray *supportedPixelFormats = photoOutput.availableImageDataCVPixelFormatTypes;
+//			for (NSNumber *currentPixelFormat in supportedPixelFormats)
+//			{
+//				if ([currentPixelFormat intValue] == kCVPixelFormatType_420YpCbCr8BiPlanarFullRange)
+//				{
+//					supportsFullYUVRange = YES;
+//				}
+//			}
+//			
+//			if (supportsFullYUVRange)
+//			{
+//				[photoOutput setOutputSettings:[NSDictionary dictionaryWithObject:[NSNumber numberWithInt:kCVPixelFormatType_420YpCbCr8BiPlanarFullRange] forKey:(id)kCVPixelBufferPixelFormatTypeKey]];
+//			}
+//			else
+//			{
+//				[photoOutput setOutputSettings:[NSDictionary dictionaryWithObject:[NSNumber numberWithInt:kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange] forKey:(id)kCVPixelBufferPixelFormatTypeKey]];
+//			}
+//		}
+//		else
+//		{
+//			captureAsYUV = NO;
+//			[photoOutput setOutputSettings:[NSDictionary dictionaryWithObject:[NSNumber numberWithInt:kCVPixelFormatType_32BGRA] forKey:(id)kCVPixelBufferPixelFormatTypeKey]];
+//			[videoOutput setVideoSettings:[NSDictionary dictionaryWithObject:[NSNumber numberWithInt:kCVPixelFormatType_32BGRA] forKey:(id)kCVPixelBufferPixelFormatTypeKey]];
+//		}
+//	}
+//    
 //    if (captureAsYUV && [GPUImageContext deviceSupportsRedTextures])
 //    {
 //        // TODO: Check for full range output and use that if available
@@ -144,17 +153,15 @@ void GPUImageCreateResizedSampleBuffer(CVPixelBufferRef cameraFrame, CGSize fina
 
 - (void)capturePhotoAsSampleBufferWithCompletionHandler:(void (^)(CMSampleBufferRef imageSampleBuffer, NSError *error))block
 {
-    NSLog(@"If you want to use the method capturePhotoAsSampleBufferWithCompletionHandler:, you must comment out the line in GPUImageStillCamera.m in the method initWithSessionPreset:cameraPosition: which sets the CVPixelBufferPixelFormatTypeKey, as well as uncomment the rest of the method capturePhotoAsSampleBufferWithCompletionHandler:. However, if you do this you cannot use any of the photo capture methods to take a photo if you also supply a filter.");
-    
-    /*dispatch_semaphore_wait(frameRenderingSemaphore, DISPATCH_TIME_FOREVER);
-    
-    [photoOutput captureStillImageAsynchronouslyFromConnection:[[photoOutput connections] objectAtIndex:0] completionHandler:^(CMSampleBufferRef imageSampleBuffer, NSError *error) {
-        block(imageSampleBuffer, error);
-    }];
-     
-     dispatch_semaphore_signal(frameRenderingSemaphore);
-
-     */
+	if (CAPTURE_COMPLETION_HANDLER) {
+//		dispatch_semaphore_wait(frameRenderingSemaphore, DISPATCH_TIME_FOREVER);
+		
+		[photoOutput captureStillImageAsynchronouslyFromConnection:[[photoOutput connections] objectAtIndex:0] completionHandler:^(CMSampleBufferRef imageSampleBuffer, NSError *error) {
+			block(imageSampleBuffer, error);
+		}];
+		 
+//		dispatch_semaphore_signal(frameRenderingSemaphore);
+	}
     
     return;
 }

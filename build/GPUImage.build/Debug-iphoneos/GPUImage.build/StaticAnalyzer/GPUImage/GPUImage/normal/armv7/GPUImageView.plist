@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+ <key>clang_version</key>
+<string>Apple LLVM version 5.0 (clang-500.2.76) (based on LLVM 3.3svn)</string>
+ <key>files</key>
+ <array>
+ </array>
+ <key>diagnostics</key>
+ <array>
+ </array>
+</dict>
+</plist>

@@ -15,12 +15,16 @@ NSString *const kGPUImageGaussianSelectiveBlurFragmentShaderString = SHADER_STRI
  uniform lowp vec2 excludeCirclePoint;
  uniform lowp float excludeBlurSize;
  uniform highp float aspectRatio;
+ uniform lowp float highlightAlpha;
 
+ const mediump vec3 highlightColor = vec3(1.0, 1.0, 1.0);
+ 
  void main()
  {
      lowp vec4 sharpImageColor = texture2D(inputImageTexture, textureCoordinate);
      lowp vec4 blurredImageColor = texture2D(inputImageTexture2, textureCoordinate2);
-     
+     blurredImageColor = vec4(mix(blurredImageColor.rgb, highlightColor, highlightAlpha), blurredImageColor.a);
+	 
      highp vec2 textureCoordinateToUse = vec2(textureCoordinate2.x, (textureCoordinate2.y * aspectRatio + 0.5 - 0.5 * aspectRatio));
      highp float distanceFromCenter = distance(excludeCirclePoint, textureCoordinateToUse);
      
@@ -40,12 +44,16 @@ NSString *const kGPUImageGaussianSelectiveBlurFragmentShaderString = SHADER_STRI
  uniform vec2 excludeCirclePoint;
  uniform float excludeBlurSize;
  uniform float aspectRatio;
- 
+ uniform lowp float highlightAlpha;
+
+ const mediump vec3 highlightColor = vec3(1.0, 1.0, 1.0);
+
  void main()
  {
      vec4 sharpImageColor = texture2D(inputImageTexture, textureCoordinate);
      vec4 blurredImageColor = texture2D(inputImageTexture2, textureCoordinate2);
-     
+	 blurredImageColor = vec4(mix(blurredImageColor.rgb, highlightColor, highlightAlpha), blurredImageColor.a);
+	 
      vec2 textureCoordinateToUse = vec2(textureCoordinate2.x, (textureCoordinate2.y * aspectRatio + 0.5 - 0.5 * aspectRatio));
      float distanceFromCenter = distance(excludeCirclePoint, textureCoordinateToUse);
      
@@ -59,6 +67,7 @@ NSString *const kGPUImageGaussianSelectiveBlurFragmentShaderString = SHADER_STRI
 @synthesize excludeCirclePoint = _excludeCirclePoint, excludeCircleRadius = _excludeCircleRadius, excludeBlurSize = _excludeBlurSize;
 @synthesize blurRadiusInPixels = _blurRadiusInPixels;
 @synthesize aspectRatio = _aspectRatio;
+@synthesize highlightAlpha = _highlightAlpha;
 
 - (id)init;
 {
@@ -89,7 +98,8 @@ NSString *const kGPUImageGaussianSelectiveBlurFragmentShaderString = SHADER_STRI
     self.excludeCircleRadius = 60.0/320.0;
     self.excludeCirclePoint = CGPointMake(0.5f, 0.5f);
     self.excludeBlurSize = 30.0/320.0;
-    
+    self.highlightAlpha = 0.0;
+	
     return self;
 }
 
@@ -142,6 +152,12 @@ NSString *const kGPUImageGaussianSelectiveBlurFragmentShaderString = SHADER_STRI
     hasOverriddenAspectRatio = YES;
     _aspectRatio = newValue;    
     [selectiveFocusFilter setFloat:_aspectRatio forUniformName:@"aspectRatio"];
+}
+
+- (void)setHighlightAlpha:(CGFloat)newValue;
+{
+    _highlightAlpha = newValue;
+    [selectiveFocusFilter setFloat:newValue forUniformName:@"highlightAlpha"];
 }
 
 @end

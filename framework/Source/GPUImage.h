@@ -151,5 +151,8 @@
 #import "GPUImageMotionBlurFilter.h"
 #import "GPUImageZoomBlurFilter.h"
 #import "GPUImageLaplacianFilter.h"
+
+// Custom components
+#import "GPUImageSMTiltShiftFilter.h"
 #import "GPUImageiOSBlurFilter.h"
 #import "GPUImageLuminanceRangeFilter.h"

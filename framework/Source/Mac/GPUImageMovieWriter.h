@@ -17,7 +17,6 @@ extern NSString *const kGPUImageColorSwizzlingFragmentShaderString;
     CMVideoDimensions videoDimensions;
 	CMVideoCodecType videoType;
 
-    NSURL *movieURL;
     NSString *fileType;
 	AVAssetWriter *assetWriter;
 	AVAssetWriterInput *assetWriterAudioInput;
@@ -40,6 +39,8 @@ extern NSString *const kGPUImageColorSwizzlingFragmentShaderString;
 @property(nonatomic, copy) void(^videoInputReadyCallback)(void);
 @property(nonatomic, copy) void(^audioInputReadyCallback)(void);
 @property(nonatomic) BOOL enabled;
+@property(nonatomic, readonly) BOOL isRecording;
+@property (nonatomic, readonly, retain) NSURL *movieURL;
 
 // Initialization and teardown
 - (id)initWithMovieURL:(NSURL *)newMovieURL size:(CGSize)newSize;

@@ -132,6 +132,7 @@
     if (object == self && [keyPath isEqualToString:@"frame"] && (!CGSizeEqualToSize(self.bounds.size, CGSizeZero)))
     {
         runSynchronouslyOnVideoProcessingQueue(^{
+			[self recalculateViewGeometry];
             [self destroyDisplayFramebuffer];
             [self createDisplayFramebuffer];
             [self recalculateViewGeometry];

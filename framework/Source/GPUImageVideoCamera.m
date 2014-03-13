@@ -101,6 +101,7 @@ NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = SHAD
 @synthesize delegate = _delegate;
 @synthesize horizontallyMirrorFrontFacingCamera = _horizontallyMirrorFrontFacingCamera, horizontallyMirrorRearFacingCamera = _horizontallyMirrorRearFacingCamera;
 @synthesize frameRate = _frameRate;
+@synthesize videoInput;
 
 #pragma mark -
 #pragma mark Initialization and teardown
@@ -217,6 +218,7 @@ NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = SHAD
     
 	// Create the capture session
 	_captureSession = [[AVCaptureSession alloc] init];
+	//..
 	
     [_captureSession beginConfiguration];
     
@@ -777,8 +779,8 @@ NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = SHAD
             {
                 CFAbsoluteTime currentFrameTime = (CFAbsoluteTimeGetCurrent() - startTime);
                 totalFrameTimeDuringCapture += currentFrameTime;
-                NSLog(@"Average frame time : %f ms", [self averageFrameDurationDuringCapture]);
-                NSLog(@"Current frame time : %f ms", 1000.0 * currentFrameTime);
+                /*NSLog(@"Average frame time : %f ms", [self averageFrameDurationDuringCapture]);
+                NSLog(@"Current frame time : %f ms", 1000.0 * currentFrameTime);*/
             }
         }
     }

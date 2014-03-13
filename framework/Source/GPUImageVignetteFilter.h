@@ -4,7 +4,7 @@
  */
 @interface GPUImageVignetteFilter : GPUImageFilter 
 {
-    GLint vignetteCenterUniform, vignetteColorUniform, vignetteStartUniform, vignetteEndUniform;
+    GLint vignetteCenterUniform, vignetteColorUniform, vignetteAlphaUniform, vignetteStartUniform, vignetteEndUniform;
 }
 
 // the center for the vignette in tex coords (defaults to 0.5, 0.5)
@@ -18,5 +18,7 @@
 
 // The normalized distance from the center where the vignette effect ends. Default of 0.75.
 @property (nonatomic, readwrite) CGFloat vignetteEnd;
+
+@property (nonatomic, readwrite) CGFloat vignetteAlpha;
 
 @end

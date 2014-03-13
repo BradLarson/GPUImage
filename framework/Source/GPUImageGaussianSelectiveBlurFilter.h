@@ -27,4 +27,6 @@
  */
 @property (readwrite, nonatomic) CGFloat aspectRatio;
 
+@property (readwrite, nonatomic) CGFloat highlightAlpha;
+
 @end
