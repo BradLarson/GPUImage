@@ -37,4 +37,9 @@ typedef enum {
 
 - (void)setCurrentlyReceivingMonochromeInput:(BOOL)newValue;
 
+// Publicly interfacing functions for SmugMug's use
+- (void)destroyDisplayFramebuffer;
+- (void)createDisplayFramebuffer;
+- (void)recalculateViewGeometry;
+
 @end
