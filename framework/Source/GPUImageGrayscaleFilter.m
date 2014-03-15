@@ -72,12 +72,14 @@ NSString *const kGPUImageLuminanceFragmentShaderString = SHADER_STRING
 
 - (BOOL)wantsMonochromeInput;
 {
-    return YES;
+//    return YES;
+    return NO;
 }
 
 - (BOOL)providesMonochromeOutput;
 {
-    return YES;
+//    return YES;
+    return NO;
 }
 
 // TODO: Rewrite this based on the new GPUImageFilter implementation

@@ -26,8 +26,8 @@
     [primaryView addSubview:imageSlider];
     
     [self setupDisplayFiltering];
-    [self setupImageResampling];
-    [self setupImageFilteringToDisk];
+//    [self setupImageResampling];
+//    [self setupImageFilteringToDisk];
 }
 
 - (void)viewDidUnload

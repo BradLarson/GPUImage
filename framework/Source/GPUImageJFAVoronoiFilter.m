@@ -396,7 +396,7 @@ NSString *const kGPUImageJFAVoronoiFragmentShaderString = SHADER_STRING
     [GPUImageContext setActiveShaderProgram:filterProgram];
     currentPass = 0;
     
-    outputFramebuffer = [[GPUImageContext sharedFramebufferCache] fetchFramebufferForSize:[self sizeOfFBO] textureOptions:self.outputTextureOptions];
+    outputFramebuffer = [[GPUImageContext sharedFramebufferCache] fetchFramebufferForSize:[self sizeOfFBO] textureOptions:self.outputTextureOptions onlyTexture:NO];
     [outputFramebuffer activateFramebuffer];
     
     glActiveTexture(GL_TEXTURE2);

@@ -92,7 +92,7 @@ NSString *const kGPUImageTwoInputTextureVertexShaderString = SHADER_STRING
     }
     
     [GPUImageContext setActiveShaderProgram:filterProgram];
-    outputFramebuffer = [[GPUImageContext sharedFramebufferCache] fetchFramebufferForSize:[self sizeOfFBO] textureOptions:self.outputTextureOptions];
+    outputFramebuffer = [[GPUImageContext sharedFramebufferCache] fetchFramebufferForSize:[self sizeOfFBO] textureOptions:self.outputTextureOptions onlyTexture:NO];
     [outputFramebuffer activateFramebuffer];
     [self setUniformsForProgramAtIndex:0];
         

@@ -220,7 +220,7 @@ NSString *const kGPUImageHoughAccumulationFBOReadFragmentShaderString = SHADER_S
 //    CFAbsoluteTime currentFrameTime = (CFAbsoluteTimeGetCurrent() - startTime);
 //    NSLog(@"Line generation processing time : %f ms", 1000.0 * currentFrameTime);
 
-    outputFramebuffer = [[GPUImageContext sharedFramebufferCache] fetchFramebufferForSize:[self sizeOfFBO] textureOptions:self.outputTextureOptions];
+    outputFramebuffer = [[GPUImageContext sharedFramebufferCache] fetchFramebufferForSize:[self sizeOfFBO] textureOptions:self.outputTextureOptions onlyTexture:NO];
     [outputFramebuffer activateFramebuffer];
     
     [GPUImageContext setActiveShaderProgram:filterProgram];

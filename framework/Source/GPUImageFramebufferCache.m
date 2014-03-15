@@ -6,7 +6,7 @@
     NSMutableDictionary *framebufferTypeCounts;
 }
 
-- (NSString *)hashForSize:(CGSize)size textureOptions:(GPUTextureOptions)textureOptions;
+- (NSString *)hashForSize:(CGSize)size textureOptions:(GPUTextureOptions)textureOptions onlyTexture:(BOOL)onlyTexture;
 
 @end
 
@@ -32,14 +32,21 @@
 #pragma mark -
 #pragma mark Framebuffer management
 
-- (NSString *)hashForSize:(CGSize)size textureOptions:(GPUTextureOptions)textureOptions;
+- (NSString *)hashForSize:(CGSize)size textureOptions:(GPUTextureOptions)textureOptions onlyTexture:(BOOL)onlyTexture;
 {
-    return [NSString stringWithFormat:@"%.1fx%.1f-%d:%d:%d:%d:%d:%d:%d", size.width, size.height, textureOptions.minFilter, textureOptions.magFilter, textureOptions.wrapS, textureOptions.wrapT, textureOptions.internalFormat, textureOptions.format, textureOptions.type];
+    if (onlyTexture)
+    {
+        return [NSString stringWithFormat:@"%.1fx%.1f-%d:%d:%d:%d:%d:%d:%d-NOFB", size.width, size.height, textureOptions.minFilter, textureOptions.magFilter, textureOptions.wrapS, textureOptions.wrapT, textureOptions.internalFormat, textureOptions.format, textureOptions.type];
+    }
+    else
+    {
+        return [NSString stringWithFormat:@"%.1fx%.1f-%d:%d:%d:%d:%d:%d:%d", size.width, size.height, textureOptions.minFilter, textureOptions.magFilter, textureOptions.wrapS, textureOptions.wrapT, textureOptions.internalFormat, textureOptions.format, textureOptions.type];
+    }
 }
 
-- (GPUImageFramebuffer *)fetchFramebufferForSize:(CGSize)framebufferSize textureOptions:(GPUTextureOptions)textureOptions;
+- (GPUImageFramebuffer *)fetchFramebufferForSize:(CGSize)framebufferSize textureOptions:(GPUTextureOptions)textureOptions onlyTexture:(BOOL)onlyTexture;
 {
-    NSString *lookupHash = [self hashForSize:framebufferSize textureOptions:textureOptions];
+    NSString *lookupHash = [self hashForSize:framebufferSize textureOptions:textureOptions onlyTexture:onlyTexture];
     NSNumber *numberOfMatchingTexturesInCache = [framebufferTypeCounts objectForKey:lookupHash];
     NSInteger numberOfMatchingTextures = [numberOfMatchingTexturesInCache integerValue];
     GPUImageFramebuffer *framebufferFromCache = nil;
@@ -48,7 +55,7 @@
     {
         NSLog(@"Nothing found for hash: %@", lookupHash);
         // Nothing in the cache, create a new framebuffer to use
-        framebufferFromCache = [[GPUImageFramebuffer alloc] initWithSize:framebufferSize textureOptions:textureOptions];
+        framebufferFromCache = [[GPUImageFramebuffer alloc] initWithSize:framebufferSize textureOptions:textureOptions onlyTexture:onlyTexture];
     }
     else
     {
@@ -56,7 +63,7 @@
         NSInteger currentTextureID = (numberOfMatchingTextures - 1);
         while ((framebufferFromCache == nil) && (currentTextureID >= 0))
         {
-            NSString *textureHash = [NSString stringWithFormat:@"%@-%d", lookupHash, currentTextureID];
+            NSString *textureHash = [NSString stringWithFormat:@"%@-%ld", lookupHash, (long)currentTextureID];
             framebufferFromCache = [framebufferCache objectForKey:textureHash];
             // Test the values in the cache first, to see if they got invalidated behind our back
             if (framebufferFromCache != nil)
@@ -75,7 +82,7 @@
         {
             NSLog(@"Cached textures were nil for hash: %@", lookupHash);
 
-            framebufferFromCache = [[GPUImageFramebuffer alloc] initWithSize:framebufferSize textureOptions:textureOptions];
+            framebufferFromCache = [[GPUImageFramebuffer alloc] initWithSize:framebufferSize textureOptions:textureOptions onlyTexture:onlyTexture];
         }
     }
 
@@ -83,7 +90,7 @@
     return framebufferFromCache;
 }
 
-- (GPUImageFramebuffer *)fetchFramebufferForSize:(CGSize)framebufferSize;
+- (GPUImageFramebuffer *)fetchFramebufferForSize:(CGSize)framebufferSize onlyTexture:(BOOL)onlyTexture;
 {
     GPUTextureOptions defaultTextureOptions;
     defaultTextureOptions.minFilter = GL_LINEAR;
@@ -94,7 +101,7 @@
     defaultTextureOptions.format = GL_BGRA;
     defaultTextureOptions.type = GL_UNSIGNED_BYTE;
     
-    return [self fetchFramebufferForSize:framebufferSize textureOptions:defaultTextureOptions];
+    return [self fetchFramebufferForSize:framebufferSize textureOptions:defaultTextureOptions onlyTexture:onlyTexture];
 }
 
 - (void)returnFramebufferToCache:(GPUImageFramebuffer *)framebuffer;
@@ -103,11 +110,11 @@
     
     CGSize framebufferSize = framebuffer.size;
     GPUTextureOptions framebufferTextureOptions = framebuffer.textureOptions;
-    NSString *lookupHash = [self hashForSize:framebufferSize textureOptions:framebufferTextureOptions];
+    NSString *lookupHash = [self hashForSize:framebufferSize textureOptions:framebufferTextureOptions onlyTexture:framebuffer.missingFramebuffer];
     NSNumber *numberOfMatchingTexturesInCache = [framebufferTypeCounts objectForKey:lookupHash];
     NSInteger numberOfMatchingTextures = [numberOfMatchingTexturesInCache integerValue];
 
-    NSString *textureHash = [NSString stringWithFormat:@"%@-%d", lookupHash, numberOfMatchingTextures];
+    NSString *textureHash = [NSString stringWithFormat:@"%@-%ld", lookupHash, (long)numberOfMatchingTextures];
     
     [framebufferCache setObject:framebuffer forKey:textureHash cost:round(framebufferSize.width * framebufferSize.height * 4.0)];
 //    [framebufferCache setObject:framebuffer forKey:textureHash];

@@ -180,7 +180,7 @@
     runSynchronouslyOnVideoProcessingQueue(^{
         [GPUImageContext useImageProcessingContext];
         
-        outputFramebuffer = [[GPUImageContext sharedFramebufferCache] fetchFramebufferForSize:pixelSizeToUseForTexture textureOptions:self.outputTextureOptions];
+        outputFramebuffer = [[GPUImageContext sharedFramebufferCache] fetchFramebufferForSize:pixelSizeToUseForTexture onlyTexture:YES];
         [outputFramebuffer disableReferenceCounting];
 
         glBindTexture(GL_TEXTURE_2D, [outputFramebuffer texture]);

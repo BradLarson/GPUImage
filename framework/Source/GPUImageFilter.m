@@ -360,7 +360,7 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
     
     [GPUImageContext setActiveShaderProgram:filterProgram];
 
-    outputFramebuffer = [[GPUImageContext sharedFramebufferCache] fetchFramebufferForSize:[self sizeOfFBO] textureOptions:self.outputTextureOptions];
+    outputFramebuffer = [[GPUImageContext sharedFramebufferCache] fetchFramebufferForSize:[self sizeOfFBO] textureOptions:self.outputTextureOptions onlyTexture:NO];
     [outputFramebuffer activateFramebuffer];
 
     [self setUniformsForProgramAtIndex:0];
@@ -700,26 +700,28 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
     {
         if (CGSizeEqualToSize(forcedMaximumSize, CGSizeZero))
         {
-            return;
         }
         else
         {
             CGRect insetRect = AVMakeRectWithAspectRatioInsideRect(newSize, CGRectMake(0.0, 0.0, forcedMaximumSize.width, forcedMaximumSize.height));
             inputTextureSize = insetRect.size;
-            return;
+        }
+    }
+    else
+    {
+        CGSize rotatedSize = [self rotatedSize:newSize forIndex:textureIndex];
+        
+        if (CGSizeEqualToSize(rotatedSize, CGSizeZero))
+        {
+            inputTextureSize = rotatedSize;
+        }
+        else if (!CGSizeEqualToSize(inputTextureSize, rotatedSize))
+        {
+            inputTextureSize = rotatedSize;
         }
     }
     
-    CGSize rotatedSize = [self rotatedSize:newSize forIndex:textureIndex];
-    
-    if (CGSizeEqualToSize(rotatedSize, CGSizeZero))
-    {
-        inputTextureSize = rotatedSize;
-    }
-    else if (!CGSizeEqualToSize(inputTextureSize, rotatedSize))
-    {
-        inputTextureSize = rotatedSize;
-    }
+    [self setupFilterForSize:[self sizeOfFBO]];
 }
 
 - (void)setInputRotation:(GPUImageRotationMode)newInputRotation atIndex:(NSInteger)textureIndex;

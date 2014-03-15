@@ -1410,6 +1410,7 @@
 		BCF1A32B14DDB1EC00852800 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastTestingUpgradeCheck = 0510;
 				LastUpgradeCheck = 0500;
 				ORGANIZATIONNAME = "Brad Larson";
 			};

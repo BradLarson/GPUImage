@@ -180,7 +180,7 @@ NSString *const kGPUImageLanczosFragmentShaderString = SHADER_STRING
     {
         currentFBOSize.width = self.originalImageSize.width;
     }
-    outputFramebuffer = [[GPUImageContext sharedFramebufferCache] fetchFramebufferForSize:currentFBOSize textureOptions:self.outputTextureOptions];
+    outputFramebuffer = [[GPUImageContext sharedFramebufferCache] fetchFramebufferForSize:currentFBOSize textureOptions:self.outputTextureOptions onlyTexture:NO];
     [outputFramebuffer activateFramebuffer];
     
     [self setUniformsForProgramAtIndex:0];
@@ -206,7 +206,7 @@ NSString *const kGPUImageLanczosFragmentShaderString = SHADER_STRING
     glBindTexture(GL_TEXTURE_2D, 0);
     glActiveTexture(GL_TEXTURE3);
     glBindTexture(GL_TEXTURE_2D, 0);
-    secondOutputFramebuffer = [[GPUImageContext sharedFramebufferCache] fetchFramebufferForSize:[self sizeOfFBO] textureOptions:self.outputTextureOptions];
+    secondOutputFramebuffer = [[GPUImageContext sharedFramebufferCache] fetchFramebufferForSize:[self sizeOfFBO] textureOptions:self.outputTextureOptions onlyTexture:NO];
     [secondOutputFramebuffer activateFramebuffer];
     
     [self setUniformsForProgramAtIndex:1];

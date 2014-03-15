@@ -5,8 +5,8 @@
 @interface GPUImageFramebufferCache : NSObject
 
 // Framebuffer management
-- (GPUImageFramebuffer *)fetchFramebufferForSize:(CGSize)framebufferSize textureOptions:(GPUTextureOptions)textureOptions;
-- (GPUImageFramebuffer *)fetchFramebufferForSize:(CGSize)framebufferSize;
+- (GPUImageFramebuffer *)fetchFramebufferForSize:(CGSize)framebufferSize textureOptions:(GPUTextureOptions)textureOptions onlyTexture:(BOOL)onlyTexture;
+- (GPUImageFramebuffer *)fetchFramebufferForSize:(CGSize)framebufferSize onlyTexture:(BOOL)onlyTexture;
 - (void)returnFramebufferToCache:(GPUImageFramebuffer *)framebuffer;
 - (void)purgeAllUnassignedFramebuffers;
 

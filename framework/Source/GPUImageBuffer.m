@@ -75,7 +75,7 @@
     }
     
     [GPUImageContext setActiveShaderProgram:filterProgram];
-    outputFramebuffer = [[GPUImageContext sharedFramebufferCache] fetchFramebufferForSize:[self sizeOfFBO] textureOptions:self.outputTextureOptions];
+    outputFramebuffer = [[GPUImageContext sharedFramebufferCache] fetchFramebufferForSize:[self sizeOfFBO] textureOptions:self.outputTextureOptions onlyTexture:NO];
     [outputFramebuffer activateFramebuffer];
     [bufferedFramebuffers addObject:outputFramebuffer];
     // TODO: Instead of redrawing these into textures, capture the incoming framebuffer and prevent it from returning to the pool

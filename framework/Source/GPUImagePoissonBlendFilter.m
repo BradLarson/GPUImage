@@ -147,7 +147,7 @@ NSString *const kGPUImagePoissonBlendFragmentShaderString = SHADER_STRING
             [super renderToTextureWithVertices:vertices textureCoordinates:[[self class] textureCoordinatesForRotation:kGPUImageNoRotation]];
         } else {
             // Run the second stage of the two-pass filter
-            secondOutputFramebuffer = [[GPUImageContext sharedFramebufferCache] fetchFramebufferForSize:[self sizeOfFBO] textureOptions:self.outputTextureOptions];
+            secondOutputFramebuffer = [[GPUImageContext sharedFramebufferCache] fetchFramebufferForSize:[self sizeOfFBO] textureOptions:self.outputTextureOptions onlyTexture:NO];
             [secondOutputFramebuffer activateFramebuffer];
             
             [GPUImageContext setActiveShaderProgram:filterProgram];

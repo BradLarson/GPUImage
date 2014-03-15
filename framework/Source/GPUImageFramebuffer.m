@@ -14,6 +14,7 @@
 }
 
 - (void)generateFramebuffer;
+- (void)generateTexture;
 - (void)destroyFramebuffer;
 
 @end
@@ -23,11 +24,12 @@
 @synthesize size = _size;
 @synthesize textureOptions = _textureOptions;
 @synthesize texture = _texture;
+@synthesize missingFramebuffer = _missingFramebuffer;
 
 #pragma mark -
 #pragma mark Initialization and teardown
 
-- (id)initWithSize:(CGSize)framebufferSize textureOptions:(GPUTextureOptions)fboTextureOptions;
+- (id)initWithSize:(CGSize)framebufferSize textureOptions:(GPUTextureOptions)fboTextureOptions onlyTexture:(BOOL)onlyGenerateTexture;
 {
     if (!(self = [super init]))
     {
@@ -38,10 +40,21 @@
     _size = framebufferSize;
     framebufferReferenceCount = 0;
     referenceCountingDisabled = NO;
+    _missingFramebuffer = onlyGenerateTexture;
 
     NSLog(@"Creating framebuffer: %@ at size %f, %f", self, _size.width, _size.height);
 
-    [self generateFramebuffer];
+    if (_missingFramebuffer)
+    {
+        runSynchronouslyOnVideoProcessingQueue(^{
+            [GPUImageContext useImageProcessingContext];
+            [self generateTexture];
+        });
+    }
+    else
+    {
+        [self generateFramebuffer];
+    }
     return self;
 }
 
@@ -56,7 +69,7 @@
     defaultTextureOptions.format = GL_BGRA;
     defaultTextureOptions.type = GL_UNSIGNED_BYTE;
 
-    if (!(self = [self initWithSize:framebufferSize textureOptions:defaultTextureOptions]))
+    if (!(self = [self initWithSize:framebufferSize textureOptions:defaultTextureOptions onlyTexture:NO]))
     {
 		return nil;
     }
@@ -74,19 +87,26 @@
 #pragma mark -
 #pragma mark Internal
 
+- (void)generateTexture;
+{
+    glActiveTexture(GL_TEXTURE1);
+    glGenTextures(1, &_texture);
+    glBindTexture(GL_TEXTURE_2D, _texture);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, _textureOptions.minFilter);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, _textureOptions.magFilter);
+    // This is necessary for non-power-of-two textures
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, _textureOptions.wrapS);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, _textureOptions.wrapT);
+    
+    // TODO: Handle mipmaps
+}
+
 - (void)generateFramebuffer;
 {
     runSynchronouslyOnVideoProcessingQueue(^{
         [GPUImageContext useImageProcessingContext];
-        
-        glActiveTexture(GL_TEXTURE1);
-        glGenTextures(1, &_texture);
-        glBindTexture(GL_TEXTURE_2D, _texture);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, _textureOptions.minFilter);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, _textureOptions.magFilter);
-        // This is necessary for non-power-of-two textures
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, _textureOptions.wrapS);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, _textureOptions.wrapT);
+
+        [self generateTexture];
         
         glGenFramebuffers(1, &framebuffer);
         glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);

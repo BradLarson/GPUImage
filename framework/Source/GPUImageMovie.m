@@ -496,10 +496,10 @@
             glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
             glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-            if (!allTargetsWantMonochromeData)
-            {
+//            if (!allTargetsWantMonochromeData)
+//            {
                 [self convertYUVToRGBOutput];
-            }
+//            }
 
             for (id<GPUImageInput> currentTarget in targets)
             {
@@ -566,7 +566,7 @@
         // Upload to texture
         CVPixelBufferLockBaseAddress(movieFrame, 0);
         
-        outputFramebuffer = [[GPUImageContext sharedFramebufferCache] fetchFramebufferForSize:CGSizeMake(bufferWidth, bufferHeight) textureOptions:self.outputTextureOptions];
+        outputFramebuffer = [[GPUImageContext sharedFramebufferCache] fetchFramebufferForSize:CGSizeMake(bufferWidth, bufferHeight) textureOptions:self.outputTextureOptions onlyTexture:YES];
 
         glBindTexture(GL_TEXTURE_2D, [outputFramebuffer texture]);
         // Using BGRA extension to pull in video frame data directly
@@ -639,7 +639,7 @@
 - (void)convertYUVToRGBOutput;
 {
     [GPUImageContext setActiveShaderProgram:yuvConversionProgram];
-    outputFramebuffer = [[GPUImageContext sharedFramebufferCache] fetchFramebufferForSize:CGSizeMake(imageBufferWidth, imageBufferHeight)];
+    outputFramebuffer = [[GPUImageContext sharedFramebufferCache] fetchFramebufferForSize:CGSizeMake(imageBufferWidth, imageBufferHeight) onlyTexture:NO];
     [outputFramebuffer activateFramebuffer];
 
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);

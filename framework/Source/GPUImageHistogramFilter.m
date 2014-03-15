@@ -273,7 +273,7 @@ NSString *const kGPUImageHistogramAccumulationFragmentShaderString = SHADER_STRI
     [GPUImageContext useImageProcessingContext];
     
     glReadPixels(0, 0, inputTextureSize.width, inputTextureSize.height, GL_RGBA, GL_UNSIGNED_BYTE, vertexSamplingCoordinates);
-    outputFramebuffer = [[GPUImageContext sharedFramebufferCache] fetchFramebufferForSize:[self sizeOfFBO] textureOptions:self.outputTextureOptions];
+    outputFramebuffer = [[GPUImageContext sharedFramebufferCache] fetchFramebufferForSize:[self sizeOfFBO] textureOptions:self.outputTextureOptions onlyTexture:NO];
     [outputFramebuffer activateFramebuffer];
     
     [GPUImageContext setActiveShaderProgram:filterProgram];
