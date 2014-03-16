@@ -81,21 +81,48 @@
 {
     if (self.preventRendering)
     {
+        [firstInputFramebuffer unlock];
         return;
     }
+    
+    [GPUImageContext setActiveShaderProgram:filterProgram];
+    
+    outputFramebuffer = [[GPUImageContext sharedFramebufferCache] fetchFramebufferForSize:[self sizeOfFBO] textureOptions:self.outputTextureOptions onlyTexture:NO];
+    [outputFramebuffer activateFramebuffer];
+    
+    [self setUniformsForProgramAtIndex:0];
+    
+    glClearColor(backgroundColorRed, backgroundColorGreen, backgroundColorBlue, backgroundColorAlpha);
+    glClear(GL_COLOR_BUFFER_BIT);
+    
+	glActiveTexture(GL_TEXTURE2);
+	glBindTexture(GL_TEXTURE_2D, [firstInputFramebuffer texture]);
+	
+	glUniform1i(filterInputTextureUniform, 2);
+    
+    glVertexAttribPointer(filterPositionAttribute, 2, GL_FLOAT, 0, 0, vertices);
+	glVertexAttribPointer(filterTextureCoordinateAttribute, 2, GL_FLOAT, 0, 0, textureCoordinates);
+    
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+    
+    [firstInputFramebuffer unlock];
     
     // This assumes that any two-pass filter that says it desires monochrome input is using the first pass for a luminance conversion, which can be dropped
 //    if (!currentlyReceivingMonochromeInput)
 //    {
         // Run the first stage of the two-pass filter
-        [super renderToTextureWithVertices:vertices textureCoordinates:textureCoordinates];
+//        [super renderToTextureWithVertices:vertices textureCoordinates:textureCoordinates];
 //    }
 
     // Run the second stage of the two-pass filter
     secondOutputFramebuffer = [[GPUImageContext sharedFramebufferCache] fetchFramebufferForSize:[self sizeOfFBO] textureOptions:self.outputTextureOptions onlyTexture:NO];
     [secondOutputFramebuffer activateFramebuffer];
     [GPUImageContext setActiveShaderProgram:secondFilterProgram];
-    
+    if (usingNextFrameForImageCapture)
+    {
+        [secondOutputFramebuffer lock];
+    }
+
     [self setUniformsForProgramAtIndex:1];
     
     glActiveTexture(GL_TEXTURE3);
@@ -125,6 +152,10 @@
 
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
     [outputFramebuffer unlock];
+    if (usingNextFrameForImageCapture)
+    {
+        dispatch_semaphore_signal(imageCaptureSemaphore);
+    }
 }
 
 - (void)setAndExecuteUniformStateCallbackAtIndex:(GLint)uniform forProgram:(GLProgram *)shaderProgram toBlock:(dispatch_block_t)uniformStateBlock;

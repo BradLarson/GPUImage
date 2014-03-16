@@ -145,6 +145,7 @@ NSString *const kGPUImageHoughAccumulationFBOReadFragmentShaderString = SHADER_S
     
     if (self.preventRendering)
     {
+        [firstInputFramebuffer unlock];
         return;
     }
     

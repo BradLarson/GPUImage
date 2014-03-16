@@ -177,6 +177,7 @@ NSString *const kGPUImageLuminosityFragmentShaderString = SHADER_STRING
 {
     if (self.preventRendering)
     {
+        [firstInputFramebuffer unlock];
         return;
     }
     
@@ -282,6 +283,8 @@ NSString *const kGPUImageLuminosityFragmentShaderString = SHADER_STRING
 //            return;
 //        }
     }
+    
+    [firstInputFramebuffer unlock];
 }
 
 #pragma mark -

@@ -47,12 +47,8 @@ NSString *const kGPUImagePassthroughFragmentShaderString = SHADER_STRING
 #endif
 
 
-void dataProviderReleaseCallback (void *info, const void *data, size_t size);
-void dataProviderUnlockCallback (void *info, const void *data, size_t size);
-
 @implementation GPUImageFilter
 
-@synthesize renderTarget;
 @synthesize preventRendering = _preventRendering;
 @synthesize currentlyReceivingMonochromeInput;
 
@@ -67,7 +63,6 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size);
     }
 
     uniformStateRestorationBlocks = [NSMutableDictionary dictionaryWithCapacity:10];
-    preparedToCaptureImage = NO;
     _preventRendering = NO;
     currentlyReceivingMonochromeInput = NO;
     inputRotation = kGPUImageNoRotation;
@@ -75,7 +70,8 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size);
     backgroundColorGreen = 0.0;
     backgroundColorBlue = 0.0;
     backgroundColorAlpha = 0.0;
-    
+    imageCaptureSemaphore = dispatch_semaphore_create(1);
+
     runSynchronouslyOnVideoProcessingQueue(^{
         [GPUImageContext useImageProcessingContext];
 
@@ -159,103 +155,57 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size);
 
 - (void)dealloc
 {
+#if ( (__IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_7_0) || (!defined(__IPHONE_7_0)) )
+    if (imageCaptureSemaphore != NULL)
+    {
+        dispatch_release(imageCaptureSemaphore);
+    }
+#endif
 }
 
 #pragma mark -
 #pragma mark Still image processing
 
-void dataProviderReleaseCallback (void *info, const void *data, size_t size)
+- (void)useNextFrameForImageCapture;
 {
-    free((void *)data);
-}
+    usingNextFrameForImageCapture = YES;
 
-void dataProviderUnlockCallback (void *info, const void *data, size_t size)
-{
-    GPUImageFilter *filter = (__bridge_transfer GPUImageFilter*)info;
-    
-    CVPixelBufferUnlockBaseAddress([filter renderTarget], 0);
-    if ([filter renderTarget]) {
-        CFRelease([filter renderTarget]);
+    // Set the semaphore high, if it isn't already
+    if (dispatch_semaphore_wait(imageCaptureSemaphore, DISPATCH_TIME_NOW) != 0)
+    {
+        return;
     }
-    
-    // TODO: use outputFramebuffer for this, unlocking here
-
-    filter.preventRendering = NO;
 }
 
-- (CGImageRef)newCGImageFromCurrentlyProcessedOutputWithOrientation:(UIImageOrientation)imageOrientation
+- (CGImageRef)newCGImageFromCurrentlyProcessedOutput
 {
-    
-    // a CGImage can only be created from a 'normal' color texture
-    NSAssert(self.outputTextureOptions.internalFormat == GL_RGBA, @"For conversion to a CGImage the output texture format for this filter must be GL_RGBA.");
-    NSAssert(self.outputTextureOptions.type == GL_UNSIGNED_BYTE, @"For conversion to a CGImage the type of the output texture of this filter must be GL_UNSIGNED_BYTE.");
-    
-    __block CGImageRef cgImageFromBytes;
+    // Give it three seconds to process, then abort if they forgot to set up the image capture properly
+    double timeoutForImageCapture = 3.0;
+    dispatch_time_t convertedTimeout = dispatch_time(DISPATCH_TIME_NOW, timeoutForImageCapture * NSEC_PER_SEC);
 
-    runSynchronouslyOnVideoProcessingQueue(^{
-        [GPUImageContext useImageProcessingContext];
-        
-        CGSize currentFBOSize = [self sizeOfFBO];
-        NSUInteger totalBytesForImage = (int)currentFBOSize.width * (int)currentFBOSize.height * 4;
-        // It appears that the width of a texture must be padded out to be a multiple of 8 (32 bytes) if reading from it using a texture cache
-        NSUInteger paddedWidthOfImage = CVPixelBufferGetBytesPerRow(renderTarget) / 4.0;
-        NSUInteger paddedBytesForImage = paddedWidthOfImage * (int)currentFBOSize.height * 4;
-        
-        GLubyte *rawImagePixels;
-        
-        CGDataProviderRef dataProvider;
-        if ([GPUImageContext supportsFastTextureUpload] && preparedToCaptureImage)
-        {
-            //        glFlush();
-            glFinish();
-            CFRetain(renderTarget); // I need to retain the pixel buffer here and release in the data source callback to prevent its bytes from being prematurely deallocated during a photo write operation
-            CVPixelBufferLockBaseAddress(renderTarget, 0);
-            self.preventRendering = YES; // Locks don't seem to work, so prevent any rendering to the filter which might overwrite the pixel buffer data until done processing
-            rawImagePixels = (GLubyte *)CVPixelBufferGetBaseAddress(renderTarget);
-            dataProvider = CGDataProviderCreateWithData((__bridge_retained void*)self, rawImagePixels, paddedBytesForImage, dataProviderUnlockCallback);
-        }
-        else
-        {
-            // TODO: Fix this based on the new caching model
-//            [self setOutputFBO];
-            rawImagePixels = (GLubyte *)malloc(totalBytesForImage);
-            glReadPixels(0, 0, (int)currentFBOSize.width, (int)currentFBOSize.height, GL_RGBA, GL_UNSIGNED_BYTE, rawImagePixels);
-            dataProvider = CGDataProviderCreateWithData(NULL, rawImagePixels, totalBytesForImage, dataProviderReleaseCallback);
-        }
-        
-        
-        CGColorSpaceRef defaultRGBColorSpace = CGColorSpaceCreateDeviceRGB();
-        
-        if ([GPUImageContext supportsFastTextureUpload] && preparedToCaptureImage)
-        {
-            cgImageFromBytes = CGImageCreate((int)currentFBOSize.width, (int)currentFBOSize.height, 8, 32, CVPixelBufferGetBytesPerRow(renderTarget), defaultRGBColorSpace, kCGBitmapByteOrder32Little | kCGImageAlphaPremultipliedFirst, dataProvider, NULL, NO, kCGRenderingIntentDefault);
-        }
-        else
-        {
-            cgImageFromBytes = CGImageCreate((int)currentFBOSize.width, (int)currentFBOSize.height, 8, 32, 4 * (int)currentFBOSize.width, defaultRGBColorSpace, kCGBitmapByteOrderDefault | kCGImageAlphaLast, dataProvider, NULL, NO, kCGRenderingIntentDefault);
-        }
-        
-        // Capture image with current device orientation
-        CGDataProviderRelease(dataProvider);
-        CGColorSpaceRelease(defaultRGBColorSpace);
-    });
+    if (dispatch_semaphore_wait(imageCaptureSemaphore, convertedTimeout) != 0)
+    {
+        return NULL;
+    }
 
-    return cgImageFromBytes;
+    NSLog(@"Trying to return from framebuffer: %@", [self framebufferForOutput]);    
+
+    usingNextFrameForImageCapture = NO;
+    dispatch_semaphore_signal(imageCaptureSemaphore);
+    
+    // All image output is now managed by the framebuffer itself
+    return [[self framebufferForOutput] newCGImageFromFramebufferContents];
 }
 
-- (CGImageRef)newCGImageByFilteringCGImage:(CGImageRef)imageToFilter
-{
-    return [self newCGImageByFilteringCGImage:imageToFilter orientation:UIImageOrientationUp];
-}
-
-- (CGImageRef)newCGImageByFilteringCGImage:(CGImageRef)imageToFilter orientation:(UIImageOrientation)orientation;
+- (CGImageRef)newCGImageByFilteringCGImage:(CGImageRef)imageToFilter;
 {
     GPUImagePicture *stillImageSource = [[GPUImagePicture alloc] initWithCGImage:imageToFilter];
     
+    [self useNextFrameForImageCapture];
     [stillImageSource addTarget:self];
     [stillImageSource processImage];
     
-    CGImageRef processedImage = [self newCGImageFromCurrentlyProcessedOutputWithOrientation:orientation];
+    CGImageRef processedImage = [self newCGImageFromCurrentlyProcessedOutput];
     
     [stillImageSource removeTarget:self];
     return processedImage;
@@ -355,6 +305,7 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
 {
     if (self.preventRendering)
     {
+        [firstInputFramebuffer unlock];
         return;
     }
     
@@ -362,6 +313,10 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
 
     outputFramebuffer = [[GPUImageContext sharedFramebufferCache] fetchFramebufferForSize:[self sizeOfFBO] textureOptions:self.outputTextureOptions onlyTexture:NO];
     [outputFramebuffer activateFramebuffer];
+    if (usingNextFrameForImageCapture)
+    {
+        [outputFramebuffer lock];
+    }
 
     [self setUniformsForProgramAtIndex:0];
     
@@ -379,6 +334,11 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
     
     [firstInputFramebuffer unlock];
+    
+    if (usingNextFrameForImageCapture)
+    {
+        dispatch_semaphore_signal(imageCaptureSemaphore);
+    }
 }
 
 - (void)informTargetsAboutNewFrameAtTime:(CMTime)frameTime;
@@ -419,16 +379,6 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
 - (CGSize)outputFrameSize;
 {
     return inputTextureSize;
-}
-
-- (void)prepareForImageCapture;
-{
-    if (preparedToCaptureImage)
-    {
-        return;
-    }
-
-    preparedToCaptureImage = YES;
 }
 
 #pragma mark -

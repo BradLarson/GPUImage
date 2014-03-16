@@ -271,6 +271,15 @@
     return YES;
 }
 
+- (void)processImageUpToFilter:(GPUImageOutput<GPUImageInput> *)finalFilterInChain withCompletionHandler:(void (^)(UIImage *processedImage))block;
+{
+    [finalFilterInChain useNextFrameForImageCapture];
+    [self processImageWithCompletionHandler:^{
+        UIImage *imageFromFilter = [finalFilterInChain imageFromCurrentFramebuffer];
+        block(imageFromFilter);
+    }];
+}
+
 - (CGSize)outputImageSize;
 {
     return pixelSizeOfImage;

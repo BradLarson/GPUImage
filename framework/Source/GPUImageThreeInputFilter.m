@@ -82,12 +82,20 @@ NSString *const kGPUImageThreeInputTextureVertexShaderString = SHADER_STRING
 {
     if (self.preventRendering)
     {
+        [firstInputFramebuffer unlock];
+        [secondInputFramebuffer unlock];
+        [thirdInputFramebuffer unlock];
         return;
     }
     
     [GPUImageContext setActiveShaderProgram:filterProgram];
     outputFramebuffer = [[GPUImageContext sharedFramebufferCache] fetchFramebufferForSize:[self sizeOfFBO] textureOptions:self.outputTextureOptions onlyTexture:NO];
     [outputFramebuffer activateFramebuffer];
+    if (usingNextFrameForImageCapture)
+    {
+        [outputFramebuffer lock];
+    }
+
     [self setUniformsForProgramAtIndex:0];
     
     glClearColor(backgroundColorRed, backgroundColorGreen, backgroundColorBlue, backgroundColorAlpha);
@@ -114,6 +122,10 @@ NSString *const kGPUImageThreeInputTextureVertexShaderString = SHADER_STRING
     [firstInputFramebuffer unlock];
     [secondInputFramebuffer unlock];
     [thirdInputFramebuffer unlock];
+    if (usingNextFrameForImageCapture)
+    {
+        dispatch_semaphore_signal(imageCaptureSemaphore);
+    }
 }
 
 #pragma mark -

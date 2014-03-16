@@ -9,5 +9,7 @@
 - (GPUImageFramebuffer *)fetchFramebufferForSize:(CGSize)framebufferSize onlyTexture:(BOOL)onlyTexture;
 - (void)returnFramebufferToCache:(GPUImageFramebuffer *)framebuffer;
 - (void)purgeAllUnassignedFramebuffers;
+- (void)addFramebufferToActiveImageCaptureList:(GPUImageFramebuffer *)framebuffer;
+- (void)removeFramebufferFromActiveImageCaptureList:(GPUImageFramebuffer *)framebuffer;
 
 @end

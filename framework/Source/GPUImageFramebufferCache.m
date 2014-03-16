@@ -4,6 +4,7 @@
 {
     NSCache *framebufferCache;
     NSMutableDictionary *framebufferTypeCounts;
+    NSMutableArray *activeImageCaptureList; // Where framebuffers that may be lost by a filter, but which are still needed for a UIImage, etc., are stored
 }
 
 - (NSString *)hashForSize:(CGSize)size textureOptions:(GPUTextureOptions)textureOptions onlyTexture:(BOOL)onlyTexture;
@@ -25,6 +26,7 @@
     
     framebufferCache = [[NSCache alloc] init];
     framebufferTypeCounts = [[NSMutableDictionary alloc] init];
+    activeImageCaptureList = [[NSMutableArray alloc] init];
     
     return self;
 }
@@ -125,6 +127,16 @@
 {
     [framebufferCache removeAllObjects];
     [framebufferTypeCounts removeAllObjects];
+}
+
+- (void)addFramebufferToActiveImageCaptureList:(GPUImageFramebuffer *)framebuffer;
+{
+    [activeImageCaptureList addObject:framebuffer];
+}
+
+- (void)removeFramebufferFromActiveImageCaptureList:(GPUImageFramebuffer *)framebuffer;
+{
+    [activeImageCaptureList removeObject:framebuffer];
 }
 
 @end

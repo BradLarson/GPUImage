@@ -40,14 +40,14 @@
 #pragma mark -
 #pragma mark Still image processing
 
-- (CGImageRef)newCGImageFromCurrentlyProcessedOutputWithOrientation:(UIImageOrientation)imageOrientation;
+- (void)useNextFrameForImageCapture;
 {
-    return [self.terminalFilter newCGImageFromCurrentlyProcessedOutputWithOrientation:imageOrientation];
+    [self.terminalFilter useNextFrameForImageCapture];
 }
 
-- (void)prepareForImageCapture;
+- (CGImageRef)newCGImageFromCurrentlyProcessedOutput;
 {
-    [self.terminalFilter prepareForImageCapture];
+    return [self.terminalFilter newCGImageFromCurrentlyProcessedOutput];
 }
 
 #pragma mark -

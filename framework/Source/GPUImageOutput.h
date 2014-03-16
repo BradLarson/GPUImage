@@ -46,6 +46,7 @@ void reportAvailableMemoryForGPUImage(NSString *tag);
     BOOL overrideInputSize;
     
     BOOL allTargetsWantMonochromeData;
+    BOOL usingNextFrameForImageCapture;
 }
 
 @property(readwrite, nonatomic) BOOL shouldSmoothlyScaleOutput;
@@ -100,26 +101,24 @@ void reportAvailableMemoryForGPUImage(NSString *tag);
 
 /// @name Still image processing
 
+- (void)useNextFrameForImageCapture;
 - (CGImageRef)newCGImageFromCurrentlyProcessedOutput;
-- (CGImageRef)newCGImageFromCurrentlyProcessedOutputWithOrientation:(UIImageOrientation)imageOrientation;
 - (CGImageRef)newCGImageByFilteringCGImage:(CGImageRef)imageToFilter;
-- (CGImageRef)newCGImageByFilteringCGImage:(CGImageRef)imageToFilter orientation:(UIImageOrientation)orientation;
 
 // Platform-specific image output methods
+// If you're trying to use these methods, remember that you need to set -useNextFrameForImageCapture before running -processImage or running video and calling any of these methods, or you will get a nil image
 #if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
-- (UIImage *)imageFromCurrentlyProcessedOutput;
-- (UIImage *)imageFromCurrentlyProcessedOutputWithOrientation:(UIImageOrientation)imageOrientation;
+- (UIImage *)imageFromCurrentFramebuffer;
+- (UIImage *)imageFromCurrentFramebufferWithOrientation:(UIImageOrientation)imageOrientation;
 - (UIImage *)imageByFilteringImage:(UIImage *)imageToFilter;
 - (CGImageRef)newCGImageByFilteringImage:(UIImage *)imageToFilter;
 #else
-- (NSImage *)imageFromCurrentlyProcessedOutput;
-- (NSImage *)imageFromCurrentlyProcessedOutputWithOrientation:(UIImageOrientation)imageOrientation;
+- (NSImage *)imageFromCurrentFramebuffer;
+- (NSImage *)imageFromCurrentFramebufferWithOrientation:(UIImageOrientation)imageOrientation;
 - (NSImage *)imageByFilteringImage:(NSImage *)imageToFilter;
 - (CGImageRef)newCGImageByFilteringImage:(NSImage *)imageToFilter;
 #endif
 
 - (BOOL)providesMonochromeOutput;
-
-- (void)prepareForImageCapture;
 
 @end

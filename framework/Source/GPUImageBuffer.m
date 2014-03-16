@@ -71,6 +71,7 @@
 {
     if (self.preventRendering)
     {
+        [firstInputFramebuffer unlock];
         return;
     }
     
@@ -93,11 +94,6 @@
     
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
     [firstInputFramebuffer unlock];
-}
-
-- (void)prepareForImageCapture;
-{
-    // Disable this for now, until I figure out how to integrate the texture caches with a buffer like this
 }
 
 #pragma mark -

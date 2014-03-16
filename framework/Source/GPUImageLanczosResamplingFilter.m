@@ -166,6 +166,7 @@ NSString *const kGPUImageLanczosFragmentShaderString = SHADER_STRING
 {
     if (self.preventRendering)
     {
+        [firstInputFramebuffer unlock];
         return;
     }
     
@@ -208,7 +209,11 @@ NSString *const kGPUImageLanczosFragmentShaderString = SHADER_STRING
     glBindTexture(GL_TEXTURE_2D, 0);
     secondOutputFramebuffer = [[GPUImageContext sharedFramebufferCache] fetchFramebufferForSize:[self sizeOfFBO] textureOptions:self.outputTextureOptions onlyTexture:NO];
     [secondOutputFramebuffer activateFramebuffer];
-    
+    if (usingNextFrameForImageCapture)
+    {
+        [secondOutputFramebuffer lock];
+    }
+
     [self setUniformsForProgramAtIndex:1];
     
     glActiveTexture(GL_TEXTURE3);
@@ -225,6 +230,10 @@ NSString *const kGPUImageLanczosFragmentShaderString = SHADER_STRING
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
     [outputFramebuffer unlock];
     outputFramebuffer = nil;
+    if (usingNextFrameForImageCapture)
+    {
+        dispatch_semaphore_signal(imageCaptureSemaphore);
+    }
 }
 
 @end

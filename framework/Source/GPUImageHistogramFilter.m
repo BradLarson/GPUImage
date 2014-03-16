@@ -267,6 +267,7 @@ NSString *const kGPUImageHistogramAccumulationFragmentShaderString = SHADER_STRI
     
     if (self.preventRendering)
     {
+        [firstInputFramebuffer unlock];
         return;
     }
     
@@ -275,6 +276,10 @@ NSString *const kGPUImageHistogramAccumulationFragmentShaderString = SHADER_STRI
     glReadPixels(0, 0, inputTextureSize.width, inputTextureSize.height, GL_RGBA, GL_UNSIGNED_BYTE, vertexSamplingCoordinates);
     outputFramebuffer = [[GPUImageContext sharedFramebufferCache] fetchFramebufferForSize:[self sizeOfFBO] textureOptions:self.outputTextureOptions onlyTexture:NO];
     [outputFramebuffer activateFramebuffer];
+    if (usingNextFrameForImageCapture)
+    {
+        [outputFramebuffer lock];
+    }
     
     [GPUImageContext setActiveShaderProgram:filterProgram];
     
@@ -303,6 +308,11 @@ NSString *const kGPUImageHistogramAccumulationFragmentShaderString = SHADER_STRI
     
     glDisable(GL_BLEND);
     [firstInputFramebuffer unlock];
+
+    if (usingNextFrameForImageCapture)
+    {
+        dispatch_semaphore_signal(imageCaptureSemaphore);
+    }
 }
 
 #pragma mark -
