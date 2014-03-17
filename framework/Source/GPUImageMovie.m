@@ -628,13 +628,8 @@
         [synchronizedMovieWriter setVideoInputReadyCallback:^{return NO;}];
         [synchronizedMovieWriter setAudioInputReadyCallback:^{return NO;}];
     }
-
-    runSynchronouslyOnVideoProcessingQueue(^{
-        [displayLink removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
-        displayLink = nil;
-    });
-
-   if ( self.playerItem && displayLink != nil ) {
+    
+    if ( self.playerItem && displayLink != nil ) {
 //        runSynchronouslyOnVideoProcessingQueue(^{
 //            [displayLink removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
 //             displayLink = nil;
@@ -642,7 +637,7 @@
         [displayLink invalidate]; // remove from all run loop
         displayLink = nil;
     }
-
+    
     if ([self.delegate respondsToSelector:@selector(didCompletePlayingMovie)]) {
         [self.delegate didCompletePlayingMovie];
     }
