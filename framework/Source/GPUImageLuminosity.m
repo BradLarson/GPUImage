@@ -118,11 +118,7 @@ NSString *const kGPUImageLuminosityFragmentShaderString = SHADER_STRING
     
     texelWidthUniform = [filterProgram uniformIndex:@"texelWidth"];
     texelHeightUniform = [filterProgram uniformIndex:@"texelHeight"];
-    
-    stageTextures = [[NSMutableArray alloc] init];
-    stageFramebuffers = [[NSMutableArray alloc] init];
-    stageSizes = [[NSMutableArray alloc] init];
-    
+        
     __unsafe_unretained GPUImageLuminosity *weakSelf = self;
     [self setFrameProcessingCompletionBlock:^(GPUImageOutput *filter, CMTime frameTime) {
         [weakSelf extractLuminosityAtFrameTime:frameTime];
@@ -173,6 +169,7 @@ NSString *const kGPUImageLuminosityFragmentShaderString = SHADER_STRING
 	[secondFilterProgram addAttribute:@"inputTextureCoordinate"];
 }
 
+/*
 - (void)renderToTextureWithVertices:(const GLfloat *)vertices textureCoordinates:(const GLfloat *)textureCoordinates;
 {
     if (self.preventRendering)
@@ -286,6 +283,7 @@ NSString *const kGPUImageLuminosityFragmentShaderString = SHADER_STRING
     
     [firstInputFramebuffer unlock];
 }
+ */
 
 #pragma mark -
 #pragma mark Callbacks
@@ -296,11 +294,6 @@ NSString *const kGPUImageLuminosityFragmentShaderString = SHADER_STRING
     NSAssert(self.outputTextureOptions.internalFormat == GL_RGBA, @"The output texture format for this filter must be GL_RGBA.");
     NSAssert(self.outputTextureOptions.type == GL_UNSIGNED_BYTE, @"The type of the output texture of this filter must be GL_UNSIGNED_BYTE.");
     
-#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
-    CGSize finalStageSize = [[stageSizes lastObject] CGSizeValue];
-#else
-    NSSize finalStageSize = [[stageSizes lastObject] sizeValue];
-#endif
     NSUInteger totalNumberOfPixels = round(finalStageSize.width * finalStageSize.height);
     
     if (rawImagePixels == NULL)

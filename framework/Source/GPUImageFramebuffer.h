@@ -1,9 +1,17 @@
 #import <Foundation/Foundation.h>
+
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
 #import <OpenGLES/EAGL.h>
 #import <OpenGLES/ES2/gl.h>
 #import <OpenGLES/ES2/glext.h>
+#else
+#import <OpenGL/OpenGL.h>
+#import <OpenGL/gl.h>
+#endif
+
 #import <QuartzCore/QuartzCore.h>
 #import <CoreMedia/CoreMedia.h>
+
 
 typedef struct GPUTextureOptions {
     GLenum minFilter;

@@ -188,8 +188,6 @@ NSString *const kGPUImagePassthroughFragmentShaderString = SHADER_STRING
         return NULL;
     }
 
-    NSLog(@"Trying to return from framebuffer: %@", [self framebufferForOutput]);    
-
     usingNextFrameForImageCapture = NO;
     dispatch_semaphore_signal(imageCaptureSemaphore);
     

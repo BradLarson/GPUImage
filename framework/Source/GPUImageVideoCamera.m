@@ -771,7 +771,7 @@ NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = SHAD
         CVPixelBufferLockBaseAddress(cameraFrame, 0);
         
         int bytesPerRow = (int) CVPixelBufferGetBytesPerRow(cameraFrame);
-        outputFramebuffer = [[GPUImageContext sharedFramebufferCache] fetchFramebufferForSize:CGSizeMake(bufferWidth, bufferHeight) onlyTexture:NO];
+        outputFramebuffer = [[GPUImageContext sharedFramebufferCache] fetchFramebufferForSize:CGSizeMake(bufferWidth, bufferHeight) onlyTexture:YES];
         [outputFramebuffer activateFramebuffer];
 
         glBindTexture(GL_TEXTURE_2D, [outputFramebuffer texture]);
@@ -782,20 +782,7 @@ NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = SHAD
         // The use of bytesPerRow / 4 accounts for a display glitch present in preview video frames when using the photo preset on the camera
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, bytesPerRow / 4, bufferHeight, 0, GL_BGRA, GL_UNSIGNED_BYTE, CVPixelBufferGetBaseAddress(cameraFrame));
         
-        for (id<GPUImageInput> currentTarget in targets)
-        {
-            if ([currentTarget enabled])
-            {
-                if (currentTarget != self.targetToIgnoreForUpdates)
-                {
-                    NSInteger indexOfObject = [targets indexOfObject:currentTarget];
-                    NSInteger textureIndexOfTarget = [[targetTextureIndices objectAtIndex:indexOfObject] integerValue];
-                    
-                    [currentTarget setInputSize:CGSizeMake(bufferWidth, bufferHeight) atIndex:textureIndexOfTarget];
-                    [currentTarget newFrameReadyAtTime:currentTime atIndex:textureIndexOfTarget];
-                }
-            }
-        }
+        [self updateTargetsForVideoCameraUsingCacheTextureAtWidth:bufferWidth height:bufferHeight time:currentTime];
         
         CVPixelBufferUnlockBaseAddress(cameraFrame, 0);
         

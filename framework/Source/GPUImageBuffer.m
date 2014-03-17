@@ -38,70 +38,41 @@
 
 - (void)newFrameReadyAtTime:(CMTime)frameTime atIndex:(NSInteger)textureIndex;
 {
-    static const GLfloat imageVertices[] = {
-        -1.0f, -1.0f,
-        1.0f, -1.0f,
-        -1.0f,  1.0f,
-        1.0f,  1.0f,
-    };
-    
-    [self notifyTargetsAboutNewOutputTexture];
-
-    // Let the downstream video elements see the previous frame from the buffer before rendering a new one into place
-    [self informTargetsAboutNewFrameAtTime:frameTime];
-    
-    // Move the last frame to the back of the buffer, if needed
-    if (_bufferSize > 1)
+    if ([bufferedFramebuffers count] >= _bufferSize)
     {
-        NSNumber *lastFramebuffer = [bufferedFramebuffers objectAtIndex:0];
+        outputFramebuffer = [bufferedFramebuffers objectAtIndex:0];
         [bufferedFramebuffers removeObjectAtIndex:0];
-        [bufferedFramebuffers addObject:lastFramebuffer];
     }
     else
     {
-        // Make sure the previous rendering has finished before enqueuing the current frame when simply delaying by one frame
-        glFinish();
-    }    
+        // Nothing yet in the buffer, so don't process further until the buffer is full
+        outputFramebuffer = firstInputFramebuffer;
+        [firstInputFramebuffer lock];
+    }
     
-    // Render the new frame to the back of the buffer
-    [self renderToTextureWithVertices:imageVertices textureCoordinates:[[self class] textureCoordinatesForRotation:inputRotation]];
+    [bufferedFramebuffers addObject:firstInputFramebuffer];
+
+    // Need to pass along rotation information, as we're just holding on to buffered framebuffers and not rotating them ourselves
+    for (id<GPUImageInput> currentTarget in targets)
+    {
+        if (currentTarget != self.targetToIgnoreForUpdates)
+        {
+            NSInteger indexOfObject = [targets indexOfObject:currentTarget];
+            NSInteger textureIndex = [[targetTextureIndices objectAtIndex:indexOfObject] integerValue];
+            
+            [currentTarget setInputRotation:inputRotation atIndex:textureIndex];
+        }
+    }
+
+    // Let the downstream video elements see the previous frame from the buffer before rendering a new one into place
+    [self informTargetsAboutNewFrameAtTime:frameTime];
+ 
+//    [self renderToTextureWithVertices:imageVertices textureCoordinates:[[self class] textureCoordinatesForRotation:inputRotation]];
 }
 
 - (void)renderToTextureWithVertices:(const GLfloat *)vertices textureCoordinates:(const GLfloat *)textureCoordinates;
 {
-    if (self.preventRendering)
-    {
-        [firstInputFramebuffer unlock];
-        return;
-    }
-    
-    [GPUImageContext setActiveShaderProgram:filterProgram];
-    outputFramebuffer = [[GPUImageContext sharedFramebufferCache] fetchFramebufferForSize:[self sizeOfFBO] textureOptions:self.outputTextureOptions onlyTexture:NO];
-    [outputFramebuffer activateFramebuffer];
-    [bufferedFramebuffers addObject:outputFramebuffer];
-    // TODO: Instead of redrawing these into textures, capture the incoming framebuffer and prevent it from returning to the pool
-    
-    glClearColor(backgroundColorRed, backgroundColorGreen, backgroundColorBlue, backgroundColorAlpha);
-    glClear(GL_COLOR_BUFFER_BIT);
-    
-	glActiveTexture(GL_TEXTURE2);
-	glBindTexture(GL_TEXTURE_2D, [firstInputFramebuffer texture]);
-	
-	glUniform1i(filterInputTextureUniform, 2);	
-    
-    glVertexAttribPointer(filterPositionAttribute, 2, GL_FLOAT, 0, 0, vertices);
-	glVertexAttribPointer(filterTextureCoordinateAttribute, 2, GL_FLOAT, 0, 0, textureCoordinates);
-    
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-    [firstInputFramebuffer unlock];
-}
-
-#pragma mark -
-#pragma mark Managing targets
-
-- (GPUImageFramebuffer *)framebufferForOutput;
-{
-    return [bufferedFramebuffers objectAtIndex:0];
+    // No need to render to another texture anymore, since we'll be hanging on to the textures in our buffer
 }
 
 #pragma mark -

@@ -287,9 +287,11 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
         
         GLubyte *rawImagePixels;
         
-        CGDataProviderRef dataProvider;
+        CGDataProviderRef dataProvider = NULL;
         if ([GPUImageContext supportsFastTextureUpload])
         {
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+
             NSLog(@"Fast texture path");
             NSUInteger paddedWidthOfImage = CVPixelBufferGetBytesPerRow(renderTarget) / 4.0;
             NSUInteger paddedBytesForImage = paddedWidthOfImage * (int)_size.height * 4;
@@ -301,6 +303,8 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
             rawImagePixels = (GLubyte *)CVPixelBufferGetBaseAddress(renderTarget);
             dataProvider = CGDataProviderCreateWithData((__bridge_retained void*)self, rawImagePixels, paddedBytesForImage, dataProviderUnlockCallback);
             [[GPUImageContext sharedFramebufferCache] addFramebufferToActiveImageCaptureList:self]; // In case the framebuffer is swapped out on the filter, need to have a strong reference to it somewhere for it to hang on while the image is in existence
+#else
+#endif
         }
         else
         {
@@ -316,7 +320,10 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
         
         if ([GPUImageContext supportsFastTextureUpload])
         {
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
             cgImageFromBytes = CGImageCreate((int)_size.width, (int)_size.height, 8, 32, CVPixelBufferGetBytesPerRow(renderTarget), defaultRGBColorSpace, kCGBitmapByteOrder32Little | kCGImageAlphaPremultipliedFirst, dataProvider, NULL, NO, kCGRenderingIntentDefault);
+#else
+#endif
         }
         else
         {
@@ -335,7 +342,10 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
 
 - (void)restoreRenderTarget;
 {
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
     CFRelease(renderTarget);
     CVPixelBufferUnlockBaseAddress(renderTarget, 0);
+#else
+#endif
 }
 @end
