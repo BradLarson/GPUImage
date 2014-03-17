@@ -146,10 +146,6 @@
 
 - (void)dealloc
 {
-    runSynchronouslyOnVideoProcessingQueue(^{
-        [displayLink removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
-        displayLink = nil;
-    });
     if ([GPUImageContext supportsFastTextureUpload])
     {
         CFRelease(coreVideoTextureCache);
@@ -632,7 +628,16 @@
         [synchronizedMovieWriter setVideoInputReadyCallback:^{return NO;}];
         [synchronizedMovieWriter setAudioInputReadyCallback:^{return NO;}];
     }
-
+    
+    if ( self.playerItem && displayLink != nil ) {
+//        runSynchronouslyOnVideoProcessingQueue(^{
+//            [displayLink removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+//             displayLink = nil;
+//        });
+        [displayLink invalidate]; // remove from all run loop
+        displayLink = nil;
+    }
+    
     if ([self.delegate respondsToSelector:@selector(didCompletePlayingMovie)]) {
         [self.delegate didCompletePlayingMovie];
     }
