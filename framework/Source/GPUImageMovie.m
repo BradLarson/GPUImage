@@ -131,10 +131,11 @@
 
 - (void)dealloc
 {
-    runSynchronouslyOnVideoProcessingQueue(^{
-        [displayLink removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+    if (self.playerItem && (displayLink != nil))
+    {
+        [displayLink invalidate]; // remove from all run loops
         displayLink = nil;
-    });
+    }
 }
 
 #pragma mark -
