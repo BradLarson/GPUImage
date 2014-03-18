@@ -49,4 +49,8 @@ typedef struct GPUTextureOptions {
 - (CGImageRef)newCGImageFromFramebufferContents;
 - (void)restoreRenderTarget;
 
+// Raw data bytes
+- (NSUInteger)bytesPerRow;
+- (GLubyte *)byteBuffer;
+
 @end

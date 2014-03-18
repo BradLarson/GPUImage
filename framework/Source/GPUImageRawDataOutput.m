@@ -7,7 +7,7 @@
 
 @interface GPUImageRawDataOutput ()
 {
-    GPUImageFramebuffer *firstInputFramebuffer, *outputFramebuffer;
+    GPUImageFramebuffer *firstInputFramebuffer, *outputFramebuffer, *retainedFramebuffer;
     
     BOOL hasReadFromTheCurrentFrame;
     
@@ -16,6 +16,8 @@
     GLint dataInputTextureUniform;
     
     GLubyte *_rawBytesForImage;
+    
+    BOOL lockNextFramebuffer;
 }
 
 // Frame rendering
@@ -40,6 +42,7 @@
     }
 
     self.enabled = YES;
+    lockNextFramebuffer = NO;
     outputBGRA = resultsInBGRAFormat;
     imageSize = newImageSize;
     hasReadFromTheCurrentFrame = NO;
@@ -99,6 +102,12 @@
 
     outputFramebuffer = [[GPUImageContext sharedFramebufferCache] fetchFramebufferForSize:imageSize onlyTexture:NO];
     [outputFramebuffer activateFramebuffer];
+
+    if(lockNextFramebuffer)
+    {
+        retainedFramebuffer = outputFramebuffer;
+        lockNextFramebuffer = NO;
+    }
 
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -229,68 +238,47 @@
 
 - (GLubyte *)rawBytesForImage;
 {
-//    if ( (_rawBytesForImage == NULL) && (![GPUImageContext supportsFastTextureUpload]) )
-//    {
-//        _rawBytesForImage = (GLubyte *) calloc(imageSize.width * imageSize.height * 4, sizeof(GLubyte));
-//        hasReadFromTheCurrentFrame = NO;
-//    }
-//        
-//    if (hasReadFromTheCurrentFrame)
-//    {
-//        return _rawBytesForImage;
-//    }
-//    else
-//    {
-//        runSynchronouslyOnVideoProcessingQueue(^{
-//            // Note: the fast texture caches speed up 640x480 frame reads from 9.6 ms to 3.1 ms on iPhone 4S
-//            
-//            [GPUImageContext useImageProcessingContext];
-//            if ([GPUImageContext supportsFastTextureUpload])
-//            {
-//                CVPixelBufferUnlockBaseAddress(renderTarget, 0);
-//                //            CVOpenGLESTextureCacheFlush(rawDataTextureCache, 0);
-//            }
-//            
-//            [self renderAtInternalSize];
-//            
-//            if ([GPUImageContext supportsFastTextureUpload])
-//            {
-//                glFinish();
-//                CVPixelBufferLockBaseAddress(renderTarget, 0);
-//                _rawBytesForImage = (GLubyte *)CVPixelBufferGetBaseAddress(renderTarget);
-//            }
-//            else
-//            {
-//                glReadPixels(0, 0, imageSize.width, imageSize.height, GL_RGBA, GL_UNSIGNED_BYTE, _rawBytesForImage);
-//                // GL_EXT_read_format_bgra
-//                //            glReadPixels(0, 0, imageSize.width, imageSize.height, GL_BGRA_EXT, GL_UNSIGNED_BYTE, _rawBytesForImage);
-//            }
-//          
-//            hasReadFromTheCurrentFrame = YES;
-//
-//        });
-//        
-//        return _rawBytesForImage;
-//    }
-    
-    
-    // TODO: Finish this
-    return NULL;
+    if ( (_rawBytesForImage == NULL) && (![GPUImageContext supportsFastTextureUpload]) )
+    {
+        _rawBytesForImage = (GLubyte *) calloc(imageSize.width * imageSize.height * 4, sizeof(GLubyte));
+        hasReadFromTheCurrentFrame = NO;
+    }
+
+    if (hasReadFromTheCurrentFrame)
+    {
+        return _rawBytesForImage;
+    }
+    else
+    {
+        runSynchronouslyOnVideoProcessingQueue(^{
+            // Note: the fast texture caches speed up 640x480 frame reads from 9.6 ms to 3.1 ms on iPhone 4S
+            
+            [GPUImageContext useImageProcessingContext];
+            [self renderAtInternalSize];
+            
+            if ([GPUImageContext supportsFastTextureUpload])
+            {
+                glFinish();
+                _rawBytesForImage = [outputFramebuffer byteBuffer];
+            }
+            else
+            {
+                glReadPixels(0, 0, imageSize.width, imageSize.height, GL_RGBA, GL_UNSIGNED_BYTE, _rawBytesForImage);
+                // GL_EXT_read_format_bgra
+                //            glReadPixels(0, 0, imageSize.width, imageSize.height, GL_BGRA_EXT, GL_UNSIGNED_BYTE, _rawBytesForImage);
+            }
+          
+            hasReadFromTheCurrentFrame = YES;
+
+        });
+        
+        return _rawBytesForImage;
+    }
 }
 
 - (NSUInteger)bytesPerRowInOutput;
 {
-//    if ([GPUImageContext supportsFastTextureUpload]) 
-//    {
-//        return CVPixelBufferGetBytesPerRow(renderTarget);
-//    }
-//    else
-//    {
-//        return imageSize.width * 4;
-//    }
-
-    // TODO: Finish this
-    return 0;
+    return [retainedFramebuffer bytesPerRow];
 }
 
 - (void)setImageSize:(CGSize)newImageSize {
@@ -300,6 +288,17 @@
         free(_rawBytesForImage);
         _rawBytesForImage = NULL;
     }
+}
+
+- (void)lockFramebufferForReading;
+{
+    lockNextFramebuffer = YES;
+}
+
+- (void)unlockFramebufferAfterReading;
+{
+    [retainedFramebuffer unlock];
+    retainedFramebuffer = nil;
 }
 
 @end

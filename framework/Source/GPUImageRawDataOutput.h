@@ -38,4 +38,7 @@ typedef struct GPUByteColorVector GPUByteColorVector;
 
 - (void)setImageSize:(CGSize)newImageSize;
 
+- (void)lockFramebufferForReading;
+- (void)unlockFramebufferAfterReading;
+
 @end

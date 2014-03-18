@@ -153,8 +153,10 @@
 //    dispatch_async(framebufferCacheQueue, ^{
         [framebufferCache removeAllObjects];
         [framebufferTypeCounts removeAllObjects];
-        
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
         CVOpenGLESTextureCacheFlush([[GPUImageContext sharedImageProcessingContext] coreVideoTextureCache], 0);
+#else
+#endif
     });
 }
 

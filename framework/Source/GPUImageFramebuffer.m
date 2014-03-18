@@ -376,4 +376,33 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
 #else
 #endif
 }
+
+#pragma mark -
+#pragma mark Raw data bytes
+
+- (NSUInteger)bytesPerRow;
+{
+    if ([GPUImageContext supportsFastTextureUpload])
+    {
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+        return CVPixelBufferGetBytesPerRow(renderTarget);
+#else
+        return _size.width * 4; // TODO: do more with this on the non-texture-cache side
+#endif
+    }
+    else
+    {
+        return _size.width * 4;
+    }
+}
+
+- (GLubyte *)byteBuffer;
+{
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+    return (GLubyte *)CVPixelBufferGetBaseAddress(renderTarget);
+#else
+    return NULL; // TODO: do more with this on the non-texture-cache side
+#endif
+}
+
 @end
