@@ -645,10 +645,17 @@ NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = SHAD
     int bufferWidth = (int) CVPixelBufferGetWidth(cameraFrame);
     int bufferHeight = (int) CVPixelBufferGetHeight(cameraFrame);
     CFTypeRef colorAttachments = CVBufferGetAttachment(cameraFrame, kCVImageBufferYCbCrMatrixKey, NULL);
-    if(CFStringCompare(colorAttachments, kCVImageBufferYCbCrMatrix_ITU_R_601_4, 0) == kCFCompareEqualTo) {
-        _preferredConversion = kColorConversion601;
+    if (colorAttachments != NULL)
+    {
+        if(CFStringCompare(colorAttachments, kCVImageBufferYCbCrMatrix_ITU_R_601_4, 0) == kCFCompareEqualTo) {
+            _preferredConversion = kColorConversion601;
+        }
+        else {
+            _preferredConversion = kColorConversion709;
+        }
     }
-    else {
+    else
+    {
         _preferredConversion = kColorConversion709;
     }
 

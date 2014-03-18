@@ -433,10 +433,18 @@
     int bufferWidth = (int) CVPixelBufferGetWidth(movieFrame);
 #endif
     CFTypeRef colorAttachments = CVBufferGetAttachment(movieFrame, kCVImageBufferYCbCrMatrixKey, NULL);
-    if(CFStringCompare(colorAttachments, kCVImageBufferYCbCrMatrix_ITU_R_601_4, 0) == kCFCompareEqualTo) {
-        _preferredConversion = kColorConversion601;
+    if (colorAttachments != NULL)
+    {
+        if(CFStringCompare(colorAttachments, kCVImageBufferYCbCrMatrix_ITU_R_601_4, 0) == kCFCompareEqualTo)
+        {
+            _preferredConversion = kColorConversion601;
+        }
+        else {
+            _preferredConversion = kColorConversion709;
+        }
     }
-    else {
+    else
+    {
         _preferredConversion = kColorConversion709;
     }
 
