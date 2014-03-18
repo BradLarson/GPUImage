@@ -290,33 +290,39 @@ NSString *const kGPUImageLuminosityFragmentShaderString = SHADER_STRING
 
 - (void)extractLuminosityAtFrameTime:(CMTime)frameTime;
 {
-    // we need a normal color texture for this filter
-    NSAssert(self.outputTextureOptions.internalFormat == GL_RGBA, @"The output texture format for this filter must be GL_RGBA.");
-    NSAssert(self.outputTextureOptions.type == GL_UNSIGNED_BYTE, @"The type of the output texture of this filter must be GL_UNSIGNED_BYTE.");
-    
-    NSUInteger totalNumberOfPixels = round(finalStageSize.width * finalStageSize.height);
-    
-    if (rawImagePixels == NULL)
-    {
-        rawImagePixels = (GLubyte *)malloc(totalNumberOfPixels * 4);
-    }
-    
-    glReadPixels(0, 0, (int)finalStageSize.width, (int)finalStageSize.height, GL_RGBA, GL_UNSIGNED_BYTE, rawImagePixels);
-    
-    NSUInteger luminanceTotal = 0;
-    NSUInteger byteIndex = 0;
-    for (NSUInteger currentPixel = 0; currentPixel < totalNumberOfPixels; currentPixel++)
-    {
-        luminanceTotal += rawImagePixels[byteIndex];
-        byteIndex += 4;
-    }
-    
-    CGFloat normalizedLuminosityTotal = (CGFloat)luminanceTotal / (CGFloat)totalNumberOfPixels / 255.0;
-    
-    if (_luminosityProcessingFinishedBlock != NULL)
-    {
-        _luminosityProcessingFinishedBlock(normalizedLuminosityTotal, frameTime);
-    }
+    runSynchronouslyOnVideoProcessingQueue(^{
+
+        // we need a normal color texture for this filter
+        NSAssert(self.outputTextureOptions.internalFormat == GL_RGBA, @"The output texture format for this filter must be GL_RGBA.");
+        NSAssert(self.outputTextureOptions.type == GL_UNSIGNED_BYTE, @"The type of the output texture of this filter must be GL_UNSIGNED_BYTE.");
+        
+        NSUInteger totalNumberOfPixels = round(finalStageSize.width * finalStageSize.height);
+        
+        if (rawImagePixels == NULL)
+        {
+            rawImagePixels = (GLubyte *)malloc(totalNumberOfPixels * 4);
+        }
+        
+        [GPUImageContext useImageProcessingContext];
+        [outputFramebuffer activateFramebuffer];
+
+        glReadPixels(0, 0, (int)finalStageSize.width, (int)finalStageSize.height, GL_RGBA, GL_UNSIGNED_BYTE, rawImagePixels);
+        
+        NSUInteger luminanceTotal = 0;
+        NSUInteger byteIndex = 0;
+        for (NSUInteger currentPixel = 0; currentPixel < totalNumberOfPixels; currentPixel++)
+        {
+            luminanceTotal += rawImagePixels[byteIndex];
+            byteIndex += 4;
+        }
+        
+        CGFloat normalizedLuminosityTotal = (CGFloat)luminanceTotal / (CGFloat)totalNumberOfPixels / 255.0;
+        
+        if (_luminosityProcessingFinishedBlock != NULL)
+        {
+            _luminosityProcessingFinishedBlock(normalizedLuminosityTotal, frameTime);
+        }
+    });
 }
 
 

@@ -169,38 +169,42 @@ NSString *const kGPUImageColorAveragingFragmentShaderString = SHADER_STRING
 
 - (void)extractAverageColorAtFrameTime:(CMTime)frameTime;
 {
-    // we need a normal color texture for averaging the color values
-    NSAssert(self.outputTextureOptions.internalFormat == GL_RGBA, @"The output texture internal format for this filter must be GL_RGBA.");
-    NSAssert(self.outputTextureOptions.type == GL_UNSIGNED_BYTE, @"The type of the output texture of this filter must be GL_UNSIGNED_BYTE.");
-    
-    NSUInteger totalNumberOfPixels = round(finalStageSize.width * finalStageSize.height);
-    
-    if (rawImagePixels == NULL)
-    {
-        rawImagePixels = (GLubyte *)malloc(totalNumberOfPixels * 4);
-    }
-
-    glReadPixels(0, 0, (int)finalStageSize.width, (int)finalStageSize.height, GL_RGBA, GL_UNSIGNED_BYTE, rawImagePixels);
-    
-    NSUInteger redTotal = 0, greenTotal = 0, blueTotal = 0, alphaTotal = 0;
-    NSUInteger byteIndex = 0;
-    for (NSUInteger currentPixel = 0; currentPixel < totalNumberOfPixels; currentPixel++)
-    {
-        redTotal += rawImagePixels[byteIndex++];
-        greenTotal += rawImagePixels[byteIndex++];
-        blueTotal += rawImagePixels[byteIndex++];
-        alphaTotal += rawImagePixels[byteIndex++];
-    }
-    
-    CGFloat normalizedRedTotal = (CGFloat)redTotal / (CGFloat)totalNumberOfPixels / 255.0;
-    CGFloat normalizedGreenTotal = (CGFloat)greenTotal / (CGFloat)totalNumberOfPixels / 255.0;
-    CGFloat normalizedBlueTotal = (CGFloat)blueTotal / (CGFloat)totalNumberOfPixels / 255.0;
-    CGFloat normalizedAlphaTotal = (CGFloat)alphaTotal / (CGFloat)totalNumberOfPixels / 255.0;
-    
-    if (_colorAverageProcessingFinishedBlock != NULL)
-    {
-        _colorAverageProcessingFinishedBlock(normalizedRedTotal, normalizedGreenTotal, normalizedBlueTotal, normalizedAlphaTotal, frameTime);
-    }
+    runSynchronouslyOnVideoProcessingQueue(^{
+        // we need a normal color texture for averaging the color values
+        NSAssert(self.outputTextureOptions.internalFormat == GL_RGBA, @"The output texture internal format for this filter must be GL_RGBA.");
+        NSAssert(self.outputTextureOptions.type == GL_UNSIGNED_BYTE, @"The type of the output texture of this filter must be GL_UNSIGNED_BYTE.");
+        
+        NSUInteger totalNumberOfPixels = round(finalStageSize.width * finalStageSize.height);
+        
+        if (rawImagePixels == NULL)
+        {
+            rawImagePixels = (GLubyte *)malloc(totalNumberOfPixels * 4);
+        }
+        
+        [GPUImageContext useImageProcessingContext];
+        [outputFramebuffer activateFramebuffer];
+        glReadPixels(0, 0, (int)finalStageSize.width, (int)finalStageSize.height, GL_RGBA, GL_UNSIGNED_BYTE, rawImagePixels);
+        
+        NSUInteger redTotal = 0, greenTotal = 0, blueTotal = 0, alphaTotal = 0;
+        NSUInteger byteIndex = 0;
+        for (NSUInteger currentPixel = 0; currentPixel < totalNumberOfPixels; currentPixel++)
+        {
+            redTotal += rawImagePixels[byteIndex++];
+            greenTotal += rawImagePixels[byteIndex++];
+            blueTotal += rawImagePixels[byteIndex++];
+            alphaTotal += rawImagePixels[byteIndex++];
+        }
+        
+        CGFloat normalizedRedTotal = (CGFloat)redTotal / (CGFloat)totalNumberOfPixels / 255.0;
+        CGFloat normalizedGreenTotal = (CGFloat)greenTotal / (CGFloat)totalNumberOfPixels / 255.0;
+        CGFloat normalizedBlueTotal = (CGFloat)blueTotal / (CGFloat)totalNumberOfPixels / 255.0;
+        CGFloat normalizedAlphaTotal = (CGFloat)alphaTotal / (CGFloat)totalNumberOfPixels / 255.0;
+        
+        if (_colorAverageProcessingFinishedBlock != NULL)
+        {
+            _colorAverageProcessingFinishedBlock(normalizedRedTotal, normalizedGreenTotal, normalizedBlueTotal, normalizedAlphaTotal, frameTime);
+        }
+    });
 }
 
 @end

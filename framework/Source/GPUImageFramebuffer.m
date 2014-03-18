@@ -45,19 +45,44 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size);
     referenceCountingDisabled = NO;
     _missingFramebuffer = onlyGenerateTexture;
 
-    NSLog(@"Creating framebuffer: %@ at size %f, %f", self, _size.width, _size.height);
-
     if (_missingFramebuffer)
     {
         runSynchronouslyOnVideoProcessingQueue(^{
             [GPUImageContext useImageProcessingContext];
             [self generateTexture];
+            framebuffer = 0;
         });
     }
     else
     {
         [self generateFramebuffer];
     }
+    return self;
+}
+
+- (id)initWithSize:(CGSize)framebufferSize overriddenTexture:(GLuint)inputTexture;
+{
+    if (!(self = [super init]))
+    {
+		return nil;
+    }
+
+    GPUTextureOptions defaultTextureOptions;
+    defaultTextureOptions.minFilter = GL_LINEAR;
+    defaultTextureOptions.magFilter = GL_LINEAR;
+    defaultTextureOptions.wrapS = GL_CLAMP_TO_EDGE;
+    defaultTextureOptions.wrapT = GL_CLAMP_TO_EDGE;
+    defaultTextureOptions.internalFormat = GL_RGBA;
+    defaultTextureOptions.format = GL_BGRA;
+    defaultTextureOptions.type = GL_UNSIGNED_BYTE;
+
+    _textureOptions = defaultTextureOptions;
+    _size = framebufferSize;
+    framebufferReferenceCount = 0;
+    referenceCountingDisabled = YES;
+    
+    _texture = inputTexture;
+    
     return self;
 }
 
@@ -82,8 +107,6 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size);
 
 - (void)dealloc
 {
-    NSLog(@"Destroying framebuffer: %@ at size %f, %f", self, _size.width, _size.height);
-
     [self destroyFramebuffer];
 }
 
@@ -108,9 +131,7 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size);
 {
     runSynchronouslyOnVideoProcessingQueue(^{
         [GPUImageContext useImageProcessingContext];
-
-        [self generateTexture];
-        
+    
         glGenFramebuffers(1, &framebuffer);
         glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
         
@@ -162,6 +183,8 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size);
         }
         else
         {
+            [self generateTexture];
+
             glBindTexture(GL_TEXTURE_2D, _texture);
             
             glTexImage2D(GL_TEXTURE_2D, 0, _textureOptions.internalFormat, (int)_size.width, (int)_size.height, 0, _textureOptions.format, _textureOptions.type, 0);
@@ -180,23 +203,34 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size);
     runSynchronouslyOnVideoProcessingQueue(^{
         [GPUImageContext useImageProcessingContext];
         
-        glDeleteFramebuffers(1, &framebuffer);
-        framebuffer = 0;
-    
+        if (framebuffer)
+        {
+            glDeleteFramebuffers(1, &framebuffer);
+            framebuffer = 0;
+        }
+
+        
+        if ([GPUImageContext supportsFastTextureUpload] && (!_missingFramebuffer))
+        {
 #if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
-        if (renderTarget)
-        {
-            CFRelease(renderTarget);
-            renderTarget = NULL;
-        }
-        
-        if (renderTexture)
-        {
-            CFRelease(renderTexture);
-            renderTexture = NULL;
-        }
-        
+            if (renderTarget)
+            {
+                CFRelease(renderTarget);
+                renderTarget = NULL;
+            }
+            
+            if (renderTexture)
+            {
+                CFRelease(renderTexture);
+                renderTexture = NULL;
+            }
 #endif
+        }
+        else
+        {
+            glDeleteTextures(1, &_texture);
+        }
+
     });
 }
 
@@ -229,7 +263,7 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size);
         return;
     }
 
-    NSAssert(framebufferReferenceCount > 0, @"Tried to overrelease a framebuffer");
+    NSAssert(framebufferReferenceCount > 0, @"Tried to overrelease a framebuffer, did you forget to call -useNextFrameForImageCapture before using -imageFromCurrentFramebuffer?");
     framebufferReferenceCount--;
     if (framebufferReferenceCount < 1)
     {
@@ -258,7 +292,6 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size);
 void dataProviderReleaseCallback (void *info, const void *data, size_t size)
 {
     free((void *)data);
-    NSLog(@"Free callback");
 }
 
 void dataProviderUnlockCallback (void *info, const void *data, size_t size)
@@ -268,7 +301,6 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
     [framebuffer restoreRenderTarget];
     [framebuffer unlock];
     [[GPUImageContext sharedFramebufferCache] removeFramebufferFromActiveImageCaptureList:framebuffer];
-    NSLog(@"Unlock callback");
 }
 
 - (CGImageRef)newCGImageFromFramebufferContents;
@@ -291,8 +323,6 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
         if ([GPUImageContext supportsFastTextureUpload])
         {
 #if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
-
-            NSLog(@"Fast texture path");
             NSUInteger paddedWidthOfImage = CVPixelBufferGetBytesPerRow(renderTarget) / 4.0;
             NSUInteger paddedBytesForImage = paddedWidthOfImage * (int)_size.height * 4;
             
@@ -308,7 +338,6 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
         }
         else
         {
-            NSLog(@"Normal path");
             [self activateFramebuffer];
             rawImagePixels = (GLubyte *)malloc(totalBytesForImage);
             glReadPixels(0, 0, (int)_size.width, (int)_size.height, GL_RGBA, GL_UNSIGNED_BYTE, rawImagePixels);
@@ -337,7 +366,6 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
     });
     
     return cgImageFromBytes;
-
 }
 
 - (void)restoreRenderTarget;

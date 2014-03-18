@@ -74,6 +74,11 @@
     return secondOutputFramebuffer;
 }
 
+- (void)removeOutputFramebuffer;
+{
+    secondOutputFramebuffer = nil;
+}
+
 #pragma mark -
 #pragma mark Rendering
 
@@ -106,6 +111,7 @@
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
     
     [firstInputFramebuffer unlock];
+    firstInputFramebuffer = nil;
     
     // This assumes that any two-pass filter that says it desires monochrome input is using the first pass for a luminance conversion, which can be dropped
 //    if (!currentlyReceivingMonochromeInput)
@@ -152,6 +158,8 @@
 
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
     [outputFramebuffer unlock];
+    outputFramebuffer = nil;
+    
     if (usingNextFrameForImageCapture)
     {
         dispatch_semaphore_signal(imageCaptureSemaphore);

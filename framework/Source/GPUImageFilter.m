@@ -362,6 +362,15 @@ NSString *const kGPUImagePassthroughFragmentShaderString = SHADER_STRING
     // Release our hold so it can return to the cache immediately upon processing
     [[self framebufferForOutput] unlock];
     
+    if (usingNextFrameForImageCapture)
+    {
+//        usingNextFrameForImageCapture = NO;
+    }
+    else
+    {
+        [self removeOutputFramebuffer];
+    }    
+    
     // Trigger processing last, so that our unlock comes first in serial execution, avoiding the need for a callback
     for (id<GPUImageInput> currentTarget in targets)
     {

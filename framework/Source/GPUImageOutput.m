@@ -127,6 +127,11 @@ void reportAvailableMemoryForGPUImage(NSString *tag)
     return outputFramebuffer;
 }
 
+- (void)removeOutputFramebuffer;
+{
+    outputFramebuffer = nil;
+}
+
 - (void)notifyTargetsAboutNewOutputTexture;
 {
     for (id<GPUImageInput> currentTarget in targets)

@@ -588,9 +588,12 @@ There are a couple of ways to process a still image and create a result. The fir
 	GPUImageSepiaFilter *stillImageFilter = [[GPUImageSepiaFilter alloc] init];
 
 	[stillImageSource addTarget:stillImageFilter];
+	[stillImageFilter useNextFrameForImageCapture]
 	[stillImageSource processImage];
 
-	UIImage *currentFilteredVideoFrame = [stillImageFilter imageFromCurrentlyProcessedOutput];
+	UIImage *currentFilteredVideoFrame = [stillImageFilter imageFromCurrentFramebuffer];
+
+Note that for a manual capture of an image from a filter, you need to set -useNextFrameForImageCapture in order to tell the filter that you'll be needing to capture from it later. By default, GPUImage reuses framebuffers within filters to conserve memory, so if you need to hold on to a filter's framebuffer for manual image capture, you need to let it know ahead of time. 
 
 For single filters that you wish to apply to an image, you can simply do the following:
 

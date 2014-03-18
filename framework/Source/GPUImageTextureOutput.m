@@ -21,6 +21,11 @@
     return self;
 }
 
+- (void)doneWithTexture;
+{
+    [firstInputFramebuffer unlock];
+}
+
 #pragma mark -
 #pragma mark GPUImageInput protocol
 
@@ -39,6 +44,8 @@
 {
     firstInputFramebuffer = newInputFramebuffer;
     [firstInputFramebuffer lock];
+    
+    _texture = [firstInputFramebuffer texture];
 }
 
 - (void)setInputRotation:(GPUImageRotationMode)newInputRotation atIndex:(NSInteger)textureIndex;

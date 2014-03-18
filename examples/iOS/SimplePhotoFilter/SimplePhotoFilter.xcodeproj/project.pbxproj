@@ -25,6 +25,7 @@
 		BCC1E6CD1523E3C50006EFA5 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCC1E6C91523E3C50006EFA5 /* QuartzCore.framework */; };
 		BCC1E6D01523E4780006EFA5 /* PhotoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = BCC1E6CF1523E4780006EFA5 /* PhotoViewController.m */; };
 		BCC1E6DA1523E9DC0006EFA5 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCC1E6D91523E9DB0006EFA5 /* AVFoundation.framework */; };
+		BCC9004B18D7D4F100A5A5C7 /* Lambeau.jpg in Resources */ = {isa = PBXBuildFile; fileRef = BCC9004A18D7D4F100A5A5C7 /* Lambeau.jpg */; };
 		BCF867371725A72000912E34 /* libGPUImage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BCF867321725A70500912E34 /* libGPUImage.a */; };
 		E5066F561855AA1A008C7682 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E5066F551855AA1A008C7682 /* Default-568h@2x.png */; };
 /* End PBXBuildFile section */
@@ -78,6 +79,7 @@
 		BCC1E6CE1523E4780006EFA5 /* PhotoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoViewController.h; sourceTree = "<group>"; };
 		BCC1E6CF1523E4780006EFA5 /* PhotoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoViewController.m; sourceTree = "<group>"; };
 		BCC1E6D91523E9DB0006EFA5 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		BCC9004A18D7D4F100A5A5C7 /* Lambeau.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Lambeau.jpg; path = ../../SimpleImageFilter/SimpleImageFilter/Lambeau.jpg; sourceTree = "<group>"; };
 		E5066F551855AA1A008C7682 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -152,6 +154,7 @@
 		BCC1E6A71523E3620006EFA5 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				BCC9004A18D7D4F100A5A5C7 /* Lambeau.jpg */,
 				BCB3C42816BCA81D003D26B0 /* Icon-72.png */,
 				BCB3C42916BCA81D003D26B0 /* Icon-72@2x.png */,
 				BCB3C42A16BCA81D003D26B0 /* Icon.png */,
@@ -251,6 +254,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BCC1E6AB1523E3620006EFA5 /* InfoPlist.strings in Resources */,
+				BCC9004B18D7D4F100A5A5C7 /* Lambeau.jpg in Resources */,
 				BCB3C42D16BCA81D003D26B0 /* Icon-72.png in Resources */,
 				BCB3C42E16BCA81D003D26B0 /* Icon-72@2x.png in Resources */,
 				BCB3C42F16BCA81D003D26B0 /* Icon.png in Resources */,

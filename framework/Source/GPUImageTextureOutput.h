@@ -12,6 +12,8 @@
 @property(readonly) GLuint texture;
 @property(nonatomic) BOOL enabled;
 
+- (void)doneWithTexture;
+
 @end
 
 @protocol GPUImageTextureOutputDelegate

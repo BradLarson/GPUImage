@@ -33,7 +33,7 @@ extern NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString
 	AVCaptureVideoDataOutput *videoOutput;
 
     BOOL capturePaused;
-    GPUImageRotationMode outputRotation;
+    GPUImageRotationMode outputRotation, internalRotation;
     dispatch_semaphore_t frameRenderingSemaphore;
         
     BOOL captureAsYUV;

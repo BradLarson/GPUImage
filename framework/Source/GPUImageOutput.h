@@ -60,6 +60,7 @@ void reportAvailableMemoryForGPUImage(NSString *tag);
 /// @name Managing targets
 - (void)setInputFramebufferForTarget:(id<GPUImageInput>)target atIndex:(NSInteger)inputTextureIndex;
 - (GPUImageFramebuffer *)framebufferForOutput;
+- (void)removeOutputFramebuffer;
 - (void)notifyTargetsAboutNewOutputTexture;
 
 /** Returns an array of the current targets.

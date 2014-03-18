@@ -33,6 +33,7 @@ typedef struct GPUTextureOptions {
 // Initialization and teardown
 - (id)initWithSize:(CGSize)framebufferSize;
 - (id)initWithSize:(CGSize)framebufferSize textureOptions:(GPUTextureOptions)fboTextureOptions onlyTexture:(BOOL)onlyGenerateTexture;
+- (id)initWithSize:(CGSize)framebufferSize overriddenTexture:(GLuint)inputTexture;
 
 // Usage
 - (void)activateFramebuffer;

@@ -1422,7 +1422,6 @@
         }
         else if (filterType == GPUIMAGE_BUFFER)
         {
-            
             GPUImageDifferenceBlendFilter *blendFilter = [[GPUImageDifferenceBlendFilter alloc] init];
 
             [videoCamera removeTarget:filter];
