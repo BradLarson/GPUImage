@@ -178,7 +178,7 @@ void GPUImageCreateResizedSampleBuffer(CVPixelBufferRef cameraFrame, CGSize fina
         UIImage *filteredPhoto = nil;
         
         if(!error) {
-            filteredPhoto = [finalFilterInChain imageFromCurrentlyProcessedOutputWithOrientation:orientation];
+            filteredPhoto = [finalFilterInChain imageFromCurrentFramebufferWithOrientation:orientation];
         }
         dispatch_semaphore_signal(frameRenderingSemaphore);
         
@@ -218,7 +218,7 @@ void GPUImageCreateResizedSampleBuffer(CVPixelBufferRef cameraFrame, CGSize fina
         
         if(!error) {
             @autoreleasepool {
-                UIImage *filteredPhoto = [finalFilterInChain imageFromCurrentlyProcessedOutputWithOrientation:orientation];
+                UIImage *filteredPhoto = [finalFilterInChain imageFromCurrentFramebufferWithOrientation:orientation];
                 dispatch_semaphore_signal(frameRenderingSemaphore);
                 
                 dataForJPEGFile = UIImageJPEGRepresentation(filteredPhoto, self.jpegCompressionQuality);
@@ -261,7 +261,7 @@ void GPUImageCreateResizedSampleBuffer(CVPixelBufferRef cameraFrame, CGSize fina
         
         if(!error){
             @autoreleasepool {
-                UIImage *filteredPhoto = [finalFilterInChain imageFromCurrentlyProcessedOutputWithOrientation:orientation];
+                UIImage *filteredPhoto = [finalFilterInChain imageFromCurrentFramebufferWithOrientation:orientation];
                 dispatch_semaphore_signal(frameRenderingSemaphore);
                 dataForPNGFile = UIImagePNGRepresentation(filteredPhoto);
             }
