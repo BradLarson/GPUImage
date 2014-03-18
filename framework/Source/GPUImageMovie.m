@@ -131,11 +131,12 @@
 
 - (void)dealloc
 {
-    if (self.playerItem && (displayLink != nil))
-    {
-        [displayLink invalidate]; // remove from all run loops
-        displayLink = nil;
-    }
+    // Moved into endProcessing
+    //if (self.playerItem && (displayLink != nil))
+    //{
+    //    [displayLink invalidate]; // remove from all run loops
+    //    displayLink = nil;
+    //}
 }
 
 #pragma mark -
@@ -621,6 +622,12 @@
     {
         [synchronizedMovieWriter setVideoInputReadyCallback:^{return NO;}];
         [synchronizedMovieWriter setAudioInputReadyCallback:^{return NO;}];
+    }
+    
+    if (self.playerItem && (displayLink != nil))
+    {
+        [displayLink invalidate]; // remove from all run loops
+        displayLink = nil;
     }
 
     if ([self.delegate respondsToSelector:@selector(didCompletePlayingMovie)]) {
