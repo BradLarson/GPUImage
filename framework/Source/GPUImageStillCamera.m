@@ -173,6 +173,19 @@ void GPUImageCreateResizedSampleBuffer(CVPixelBufferRef cameraFrame, CGSize fina
     }];
 }
 
+- (void)capturePhotoAsImageProcessedUpToFilter:(GPUImageOutput<GPUImageInput> *)finalFilterInChain withOrientation:(UIImageOrientation)orientation withCompletionHandler:(void (^)(UIImage *processedImage, NSError *error))block {
+    [self capturePhotoProcessedUpToFilter:finalFilterInChain withImageOnGPUHandler:^(NSError *error) {
+        UIImage *filteredPhoto = nil;
+        
+        if(!error) {
+            filteredPhoto = [finalFilterInChain imageFromCurrentlyProcessedOutputWithOrientation:orientation];
+        }
+        dispatch_semaphore_signal(frameRenderingSemaphore);
+        
+        block(filteredPhoto, error);
+    }];
+}
+
 - (void)capturePhotoAsJPEGProcessedUpToFilter:(GPUImageOutput<GPUImageInput> *)finalFilterInChain withCompletionHandler:(void (^)(NSData *processedJPEG, NSError *error))block;
 {
 //    reportAvailableMemoryForGPUImage(@"Before Capture");
@@ -199,6 +212,25 @@ void GPUImageCreateResizedSampleBuffer(CVPixelBufferRef cameraFrame, CGSize fina
     }];
 }
 
+- (void)capturePhotoAsJPEGProcessedUpToFilter:(GPUImageOutput<GPUImageInput> *)finalFilterInChain withOrientation:(UIImageOrientation)orientation withCompletionHandler:(void (^)(NSData *processedImage, NSError *error))block {
+    [self capturePhotoProcessedUpToFilter:finalFilterInChain withImageOnGPUHandler:^(NSError *error) {
+        NSData *dataForJPEGFile = nil;
+        
+        if(!error) {
+            @autoreleasepool {
+                UIImage *filteredPhoto = [finalFilterInChain imageFromCurrentlyProcessedOutputWithOrientation:orientation];
+                dispatch_semaphore_signal(frameRenderingSemaphore);
+                
+                dataForJPEGFile = UIImageJPEGRepresentation(filteredPhoto, self.jpegCompressionQuality);
+            }
+        } else {
+            dispatch_semaphore_signal(frameRenderingSemaphore);
+        }
+        
+        block(dataForJPEGFile, error);
+    }];
+}
+
 - (void)capturePhotoAsPNGProcessedUpToFilter:(GPUImageOutput<GPUImageInput> *)finalFilterInChain withCompletionHandler:(void (^)(NSData *processedPNG, NSError *error))block;
 {
 
@@ -216,6 +248,28 @@ void GPUImageCreateResizedSampleBuffer(CVPixelBufferRef cameraFrame, CGSize fina
         }
         
         block(dataForPNGFile, error);        
+    }];
+    
+    return;
+}
+
+- (void)capturePhotoAsPNGProcessedUpToFilter:(GPUImageOutput<GPUImageInput> *)finalFilterInChain withOrientation:(UIImageOrientation)orientation withCompletionHandler:(void (^)(NSData *processedPNG, NSError *error))block;
+{
+    
+    [self capturePhotoProcessedUpToFilter:finalFilterInChain withImageOnGPUHandler:^(NSError *error) {
+        NSData *dataForPNGFile = nil;
+        
+        if(!error){
+            @autoreleasepool {
+                UIImage *filteredPhoto = [finalFilterInChain imageFromCurrentlyProcessedOutputWithOrientation:orientation];
+                dispatch_semaphore_signal(frameRenderingSemaphore);
+                dataForPNGFile = UIImagePNGRepresentation(filteredPhoto);
+            }
+        }else{
+            dispatch_semaphore_signal(frameRenderingSemaphore);
+        }
+        
+        block(dataForPNGFile, error);
     }];
     
     return;
