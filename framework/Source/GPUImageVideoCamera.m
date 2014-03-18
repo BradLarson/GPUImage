@@ -6,16 +6,16 @@
 
 // BT.601, which is the standard for SDTV.
 const GLfloat kColorConversion601[] = {
-    1.164,  1.164, 1.164,
-    0.0, -0.392, 2.017,
-    1.596, -0.813,   0.0,
+          1,       1,       1,
+          0, -.39465, 2.03211,
+    1.13983, -.58060,       0,
 };
 
 // BT.709, which is the standard for HDTV.
 const GLfloat kColorConversion709[] = {
-    1.164,  1.164, 1.164,
-    0.0, -0.213, 2.112,
-    1.793, -0.533,   0.0,
+	 1,       1,       1,
+ 	 0, -.21482, 2.12798,
+   1.28033, -.38059,       0,
 };
 
 NSString *const kGPUImageYUVVideoRangeConversionForRGFragmentShaderString = SHADER_STRING
