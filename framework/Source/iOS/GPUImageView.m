@@ -131,6 +131,8 @@
 }
 
 - (void)layoutSubviews {
+    [super layoutSubviews];
+    
     // The frame buffer needs to be trashed and re-created when the view size changes.
     if (!CGSizeEqualToSize(self.bounds.size, boundsSizeAtFrameBufferEpoch) &&
         !CGSizeEqualToSize(self.bounds.size, CGSizeZero)) {
