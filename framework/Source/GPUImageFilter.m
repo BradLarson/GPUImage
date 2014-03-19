@@ -195,20 +195,6 @@ NSString *const kGPUImagePassthroughFragmentShaderString = SHADER_STRING
     return [[self framebufferForOutput] newCGImageFromFramebufferContents];
 }
 
-- (CGImageRef)newCGImageByFilteringCGImage:(CGImageRef)imageToFilter;
-{
-    GPUImagePicture *stillImageSource = [[GPUImagePicture alloc] initWithCGImage:imageToFilter];
-    
-    [self useNextFrameForImageCapture];
-    [stillImageSource addTarget:self];
-    [stillImageSource processImage];
-    
-    CGImageRef processedImage = [self newCGImageFromCurrentlyProcessedOutput];
-    
-    [stillImageSource removeTarget:self];
-    return processedImage;
-}
-
 #pragma mark -
 #pragma mark Managing the display FBOs
 

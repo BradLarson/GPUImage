@@ -114,9 +114,10 @@
     
     // Do a simpler image filtering
 //    GPUImageSketchFilter *stillImageFilter2 = [[GPUImageSketchFilter alloc] init];
-    GPUImageSobelEdgeDetectionFilter *stillImageFilter2 = [[GPUImageSobelEdgeDetectionFilter alloc] init];
+//    GPUImageSobelEdgeDetectionFilter *stillImageFilter2 = [[GPUImageSobelEdgeDetectionFilter alloc] init];
+//    GPUImageAmatorkaFilter *stillImageFilter2 = [[GPUImageAmatorkaFilter alloc] init];
 //    GPUImageUnsharpMaskFilter *stillImageFilter2 = [[GPUImageUnsharpMaskFilter alloc] init];
-//    GPUImageSepiaFilter *stillImageFilter2 = [[GPUImageSepiaFilter alloc] init];
+    GPUImageSepiaFilter *stillImageFilter2 = [[GPUImageSepiaFilter alloc] init];
     NSLog(@"Second image filtering");
     UIImage *inputImage = [UIImage imageNamed:@"Lambeau.jpg"];
     UIImage *quickFilteredImage = [stillImageFilter2 imageByFilteringImage:inputImage];
