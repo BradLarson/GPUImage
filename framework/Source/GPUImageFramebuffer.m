@@ -191,9 +191,11 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size);
             glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, _texture, 0);
         }
         
+        #ifndef NS_BLOCK_ASSERTIONS
         GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
-        
         NSAssert(status == GL_FRAMEBUFFER_COMPLETE, @"Incomplete filter FBO: %d", status);
+        #endif
+        
         glBindTexture(GL_TEXTURE_2D, 0);
     });
 }
