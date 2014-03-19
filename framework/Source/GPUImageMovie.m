@@ -439,13 +439,14 @@
         {
             _preferredConversion = kColorConversion601;
         }
-        else {
+        else
+        {
             _preferredConversion = kColorConversion709;
         }
     }
     else
     {
-        _preferredConversion = kColorConversion709;
+        _preferredConversion = kColorConversion601;
     }
 
     CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();

@@ -18,6 +18,13 @@ const GLfloat kColorConversion709[] = {
     1.793, -0.533,   0.0,
 };
 
+// BT.601 full range (ref: http://www.equasys.de/colorconversion.html)
+const GLfloat kColorConversion601FullRange[] = {
+    1.0,    1.0,    1.0,
+    0.0,    -0.343, 1.765,
+    1.4,    -0.711, 0.0,
+};
+
 NSString *const kGPUImageYUVVideoRangeConversionForRGFragmentShaderString = SHADER_STRING
 (
  varying highp vec2 textureCoordinate;
@@ -647,16 +654,18 @@ NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = SHAD
     CFTypeRef colorAttachments = CVBufferGetAttachment(cameraFrame, kCVImageBufferYCbCrMatrixKey, NULL);
     if (colorAttachments != NULL)
     {
-        if(CFStringCompare(colorAttachments, kCVImageBufferYCbCrMatrix_ITU_R_601_4, 0) == kCFCompareEqualTo) {
+        if(CFStringCompare(colorAttachments, kCVImageBufferYCbCrMatrix_ITU_R_601_4, 0) == kCFCompareEqualTo)
+        {
             _preferredConversion = kColorConversion601;
         }
-        else {
+        else
+        {
             _preferredConversion = kColorConversion709;
         }
     }
     else
     {
-        _preferredConversion = kColorConversion709;
+        _preferredConversion = kColorConversion601FullRange;
     }
 
 	CMTime currentTime = CMSampleBufferGetPresentationTimeStamp(sampleBuffer);
