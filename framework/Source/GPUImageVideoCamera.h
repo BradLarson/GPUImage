@@ -3,45 +3,18 @@
 #import <CoreMedia/CoreMedia.h>
 #import "GPUImageContext.h"
 #import "GPUImageOutput.h"
-
-extern const GLfloat kColorConversion601[];
-extern const GLfloat kColorConversion601FullRange[];
-extern const GLfloat kColorConversion709[];
-extern NSString *const kGPUImageYUVVideoRangeConversionForRGFragmentShaderString;
-extern NSString *const kGPUImageYUVFullRangeConversionForLAFragmentShaderString;
-extern NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString;
-
-
-//Delegate Protocal for Face Detection.
-@protocol GPUImageVideoCameraDelegate <NSObject>
-
-@optional
-- (void)willOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer;
-@end
-
+#import "GPUImageCoreVideoInput.h"
 
 /**
  A GPUImageOutput that provides frames from either camera
 */
-@interface GPUImageVideoCamera : GPUImageOutput <AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptureAudioDataOutputSampleBufferDelegate>
+@interface GPUImageVideoCamera : GPUImageCoreVideoInput <AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptureAudioDataOutputSampleBufferDelegate>
 {
-    NSUInteger numberOfFramesCaptured;
-    CGFloat totalFrameTimeDuringCapture;
-    
     AVCaptureSession *_captureSession;
     AVCaptureDevice *_inputCamera;
     AVCaptureDevice *_microphone;
     AVCaptureDeviceInput *videoInput;
 	AVCaptureVideoDataOutput *videoOutput;
-
-    BOOL capturePaused;
-    GPUImageRotationMode outputRotation, internalRotation;
-    dispatch_semaphore_t frameRenderingSemaphore;
-        
-    BOOL captureAsYUV;
-    GLuint luminanceTexture, chrominanceTexture;
-
-    __unsafe_unretained id<GPUImageVideoCameraDelegate> _delegate;
 }
 
 /// The AVCaptureSession used to capture from the camera
@@ -60,9 +33,6 @@ extern NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString
 @property (readonly, getter = isFrontFacingCameraPresent) BOOL frontFacingCameraPresent;
 @property (readonly, getter = isBackFacingCameraPresent) BOOL backFacingCameraPresent;
 
-/// This enables the benchmarking mode, which logs out instantaneous and average frame times to the console
-@property(readwrite, nonatomic) BOOL runBenchmark;
-
 /// Use this property to manage camera settings. Focus point, exposure point, etc.
 @property(readonly) AVCaptureDevice *inputCamera;
 
@@ -72,7 +42,6 @@ extern NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString
 /// These properties determine whether or not the two camera orientations should be mirrored. By default, both are NO.
 @property(readwrite, nonatomic) BOOL horizontallyMirrorFrontFacingCamera, horizontallyMirrorRearFacingCamera;
 
-@property(nonatomic, assign) id<GPUImageVideoCameraDelegate> delegate;
 
 /// @name Initialization and teardown
 
@@ -118,11 +87,6 @@ extern NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString
  */
 - (void)resumeCameraCapture;
 
-/** Process a video sample
- @param sampleBuffer Buffer to process
- */
-- (void)processVideoSampleBuffer:(CMSampleBufferRef)sampleBuffer;
-
 /** Process an audio sample
  @param sampleBuffer Buffer to process
  */
@@ -139,14 +103,6 @@ extern NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString
 /** This flips between the front and rear cameras
  */
 - (void)rotateCamera;
-
-/// @name Benchmarking
-
-/** When benchmarking is enabled, this will keep a running average of the time from uploading, processing, and final recording or display
- */
-- (CGFloat)averageFrameDurationDuringCapture;
-
-- (void)resetBenchmarkAverage;
 
 + (BOOL)isBackFacingCameraPresent;
 + (BOOL)isFrontFacingCameraPresent;
