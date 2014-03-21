@@ -27,8 +27,6 @@
     int imageBufferWidth, imageBufferHeight;
 }
 
-- (void)processAsset;
-
 @end
 
 @implementation GPUImageMovie
@@ -153,45 +151,58 @@
 
 - (void)startProcessing
 {
+    [self startProcessingWithCompletion:NULL];
+}
+
+- (void)startProcessingWithCompletion:(void(^)(BOOL success, NSError *error))completion
+{
     if( self.playerItem ) {
-        [self processPlayerItem];
+        [self processPlayerItemWithCompletion:completion];
         return;
     }
-    if(self.url == nil)
-    {
-      [self processAsset];
-      return;
-    }
     
-    if (_shouldRepeat) keepLooping = YES;
+    if (_shouldRepeat) {
+        keepLooping = YES;
+    }
     
     previousFrameTime = kCMTimeZero;
     previousActualFrameTime = CFAbsoluteTimeGetCurrent();
   
-    NSDictionary *inputOptions = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES] forKey:AVURLAssetPreferPreciseDurationAndTimingKey];
-    AVURLAsset *inputAsset = [[AVURLAsset alloc] initWithURL:self.url options:inputOptions];
-    
-    GPUImageMovie __block *blockSelf = self;
+    AVAsset *inputAsset;
+    if(self.url)
+    {
+        NSDictionary *inputOptions = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES] forKey:AVURLAssetPreferPreciseDurationAndTimingKey];
+        inputAsset = [[AVURLAsset alloc] initWithURL:self.url options:inputOptions];
+    } else {
+        inputAsset = self.asset;
+    }
     
     [inputAsset loadValuesAsynchronouslyForKeys:[NSArray arrayWithObject:@"tracks"] completionHandler: ^{
         runSynchronouslyOnVideoProcessingQueue(^{
             NSError *error = nil;
             AVKeyValueStatus tracksStatus = [inputAsset statusOfValueForKey:@"tracks" error:&error];
-            if (!tracksStatus == AVKeyValueStatusLoaded)
+            if (tracksStatus != AVKeyValueStatusLoaded)
             {
+                if (completion) {
+                    completion(NO, error);
+                }
                 return;
             }
-            blockSelf.asset = inputAsset;
-            [blockSelf processAsset];
-            blockSelf = nil;
+            self.asset = inputAsset;
+            BOOL success = [self processAssetWithError:&error];
+            if (completion) {
+                completion(success, error);
+            }
         });
     }];
 }
 
-- (AVAssetReader*)createAssetReader
+- (AVAssetReader*)createAssetReaderWithError:(NSError **)error
 {
-    NSError *error = nil;
-    AVAssetReader *assetReader = [AVAssetReader assetReaderWithAsset:self.asset error:&error];
+    AVAssetReader *assetReader = [AVAssetReader assetReaderWithAsset:self.asset error:error];
+    if (!assetReader) {
+        return nil;
+    }
 
     NSDictionary *outputSettings = @{(id)kCVPixelBufferPixelFormatTypeKey: @(kCVPixelFormatType_420YpCbCr8BiPlanarFullRange)};
     isFullYUVRange = YES;
@@ -218,9 +229,12 @@
     return assetReader;
 }
 
-- (void)processAsset
+- (BOOL)processAssetWithError:(NSError **)error
 {
-    reader = [self createAssetReader];
+    reader = [self createAssetReaderWithError:error];
+    if (!reader) {
+        return NO;
+    }
 
     AVAssetReaderOutput *readerVideoTrackOutput = nil;
     AVAssetReaderOutput *readerAudioTrackOutput = nil;
@@ -238,8 +252,11 @@
 
     if ([reader startReading] == NO) 
     {
-            NSLog(@"Error reading from file at URL: %@", self.url);
-        return;
+        NSLog(@"Error reading from file at URL: %@", self.url);
+        if (error) {
+            *error = reader.error;
+        }
+        return NO;
     }
 
     __unsafe_unretained GPUImageMovie *weakSelf = self;
@@ -260,16 +277,16 @@
     {
         while (reader.status == AVAssetReaderStatusReading && (!_shouldRepeat || keepLooping))
         {
-                [weakSelf readNextVideoFrameFromOutput:readerVideoTrackOutput];
+            [weakSelf readNextVideoFrameFromOutput:readerVideoTrackOutput];
 
             if ( (readerAudioTrackOutput) && (!audioEncodingIsFinished) )
             {
-                    [weakSelf readNextAudioSampleFromOutput:readerAudioTrackOutput];
+                [weakSelf readNextAudioSampleFromOutput:readerAudioTrackOutput];
             }
 
         }
 
-        if (reader.status == AVAssetWriterStatusCompleted) {
+        if (reader.status == AVAssetReaderStatusCompleted) {
                 
             [reader cancelReading];
 
@@ -284,11 +301,12 @@
 
         }
     }
+    return YES;
 }
 
-- (void)processPlayerItem
+- (void)processPlayerItemWithCompletion:(void(^)(BOOL success, NSError *error))completion
 {
-    runSynchronouslyOnVideoProcessingQueue(^{
+    runAsynchronouslyOnVideoProcessingQueue(^{
         displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(displayLinkCallback:)];
         [displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
         [displayLink setPaused:YES];
@@ -300,6 +318,10 @@
 
         [_playerItem addOutput:playerItemOutput];
         [playerItemOutput requestNotificationOfMediaDataChangeWithAdvanceInterval:0.1];
+        
+        if (completion) {
+            completion(YES, nil);
+        }
     });
 }
 
