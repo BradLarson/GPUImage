@@ -5,8 +5,10 @@
 #import "GPUImageOutput.h"
 
 extern const GLfloat kColorConversion601[];
+extern const GLfloat kColorConversion601FullRange[];
 extern const GLfloat kColorConversion709[];
 extern NSString *const kGPUImageYUVVideoRangeConversionForRGFragmentShaderString;
+extern NSString *const kGPUImageYUVFullRangeConversionForLAFragmentShaderString;
 extern NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString;
 
 
