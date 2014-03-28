@@ -107,6 +107,30 @@
 	});
 }
 
+- (void)processDataForTimestamp:(CMTime)frameTime;
+{
+	if (dispatch_semaphore_wait(dataUpdateSemaphore, DISPATCH_TIME_NOW) != 0)
+    {
+        return;
+    }
+	
+	runAsynchronouslyOnVideoProcessingQueue(^{
+        
+		CGSize pixelSizeOfImage = [self outputImageSize];
+        
+		for (id<GPUImageInput> currentTarget in targets)
+		{
+			NSInteger indexOfObject = [targets indexOfObject:currentTarget];
+			NSInteger textureIndexOfTarget = [[targetTextureIndices objectAtIndex:indexOfObject] integerValue];
+            
+			[currentTarget setInputSize:pixelSizeOfImage atIndex:textureIndexOfTarget];
+			[currentTarget newFrameReadyAtTime:frameTime atIndex:textureIndexOfTarget];
+		}
+        
+		dispatch_semaphore_signal(dataUpdateSemaphore);
+	});
+}
+
 - (CGSize)outputImageSize;
 {
     return uploadedImageSize;
