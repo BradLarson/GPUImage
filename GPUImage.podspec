@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name     = 'GPUImage'
-  s.version  = '0.1.2'
+  s.version  = '0.1.3'
   s.license  = 'BSD'
   s.summary  = 'An open source iOS framework for GPU-based image and video processing.'
   s.homepage = 'https://github.com/BradLarson/GPUImage'
@@ -14,6 +14,7 @@ Pod::Spec.new do |s|
   
   s.ios.deployment_target = '5.0'
   s.ios.exclude_files = 'framework/Source/Mac'
+  s.ios.frameworks   = ['OpenGLES', 'CoreMedia', 'QuartzCore', 'AVFoundation']
   
   s.osx.deployment_target = '10.6'
   s.osx.exclude_files = 'framework/Source/iOS',
