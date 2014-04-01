@@ -371,8 +371,8 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
 - (void)restoreRenderTarget;
 {
 #if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
-    CFRelease(renderTarget);
     CVPixelBufferUnlockBaseAddress(renderTarget, 0);
+    CFRelease(renderTarget);
 #else
 #endif
 }
@@ -399,7 +399,10 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
 - (GLubyte *)byteBuffer;
 {
 #if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
-    return (GLubyte *)CVPixelBufferGetBaseAddress(renderTarget);
+    CVPixelBufferLockBaseAddress(renderTarget, 0);
+    GLubyte * bufferBytes = CVPixelBufferGetBaseAddress(renderTarget);
+    CVPixelBufferUnlockBaseAddress(renderTarget, 0);
+    return bufferBytes;
 #else
     return NULL; // TODO: do more with this on the non-texture-cache side
 #endif

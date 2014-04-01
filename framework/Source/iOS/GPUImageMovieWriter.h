@@ -24,7 +24,6 @@ extern NSString *const kGPUImageColorSwizzlingFragmentShaderString;
     AVAssetWriterInputPixelBufferAdaptor *assetWriterPixelBufferInput;
 	dispatch_queue_t movieWritingQueue;
     
-    CVOpenGLESTextureCacheRef coreVideoTextureCache;
     CVPixelBufferRef renderTarget;
     CVOpenGLESTextureRef renderTexture;
 

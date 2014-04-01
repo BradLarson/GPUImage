@@ -260,6 +260,7 @@
             {
                 glFinish();
                 _rawBytesForImage = [outputFramebuffer byteBuffer];
+                NSLog(@"Output framebuffer: %@", outputFramebuffer);
             }
             else
             {
