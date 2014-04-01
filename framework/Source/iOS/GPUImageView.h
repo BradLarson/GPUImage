@@ -13,6 +13,7 @@ typedef enum {
 @interface GPUImageView : UIView <GPUImageInput>
 {
     GPUImageRotationMode inputRotation;
+	CGSize boundsSizeAtFrameBufferEpoch;
 }
 
 /** The fill mode dictates how images are fit in the view, with the default being kGPUImageFillModePreserveAspectRatio

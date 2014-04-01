@@ -107,7 +107,7 @@ NSString *const kGPUSolidColorFragmentShaderString = SHADER_STRING
     _color.three = blueComponent;
     _color.four = alphaComponent;
     
-//    [self setVec4:_color forUniform:colorUniform program:filterProgram];
+    [self setVec4:_color forUniform:colorUniform program:filterProgram];
     runAsynchronouslyOnVideoProcessingQueue(^{
         [self newFrameReadyAtTime:kCMTimeIndefinite atIndex:0];
     });

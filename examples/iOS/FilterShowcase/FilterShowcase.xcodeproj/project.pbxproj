@@ -435,7 +435,7 @@
 				GCC_PREFIX_HEADER = "FilterShowcase/FilterShowcase-Prefix.pch";
 				INFOPLIST_FILE = "FilterShowcase/FilterShowcase-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "7A45B171-68E5-42BC-8E1C-B7B52C050F7D";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -449,7 +449,7 @@
 				GCC_PREFIX_HEADER = "FilterShowcase/FilterShowcase-Prefix.pch";
 				INFOPLIST_FILE = "FilterShowcase/FilterShowcase-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "7A45B171-68E5-42BC-8E1C-B7B52C050F7D";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

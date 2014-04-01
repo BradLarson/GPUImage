@@ -20,8 +20,6 @@
     CGSize inputImageSize;
     GLfloat imageVertices[8];
     GLfloat backgroundColorRed, backgroundColorGreen, backgroundColorBlue, backgroundColorAlpha;
-
-    CGSize boundsSizeAtFrameBufferEpoch;
 }
 
 @property (assign, nonatomic) NSUInteger aspectRatio;
@@ -128,21 +126,6 @@
         _fillMode = kGPUImageFillModePreserveAspectRatio;
         [self createDisplayFramebuffer];
     });
-}
-
-- (void)layoutSubviews {
-    [super layoutSubviews];
-    
-    // The frame buffer needs to be trashed and re-created when the view size changes.
-    if (!CGSizeEqualToSize(self.bounds.size, boundsSizeAtFrameBufferEpoch) &&
-        !CGSizeEqualToSize(self.bounds.size, CGSizeZero)) {
-        runSynchronouslyOnVideoProcessingQueue(^{
-			[self recalculateViewGeometry];
-            [self destroyDisplayFramebuffer];
-            [self createDisplayFramebuffer];
-            [self recalculateViewGeometry];
-        });
-    }
 }
 
 - (void)dealloc
