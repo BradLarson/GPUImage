@@ -44,7 +44,6 @@
     
     [videoCamera addTarget:filter];
     GPUImageView *filterView = (GPUImageView *)self.view;
-    [filter addTarget:filterView];
 //    filterView.fillMode = kGPUImageFillModeStretch;
 //    filterView.fillMode = kGPUImageFillModePreserveAspectRatioAndFill;
     
@@ -54,10 +53,12 @@
     unlink([pathToMovie UTF8String]); // If a file already exists, AVAssetWriter won't let you record new frames, so delete the old movie
     NSURL *movieURL = [NSURL fileURLWithPath:pathToMovie];
     movieWriter = [[GPUImageMovieWriter alloc] initWithMovieURL:movieURL size:CGSizeMake(480.0, 640.0)];
+    movieWriter.encodingLiveVideo = YES;
 //    movieWriter = [[GPUImageMovieWriter alloc] initWithMovieURL:movieURL size:CGSizeMake(640.0, 480.0)];
 //    movieWriter = [[GPUImageMovieWriter alloc] initWithMovieURL:movieURL size:CGSizeMake(720.0, 1280.0)];
 //    movieWriter = [[GPUImageMovieWriter alloc] initWithMovieURL:movieURL size:CGSizeMake(1080.0, 1920.0)];
     [filter addTarget:movieWriter];
+    [filter addTarget:filterView];
     
     [videoCamera startCameraCapture];
     
@@ -66,7 +67,7 @@
     dispatch_after(startTime, dispatch_get_main_queue(), ^(void){
         NSLog(@"Start recording");
         
-        videoCamera.audioEncodingTarget = movieWriter;
+//        videoCamera.audioEncodingTarget = movieWriter;
         [movieWriter startRecording];
 
 //        NSError *error = nil;

@@ -9,8 +9,8 @@
     GPUImageFilter *tiltShiftFilter;
 }
 
-/// A multiplier for the underlying blur size, ranging from 0.0 on up, with a default of 2.0
-@property(readwrite, nonatomic) CGFloat blurSize;
+/// The radius of the underlying blur, in pixels. This is 7.0 by default.
+@property(readwrite, nonatomic) CGFloat blurRadiusInPixels;
 
 /// The normalized location of the top of the in-focus area in the image, this value should be lower than bottomFocusLevel, default 0.4
 @property(readwrite, nonatomic) CGFloat topFocusLevel;

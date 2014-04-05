@@ -62,6 +62,8 @@ NSString *const kGPUImagePixellationPositionFragmentShaderString = SHADER_STRING
 
 @interface GPUImagePixellatePositionFilter ()
 
+- (void)adjustAspectRatio;
+
 @property (readwrite, nonatomic) CGFloat aspectRatio;
 
 @end
@@ -112,19 +114,37 @@ NSString *const kGPUImagePixellationPositionFragmentShaderString = SHADER_STRING
     
     if ( (!CGSizeEqualToSize(oldInputSize, inputTextureSize)) && (!CGSizeEqualToSize(newSize, CGSizeZero)) )
     {
-        if (GPUImageRotationSwapsWidthAndHeight(inputRotation))
-        {
-            [self setAspectRatio:(inputTextureSize.width / inputTextureSize.height)];
-        }
-        else
-        {
-            [self setAspectRatio:(inputTextureSize.height / inputTextureSize.width)];
-        }
+        [self adjustAspectRatio];
     }
 }
 
 #pragma mark -
 #pragma mark Accessors
+
+- (void)setInputRotation:(GPUImageRotationMode)newInputRotation atIndex:(NSInteger)textureIndex;
+{
+    [super setInputRotation:newInputRotation atIndex:textureIndex];
+    [self setCenter:self.center];
+    [self adjustAspectRatio];
+}
+
+- (void)adjustAspectRatio;
+{
+    if (GPUImageRotationSwapsWidthAndHeight(inputRotation))
+    {
+        [self setAspectRatio:(inputTextureSize.width / inputTextureSize.height)];
+    }
+    else
+    {
+        [self setAspectRatio:(inputTextureSize.height / inputTextureSize.width)];
+    }
+}
+
+- (void)forceProcessingAtSize:(CGSize)frameSize;
+{
+    [super forceProcessingAtSize:frameSize];
+    [self adjustAspectRatio];
+}
 
 - (void)setFractionalWidthOfAPixel:(CGFloat)newValue;
 {
@@ -160,8 +180,8 @@ NSString *const kGPUImagePixellationPositionFragmentShaderString = SHADER_STRING
 - (void)setCenter:(CGPoint)center
 {
     _center = center;
-    
-    [self setPoint:_center forUniform:centerUniform program:filterProgram];
+    CGPoint rotatedPoint = [self rotatedPoint:center forRotation:inputRotation];    
+    [self setPoint:rotatedPoint forUniform:centerUniform program:filterProgram];
 }
 
 - (void)setRadius:(CGFloat)radius

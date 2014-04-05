@@ -21,4 +21,14 @@
 - (void)processImage;
 - (CGSize)outputImageSize;
 
+/**
+ * Process image with all targets and filters asynchronously
+ * The completion handler is called after processing finished in the
+ * GPU's dispatch queue - and only if this method did not return NO.
+ *
+ * @returns NO if resource is blocked and processing is discarded, YES otherwise
+ */
+- (BOOL)processImageWithCompletionHandler:(void (^)(void))completion;
+- (void)processImageUpToFilter:(GPUImageOutput<GPUImageInput> *)finalFilterInChain withCompletionHandler:(void (^)(UIImage *processedImage))block;
+
 @end

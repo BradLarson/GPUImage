@@ -23,7 +23,7 @@
 - (void) removeAllFilters;
 
 - (UIImage *) currentFilteredFrame;
+- (UIImage *) currentFilteredFrameWithOrientation:(UIImageOrientation)imageOrientation;
 - (CGImageRef) newCGImageFromCurrentFilteredFrame;
-- (CGImageRef) newCGImageFromCurrentFilteredFrameWithOrientation:(UIImageOrientation)imageOrientation;
 
 @end

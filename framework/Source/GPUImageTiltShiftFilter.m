@@ -3,6 +3,7 @@
 #import "GPUImageTwoInputFilter.h"
 #import "GPUImageGaussianBlurFilter.h"
 
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
 NSString *const kGPUImageTiltShiftFragmentShaderString = SHADER_STRING
 ( 
  varying highp vec2 textureCoordinate;
@@ -26,10 +27,35 @@ NSString *const kGPUImageTiltShiftFragmentShaderString = SHADER_STRING
      gl_FragColor = mix(sharpImageColor, blurredImageColor, blurIntensity);
  }
 );
+#else
+NSString *const kGPUImageTiltShiftFragmentShaderString = SHADER_STRING
+(
+ varying vec2 textureCoordinate;
+ varying vec2 textureCoordinate2;
+ 
+ uniform sampler2D inputImageTexture;
+ uniform sampler2D inputImageTexture2;
+ 
+ uniform float topFocusLevel;
+ uniform float bottomFocusLevel;
+ uniform float focusFallOffRate;
+ 
+ void main()
+ {
+     vec4 sharpImageColor = texture2D(inputImageTexture, textureCoordinate);
+     vec4 blurredImageColor = texture2D(inputImageTexture2, textureCoordinate2);
+     
+     float blurIntensity = 1.0 - smoothstep(topFocusLevel - focusFallOffRate, topFocusLevel, textureCoordinate2.y);
+     blurIntensity += smoothstep(bottomFocusLevel, bottomFocusLevel + focusFallOffRate, textureCoordinate2.y);
+     
+     gl_FragColor = mix(sharpImageColor, blurredImageColor, blurIntensity);
+ }
+);
+#endif
 
 @implementation GPUImageTiltShiftFilter
 
-@synthesize blurSize;
+@synthesize blurRadiusInPixels;
 @synthesize topFocusLevel = _topFocusLevel;
 @synthesize bottomFocusLevel = _bottomFocusLevel;
 @synthesize focusFallOffRate = _focusFallOffRate;
@@ -61,7 +87,7 @@ NSString *const kGPUImageTiltShiftFragmentShaderString = SHADER_STRING
     self.topFocusLevel = 0.4;
     self.bottomFocusLevel = 0.6;
     self.focusFallOffRate = 0.2;
-    self.blurSize = 2.0;
+    self.blurRadiusInPixels = 7.0;
     
     return self;
 }
@@ -69,14 +95,14 @@ NSString *const kGPUImageTiltShiftFragmentShaderString = SHADER_STRING
 #pragma mark -
 #pragma mark Accessors
 
-- (void)setBlurSize:(CGFloat)newValue;
+- (void)setBlurRadiusInPixels:(CGFloat)newValue;
 {
-    blurFilter.blurSize = newValue;
+    blurFilter.blurRadiusInPixels = newValue;
 }
 
-- (CGFloat)blurSize;
+- (CGFloat)blurRadiusInPixels;
 {
-    return blurFilter.blurSize;
+    return blurFilter.blurRadiusInPixels;
 }
 
 - (void)setTopFocusLevel:(CGFloat)newValue;

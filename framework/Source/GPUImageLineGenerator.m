@@ -8,8 +8,9 @@ NSString *const kGPUImageLineGeneratorVertexShaderString = SHADER_STRING
  {
      gl_Position = position;
  }
- );
+);
 
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
 NSString *const kGPUImageLineGeneratorFragmentShaderString = SHADER_STRING
 (
  uniform lowp vec3 lineColor;
@@ -19,6 +20,17 @@ NSString *const kGPUImageLineGeneratorFragmentShaderString = SHADER_STRING
      gl_FragColor = vec4(lineColor, 1.0);
  }
 );
+#else
+NSString *const kGPUImageLineGeneratorFragmentShaderString = SHADER_STRING
+(
+ uniform vec3 lineColor;
+ 
+ void main()
+ {
+     gl_FragColor = vec4(lineColor, 1.0);
+ }
+);
+#endif
 
 @interface GPUImageLineGenerator()
 
@@ -88,7 +100,7 @@ NSString *const kGPUImageLineGeneratorFragmentShaderString = SHADER_STRING
         GLfloat slope = lineSlopeAndIntercepts[currentLineIndex++];
         GLfloat intercept = lineSlopeAndIntercepts[currentLineIndex++];
         
-        if (lineSlopeAndIntercepts[currentLineIndex] > 9000.0) // Vertical line
+        if (slope > 9000.0) // Vertical line
         {
             lineCoordinates[currentVertexIndex++] = intercept;
             lineCoordinates[currentVertexIndex++] = -1.0;
@@ -107,7 +119,8 @@ NSString *const kGPUImageLineGeneratorFragmentShaderString = SHADER_STRING
     runSynchronouslyOnVideoProcessingQueue(^{
         [GPUImageContext setActiveShaderProgram:filterProgram];
         
-        [self setFilterFBO];
+        outputFramebuffer = [[GPUImageContext sharedFramebufferCache] fetchFramebufferForSize:[self sizeOfFBO] textureOptions:self.outputTextureOptions onlyTexture:NO];
+        [outputFramebuffer activateFramebuffer];
         
         glClearColor(0.0, 0.0, 0.0, 0.0);
         glClear(GL_COLOR_BUFFER_BIT);
@@ -117,7 +130,7 @@ NSString *const kGPUImageLineGeneratorFragmentShaderString = SHADER_STRING
         glEnable(GL_BLEND);
         
         glVertexAttribPointer(filterPositionAttribute, 2, GL_FLOAT, 0, 0, lineCoordinates);
-        glDrawArrays(GL_LINES, 0, (numberOfLines * 2));
+        glDrawArrays(GL_LINES, 0, ((unsigned int)numberOfLines * 2));
         
         glDisable(GL_BLEND);
 
@@ -125,7 +138,7 @@ NSString *const kGPUImageLineGeneratorFragmentShaderString = SHADER_STRING
     });
 }
 
-- (void)renderToTextureWithVertices:(const GLfloat *)vertices textureCoordinates:(const GLfloat *)textureCoordinates sourceTexture:(GLuint)sourceTexture;
+- (void)renderToTextureWithVertices:(const GLfloat *)vertices textureCoordinates:(const GLfloat *)textureCoordinates;
 {
     // Prevent rendering of the frame by normal means
 }

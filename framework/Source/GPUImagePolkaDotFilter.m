@@ -21,7 +21,9 @@ NSString *const kGPUImagePolkaDotFragmentShaderString = SHADER_STRING
      highp float distanceFromSamplePoint = distance(adjustedSamplePos, textureCoordinateToUse);
      lowp float checkForPresenceWithinDot = step(distanceFromSamplePoint, (fractionalWidthOfPixel * 0.5) * dotScaling);
 
-     gl_FragColor = vec4(texture2D(inputImageTexture, samplePos ).rgb * checkForPresenceWithinDot, 1.0);
+     lowp vec4 inputColor = texture2D(inputImageTexture, samplePos);
+     
+     gl_FragColor = vec4(inputColor.rgb * checkForPresenceWithinDot, inputColor.a);
  }
 );
 #else
@@ -45,7 +47,9 @@ NSString *const kGPUImagePolkaDotFragmentShaderString = SHADER_STRING
      float distanceFromSamplePoint = distance(adjustedSamplePos, textureCoordinateToUse);
      float checkForPresenceWithinDot = step(distanceFromSamplePoint, (fractionalWidthOfPixel * 0.5) * dotScaling);
      
-     gl_FragColor = vec4(texture2D(inputImageTexture, samplePos ).rgb * checkForPresenceWithinDot, 1.0);
+     vec4 inputColor = texture2D(inputImageTexture, samplePos);
+
+     gl_FragColor = vec4(inputColor.rgb * checkForPresenceWithinDot, inputColor.a);
  }
 );
 #endif

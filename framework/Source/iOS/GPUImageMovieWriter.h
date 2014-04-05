@@ -14,9 +14,8 @@ extern NSString *const kGPUImageColorSwizzlingFragmentShaderString;
 
 @interface GPUImageMovieWriter : NSObject <GPUImageInput>
 {
-    CMVideoDimensions videoDimensions;
-	CMVideoCodecType videoType;
-
+    BOOL alreadyFinishedRecording;
+    
     NSURL *movieURL;
     NSString *fileType;
 	AVAssetWriter *assetWriter;
@@ -25,29 +24,32 @@ extern NSString *const kGPUImageColorSwizzlingFragmentShaderString;
     AVAssetWriterInputPixelBufferAdaptor *assetWriterPixelBufferInput;
 	dispatch_queue_t movieWritingQueue;
     
-    CVOpenGLESTextureCacheRef coreVideoTextureCache;
     CVPixelBufferRef renderTarget;
     CVOpenGLESTextureRef renderTexture;
 
     CGSize videoSize;
     GPUImageRotationMode inputRotation;
-    
-    __unsafe_unretained id<GPUImageTextureDelegate> textureDelegate;
 }
 
 @property(readwrite, nonatomic) BOOL hasAudioTrack;
 @property(readwrite, nonatomic) BOOL shouldPassthroughAudio;
+@property(readwrite, nonatomic) BOOL shouldInvalidateAudioSampleWhenDone;
 @property(nonatomic, copy) void(^completionBlock)(void);
 @property(nonatomic, copy) void(^failureBlock)(NSError*);
 @property(nonatomic, assign) id<GPUImageMovieWriterDelegate> delegate;
 @property(readwrite, nonatomic) BOOL encodingLiveVideo;
-@property(nonatomic, copy) void(^videoInputReadyCallback)(void);
-@property(nonatomic, copy) void(^audioInputReadyCallback)(void);
+@property(nonatomic, copy) BOOL(^videoInputReadyCallback)(void);
+@property(nonatomic, copy) BOOL(^audioInputReadyCallback)(void);
 @property(nonatomic) BOOL enabled;
+@property(nonatomic, readonly) AVAssetWriter *assetWriter;
+@property(nonatomic, readonly) CMTime duration;
+@property(nonatomic, assign) CGAffineTransform transform;
+@property(nonatomic, copy) NSArray *metaData;
+@property(nonatomic, assign, getter = isPaused) BOOL paused;
 
 // Initialization and teardown
 - (id)initWithMovieURL:(NSURL *)newMovieURL size:(CGSize)newSize;
-- (id)initWithMovieURL:(NSURL *)newMovieURL size:(CGSize)newSize fileType:(NSString *)newFileType outputSettings:(NSMutableDictionary *)outputSettings;
+- (id)initWithMovieURL:(NSURL *)newMovieURL size:(CGSize)newSize fileType:(NSString *)newFileType outputSettings:(NSDictionary *)outputSettings;
 
 - (void)setHasAudioTrack:(BOOL)hasAudioTrack audioSettings:(NSDictionary *)audioOutputSettings;
 

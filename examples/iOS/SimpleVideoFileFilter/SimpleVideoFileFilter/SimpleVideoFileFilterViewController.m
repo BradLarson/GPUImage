@@ -25,19 +25,11 @@
     
     movieFile = [[GPUImageMovie alloc] initWithURL:sampleURL];
     movieFile.runBenchmark = YES;
-    movieFile.playAtActualSpeed = YES;
-//    filter = [[GPUImagePixellateFilter alloc] init];
+    movieFile.playAtActualSpeed = NO;
+    filter = [[GPUImagePixellateFilter alloc] init];
 //    filter = [[GPUImageUnsharpMaskFilter alloc] init];
     
-    filter = [[GPUImageDissolveBlendFilter alloc] init];
-    [(GPUImageDissolveBlendFilter *)filter setMix:0.5];
-    
-    UIImage *inputImage = [UIImage imageNamed:@"WID-small.jpg"];
-    GPUImagePicture *overlayPicture = [[GPUImagePicture alloc] initWithImage:inputImage];
-    
     [movieFile addTarget:filter];
-    [overlayPicture addTarget:filter];
-    [overlayPicture processImage];
 
     // Only rotate the video for display, leave orientation the same for recording
     GPUImageView *filterView = (GPUImageView *)self.view;
@@ -63,16 +55,6 @@
         [filter removeTarget:movieWriter];
         [movieWriter finishRecording];
     }];
-
-    /*
-    double delayInSeconds = 5.0;
-    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
-    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-        [filter removeTarget:movieWriter];
-        [movieWriter finishRecording];
-        NSLog(@"Done recording");
-    });
-     */
 }
 
 - (void)viewDidUnload
@@ -88,8 +70,7 @@
 - (IBAction)updatePixelWidth:(id)sender
 {
 //    [(GPUImageUnsharpMaskFilter *)filter setIntensity:[(UISlider *)sender value]];
-    [(GPUImageDissolveBlendFilter *)filter setMix:[(UISlider *)sender value]];
-//    pixellateFilter.fractionalWidthOfAPixel = [(UISlider *)sender value];
+    [(GPUImagePixellateFilter *)filter setFractionalWidthOfAPixel:[(UISlider *)sender value]];
 }
 
 @end

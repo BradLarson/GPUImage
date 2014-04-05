@@ -2,8 +2,8 @@
 
 @interface GPUImageAdaptiveThresholdFilter : GPUImageFilterGroup
 
-/** A multiplier for the background averaging blur size, ranging from 0.0 on up, with a default of 1.0
+/** A multiplier for the background averaging blur radius in pixels, with a default of 4
  */
-@property(readwrite, nonatomic) CGFloat blurSize;
+@property(readwrite, nonatomic) CGFloat blurRadiusInPixels;
 
 @end
