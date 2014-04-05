@@ -70,7 +70,8 @@ NSString *const kGPUImagePassthroughFragmentShaderString = SHADER_STRING
     backgroundColorGreen = 0.0;
     backgroundColorBlue = 0.0;
     backgroundColorAlpha = 0.0;
-    imageCaptureSemaphore = dispatch_semaphore_create(1);
+    imageCaptureSemaphore = dispatch_semaphore_create(0);
+    dispatch_semaphore_signal(imageCaptureSemaphore);
 
     runSynchronouslyOnVideoProcessingQueue(^{
         [GPUImageContext useImageProcessingContext];
