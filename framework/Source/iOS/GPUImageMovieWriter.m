@@ -366,18 +366,6 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 
         CMTime currentSampleTime = CMSampleBufferGetOutputPresentationTimeStamp(audioBuffer);
         
-        if (CMTIME_IS_INVALID(startTime))
-        {
-            dispatch_sync(movieWritingQueue, ^{
-                if ((audioInputReadyCallback == NULL) && (assetWriter.status != AVAssetWriterStatusWriting))
-                {
-                    [assetWriter startWriting];
-                }
-                [assetWriter startSessionAtSourceTime:currentSampleTime];
-                startTime = currentSampleTime;
-            });
-        }
-
         if (!assetWriterAudioInput.readyForMoreMediaData && _encodingLiveVideo)
         {
             NSLog(@"1: Had to drop an audio frame: %@", CFBridgingRelease(CMTimeCopyDescription(kCFAllocatorDefault, currentSampleTime)));
