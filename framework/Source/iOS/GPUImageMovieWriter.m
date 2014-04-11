@@ -27,7 +27,7 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 
     GPUImageFramebuffer *firstInputFramebuffer;
     
-    CMTime startTime, previousFrameTime, previousAudioTime;
+    CMTime startTime, previousFrameTime, previousAudioTime, pausedFrameTime, resumedFrameTime, adjustmentFrameTime;
 
     dispatch_queue_t audioQueue, videoQueue;
     BOOL audioEncodingIsFinished, videoEncodingIsFinished;
@@ -93,6 +93,9 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
     _encodingLiveVideo = [[outputSettings objectForKey:@"EncodingLiveVideo"] isKindOfClass:[NSNumber class]] ? [[outputSettings objectForKey:@"EncodingLiveVideo"] boolValue] : YES;
     previousFrameTime = kCMTimeNegativeInfinity;
     previousAudioTime = kCMTimeNegativeInfinity;
+    adjustmentFrameTime = kCMTimeZero;
+    pausedFrameTime = kCMTimeZero;
+    resumedFrameTime = kCMTimeZero;
     inputRotation = kGPUImageNoRotation;
 
     runSynchronouslyOnVideoProcessingQueue(^{
@@ -259,6 +262,7 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
     alreadyFinishedRecording = NO;
     isRecording = YES;
     startTime = kCMTimeInvalid;
+    _paused = NO;
     dispatch_sync(movieWritingQueue, ^{
         if (audioInputReadyCallback == NULL)
         {
@@ -355,29 +359,17 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 
 - (void)processAudioBuffer:(CMSampleBufferRef)audioBuffer;
 {
-    if (!isRecording)
+    if (!isRecording || _paused)
     {
         return;
     }
     
-    if (_hasAudioTrack)
+    if (_hasAudioTrack && CMTIME_IS_VALID(startTime))
     {
         CFRetain(audioBuffer);
 
         CMTime currentSampleTime = CMSampleBufferGetOutputPresentationTimeStamp(audioBuffer);
         
-        if (CMTIME_IS_INVALID(startTime))
-        {
-            dispatch_sync(movieWritingQueue, ^{
-                if ((audioInputReadyCallback == NULL) && (assetWriter.status != AVAssetWriterStatusWriting))
-                {
-                    [assetWriter startWriting];
-                }
-                [assetWriter startSessionAtSourceTime:currentSampleTime];
-                startTime = currentSampleTime;
-            });
-        }
-
         if (!assetWriterAudioInput.readyForMoreMediaData && _encodingLiveVideo)
         {
             NSLog(@"1: Had to drop an audio frame: %@", CFBridgingRelease(CMTimeCopyDescription(kCFAllocatorDefault, currentSampleTime)));
@@ -389,6 +381,8 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
             return;
         }
 
+        CMTime actualFrameTime = CMTimeSubtract(currentSampleTime, adjustmentFrameTime);
+        CMSampleBufferSetOutputPresentationTimeStamp(audioBuffer, actualFrameTime);
         previousAudioTime = currentSampleTime;
         
 //        NSLog(@"Recorded audio sample time: %lld, %d, %lld", currentSampleTime.value, currentSampleTime.timescale, currentSampleTime.epoch);
@@ -421,6 +415,43 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
             dispatch_async(movieWritingQueue, write);
         else
             write();
+    }
+}
+
+- (void)setPaused:(BOOL)paused
+{
+    _paused = paused;
+    if (_encodingLiveVideo) {
+        CMTime timestamp = kCMTimeZero;
+        if (!CMTIME_IS_NEGATIVE_INFINITY(previousFrameTime))
+        {
+            timestamp = previousFrameTime;
+        }
+        else if (!CMTIME_IS_NEGATIVE_INFINITY(previousAudioTime))
+        {
+            timestamp = previousAudioTime;
+        }
+        else {
+            return;
+        }
+        
+        
+        if (paused) {
+            NSLog(@"PAUSING!");
+            pausedFrameTime = timestamp;
+        }
+        else {
+            NSLog(@"RESUMING!");
+            resumedFrameTime = timestamp;
+            adjustmentFrameTime = CMTimeAdd(CMTimeSubtract(resumedFrameTime, pausedFrameTime),
+                                            adjustmentFrameTime);
+            
+        }
+        
+        NSLog(@"PREVIOUS FRAME TIMESTAMP: %f. PAUSED TIME: %f:. RESUMED TIME: %f",
+              CMTimeGetSeconds(timestamp),
+              CMTimeGetSeconds(pausedFrameTime),
+              CMTimeGetSeconds(resumedFrameTime));
     }
 }
 
@@ -628,7 +659,7 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 
 - (void)newFrameReadyAtTime:(CMTime)frameTime atIndex:(NSInteger)textureIndex;
 {
-    if (!isRecording)
+    if (!isRecording || _paused)
     {
         [firstInputFramebuffer unlock];
         return;
@@ -691,6 +722,7 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
     }
 
     void(^write)() = ^() {
+        CMTime actualFrameTime = CMTimeSubtract(frameTime, adjustmentFrameTime);
         while( ! assetWriterVideoInput.readyForMoreMediaData && ! _encodingLiveVideo && ! videoEncodingIsFinished ) {
             NSDate *maxDate = [NSDate dateWithTimeIntervalSinceNow:0.1];
 //            NSLog(@"video waiting...");
@@ -698,11 +730,11 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
         }
         if (!assetWriterVideoInput.readyForMoreMediaData)
         {
-            NSLog(@"2: Had to drop a video frame: %@", CFBridgingRelease(CMTimeCopyDescription(kCFAllocatorDefault, frameTime)));
+            NSLog(@"2: Had to drop a video frame: %@", CFBridgingRelease(CMTimeCopyDescription(kCFAllocatorDefault, actualFrameTime)));
         }
-        else if(![assetWriterPixelBufferInput appendPixelBuffer:pixel_buffer withPresentationTime:frameTime])
+        else if(![assetWriterPixelBufferInput appendPixelBuffer:pixel_buffer withPresentationTime:actualFrameTime])
         {
-            NSLog(@"Problem appending pixel buffer at time: %@", CFBridgingRelease(CMTimeCopyDescription(kCFAllocatorDefault, frameTime)));
+            NSLog(@"Problem appending pixel buffer at time: %@", CFBridgingRelease(CMTimeCopyDescription(kCFAllocatorDefault, actualFrameTime)));
         }
         else
         {
