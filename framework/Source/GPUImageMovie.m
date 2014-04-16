@@ -216,11 +216,13 @@
 - (void)setupSound {
     NSError *error;
     audioPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:self.url error:&error];
-
+    
     if (error) {
-        NSLog(@"Failed to initialise sound with error:%@",error);
+        NSLog(@"Failed to initialise sound with error:%@",[error localizedDescription]);
+    }else{
+        [audioPlayer prepareToPlay];
     }
-    [audioPlayer prepareToPlay];
+    
 }
 
 
