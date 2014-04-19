@@ -10,7 +10,7 @@
     AVAssetReader *reader;
     AVPlayerItemVideoOutput *playerItemOutput;
     CADisplayLink *displayLink;
-    CMTime previousFrameTime;
+    CMTime previousFrameTime, processingFrameTime;
     CFAbsoluteTime previousActualFrameTime;
     BOOL keepLooping;
 
@@ -425,7 +425,27 @@
     
     CMTime currentSampleTime = CMSampleBufferGetOutputPresentationTimeStamp(movieSampleBuffer);
     CVImageBufferRef movieFrame = CMSampleBufferGetImageBuffer(movieSampleBuffer);
+
+    processingFrameTime = currentSampleTime;
     [self processMovieFrame:movieFrame withSampleTime:currentSampleTime];
+}
+
+- (float)progress
+{
+    if ( AVAssetReaderStatusReading == reader.status )
+    {
+        float current = processingFrameTime.value * 1.0f / processingFrameTime.timescale;
+        float duration = self.asset.duration.value * 1.0f / self.asset.duration.timescale;
+        return current / duration;
+    }
+    else if ( AVAssetReaderStatusCompleted == reader.status )
+    {
+        return 1.f;
+    }
+    else
+    {
+        return 0.f;
+    }
 }
 
 - (void)processMovieFrame:(CVPixelBufferRef)movieFrame withSampleTime:(CMTime)currentSampleTime
