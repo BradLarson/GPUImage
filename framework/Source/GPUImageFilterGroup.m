@@ -178,6 +178,11 @@
         {
             [currentTarget endProcessing];
         }
+
+        for (id<GPUImageInput> terminalFilterTarget in _terminalFilter.targets)
+        {
+            [terminalFilterTarget endProcessing];
+        }
     }
 }
 
