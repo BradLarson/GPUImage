@@ -67,10 +67,14 @@
     // TODO: Dispatch this whole thing asynchronously to move image loading off main thread
     CGFloat widthOfImage = CGImageGetWidth(newImageSource);
     CGFloat heightOfImage = CGImageGetHeight(newImageSource);
+    
+    // If passed an empty image reference, CGContextDrawImage will fail in future versions of the SDK.
+    NSAssert( widthOfImage > 0 && heightOfImage > 0, @"Passed image must not be empty - it should be at least 1px tall and wide");
+    
     pixelSizeOfImage = CGSizeMake(widthOfImage, heightOfImage);
     CGSize pixelSizeToUseForTexture = pixelSizeOfImage;
     
-    BOOL shouldRedrawUsingCoreGraphics = YES;
+    BOOL shouldRedrawUsingCoreGraphics = NO;
     
     // For now, deal with images larger than the maximum texture size by resizing to be within that limit
     CGSize scaledImageSizeToFitOnGPU = [GPUImageContext sizeThatFitsWithinATextureForSize:pixelSizeOfImage];
@@ -94,12 +98,52 @@
     
     GLubyte *imageData = NULL;
     CFDataRef dataFromImageDataProvider;
+    GLenum format = GL_BGRA;
+    
+    if (!shouldRedrawUsingCoreGraphics) {
+        /* Check that the memory layout is compatible with GL, as we cannot use glPixelStore to
+         * tell GL about the memory layout with GLES.
+         */
+        if (CGImageGetBytesPerRow(newImageSource) != CGImageGetWidth(newImageSource) * 4 ||
+            CGImageGetBitsPerPixel(newImageSource) != 32 ||
+            CGImageGetBitsPerComponent(newImageSource) != 8)
+        {
+            shouldRedrawUsingCoreGraphics = YES;
+        } else {
+            /* Check that the bitmap pixel format is compatible with GL */
+            CGBitmapInfo bitmapInfo = CGImageGetBitmapInfo(newImageSource);
+            if ((bitmapInfo & kCGBitmapFloatComponents) != 0) {
+                /* We don't support float components for use directly in GL */
+                shouldRedrawUsingCoreGraphics = YES;
+            } else {
+                CGBitmapInfo byteOrderInfo = bitmapInfo & kCGBitmapByteOrderMask;
+                if (byteOrderInfo == kCGBitmapByteOrder32Little) {
+                    /* Little endian, for alpha-first we can use this bitmap directly in GL */
+                    CGImageAlphaInfo alphaInfo = bitmapInfo & kCGBitmapAlphaInfoMask;
+                    if (alphaInfo != kCGImageAlphaPremultipliedFirst && alphaInfo != kCGImageAlphaFirst &&
+                        alphaInfo != kCGImageAlphaNoneSkipFirst) {
+                        shouldRedrawUsingCoreGraphics = YES;
+                    }
+                } else if (byteOrderInfo == kCGBitmapByteOrderDefault || byteOrderInfo == kCGBitmapByteOrder32Big) {
+                    /* Big endian, for alpha-last we can use this bitmap directly in GL */
+                    CGImageAlphaInfo alphaInfo = bitmapInfo & kCGBitmapAlphaInfoMask;
+                    if (alphaInfo != kCGImageAlphaPremultipliedLast && alphaInfo != kCGImageAlphaLast &&
+                        alphaInfo != kCGImageAlphaNoneSkipLast) {
+                        shouldRedrawUsingCoreGraphics = YES;
+                    } else {
+                        /* Can access directly using GL_RGBA pixel format */
+                        format = GL_RGBA;
+                    }
+                }
+            }
+        }
+    }
     
     //    CFAbsoluteTime elapsedTime, startTime = CFAbsoluteTimeGetCurrent();
     
     if (shouldRedrawUsingCoreGraphics)
     {
-        // For resized image, redraw
+        // For resized or incompatible image: redraw
         imageData = (GLubyte *) calloc(1, (int)pixelSizeToUseForTexture.width * (int)pixelSizeToUseForTexture.height * 4);
         
         CGColorSpaceRef genericRGBColorspace = CGColorSpaceCreateDeviceRGB();
@@ -136,19 +180,22 @@
     runSynchronouslyOnVideoProcessingQueue(^{
         [GPUImageContext useImageProcessingContext];
         
-        [self initializeOutputTextureIfNeeded];
+        outputFramebuffer = [[GPUImageContext sharedFramebufferCache] fetchFramebufferForSize:pixelSizeToUseForTexture onlyTexture:YES];
+        [outputFramebuffer disableReferenceCounting];
         
-        glBindTexture(GL_TEXTURE_2D, outputTexture);
+        glBindTexture(GL_TEXTURE_2D, [outputFramebuffer texture]);
         if (self.shouldSmoothlyScaleOutput)
         {
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         }
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (int)pixelSizeToUseForTexture.width, (int)pixelSizeToUseForTexture.height, 0, GL_BGRA, GL_UNSIGNED_BYTE, imageData);
+        // no need to use self.outputTextureOptions here since pictures need this texture formats and type
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (int)pixelSizeToUseForTexture.width, (int)pixelSizeToUseForTexture.height, 0, format, GL_UNSIGNED_BYTE, imageData);
         
         if (self.shouldSmoothlyScaleOutput)
         {
             glGenerateMipmap(GL_TEXTURE_2D);
         }
+        glBindTexture(GL_TEXTURE_2D, 0);
     });
     
     if (shouldRedrawUsingCoreGraphics)
@@ -167,6 +214,9 @@
 #if ( (MAC_OS_X_VERSION_MIN_REQUIRED < __MAC_10_8) || (!defined(__MAC_10_8)) )
 - (void)dealloc;
 {
+    [outputFramebuffer enableReferenceCounting];
+    [outputFramebuffer unlock];
+
     if (imageUpdateSemaphore != NULL)
     {
         dispatch_release(imageUpdateSemaphore);
@@ -177,26 +227,6 @@
 #pragma mark -
 #pragma mark Image rendering
 
-- (void)initializeOutputTextureIfNeeded;
-{
-    runSynchronouslyOnVideoProcessingQueue(^{
-        if (!outputTexture)
-        {
-            [GPUImageContext useImageProcessingContext];
-            
-            glActiveTexture(GL_TEXTURE0);
-            glGenTextures(1, &outputTexture);
-            glBindTexture(GL_TEXTURE_2D, outputTexture);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-            // This is necessary for non-power-of-two textures
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-            glBindTexture(GL_TEXTURE_2D, 0);
-        }
-    });
-}
-
 - (void)removeAllTargets;
 {
     [super removeAllTargets];
@@ -205,34 +235,49 @@
 
 - (void)processImage;
 {
+    [self processImageWithCompletionHandler:nil];
+}
+
+- (BOOL)processImageWithCompletionHandler:(void (^)(void))completion;
+{
     hasProcessedImage = YES;
     
     //    dispatch_semaphore_wait(imageUpdateSemaphore, DISPATCH_TIME_FOREVER);
     
     if (dispatch_semaphore_wait(imageUpdateSemaphore, DISPATCH_TIME_NOW) != 0)
     {
-        NSLog(@"Bailing on the image upload semaphore");
-        return;
+        return NO;
     }
     
     runAsynchronouslyOnVideoProcessingQueue(^{
-        
-//        if (MAX(pixelSizeOfImage.width, pixelSizeOfImage.height) > 1000.0)
-//        {
-//            [self conserveMemoryForNextFrame];
-//        }
-        
         for (id<GPUImageInput> currentTarget in targets)
         {
             NSInteger indexOfObject = [targets indexOfObject:currentTarget];
             NSInteger textureIndexOfTarget = [[targetTextureIndices objectAtIndex:indexOfObject] integerValue];
             
+            [currentTarget setCurrentlyReceivingMonochromeInput:NO];
             [currentTarget setInputSize:pixelSizeOfImage atIndex:textureIndexOfTarget];
+            [currentTarget setInputFramebuffer:outputFramebuffer atIndex:textureIndexOfTarget];
             [currentTarget newFrameReadyAtTime:kCMTimeIndefinite atIndex:textureIndexOfTarget];
         }
         
         dispatch_semaphore_signal(imageUpdateSemaphore);
+        
+        if (completion != nil) {
+            completion();
+        }
     });
+    
+    return YES;
+}
+
+- (void)processImageUpToFilter:(GPUImageOutput<GPUImageInput> *)finalFilterInChain withCompletionHandler:(void (^)(NSImage *processedImage))block;
+{
+    [finalFilterInChain useNextFrameForImageCapture];
+    [self processImageWithCompletionHandler:^{
+        NSImage *imageFromFilter = [finalFilterInChain imageFromCurrentFramebuffer];
+        block(imageFromFilter);
+    }];
 }
 
 - (CGSize)outputImageSize;

@@ -180,9 +180,10 @@
     runSynchronouslyOnVideoProcessingQueue(^{
         [GPUImageContext useImageProcessingContext];
         
-        [self initializeOutputTextureIfNeeded];
-        
-        glBindTexture(GL_TEXTURE_2D, outputTexture);
+        outputFramebuffer = [[GPUImageContext sharedFramebufferCache] fetchFramebufferForSize:pixelSizeToUseForTexture onlyTexture:YES];
+        [outputFramebuffer disableReferenceCounting];
+
+        glBindTexture(GL_TEXTURE_2D, [outputFramebuffer texture]);
         if (self.shouldSmoothlyScaleOutput)
         {
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
@@ -210,15 +211,18 @@
 }
 
 // ARC forbids explicit message send of 'release'; since iOS 6 even for dispatch_release() calls: stripping it out in that case is required.
-#if ( (__IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_6_0) || (!defined(__IPHONE_7_0)) )
 - (void)dealloc;
 {
+    [outputFramebuffer enableReferenceCounting];
+    [outputFramebuffer unlock];
+
+#if ( (__IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_7_0) || (!defined(__IPHONE_7_0)) )
     if (imageUpdateSemaphore != NULL)
     {
         dispatch_release(imageUpdateSemaphore);
     }
-}
 #endif
+}
 
 #pragma mark -
 #pragma mark Image rendering
@@ -245,13 +249,7 @@
         return NO;
     }
     
-    runAsynchronouslyOnVideoProcessingQueue(^{
-        
-        if (MAX(pixelSizeOfImage.width, pixelSizeOfImage.height) > 1000.0)
-        {
-            [self conserveMemoryForNextFrame];
-        }
-        
+    runAsynchronouslyOnVideoProcessingQueue(^{        
         for (id<GPUImageInput> currentTarget in targets)
         {
             NSInteger indexOfObject = [targets indexOfObject:currentTarget];
@@ -259,7 +257,7 @@
             
             [currentTarget setCurrentlyReceivingMonochromeInput:NO];
             [currentTarget setInputSize:pixelSizeOfImage atIndex:textureIndexOfTarget];
-//            [currentTarget setInputTexture:outputTexture atIndex:textureIndexOfTarget];
+            [currentTarget setInputFramebuffer:outputFramebuffer atIndex:textureIndexOfTarget];
             [currentTarget newFrameReadyAtTime:kCMTimeIndefinite atIndex:textureIndexOfTarget];
         }
         
@@ -271,6 +269,15 @@
     });
     
     return YES;
+}
+
+- (void)processImageUpToFilter:(GPUImageOutput<GPUImageInput> *)finalFilterInChain withCompletionHandler:(void (^)(UIImage *processedImage))block;
+{
+    [finalFilterInChain useNextFrameForImageCapture];
+    [self processImageWithCompletionHandler:^{
+        UIImage *imageFromFilter = [finalFilterInChain imageFromCurrentFramebuffer];
+        block(imageFromFilter);
+    }];
 }
 
 - (CGSize)outputImageSize;

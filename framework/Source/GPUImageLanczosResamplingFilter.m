@@ -161,9 +161,17 @@ NSString *const kGPUImageLanczosFragmentShaderString = SHADER_STRING
     });
 }
 
-// The first pass (vertical) of the resampling needs to be shrunk in only one dimension so that the remaining shrinkage can be performed in the horizonal pass
-- (void)setFilterFBO;
+
+- (void)renderToTextureWithVertices:(const GLfloat *)vertices textureCoordinates:(const GLfloat *)textureCoordinates;
 {
+    if (self.preventRendering)
+    {
+        [firstInputFramebuffer unlock];
+        return;
+    }
+    
+    [GPUImageContext setActiveShaderProgram:filterProgram];
+    
     CGSize currentFBOSize = [self sizeOfFBO];
     if (GPUImageRotationSwapsWidthAndHeight(inputRotation))
     {
@@ -173,30 +181,59 @@ NSString *const kGPUImageLanczosFragmentShaderString = SHADER_STRING
     {
         currentFBOSize.width = self.originalImageSize.width;
     }
-
-    if (!filterFramebuffer)
+    outputFramebuffer = [[GPUImageContext sharedFramebufferCache] fetchFramebufferForSize:currentFBOSize textureOptions:self.outputTextureOptions onlyTexture:NO];
+    [outputFramebuffer activateFramebuffer];
+    
+    [self setUniformsForProgramAtIndex:0];
+    
+    glClearColor(backgroundColorRed, backgroundColorGreen, backgroundColorBlue, backgroundColorAlpha);
+    glClear(GL_COLOR_BUFFER_BIT);
+    
+	glActiveTexture(GL_TEXTURE2);
+	glBindTexture(GL_TEXTURE_2D, [firstInputFramebuffer texture]);
+	
+	glUniform1i(filterInputTextureUniform, 2);
+    
+    glVertexAttribPointer(filterPositionAttribute, 2, GL_FLOAT, 0, 0, vertices);
+	glVertexAttribPointer(filterTextureCoordinateAttribute, 2, GL_FLOAT, 0, 0, textureCoordinates);
+    
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+    
+    [firstInputFramebuffer unlock];
+    
+    // Run the second stage of the two-pass filter
+    [GPUImageContext setActiveShaderProgram:secondFilterProgram];
+    glActiveTexture(GL_TEXTURE2);
+    glBindTexture(GL_TEXTURE_2D, 0);
+    glActiveTexture(GL_TEXTURE3);
+    glBindTexture(GL_TEXTURE_2D, 0);
+    secondOutputFramebuffer = [[GPUImageContext sharedFramebufferCache] fetchFramebufferForSize:[self sizeOfFBO] textureOptions:self.outputTextureOptions onlyTexture:NO];
+    [secondOutputFramebuffer activateFramebuffer];
+    if (usingNextFrameForImageCapture)
     {
-        [super createFilterFBOofSize:currentFBOSize];
-        [self setupFilterForSize:currentFBOSize];
+        [secondOutputFramebuffer lock];
     }
-    
-    glBindFramebuffer(GL_FRAMEBUFFER, filterFramebuffer);
-    
-    glViewport(0, 0, (int)currentFBOSize.width, (int)currentFBOSize.height);
-}
 
-- (void)setSecondFilterFBO;
-{
-    CGSize currentFBOSize = [self sizeOfFBO];
-    if (!secondFilterFramebuffer)
+    [self setUniformsForProgramAtIndex:1];
+    
+    glActiveTexture(GL_TEXTURE3);
+    glBindTexture(GL_TEXTURE_2D, [outputFramebuffer texture]);
+    glVertexAttribPointer(secondFilterTextureCoordinateAttribute, 2, GL_FLOAT, 0, 0, [[self class] textureCoordinatesForRotation:kGPUImageNoRotation]);
+    
+	glUniform1i(secondFilterInputTextureUniform, 3);
+    
+    glVertexAttribPointer(secondFilterPositionAttribute, 2, GL_FLOAT, 0, 0, vertices);
+    
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
+    
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+    [outputFramebuffer unlock];
+    outputFramebuffer = nil;
+    if (usingNextFrameForImageCapture)
     {
-        [self createFilterFBOofSize:currentFBOSize];
-        [self setupFilterForSize:currentFBOSize];
+        dispatch_semaphore_signal(imageCaptureSemaphore);
     }
-    
-    glBindFramebuffer(GL_FRAMEBUFFER, secondFilterFramebuffer);
-
-    glViewport(0, 0, (int)currentFBOSize.width, (int)currentFBOSize.height);
 }
 
 @end

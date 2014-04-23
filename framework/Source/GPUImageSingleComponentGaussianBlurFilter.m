@@ -4,10 +4,11 @@
 
 + (NSString *)vertexShaderForOptimizedBlurOfRadius:(NSUInteger)blurRadius sigma:(CGFloat)sigma;
 {
-    if (blurRadius == 0)
+    if (blurRadius < 1)
     {
-        return nil;
+        return kGPUImageVertexShaderString;
     }
+
     // First, generate the normal Gaussian weights for a given sigma
     GLfloat *standardGaussianWeights = calloc(blurRadius + 1, sizeof(GLfloat));
     GLfloat sumOfWeights = 0.0;
@@ -81,10 +82,11 @@
 
 + (NSString *)fragmentShaderForOptimizedBlurOfRadius:(NSUInteger)blurRadius sigma:(CGFloat)sigma;
 {
-    if (blurRadius == 0)
+    if (blurRadius < 1)
     {
-        return nil;
+        return kGPUImagePassthroughFragmentShaderString;
     }
+
     // First, generate the normal Gaussian weights for a given sigma
     GLfloat *standardGaussianWeights = calloc(blurRadius + 1, sizeof(GLfloat));
     GLfloat sumOfWeights = 0.0;

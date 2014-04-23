@@ -42,7 +42,7 @@
 - (id)initWithAsset:(AVAsset *)asset;
 - (id)initWithPlayerItem:(AVPlayerItem *)playerItem;
 - (id)initWithURL:(NSURL *)url;
-- (void)textureCacheSetup;
+- (void)yuvConversionSetup;
 
 /// @name Movie processing
 - (void)enableSynchronizedEncodingUsingMovieWriter:(GPUImageMovieWriter *)movieWriter;

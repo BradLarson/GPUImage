@@ -127,19 +127,17 @@ NSString *const kGPUImageHoughAccumulationFBOReadFragmentShaderString = SHADER_S
 
 - (void)newFrameReadyAtTime:(CMTime)frameTime atIndex:(NSInteger)textureIndex;
 {
-    outputTextureRetainCount = [targets count];
-
     if (lineCoordinates == NULL)
     {
         [self generateLineCoordinates];
     }
     
-    [self renderToTextureWithVertices:NULL textureCoordinates:NULL sourceTexture:filterSourceTexture];
+    [self renderToTextureWithVertices:NULL textureCoordinates:NULL];
     
     [self informTargetsAboutNewFrameAtTime:frameTime];
 }
 
-- (void)renderToTextureWithVertices:(const GLfloat *)vertices textureCoordinates:(const GLfloat *)textureCoordinates sourceTexture:(GLuint)sourceTexture;
+- (void)renderToTextureWithVertices:(const GLfloat *)vertices textureCoordinates:(const GLfloat *)textureCoordinates;
 {
     // we need a normal color texture for this filter
     NSAssert(self.outputTextureOptions.internalFormat == GL_RGBA, @"The output texture format for this filter must be GL_RGBA.");
@@ -147,6 +145,7 @@ NSString *const kGPUImageHoughAccumulationFBOReadFragmentShaderString = SHADER_S
     
     if (self.preventRendering)
     {
+        [firstInputFramebuffer unlock];
         return;
     }
     
@@ -222,7 +221,8 @@ NSString *const kGPUImageHoughAccumulationFBOReadFragmentShaderString = SHADER_S
 //    CFAbsoluteTime currentFrameTime = (CFAbsoluteTimeGetCurrent() - startTime);
 //    NSLog(@"Line generation processing time : %f ms", 1000.0 * currentFrameTime);
 
-    [self setFilterFBO];
+    outputFramebuffer = [[GPUImageContext sharedFramebufferCache] fetchFramebufferForSize:[self sizeOfFBO] textureOptions:self.outputTextureOptions onlyTexture:NO];
+    [outputFramebuffer activateFramebuffer];
     
     [GPUImageContext setActiveShaderProgram:filterProgram];
     
@@ -247,6 +247,7 @@ NSString *const kGPUImageHoughAccumulationFBOReadFragmentShaderString = SHADER_S
     {
         glDisable(GL_BLEND);
     }
+    [firstInputFramebuffer unlock];
 }
 
 @end

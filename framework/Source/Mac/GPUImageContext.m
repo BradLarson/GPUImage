@@ -14,6 +14,7 @@
 @synthesize context = _context;
 @synthesize currentShaderProgram = _currentShaderProgram;
 @synthesize contextQueue = _contextQueue;
+@synthesize framebufferCache = _framebufferCache;
 
 static void *openGLESContextQueueKey;
 
@@ -51,6 +52,11 @@ static void *openGLESContextQueueKey;
 + (dispatch_queue_t)sharedContextQueue;
 {
     return [[self sharedImageProcessingContext] contextQueue];
+}
+
++ (GPUImageFramebufferCache *)sharedFramebufferCache;
+{
+    return [[self sharedImageProcessingContext] framebufferCache];
 }
 
 + (void)useImageProcessingContext;
@@ -228,6 +234,16 @@ static void *openGLESContextQueueKey;
     }
     
     return _context;
+}
+
+- (GPUImageFramebufferCache *)framebufferCache;
+{
+    if (_framebufferCache == nil)
+    {
+        _framebufferCache = [[GPUImageFramebufferCache alloc] init];
+    }
+    
+    return _framebufferCache;
 }
 
 @end

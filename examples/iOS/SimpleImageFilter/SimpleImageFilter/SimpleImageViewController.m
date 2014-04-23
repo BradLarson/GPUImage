@@ -49,9 +49,9 @@
 
 - (IBAction)updateSliderValue:(id)sender
 {
-//    CGFloat midpoint = [(UISlider *)sender value];
-//    [(GPUImageTiltShiftFilter *)sepiaFilter setTopFocusLevel:midpoint - 0.1];
-//    [(GPUImageTiltShiftFilter *)sepiaFilter setBottomFocusLevel:midpoint + 0.1];
+    CGFloat midpoint = [(UISlider *)sender value];
+    [(GPUImageTiltShiftFilter *)sepiaFilter setTopFocusLevel:midpoint - 0.1];
+    [(GPUImageTiltShiftFilter *)sepiaFilter setBottomFocusLevel:midpoint + 0.1];
 
     [sourcePicture processImage];
 }
@@ -64,8 +64,8 @@
     UIImage *inputImage = [UIImage imageNamed:@"WID-small.jpg"]; // The WID.jpg example is greater than 2048 pixels tall, so it fails on older devices
     
     sourcePicture = [[GPUImagePicture alloc] initWithImage:inputImage smoothlyScaleOutput:YES];
-//    sepiaFilter = [[GPUImageTiltShiftFilter alloc] init];
-    sepiaFilter = [[GPUImageSobelEdgeDetectionFilter alloc] init];
+    sepiaFilter = [[GPUImageTiltShiftFilter alloc] init];
+//    sepiaFilter = [[GPUImageSobelEdgeDetectionFilter alloc] init];
     
     GPUImageView *imageView = (GPUImageView *)self.view;
     [sepiaFilter forceProcessingAtSize:imageView.sizeInPixels]; // This is now needed to make the filter run at the smaller output size
@@ -80,51 +80,54 @@
 {
     // Set up a manual image filtering chain
     NSURL *inputImageURL = [[NSBundle mainBundle] URLForResource:@"Lambeau" withExtension:@"jpg"];
-    UIImage *inputImage = [UIImage imageNamed:@"Lambeau.jpg"];
 
 //    GPUImagePicture *stillImageSource = [[GPUImagePicture alloc] initWithImage:inputImage];
+    NSLog(@"First image filtering");
     GPUImagePicture *stillImageSource = [[GPUImagePicture alloc] initWithURL:inputImageURL];
 
-    
     GPUImageSepiaFilter *stillImageFilter = [[GPUImageSepiaFilter alloc] init];
     GPUImageVignetteFilter *vignetteImageFilter = [[GPUImageVignetteFilter alloc] init];
     vignetteImageFilter.vignetteEnd = 0.6;
     vignetteImageFilter.vignetteStart = 0.4;
     
-    // There's a problem with the Kuwahara filter where it doesn't finish rendering before the image is extracted from it.
-    // It looks like it only gets through certain tiles before glReadPixels() is called. Odd.
-//    GPUImageKuwaharaFilter *stillImageFilter = [[GPUImageKuwaharaFilter alloc] init];
-//    stillImageFilter.radius = 9;
-    
     [stillImageSource addTarget:stillImageFilter];
     [stillImageFilter addTarget:vignetteImageFilter];
-    [vignetteImageFilter prepareForImageCapture];
+
+    [vignetteImageFilter useNextFrameForImageCapture];
     [stillImageSource processImage];
-    
-    UIImage *currentFilteredImage = [vignetteImageFilter imageFromCurrentlyProcessedOutput];
+
+    NSError *error = nil;
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0];
+
+    @autoreleasepool {
+        UIImage *currentFilteredImage = [vignetteImageFilter imageFromCurrentFramebuffer];
         
+        NSData *dataForPNGFile = UIImagePNGRepresentation(currentFilteredImage);
+        if (![dataForPNGFile writeToFile:[documentsDirectory stringByAppendingPathComponent:@"Lambeau-filtered1.png"] options:NSAtomicWrite error:&error])
+        {
+            NSLog(@"Error: Couldn't save image 1");
+        }
+        dataForPNGFile = nil;
+        currentFilteredImage = nil;
+    }
+    
     // Do a simpler image filtering
 //    GPUImageSketchFilter *stillImageFilter2 = [[GPUImageSketchFilter alloc] init];
-    GPUImageSobelEdgeDetectionFilter *stillImageFilter2 = [[GPUImageSobelEdgeDetectionFilter alloc] init];
+//    GPUImageSobelEdgeDetectionFilter *stillImageFilter2 = [[GPUImageSobelEdgeDetectionFilter alloc] init];
+//    GPUImageAmatorkaFilter *stillImageFilter2 = [[GPUImageAmatorkaFilter alloc] init];
 //    GPUImageUnsharpMaskFilter *stillImageFilter2 = [[GPUImageUnsharpMaskFilter alloc] init];
-//    GPUImageSepiaFilter *stillImageFilter2 = [[GPUImageSepiaFilter alloc] init];
+    GPUImageSepiaFilter *stillImageFilter2 = [[GPUImageSepiaFilter alloc] init];
+    NSLog(@"Second image filtering");
+    UIImage *inputImage = [UIImage imageNamed:@"Lambeau.jpg"];
     UIImage *quickFilteredImage = [stillImageFilter2 imageByFilteringImage:inputImage];
     
     // Write images to disk, as proof
-    NSData *dataForPNGFile = UIImagePNGRepresentation(currentFilteredImage);
     NSData *dataForPNGFile2 = UIImagePNGRepresentation(quickFilteredImage);
     
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *documentsDirectory = [paths objectAtIndex:0];
-    
-    NSError *error = nil;
-    if (![dataForPNGFile writeToFile:[documentsDirectory stringByAppendingPathComponent:@"Lambeau-filtered1.png"] options:NSAtomicWrite error:&error])
-    {
-        return;
-    }
     if (![dataForPNGFile2 writeToFile:[documentsDirectory stringByAppendingPathComponent:@"Lambeau-filtered2.png"] options:NSAtomicWrite error:&error])
     {
-        return;
+        NSLog(@"Error: Couldn't save image 2");
     }
 }
 
@@ -137,24 +140,27 @@
     GPUImageBrightnessFilter *passthroughFilter = [[GPUImageBrightnessFilter alloc] init];
     [passthroughFilter forceProcessingAtSize:CGSizeMake(640.0, 480.0)];
     [stillImageSource addTarget:passthroughFilter];
+    [passthroughFilter useNextFrameForImageCapture];
     [stillImageSource processImage];
-    UIImage *nearestNeighborImage = [passthroughFilter imageFromCurrentlyProcessedOutput];
+    UIImage *nearestNeighborImage = [passthroughFilter imageFromCurrentFramebuffer];
 
     // Lanczos downsampling
     [stillImageSource removeAllTargets];
     GPUImageLanczosResamplingFilter *lanczosResamplingFilter = [[GPUImageLanczosResamplingFilter alloc] init];
     [lanczosResamplingFilter forceProcessingAtSize:CGSizeMake(640.0, 480.0)];
     [stillImageSource addTarget:lanczosResamplingFilter];
+    [lanczosResamplingFilter useNextFrameForImageCapture];
     [stillImageSource processImage];
-    UIImage *lanczosImage = [lanczosResamplingFilter imageFromCurrentlyProcessedOutput];
+    UIImage *lanczosImage = [lanczosResamplingFilter imageFromCurrentFramebuffer];
     
     // Trilinear downsampling
     GPUImagePicture *stillImageSource2 = [[GPUImagePicture alloc] initWithImage:inputImage smoothlyScaleOutput:YES];
     GPUImageBrightnessFilter *passthroughFilter2 = [[GPUImageBrightnessFilter alloc] init];
     [passthroughFilter2 forceProcessingAtSize:CGSizeMake(640.0, 480.0)];
     [stillImageSource2 addTarget:passthroughFilter2];
+    [passthroughFilter2 useNextFrameForImageCapture];
     [stillImageSource2 processImage];
-    UIImage *trilinearImage = [passthroughFilter2 imageFromCurrentlyProcessedOutput];
+    UIImage *trilinearImage = [passthroughFilter2 imageFromCurrentFramebuffer];
 
     NSData *dataForPNGFile1 = UIImagePNGRepresentation(nearestNeighborImage);
     NSData *dataForPNGFile2 = UIImagePNGRepresentation(lanczosImage);

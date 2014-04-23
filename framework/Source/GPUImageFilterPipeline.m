@@ -198,20 +198,15 @@
 }
 
 - (UIImage *)currentFilteredFrame {
-    return [(GPUImageFilter *)[_filters lastObject] imageFromCurrentlyProcessedOutput];
+    return [(GPUImageFilter *)[_filters lastObject] imageFromCurrentFramebuffer];
 }
 
 - (UIImage *)currentFilteredFrameWithOrientation:(UIImageOrientation)imageOrientation {
-  return [(GPUImageFilter *)[_filters lastObject] imageFromCurrentlyProcessedOutputWithOrientation:imageOrientation];
+  return [(GPUImageFilter *)[_filters lastObject] imageFromCurrentFramebufferWithOrientation:imageOrientation];
 }
 
 - (CGImageRef)newCGImageFromCurrentFilteredFrame {
     return [(GPUImageFilter *)[_filters lastObject] newCGImageFromCurrentlyProcessedOutput];
 }
-
-- (CGImageRef)newCGImageFromCurrentFilteredFrameWithOrientation:(UIImageOrientation)imageOrientation {
-    return [(GPUImageFilter *)[_filters lastObject] newCGImageFromCurrentlyProcessedOutputWithOrientation:imageOrientation];
-}
-
 
 @end

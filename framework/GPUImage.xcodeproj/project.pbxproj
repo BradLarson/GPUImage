@@ -291,6 +291,10 @@
 		BCC46E5F15B9EFE8005519B9 /* GPUImageHighlightShadowFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = BCC46E5D15B9EFE8005519B9 /* GPUImageHighlightShadowFilter.m */; };
 		BCC46E6315BA095F005519B9 /* GPUImageFalseColorFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = BCC46E6115BA095F005519B9 /* GPUImageFalseColorFilter.h */; };
 		BCC46E6415BA095F005519B9 /* GPUImageFalseColorFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = BCC46E6215BA095F005519B9 /* GPUImageFalseColorFilter.m */; };
+		BCC887CC18A1CEEB008DB37D /* GPUImageFramebuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = BCC887CA18A1CEEB008DB37D /* GPUImageFramebuffer.h */; };
+		BCC887CD18A1CEEB008DB37D /* GPUImageFramebuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = BCC887CB18A1CEEB008DB37D /* GPUImageFramebuffer.m */; };
+		BCC887D018A1D3AD008DB37D /* GPUImageFramebufferCache.h in Headers */ = {isa = PBXBuildFile; fileRef = BCC887CE18A1D3AD008DB37D /* GPUImageFramebufferCache.h */; };
+		BCC887D118A1D3AD008DB37D /* GPUImageFramebufferCache.m in Sources */ = {isa = PBXBuildFile; fileRef = BCC887CF18A1D3AD008DB37D /* GPUImageFramebufferCache.m */; };
 		BCC93A1E1501E42F00958B26 /* GPUImageTwoPassFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = BCC93A1C1501E42E00958B26 /* GPUImageTwoPassFilter.h */; };
 		BCC93A1F1501E42F00958B26 /* GPUImageTwoPassFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = BCC93A1D1501E42F00958B26 /* GPUImageTwoPassFilter.m */; };
 		BCC93A301502A90F00958B26 /* GPUImageFilterPipeline.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D69488A1501F58200206FF8 /* GPUImageFilterPipeline.m */; };
@@ -640,6 +644,10 @@
 		BCC46E5D15B9EFE8005519B9 /* GPUImageHighlightShadowFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GPUImageHighlightShadowFilter.m; path = Source/GPUImageHighlightShadowFilter.m; sourceTree = SOURCE_ROOT; };
 		BCC46E6115BA095F005519B9 /* GPUImageFalseColorFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GPUImageFalseColorFilter.h; path = Source/GPUImageFalseColorFilter.h; sourceTree = SOURCE_ROOT; };
 		BCC46E6215BA095F005519B9 /* GPUImageFalseColorFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GPUImageFalseColorFilter.m; path = Source/GPUImageFalseColorFilter.m; sourceTree = SOURCE_ROOT; };
+		BCC887CA18A1CEEB008DB37D /* GPUImageFramebuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GPUImageFramebuffer.h; path = Source/GPUImageFramebuffer.h; sourceTree = SOURCE_ROOT; };
+		BCC887CB18A1CEEB008DB37D /* GPUImageFramebuffer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GPUImageFramebuffer.m; path = Source/GPUImageFramebuffer.m; sourceTree = SOURCE_ROOT; };
+		BCC887CE18A1D3AD008DB37D /* GPUImageFramebufferCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GPUImageFramebufferCache.h; path = Source/GPUImageFramebufferCache.h; sourceTree = SOURCE_ROOT; };
+		BCC887CF18A1D3AD008DB37D /* GPUImageFramebufferCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GPUImageFramebufferCache.m; path = Source/GPUImageFramebufferCache.m; sourceTree = SOURCE_ROOT; };
 		BCC93A1C1501E42E00958B26 /* GPUImageTwoPassFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GPUImageTwoPassFilter.h; path = Source/GPUImageTwoPassFilter.h; sourceTree = SOURCE_ROOT; };
 		BCC93A1D1501E42F00958B26 /* GPUImageTwoPassFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GPUImageTwoPassFilter.m; path = Source/GPUImageTwoPassFilter.m; sourceTree = SOURCE_ROOT; };
 		BCC94AB9151E4FD6008554B4 /* GPUImageLuminanceThresholdFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GPUImageLuminanceThresholdFilter.h; path = Source/GPUImageLuminanceThresholdFilter.h; sourceTree = SOURCE_ROOT; };
@@ -1145,6 +1153,10 @@
 				BCB5E79314E3275200701302 /* GLProgram.m */,
 				BCB5E76A14E20AD700701302 /* GPUImageContext.h */,
 				BCB5E76B14E20AD700701302 /* GPUImageContext.m */,
+				BCC887CA18A1CEEB008DB37D /* GPUImageFramebuffer.h */,
+				BCC887CB18A1CEEB008DB37D /* GPUImageFramebuffer.m */,
+				BCC887CE18A1D3AD008DB37D /* GPUImageFramebufferCache.h */,
+				BCC887CF18A1D3AD008DB37D /* GPUImageFramebufferCache.m */,
 				BCB5E78114E232BC00701302 /* Sources */,
 				0D6948871501F56600206FF8 /* Pipeline */,
 				BC245DC314DDBE6B009FE7EB /* Filters */,
@@ -1348,6 +1360,8 @@
 				BCBC605716C8527C00B11741 /* GPUImageZoomBlurFilter.h in Headers */,
 				BC6C55401730679D00EB222D /* GPUImageLaplacianFilter.h in Headers */,
 				BCB030BE173400BC001A1A20 /* GPUImageThreeInputFilter.h in Headers */,
+				BCC887CC18A1CEEB008DB37D /* GPUImageFramebuffer.h in Headers */,
+				BCC887D018A1D3AD008DB37D /* GPUImageFramebufferCache.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1396,7 +1410,8 @@
 		BCF1A32B14DDB1EC00852800 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0460;
+				LastTestingUpgradeCheck = 0510;
+				LastUpgradeCheck = 0500;
 				ORGANIZATIONNAME = "Brad Larson";
 			};
 			buildConfigurationList = BCF1A32E14DDB1EC00852800 /* Build configuration list for PBXProject "GPUImage" */;
@@ -1622,6 +1637,8 @@
 				BCB030BF173400BC001A1A20 /* GPUImageThreeInputFilter.m in Sources */,
 				D443237B17C81C0C00204484 /* GPUImageMovieComposition.m in Sources */,
 				BC8A583D1813060F00E6B507 /* GPUImageiOSBlurFilter.m in Sources */,
+				BCC887CD18A1CEEB008DB37D /* GPUImageFramebuffer.m in Sources */,
+				BCC887D118A1D3AD008DB37D /* GPUImageFramebufferCache.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1675,9 +1692,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -1692,11 +1710,15 @@
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
+				ONLY_ACTIVE_ARCH = YES;
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SDKROOT = iphoneos;
 				SYMROOT = "$(PROJECT_DIR)/../build";
@@ -1707,9 +1729,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -1717,9 +1740,12 @@
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
 				RUN_CLANG_STATIC_ANALYZER = YES;

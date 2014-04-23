@@ -146,8 +146,6 @@ NSString *const kGPUImageTransformVertexShaderString = SHADER_STRING
 
 - (void)newFrameReadyAtTime:(CMTime)frameTime atIndex:(NSInteger)textureIndex;
 {
-    outputTextureRetainCount = [targets count];
-
     CGSize currentFBOSize = [self sizeOfFBO];
     CGFloat normalizedHeight = currentFBOSize.height / currentFBOSize.width;
     
@@ -182,22 +180,22 @@ NSString *const kGPUImageTransformVertexShaderString = SHADER_STRING
     {
 		if (_anchorTopLeft)
 		{
-			[self renderToTextureWithVertices:squareVerticesAnchorTL textureCoordinates:[[self class] textureCoordinatesForRotation:inputRotation] sourceTexture:filterSourceTexture];
+			[self renderToTextureWithVertices:squareVerticesAnchorTL textureCoordinates:[[self class] textureCoordinatesForRotation:inputRotation]];
 		}
 		else
 		{
-			[self renderToTextureWithVertices:squareVertices textureCoordinates:[[self class] textureCoordinatesForRotation:inputRotation] sourceTexture:filterSourceTexture];
+			[self renderToTextureWithVertices:squareVertices textureCoordinates:[[self class] textureCoordinatesForRotation:inputRotation]];
 		}
     }
     else
     {
 		if (_anchorTopLeft)
 		{
-			[self renderToTextureWithVertices:adjustedVerticesAnchorTL textureCoordinates:[[self class] textureCoordinatesForRotation:inputRotation] sourceTexture:filterSourceTexture];
+			[self renderToTextureWithVertices:adjustedVerticesAnchorTL textureCoordinates:[[self class] textureCoordinatesForRotation:inputRotation]];
 		}
 		else
 		{
-			[self renderToTextureWithVertices:adjustedVertices textureCoordinates:[[self class] textureCoordinatesForRotation:inputRotation] sourceTexture:filterSourceTexture];
+			[self renderToTextureWithVertices:adjustedVertices textureCoordinates:[[self class] textureCoordinatesForRotation:inputRotation]];
 		}
     }
     

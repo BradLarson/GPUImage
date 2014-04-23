@@ -40,6 +40,11 @@
 
 + (NSString *)vertexShaderForStandardBlurOfRadius:(NSUInteger)blurRadius sigma:(CGFloat)sigma;
 {
+    if (blurRadius < 1)
+    {
+        return kGPUImageVertexShaderString;
+    }
+    
 //    NSLog(@"Max varyings: %d", [GPUImageContext maximumVaryingVectorsForThisDevice]);
     NSMutableString *shaderString = [[NSMutableString alloc] init];
 
@@ -85,6 +90,11 @@
 
 + (NSString *)fragmentShaderForStandardBlurOfRadius:(NSUInteger)blurRadius sigma:(CGFloat)sigma;
 {
+    if (blurRadius < 1)
+    {
+        return kGPUImagePassthroughFragmentShaderString;
+    }
+
     // First, generate the normal Gaussian weights for a given sigma
     GLfloat *standardGaussianWeights = calloc(blurRadius + 1, sizeof(GLfloat));
     GLfloat sumOfWeights = 0.0;
@@ -157,10 +167,11 @@
 
 + (NSString *)vertexShaderForOptimizedBlurOfRadius:(NSUInteger)blurRadius sigma:(CGFloat)sigma;
 {
-    if (blurRadius == 0)
+    if (blurRadius < 1)
     {
-        return nil;
+        return kGPUImageVertexShaderString;
     }
+
     // First, generate the normal Gaussian weights for a given sigma
     GLfloat *standardGaussianWeights = calloc(blurRadius + 1, sizeof(GLfloat));
     GLfloat sumOfWeights = 0.0;
@@ -234,10 +245,11 @@
 
 + (NSString *)fragmentShaderForOptimizedBlurOfRadius:(NSUInteger)blurRadius sigma:(CGFloat)sigma;
 {
-    if (blurRadius == 0)
+    if (blurRadius < 1)
     {
-        return nil;
+        return kGPUImagePassthroughFragmentShaderString;
     }
+    
     // First, generate the normal Gaussian weights for a given sigma
     GLfloat *standardGaussianWeights = calloc(blurRadius + 1, sizeof(GLfloat));
     GLfloat sumOfWeights = 0.0;
@@ -349,13 +361,13 @@
 #pragma mark -
 #pragma mark Rendering
 
-- (void)renderToTextureWithVertices:(const GLfloat *)vertices textureCoordinates:(const GLfloat *)textureCoordinates sourceTexture:(GLuint)sourceTexture;
+- (void)renderToTextureWithVertices:(const GLfloat *)vertices textureCoordinates:(const GLfloat *)textureCoordinates;
 {
-    [super renderToTextureWithVertices:vertices textureCoordinates:textureCoordinates sourceTexture:sourceTexture];
+    [super renderToTextureWithVertices:vertices textureCoordinates:textureCoordinates];
     
     for (NSUInteger currentAdditionalBlurPass = 1; currentAdditionalBlurPass < _blurPasses; currentAdditionalBlurPass++)
     {
-        [super renderToTextureWithVertices:vertices textureCoordinates:[[self class] textureCoordinatesForRotation:kGPUImageNoRotation] sourceTexture:secondFilterOutputTexture];
+        [super renderToTextureWithVertices:vertices textureCoordinates:[[self class] textureCoordinatesForRotation:kGPUImageNoRotation]];
     }
 }
 

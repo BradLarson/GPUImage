@@ -24,14 +24,11 @@ extern NSString *const kGPUImageColorSwizzlingFragmentShaderString;
     AVAssetWriterInputPixelBufferAdaptor *assetWriterPixelBufferInput;
 	dispatch_queue_t movieWritingQueue;
     
-    CVOpenGLESTextureCacheRef coreVideoTextureCache;
     CVPixelBufferRef renderTarget;
     CVOpenGLESTextureRef renderTexture;
 
     CGSize videoSize;
     GPUImageRotationMode inputRotation;
-    
-    __unsafe_unretained id<GPUImageTextureDelegate> textureDelegate;
 }
 
 @property(readwrite, nonatomic) BOOL hasAudioTrack;
