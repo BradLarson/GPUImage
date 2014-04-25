@@ -163,6 +163,12 @@
     [self _refreshFilters];
 }
 
+- (void)removeFilter:(GPUImageFilter *)filter
+{
+    [self.filters removeObject:filter];
+    [self _refreshFilters];
+}
+
 - (void)removeFilterAtIndex:(NSUInteger)index {
     [self.filters removeObjectAtIndex:index];
     [self _refreshFilters];

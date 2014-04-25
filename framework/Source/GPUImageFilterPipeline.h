@@ -19,6 +19,7 @@
 - (void) addFilter:(GPUImageFilter*)filter atIndex:(NSUInteger)insertIndex;
 - (void) replaceFilterAtIndex:(NSUInteger)index withFilter:(GPUImageFilter*)filter;
 - (void) replaceAllFilters:(NSArray*) newFilters;
+- (void) removeFilter:(GPUImageFilter*)filter;
 - (void) removeFilterAtIndex:(NSUInteger)index;
 - (void) removeAllFilters;
 
