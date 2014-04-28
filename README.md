@@ -513,6 +513,9 @@ Additionally, this is an ARC-enabled framework, so if you want to use this withi
 
 If you don't want to include the project as a dependency in your application's Xcode project, you can build a universal static library for the iOS Simulator or device. To do this, run `build.sh` at the command line. The resulting library and header files will be located at `build/Release-iphone`. You may also change the version of the iOS SDK by changing the `IOSSDK_VER` variable in `build.sh` (all available versions can be found using `xcodebuild -showsdks`).
 
+Find detailed steps with screenshots <a href="http://stackoverflow.com/questions/10382394/what-should-i-do-if-i-cant-find-the-gpuimage-h-header-for-the-gpuimage-framewor/21896243#21896243">on StackOverflow</a>
+
+
 ## Performing common tasks ##
 
 ### Filtering live video ###
