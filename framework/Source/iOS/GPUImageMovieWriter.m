@@ -390,9 +390,10 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
             {
                 NSLog(@"2: Had to drop an audio frame %@", CFBridgingRelease(CMTimeCopyDescription(kCFAllocatorDefault, currentSampleTime)));
             }
-            else if( ! [assetWriterAudioInput appendSampleBuffer:audioBuffer] )
+            else if(assetWriter.status == AVAssetWriterStatusWriting)
             {
-                NSLog(@"Problem appending audio buffer at time: %@", CFBridgingRelease(CMTimeCopyDescription(kCFAllocatorDefault, currentSampleTime)));
+                if (![assetWriterAudioInput appendSampleBuffer:audioBuffer])
+                    NSLog(@"Problem appending audio buffer at time: %@", CFBridgingRelease(CMTimeCopyDescription(kCFAllocatorDefault, currentSampleTime)));
             }
             else
             {
@@ -432,7 +433,7 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
             //NSLog(@"video requestMediaDataWhenReadyOnQueue begin");
             while( assetWriterVideoInput.readyForMoreMediaData && ! _paused )
             {
-                if( ! videoInputReadyCallback() && ! videoEncodingIsFinished )
+                if( videoInputReadyCallback && ! videoInputReadyCallback() && ! videoEncodingIsFinished )
                 {
                     dispatch_async(movieWritingQueue, ^{
                         if( assetWriter.status == AVAssetWriterStatusWriting && ! videoEncodingIsFinished )
@@ -461,7 +462,7 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
             //NSLog(@"audio requestMediaDataWhenReadyOnQueue begin");
             while( assetWriterAudioInput.readyForMoreMediaData && ! _paused )
             {
-                if( ! audioInputReadyCallback() && ! audioEncodingIsFinished )
+                if( audioInputReadyCallback && ! audioInputReadyCallback() && ! audioEncodingIsFinished )
                 {
                     dispatch_async(movieWritingQueue, ^{
                         if( assetWriter.status == AVAssetWriterStatusWriting && ! audioEncodingIsFinished )
@@ -688,9 +689,10 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
         {
             NSLog(@"2: Had to drop a video frame: %@", CFBridgingRelease(CMTimeCopyDescription(kCFAllocatorDefault, frameTime)));
         }
-        else if(![assetWriterPixelBufferInput appendPixelBuffer:pixel_buffer withPresentationTime:frameTime])
+        else if(self.assetWriter.status == AVAssetWriterStatusWriting)
         {
-            NSLog(@"Problem appending pixel buffer at time: %@", CFBridgingRelease(CMTimeCopyDescription(kCFAllocatorDefault, frameTime)));
+            if (![assetWriterPixelBufferInput appendPixelBuffer:pixel_buffer withPresentationTime:frameTime])
+                NSLog(@"Problem appending pixel buffer at time: %@", CFBridgingRelease(CMTimeCopyDescription(kCFAllocatorDefault, frameTime)));
         }
         else
         {

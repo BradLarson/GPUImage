@@ -410,7 +410,8 @@
     }
     else if (synchronizedMovieWriter != nil)
     {
-        if (reader.status == AVAssetReaderStatusCompleted)
+        if (reader.status == AVAssetReaderStatusCompleted || reader.status == AVAssetReaderStatusFailed ||
+            reader.status == AVAssetReaderStatusCancelled)
         {
             [self endProcessing];
         }
