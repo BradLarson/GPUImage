@@ -1,8 +1,5 @@
 #import <Foundation/Foundation.h>
-#import <UIKit/UIKit.h>
-
-@class GPUImageOutput;
-@protocol GPUImageInput;
+#import "GPUImageOutput.h"
 
 @interface GPUImageFilterPipeline : NSObject
 {
@@ -21,8 +18,8 @@
 - (void) addFilter:(GPUImageOutput<GPUImageInput> *)filter;
 - (void) addFilter:(GPUImageOutput<GPUImageInput> *)filter atIndex:(NSUInteger)insertIndex;
 - (void) replaceFilterAtIndex:(NSUInteger)index withFilter:(GPUImageOutput<GPUImageInput> *)filter;
-- (void) replaceAllFilters:(NSArray*) newFilters;
-- (void) removeFilter:(GPUImageFilter*)filter;
+- (void) replaceAllFilters:(NSArray *) newFilters;
+- (void) removeFilter:(GPUImageOutput<GPUImageInput> *)filter;
 - (void) removeFilterAtIndex:(NSUInteger)index;
 - (void) removeAllFilters;
 

@@ -1,5 +1,4 @@
 #import "GPUImageFilterPipeline.h"
-#import "GPUImageOutput.h"
 
 @interface GPUImageFilterPipeline ()
 
@@ -164,7 +163,7 @@
     [self _refreshFilters];
 }
 
-- (void)removeFilter:(GPUImageFilter *)filter
+- (void) removeFilter:(GPUImageOutput<GPUImageInput> *)filter;
 {
     [self.filters removeObject:filter];
     [self _refreshFilters];
