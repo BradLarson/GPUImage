@@ -50,6 +50,8 @@ typedef struct GPUTextureOptions {
 - (void)restoreRenderTarget;
 
 // Raw data bytes
+- (void)lockForReading;
+- (void)unlockAfterReading;
 - (NSUInteger)bytesPerRow;
 - (GLubyte *)byteBuffer;
 
