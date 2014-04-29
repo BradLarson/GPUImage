@@ -186,7 +186,7 @@
     {
         isEndProcessing = YES;
         
-        for (id<GPUImageInput> currentTarget in targets)
+        for (id<GPUImageInput> currentTarget in _terminalFilter.targets)
         {
             [currentTarget endProcessing];
         }
