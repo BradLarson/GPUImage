@@ -1160,7 +1160,7 @@
             self.title = @"Box Blur";
             self.filterSettingsSlider.hidden = NO;
             
-            [self.filterSettingsSlider setMinimumValue:1.0];
+            [self.filterSettingsSlider setMinimumValue:0.0];
             [self.filterSettingsSlider setMaximumValue:24.0];
             [self.filterSettingsSlider setValue:2.0];
             
