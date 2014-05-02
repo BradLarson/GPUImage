@@ -60,8 +60,11 @@
 
 - (void)update;
 {
-    [GPUImageContext useImageProcessingContext];
-    
+    [self updateWithTimestamp:kCMTimeIndefinite];
+}
+
+- (void)updateUsingCurrentTime;
+{
     if(CMTIME_IS_INVALID(time)) {
         time = CMTimeMakeWithSeconds(0, 600);
         actualTimeOfLastUpdate = [NSDate timeIntervalSinceReferenceDate];
@@ -71,6 +74,13 @@
         time = CMTimeAdd(time, CMTimeMakeWithSeconds(diff, 600));
         actualTimeOfLastUpdate = now;
     }
+
+    [self updateWithTimestamp:time];
+}
+
+- (void)updateWithTimestamp:(CMTime)frameTime;
+{
+    [GPUImageContext useImageProcessingContext];
     
     CGSize layerPixelSize = [self layerSizeInPixels];
     
@@ -105,7 +115,7 @@
             NSInteger textureIndexOfTarget = [[targetTextureIndices objectAtIndex:indexOfObject] integerValue];
             
             [currentTarget setInputSize:layerPixelSize atIndex:textureIndexOfTarget];
-            [currentTarget newFrameReadyAtTime:time atIndex:textureIndexOfTarget];
+            [currentTarget newFrameReadyAtTime:frameTime atIndex:textureIndexOfTarget];
         }
     }    
 }

@@ -9,5 +9,7 @@
 // Layer management
 - (CGSize)layerSizeInPixels;
 - (void)update;
+- (void)updateUsingCurrentTime;
+- (void)updateWithTimestamp:(CMTime)frameTime;
 
 @end
