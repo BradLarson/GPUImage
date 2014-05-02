@@ -463,10 +463,14 @@
     {
         _blurRadiusInPixels = round(newValue); // For now, only do integral sigmas
         
-        // Calculate the number of pixels to sample from by setting a bottom limit for the contribution of the outermost pixel
-        CGFloat minimumWeightToFindEdgeOfSamplingArea = 1.0/256.0;
-        NSUInteger calculatedSampleRadius = floor(sqrt(-2.0 * pow(_blurRadiusInPixels, 2.0) * log(minimumWeightToFindEdgeOfSamplingArea * sqrt(2.0 * M_PI * pow(_blurRadiusInPixels, 2.0))) ));
-        calculatedSampleRadius += calculatedSampleRadius % 2; // There's nothing to gain from handling odd radius sizes, due to the optimizations I use
+        NSUInteger calculatedSampleRadius = 0;
+        if (_blurRadiusInPixels >= 1) // Avoid a divide-by-zero error here
+        {
+            // Calculate the number of pixels to sample from by setting a bottom limit for the contribution of the outermost pixel
+            CGFloat minimumWeightToFindEdgeOfSamplingArea = 1.0/256.0;
+            calculatedSampleRadius = floor(sqrt(-2.0 * pow(_blurRadiusInPixels, 2.0) * log(minimumWeightToFindEdgeOfSamplingArea * sqrt(2.0 * M_PI * pow(_blurRadiusInPixels, 2.0))) ));
+            calculatedSampleRadius += calculatedSampleRadius % 2; // There's nothing to gain from handling odd radius sizes, due to the optimizations I use
+        }
         
 //        NSLog(@"Blur radius: %f, calculated sample radius: %d", _blurRadiusInPixels, calculatedSampleRadius);
 //        
