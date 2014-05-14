@@ -512,11 +512,14 @@ NSString *const kGPUImagePassthroughFragmentShaderString = SHADER_STRING
 
 - (void)setFloatArray:(GLfloat *)arrayValue length:(GLsizei)arrayLength forUniform:(GLint)uniform program:(GLProgram *)shaderProgram;
 {
+    // Make a copy of the data, so it doesn't get overwritten before async call executes
+    NSData* arrayData = [NSData dataWithBytes:arrayValue length:arrayLength * sizeof(arrayValue[0])];
+
     runAsynchronouslyOnVideoProcessingQueue(^{
         [GPUImageContext setActiveShaderProgram:shaderProgram];
         
         [self setAndExecuteUniformStateCallbackAtIndex:uniform forProgram:shaderProgram toBlock:^{
-            glUniform1fv(uniform, arrayLength, arrayValue);
+            glUniform1fv(uniform, arrayLength, [arrayData bytes]);
         }];
     });
 }
