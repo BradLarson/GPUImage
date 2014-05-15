@@ -158,6 +158,7 @@ NSString *const kGPUImageThreeInputTextureVertexShaderString = SHADER_STRING
     else if (textureIndex == 1)
     {
         secondInputFramebuffer = newInputFramebuffer;
+        hasSetSecondTexture = YES;
         [secondInputFramebuffer lock];
     }
     else
