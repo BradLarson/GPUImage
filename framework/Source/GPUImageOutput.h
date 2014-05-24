@@ -7,16 +7,7 @@
 #import <UIKit/UIKit.h>
 #else
 // For now, just redefine this on the Mac
-typedef NS_ENUM(NSInteger, UIImageOrientation) {
-    UIImageOrientationUp,            // default orientation
-    UIImageOrientationDown,          // 180 deg rotation
-    UIImageOrientationLeft,          // 90 deg CCW
-    UIImageOrientationRight,         // 90 deg CW
-    UIImageOrientationUpMirrored,    // as above but image mirrored along other axis. horizontal flip
-    UIImageOrientationDownMirrored,  // horizontal flip
-    UIImageOrientationLeftMirrored,  // vertical flip
-    UIImageOrientationRightMirrored, // vertical flip
-};
+typedef NSInteger UIImageOrientation;
 #endif
 
 void runOnMainQueueWithoutDeadlocking(void (^block)(void));

@@ -325,7 +325,7 @@ void reportAvailableMemoryForGPUImage(NSString *tag)
 
 - (NSImage *)imageFromCurrentFramebuffer;
 {
-    return [self imageFromCurrentFramebufferWithOrientation:UIImageOrientationLeft];
+    return [self imageFromCurrentFramebufferWithOrientation:0];
 }
 
 - (NSImage *)imageFromCurrentFramebufferWithOrientation:(UIImageOrientation)imageOrientation;
