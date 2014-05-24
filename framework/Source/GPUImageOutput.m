@@ -1,4 +1,6 @@
 #import "GPUImageOutput.h"
+
+#import "GPUImageInput.h"
 #import "GPUImageMovieWriter.h"
 #import "GPUImagePicture.h"
 #import <mach/mach.h>

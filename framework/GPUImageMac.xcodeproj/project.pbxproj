@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8482C1501930D49700751F97 /* GPUImageInput.h in Headers */ = {isa = PBXBuildFile; fileRef = 8482C14F1930D49700751F97 /* GPUImageInput.h */; };
 		A87E5E12177648F3007FD5B1 /* GPUImageRawDataOutput.h in Headers */ = {isa = PBXBuildFile; fileRef = A87E5E10177648F3007FD5B1 /* GPUImageRawDataOutput.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A87E5E13177648F3007FD5B1 /* GPUImageRawDataOutput.m in Sources */ = {isa = PBXBuildFile; fileRef = A87E5E11177648F3007FD5B1 /* GPUImageRawDataOutput.m */; };
 		A87E5E1617764B16007FD5B1 /* GPUImageRawDataInput.h in Headers */ = {isa = PBXBuildFile; fileRef = A87E5E1417764B16007FD5B1 /* GPUImageRawDataInput.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -318,6 +319,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		8482C14F1930D49700751F97 /* GPUImageInput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GPUImageInput.h; path = Source/GPUImageInput.h; sourceTree = SOURCE_ROOT; };
 		A87E5E10177648F3007FD5B1 /* GPUImageRawDataOutput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GPUImageRawDataOutput.h; path = Source/GPUImageRawDataOutput.h; sourceTree = SOURCE_ROOT; };
 		A87E5E11177648F3007FD5B1 /* GPUImageRawDataOutput.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GPUImageRawDataOutput.m; path = Source/GPUImageRawDataOutput.m; sourceTree = SOURCE_ROOT; };
 		A87E5E1417764B16007FD5B1 /* GPUImageRawDataInput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GPUImageRawDataInput.h; path = Source/GPUImageRawDataInput.h; sourceTree = SOURCE_ROOT; };
@@ -693,6 +695,7 @@
 		BCA3F32517239B6500E28AEC /* GPUImageMac */ = {
 			isa = PBXGroup;
 			children = (
+				8482C14F1930D49700751F97 /* GPUImageInput.h */,
 				BCA3F3641723A96600E28AEC /* GPUImage.h */,
 				BCF40F1417247FD8005AE36A /* GLProgram.h */,
 				BCF40F1517247FD8005AE36A /* GLProgram.m */,
@@ -1135,6 +1138,7 @@
 				BCF868771728721300912E34 /* GPUImageLuminosityBlendFilter.h in Headers */,
 				BCF868791728721300912E34 /* GPUImageNormalBlendFilter.h in Headers */,
 				BCF8687B1728721300912E34 /* GPUImagePoissonBlendFilter.h in Headers */,
+				8482C1501930D49700751F97 /* GPUImageInput.h in Headers */,
 				BCF8687D1728721300912E34 /* GPUImageSaturationBlendFilter.h in Headers */,
 				BCF8687F1728721300912E34 /* GPUImageSoftLightBlendFilter.h in Headers */,
 				BCF868811728721300912E34 /* GPUImageSubtractBlendFilter.h in Headers */,

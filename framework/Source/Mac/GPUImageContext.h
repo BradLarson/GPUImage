@@ -1,9 +1,9 @@
 #import <Foundation/Foundation.h>
-#import <QuartzCore/QuartzCore.h>
-#import <CoreMedia/CoreMedia.h>
-#import "GLProgram.h"
-#import "GPUImageFramebuffer.h"
-#import "GPUImageFramebufferCache.h"
+//#import <QuartzCore/QuartzCore.h>
+
+@class GLProgram;
+@class GPUImageFramebuffer;
+@class GPUImageFramebufferCache;
 
 #define GPUImageRotationSwapsWidthAndHeight(rotation) (((rotation) == kGPUImageRotateLeft) || ((rotation) == kGPUImageRotateRight) || ((rotation) == kGPUImageRotateRightFlipVertical) )
 
@@ -37,18 +37,4 @@ typedef enum { kGPUImageNoRotation, kGPUImageRotateLeft, kGPUImageRotateRight, k
 // Manage fast texture upload
 + (BOOL)supportsFastTextureUpload;
 
-@end
-
-@protocol GPUImageInput <NSObject>
-- (void)newFrameReadyAtTime:(CMTime)frameTime atIndex:(NSInteger)textureIndex;
-- (void)setInputFramebuffer:(GPUImageFramebuffer *)newInputFramebuffer atIndex:(NSInteger)textureIndex;
-- (NSInteger)nextAvailableTextureIndex;
-- (void)setInputSize:(CGSize)newSize atIndex:(NSInteger)textureIndex;
-- (void)setInputRotation:(GPUImageRotationMode)newInputRotation atIndex:(NSInteger)textureIndex;
-- (CGSize)maximumOutputSize;
-- (void)endProcessing;
-- (BOOL)shouldIgnoreUpdatesToThisTarget;
-- (BOOL)enabled;
-- (BOOL)wantsMonochromeInput;
-- (void)setCurrentlyReceivingMonochromeInput:(BOOL)newValue;
 @end

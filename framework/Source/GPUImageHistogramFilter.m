@@ -1,4 +1,5 @@
 #import "GPUImageHistogramFilter.h"
+#import "GPUImageFramebufferCache.h"
 
 // Unlike other filters, this one uses a grid of GL_POINTs to sample the incoming image in a grid. A custom vertex shader reads the color in the texture at its position 
 // and outputs a bin position in the final histogram as the vertex position. That point is then written into the image of the histogram using translucent pixels.

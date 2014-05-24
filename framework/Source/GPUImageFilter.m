@@ -1,6 +1,10 @@
 #import "GPUImageFilter.h"
+#import "GPUImageInput.h"
 #import "GPUImagePicture.h"
+#import "GPUImageFramebufferCache.h"
+
 #import <AVFoundation/AVFoundation.h>
+#import <CoreMedia/CoreMedia.h>
 
 // Hardcode the vertex shader for standard filters, but this can be overridden
 NSString *const kGPUImageVertexShaderString = SHADER_STRING

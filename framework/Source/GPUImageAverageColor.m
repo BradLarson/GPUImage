@@ -1,4 +1,5 @@
 #import "GPUImageAverageColor.h"
+#import "GPUImageFramebufferCache.h"
 
 NSString *const kGPUImageColorAveragingVertexShaderString = SHADER_STRING
 (

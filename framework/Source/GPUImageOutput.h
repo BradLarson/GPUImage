@@ -1,6 +1,8 @@
 #import "GPUImageContext.h"
 #import "GPUImageFramebuffer.h"
 
+#import <CoreMedia/CoreMedia.h>
+
 #if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
 #import <UIKit/UIKit.h>
 #else
@@ -23,6 +25,7 @@ void runAsynchronouslyOnVideoProcessingQueue(void (^block)(void));
 void reportAvailableMemoryForGPUImage(NSString *tag);
 
 @class GPUImageMovieWriter;
+@protocol GPUImageInput;
 
 /** GPUImage's base source object
  

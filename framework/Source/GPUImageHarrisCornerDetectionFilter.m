@@ -1,10 +1,11 @@
 #import "GPUImageHarrisCornerDetectionFilter.h"
-#import "GPUImageGaussianBlurFilter.h"
-#import "GPUImageXYDerivativeFilter.h"
-#import "GPUImageGrayscaleFilter.h"
-#import "GPUImageThresholdedNonMaximumSuppressionFilter.h"
+
 #import "GPUImageColorPackingFilter.h"
 #import "GPUImageGaussianBlurFilter.h"
+#import "GPUImageGrayscaleFilter.h"
+#import "GPUImageFilter.h"
+#import "GPUImageThresholdedNonMaximumSuppressionFilter.h"
+#import "GPUImageXYDerivativeFilter.h"
 
 @interface GPUImageHarrisCornerDetectionFilter()
 

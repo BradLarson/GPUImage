@@ -1,8 +1,10 @@
 #import "GPUImageView.h"
-#import <QuartzCore/QuartzCore.h>
+
 #import "GPUImageContext.h"
 #import "GPUImageFilter.h"
+
 #import <AVFoundation/AVFoundation.h>
+#import <QuartzCore/QuartzCore.h>
 
 #pragma mark -
 #pragma mark Private methods and instance variables

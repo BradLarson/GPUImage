@@ -1,5 +1,6 @@
 #import "GPUImageOutput.h"
 #import "GPUImageFilter.h"
+#import "GPUImageInput.h"
 
 @interface GPUImageFilterGroup : GPUImageOutput <GPUImageInput>
 {
