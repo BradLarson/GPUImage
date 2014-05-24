@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		8482C1501930D49700751F97 /* GPUImageInput.h in Headers */ = {isa = PBXBuildFile; fileRef = 8482C14F1930D49700751F97 /* GPUImageInput.h */; };
+		8482C1501930D49700751F97 /* GPUImageInput.h in Headers */ = {isa = PBXBuildFile; fileRef = 8482C14F1930D49700751F97 /* GPUImageInput.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A87E5E12177648F3007FD5B1 /* GPUImageRawDataOutput.h in Headers */ = {isa = PBXBuildFile; fileRef = A87E5E10177648F3007FD5B1 /* GPUImageRawDataOutput.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A87E5E13177648F3007FD5B1 /* GPUImageRawDataOutput.m in Sources */ = {isa = PBXBuildFile; fileRef = A87E5E11177648F3007FD5B1 /* GPUImageRawDataOutput.m */; };
 		A87E5E1617764B16007FD5B1 /* GPUImageRawDataInput.h in Headers */ = {isa = PBXBuildFile; fileRef = A87E5E1417764B16007FD5B1 /* GPUImageRawDataInput.h */; settings = {ATTRIBUTES = (Public, ); }; };
