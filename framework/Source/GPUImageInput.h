@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <CoreMedia/CoreMedia.h>
 
-typedef enum {
+typedef NS_ENUM(NSUInteger, GPUImageRotationMode) {
 	kGPUImageNoRotation,
 	kGPUImageRotateLeft,
 	kGPUImageRotateRight,
@@ -18,7 +18,7 @@ typedef enum {
 	kGPUImageRotateRightFlipVertical,
 	kGPUImageRotateRightFlipHorizontal,
 	kGPUImageRotate180
-} GPUImageRotationMode;
+};
 
 @class GPUImageFramebuffer;
 
