@@ -9,6 +9,19 @@
 #import <Foundation/Foundation.h>
 #import <CoreMedia/CoreMedia.h>
 
+typedef enum {
+	kGPUImageNoRotation,
+	kGPUImageRotateLeft,
+	kGPUImageRotateRight,
+	kGPUImageFlipVertical,
+	kGPUImageFlipHorizonal,
+	kGPUImageRotateRightFlipVertical,
+	kGPUImageRotateRightFlipHorizontal,
+	kGPUImageRotate180
+} GPUImageRotationMode;
+
+@class GPUImageFramebuffer;
+
 @protocol GPUImageInput <NSObject>
 
 - (void)newFrameReadyAtTime:(CMTime)frameTime atIndex:(NSInteger)textureIndex;
