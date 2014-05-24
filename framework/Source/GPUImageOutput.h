@@ -8,6 +8,7 @@
 #else
 // For now, just redefine this on the Mac
 typedef NSInteger UIImageOrientation;
+#define UIImage NSImage
 #endif
 
 void runOnMainQueueWithoutDeadlocking(void (^block)(void));
@@ -102,17 +103,10 @@ void reportAvailableMemoryForGPUImage(NSString *tag);
 
 // Platform-specific image output methods
 // If you're trying to use these methods, remember that you need to set -useNextFrameForImageCapture before running -processImage or running video and calling any of these methods, or you will get a nil image
-#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
 - (UIImage *)imageFromCurrentFramebuffer;
 - (UIImage *)imageFromCurrentFramebufferWithOrientation:(UIImageOrientation)imageOrientation;
 - (UIImage *)imageByFilteringImage:(UIImage *)imageToFilter;
 - (CGImageRef)newCGImageByFilteringImage:(UIImage *)imageToFilter;
-#else
-- (NSImage *)imageFromCurrentFramebuffer;
-- (NSImage *)imageFromCurrentFramebufferWithOrientation:(UIImageOrientation)imageOrientation;
-- (NSImage *)imageByFilteringImage:(NSImage *)imageToFilter;
-- (CGImageRef)newCGImageByFilteringImage:(NSImage *)imageToFilter;
-#endif
 
 - (BOOL)providesMonochromeOutput;
 
