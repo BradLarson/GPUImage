@@ -122,6 +122,7 @@
 	// Provide a blurred image for a cool-looking background
 	GPUImageGaussianBlurFilter *gaussianBlur = [[GPUImageGaussianBlurFilter alloc] init];
 	[output addTarget:gaussianBlur];
+	[output addTarget:self];
 
 	gaussianBlur.blurRadiusInPixels = 10.0;
 	
@@ -352,6 +353,9 @@
 @end
 
 // GPUImageLuminanceThresholdFilter - no overrides
+@implementation GPUImageLuminanceThresholdFilter (Showcase)
+- (NSString *)sliderKeyPath { return @"threshold"; }
+@end
 
 @implementation GPUImageLuminosity (Showcase)
 - (instancetype)initWithSource:(GPUImageOutput *)output targetView:(GPUImageView *)view
@@ -365,6 +369,7 @@
             [colorGenerator setColorRed:luminosity green:luminosity blue:luminosity alpha:1.0];
         }];
         
+		[output addTarget:self];
         [colorGenerator addTarget:view];
 	}
 	return self;
@@ -499,7 +504,7 @@
 
 @implementation GPUImageCropFilter (Showcase)
 - (NSString *)sliderKeyPath { return @"cropHeight"; }
-- (CGFloat)cropHeight { return 0.5; }
+- (CGFloat)cropHeight { return self.cropRegion.size.height; }
 - (void)setCropHeight:(CGFloat)height {
 	self.cropRegion = CGRectMake(0.0, 0.0, 1.0, height);
 }
@@ -538,6 +543,7 @@
 {
 	self = [self init];
 	if (self) {
+		[output addTarget:self];
 		self.cornersDetectedBlock = [self featureDetectionBlockWithSource:output targetView:view];
 	}
 	return self;
@@ -559,7 +565,6 @@
 	if (self) {
 		CGSize viewSize = [view sizeInPixels];
         GPUImageLineGenerator *lineGenerator = [[GPUImageLineGenerator alloc] init];
-//		lineGenerator.crosshairWidth = 15.0;
         [lineGenerator forceProcessingAtSize:CGSizeMake(480.0, 640.0)];
         [lineGenerator setLineColorRed:1.0 green:0.0 blue:0.0];
         [self setLinesDetectedBlock:^(GLfloat* lineArray, NSUInteger linesDetected, CMTime frameTime){
@@ -575,6 +580,7 @@
         [lineGenerator addTarget:blendFilter];
         
         [blendFilter addTarget:view];
+		[output addTarget:self];
 	}
 	return self;
 }
@@ -596,6 +602,7 @@
 
 @implementation GPUImageLocalBinaryPatternFilter (Showcase)
 - (NSString *)sliderKeyPath { return @"multiplier"; }
+- (CGFloat)multiplier { return 1.; }
 - (void)setMultiplier:(CGFloat)multiplier {
 	CGSize size = [[self viewTarget] bounds].size;
 	[self setTexelWidth:(multiplier / size.width)];
@@ -622,6 +629,7 @@
 {
 	self = [self init];
 	if (self) {
+		[output addTarget:self];
 		self.cornersDetectedBlock = [self featureDetectionBlockWithSource:output targetView:view];
 	}
 	return self;
@@ -655,6 +663,7 @@
 {
 	self = [self init];
 	if (self) {
+		[output addTarget:self];
 		self.cornersDetectedBlock = [self featureDetectionBlockWithSource:output targetView:view];
 	}
 	return self;
@@ -963,6 +972,7 @@
 
 @implementation GPUImageChromaKeyBlendFilter (Showcase)
 - (NSString *)sliderKeyPath { return @"thresholdSensitivity"; }
+- (BOOL)needsSecondImage { return YES; }
 @end
 
 @implementation GPUImageColorBlendFilter (Showcase)
@@ -1061,6 +1071,7 @@
 
 @implementation GPUImagePoissonBlendFilter (Showcase)
 - (NSString *)sliderKeyPath { return @"mix"; }
+- (BOOL)needsSecondImage { return YES; }
 @end
 
 @implementation GPUImageSaturationBlendFilter (Showcase)
