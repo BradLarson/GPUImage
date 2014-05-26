@@ -221,7 +221,7 @@ NSString *const kGPUImageHarrisCornerDetectionFragmentShaderString = SHADER_STRI
     
     glReadPixels(0, 0, (int)imageSize.width, (int)imageSize.height, GL_RGBA, GL_UNSIGNED_BYTE, rawImagePixels);
 
-    CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
+//    CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
 
     unsigned int imageWidth = imageSize.width * 4;
     
@@ -246,8 +246,8 @@ NSString *const kGPUImageHarrisCornerDetectionFragmentShaderString = SHADER_STRI
         currentByte +=4;
     }
     
-    CFAbsoluteTime currentFrameTime = (CFAbsoluteTimeGetCurrent() - startTime);
-    NSLog(@"Processing time : %f ms", 1000.0 * currentFrameTime);
+//    CFAbsoluteTime currentFrameTime = (CFAbsoluteTimeGetCurrent() - startTime);
+//    NSLog(@"Processing time : %f ms", 1000.0 * currentFrameTime);
 
     if (cornersDetectedBlock != NULL)
     {
