@@ -328,7 +328,6 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
             NSUInteger paddedWidthOfImage = CVPixelBufferGetBytesPerRow(renderTarget) / 4.0;
             NSUInteger paddedBytesForImage = paddedWidthOfImage * (int)_size.height * 4;
             
-            //        glFlush();
             glFinish();
             CFRetain(renderTarget); // I need to retain the pixel buffer here and release in the data source callback to prevent its bytes from being prematurely deallocated during a photo write operation
             CVPixelBufferLockBaseAddress(renderTarget, 0);
@@ -408,6 +407,12 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
 #else
     return NULL; // TODO: do more with this on the non-texture-cache side
 #endif
+}
+
+- (GLuint)texture;
+{
+//    NSLog(@"Accessing texture: %d from FB: %@", _texture, self);
+    return _texture;
 }
 
 @end

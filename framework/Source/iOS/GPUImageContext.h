@@ -19,7 +19,9 @@ typedef enum { kGPUImageNoRotation, kGPUImageRotateLeft, kGPUImageRotateRight, k
 + (dispatch_queue_t)sharedContextQueue;
 + (GPUImageFramebufferCache *)sharedFramebufferCache;
 + (void)useImageProcessingContext;
+- (void)useAsCurrentContext;
 + (void)setActiveShaderProgram:(GLProgram *)shaderProgram;
+- (void)setContextShaderProgram:(GLProgram *)shaderProgram;
 + (GLint)maximumTextureSizeForThisDevice;
 + (GLint)maximumTextureUnitsForThisDevice;
 + (GLint)maximumVaryingVectorsForThisDevice;

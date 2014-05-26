@@ -43,7 +43,7 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 - (void)destroyDataFBO;
 - (void)setFilterFBO;
 
-- (void)renderAtInternalSize;
+- (void)renderAtInternalSizeUsingFramebuffer:(GPUImageFramebuffer *)inputFramebufferToUse;
 
 @end
 
@@ -59,6 +59,7 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 @synthesize enabled;
 @synthesize shouldInvalidateAudioSampleWhenDone = _shouldInvalidateAudioSampleWhenDone;
 @synthesize paused = _paused;
+@synthesize movieWriterContext = _movieWriterContext;
 
 @synthesize delegate = _delegate;
 
@@ -84,8 +85,6 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
     videoEncodingIsFinished = NO;
     audioEncodingIsFinished = NO;
 
-    movieWritingQueue = dispatch_queue_create("com.sunsetlakesoftware.GPUImage.movieWritingQueue", NULL);
-    
     videoSize = newSize;
     movieURL = newMovieURL;
     fileType = newFileType;
@@ -94,17 +93,20 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
     previousFrameTime = kCMTimeNegativeInfinity;
     previousAudioTime = kCMTimeNegativeInfinity;
     inputRotation = kGPUImageNoRotation;
+    
+    _movieWriterContext = [[GPUImageContext alloc] init];
+    [_movieWriterContext useSharegroup:[[[GPUImageContext sharedImageProcessingContext] context] sharegroup]];
 
-    runSynchronouslyOnVideoProcessingQueue(^{
-        [GPUImageContext useImageProcessingContext];
+    runSynchronouslyOnContextQueue(_movieWriterContext, ^{
+        [_movieWriterContext useAsCurrentContext];
         
         if ([GPUImageContext supportsFastTextureUpload])
         {
-            colorSwizzlingProgram = [[GPUImageContext sharedImageProcessingContext] programForVertexShaderString:kGPUImageVertexShaderString fragmentShaderString:kGPUImagePassthroughFragmentShaderString];
+            colorSwizzlingProgram = [_movieWriterContext programForVertexShaderString:kGPUImageVertexShaderString fragmentShaderString:kGPUImagePassthroughFragmentShaderString];
         }
         else
         {
-            colorSwizzlingProgram = [[GPUImageContext sharedImageProcessingContext] programForVertexShaderString:kGPUImageVertexShaderString fragmentShaderString:kGPUImageColorSwizzlingFragmentShaderString];
+            colorSwizzlingProgram = [_movieWriterContext programForVertexShaderString:kGPUImageVertexShaderString fragmentShaderString:kGPUImageColorSwizzlingFragmentShaderString];
         }
         
         if (!colorSwizzlingProgram.initialized)
@@ -129,8 +131,7 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
         colorSwizzlingTextureCoordinateAttribute = [colorSwizzlingProgram attributeIndex:@"inputTextureCoordinate"];
         colorSwizzlingInputTextureUniform = [colorSwizzlingProgram uniformIndex:@"inputImageTexture"];
         
-        // REFACTOR: Wrap this in a block for the image processing queue
-        [GPUImageContext setActiveShaderProgram:colorSwizzlingProgram];
+        [_movieWriterContext setContextShaderProgram:colorSwizzlingProgram];
         
         glEnableVertexAttribArray(colorSwizzlingPositionAttribute);
         glEnableVertexAttribArray(colorSwizzlingTextureCoordinateAttribute);
@@ -146,10 +147,6 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
     [self destroyDataFBO];
 
 #if ( (__IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_6_0) || (!defined(__IPHONE_6_0)) )
-    if (movieWritingQueue != NULL)
-    {
-        dispatch_release(movieWritingQueue);
-    }
     if( audioQueue != NULL )
     {
         dispatch_release(audioQueue);
@@ -259,7 +256,7 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
     alreadyFinishedRecording = NO;
     isRecording = YES;
     startTime = kCMTimeInvalid;
-    dispatch_sync(movieWritingQueue, ^{
+    runSynchronouslyOnContextQueue(_movieWriterContext, ^{
         if (audioInputReadyCallback == NULL)
         {
             [assetWriter startWriting];
@@ -283,7 +280,7 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
     }
     
     isRecording = NO;
-    dispatch_sync(movieWritingQueue, ^{
+    runSynchronouslyOnContextQueue(_movieWriterContext, ^{
         alreadyFinishedRecording = YES;
 
         if( assetWriter.status == AVAssetWriterStatusWriting && ! videoEncodingIsFinished )
@@ -307,49 +304,46 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 
 - (void)finishRecordingWithCompletionHandler:(void (^)(void))handler;
 {
-    runSynchronouslyOnVideoProcessingQueue(^{
+    runSynchronouslyOnContextQueue(_movieWriterContext, ^{
+        isRecording = NO;
         
-        dispatch_sync(movieWritingQueue, ^{
-            isRecording = NO;
-            
-            if (assetWriter.status == AVAssetWriterStatusCompleted || assetWriter.status == AVAssetWriterStatusCancelled || assetWriter.status == AVAssetWriterStatusUnknown)
-            {
-                if (handler)
-                    runAsynchronouslyOnVideoProcessingQueue(handler);
-                return;
-            }
-            if( assetWriter.status == AVAssetWriterStatusWriting && ! videoEncodingIsFinished )
-            {
-                videoEncodingIsFinished = YES;
-                [assetWriterVideoInput markAsFinished];
-            }
-            if( assetWriter.status == AVAssetWriterStatusWriting && ! audioEncodingIsFinished )
-            {
-                audioEncodingIsFinished = YES;
-                [assetWriterAudioInput markAsFinished];
-            }
-#if (!defined(__IPHONE_6_0) || (__IPHONE_OS_VERSION_MAX_ALLOWED < __IPHONE_6_0))
-            // Not iOS 6 SDK
-            [assetWriter finishWriting];
+        if (assetWriter.status == AVAssetWriterStatusCompleted || assetWriter.status == AVAssetWriterStatusCancelled || assetWriter.status == AVAssetWriterStatusUnknown)
+        {
             if (handler)
-                runAsynchronouslyOnVideoProcessingQueue(handler);
+                runAsynchronouslyOnContextQueue(_movieWriterContext, handler);
+            return;
+        }
+        if( assetWriter.status == AVAssetWriterStatusWriting && ! videoEncodingIsFinished )
+        {
+            videoEncodingIsFinished = YES;
+            [assetWriterVideoInput markAsFinished];
+        }
+        if( assetWriter.status == AVAssetWriterStatusWriting && ! audioEncodingIsFinished )
+        {
+            audioEncodingIsFinished = YES;
+            [assetWriterAudioInput markAsFinished];
+        }
+#if (!defined(__IPHONE_6_0) || (__IPHONE_OS_VERSION_MAX_ALLOWED < __IPHONE_6_0))
+        // Not iOS 6 SDK
+        [assetWriter finishWriting];
+        if (handler)
+            runAsynchronouslyOnContextQueue(_movieWriterContext,handler);
 #else
-            // iOS 6 SDK
-            if ([assetWriter respondsToSelector:@selector(finishWritingWithCompletionHandler:)]) {
-                // Running iOS 6
-                [assetWriter finishWritingWithCompletionHandler:(handler ?: ^{ })];
-            }
-            else {
-                // Not running iOS 6
+        // iOS 6 SDK
+        if ([assetWriter respondsToSelector:@selector(finishWritingWithCompletionHandler:)]) {
+            // Running iOS 6
+            [assetWriter finishWritingWithCompletionHandler:(handler ?: ^{ })];
+        }
+        else {
+            // Not running iOS 6
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
-                [assetWriter finishWriting];
+            [assetWriter finishWriting];
 #pragma clang diagnostic pop
-                if (handler)
-                    runAsynchronouslyOnVideoProcessingQueue(handler);
-            }
+            if (handler)
+                runAsynchronouslyOnContextQueue(_movieWriterContext, handler);
+        }
 #endif
-        });
     });
 }
 
@@ -360,12 +354,25 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
         return;
     }
     
-    if (_hasAudioTrack && CMTIME_IS_VALID(startTime))
+//    if (_hasAudioTrack && CMTIME_IS_VALID(startTime))
+    if (_hasAudioTrack)
     {
         CFRetain(audioBuffer);
 
         CMTime currentSampleTime = CMSampleBufferGetOutputPresentationTimeStamp(audioBuffer);
         
+        if (CMTIME_IS_INVALID(startTime))
+        {
+            runSynchronouslyOnContextQueue(_movieWriterContext, ^{
+                if ((audioInputReadyCallback == NULL) && (assetWriter.status != AVAssetWriterStatusWriting))
+                {
+                    [assetWriter startWriting];
+                }
+                [assetWriter startSessionAtSourceTime:currentSampleTime];
+                startTime = currentSampleTime;
+            });
+        }
+
         if (!assetWriterAudioInput.readyForMoreMediaData && _encodingLiveVideo)
         {
             NSLog(@"1: Had to drop an audio frame: %@", CFBridgingRelease(CMTimeCopyDescription(kCFAllocatorDefault, currentSampleTime)));
@@ -406,10 +413,16 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
             }
             CFRelease(audioBuffer);
         };
+//        runAsynchronouslyOnContextQueue(_movieWriterContext, write);
         if( _encodingLiveVideo )
-            dispatch_async(movieWritingQueue, write);
+
+        {
+            runAsynchronouslyOnContextQueue(_movieWriterContext, write);
+        }
         else
+        {
             write();
+        }
     }
 }
 
@@ -435,7 +448,7 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
             {
                 if( videoInputReadyCallback && ! videoInputReadyCallback() && ! videoEncodingIsFinished )
                 {
-                    dispatch_async(movieWritingQueue, ^{
+                    runAsynchronouslyOnContextQueue(_movieWriterContext, ^{
                         if( assetWriter.status == AVAssetWriterStatusWriting && ! videoEncodingIsFinished )
                         {
                             videoEncodingIsFinished = YES;
@@ -464,7 +477,7 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
             {
                 if( audioInputReadyCallback && ! audioInputReadyCallback() && ! audioEncodingIsFinished )
                 {
-                    dispatch_async(movieWritingQueue, ^{
+                    runAsynchronouslyOnContextQueue(_movieWriterContext, ^{
                         if( assetWriter.status == AVAssetWriterStatusWriting && ! audioEncodingIsFinished )
                         {
                             audioEncodingIsFinished = YES;
@@ -504,7 +517,7 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
         CVBufferSetAttachment(renderTarget, kCVImageBufferYCbCrMatrixKey, kCVImageBufferYCbCrMatrix_ITU_R_601_4, kCVAttachmentMode_ShouldPropagate);
         CVBufferSetAttachment(renderTarget, kCVImageBufferTransferFunctionKey, kCVImageBufferTransferFunction_ITU_R_709_2, kCVAttachmentMode_ShouldPropagate);
         
-        CVOpenGLESTextureCacheCreateTextureFromImage (kCFAllocatorDefault, [[GPUImageContext sharedImageProcessingContext] coreVideoTextureCache], renderTarget,
+        CVOpenGLESTextureCacheCreateTextureFromImage (kCFAllocatorDefault, [_movieWriterContext coreVideoTextureCache], renderTarget,
                                                       NULL, // texture attributes
                                                       GL_TEXTURE_2D,
                                                       GL_RGBA, // opengl format
@@ -537,8 +550,8 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 
 - (void)destroyDataFBO;
 {
-    runSynchronouslyOnVideoProcessingQueue(^{
-        [GPUImageContext useImageProcessingContext];
+    runSynchronouslyOnContextQueue(_movieWriterContext, ^{
+        [_movieWriterContext useAsCurrentContext];
 
         if (movieFramebuffer)
         {
@@ -579,12 +592,12 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
     glViewport(0, 0, (int)videoSize.width, (int)videoSize.height);
 }
 
-- (void)renderAtInternalSize;
+- (void)renderAtInternalSizeUsingFramebuffer:(GPUImageFramebuffer *)inputFramebufferToUse;
 {
-    [GPUImageContext useImageProcessingContext];
+    [_movieWriterContext useAsCurrentContext];
     [self setFilterFBO];
     
-    [GPUImageContext setActiveShaderProgram:colorSwizzlingProgram];
+    [_movieWriterContext setContextShaderProgram:colorSwizzlingProgram];
     
     glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -600,15 +613,15 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
     const GLfloat *textureCoordinates = [GPUImageFilter textureCoordinatesForRotation:inputRotation];
     
 	glActiveTexture(GL_TEXTURE4);
-	glBindTexture(GL_TEXTURE_2D, [firstInputFramebuffer texture]);
-	glUniform1i(colorSwizzlingInputTextureUniform, 4);	
+	glBindTexture(GL_TEXTURE_2D, [inputFramebufferToUse texture]);
+	glUniform1i(colorSwizzlingInputTextureUniform, 4);
+    
+//    NSLog(@"Movie writer framebuffer: %@", inputFramebufferToUse);
     
     glVertexAttribPointer(colorSwizzlingPositionAttribute, 2, GL_FLOAT, 0, 0, squareVertices);
 	glVertexAttribPointer(colorSwizzlingTextureCoordinateAttribute, 2, GL_FLOAT, 0, 0, textureCoordinates);
     
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-    [firstInputFramebuffer unlock];
-    
     glFinish();
 }
 
@@ -633,7 +646,7 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 
     if (CMTIME_IS_INVALID(startTime))
     {
-        dispatch_sync(movieWritingQueue, ^{
+        runSynchronouslyOnContextQueue(_movieWriterContext, ^{
             if ((videoInputReadyCallback == NULL) && (assetWriter.status != AVAssetWriterStatusWriting))
             {
                 [assetWriter startWriting];
@@ -644,78 +657,79 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
         });
     }
 
-    if (!assetWriterVideoInput.readyForMoreMediaData && _encodingLiveVideo)
-    {
-        [firstInputFramebuffer unlock];
-        NSLog(@"1: Had to drop a video frame: %@", CFBridgingRelease(CMTimeCopyDescription(kCFAllocatorDefault, frameTime)));
-        return;
-    }
-    
-    // Render the frame with swizzled colors, so that they can be uploaded quickly as BGRA frames
-    [GPUImageContext useImageProcessingContext];
-    [self renderAtInternalSize];
-    
-    CVPixelBufferRef pixel_buffer = NULL;
-    
-    if ([GPUImageContext supportsFastTextureUpload])
-    {
-        pixel_buffer = renderTarget;
-        CVPixelBufferLockBaseAddress(pixel_buffer, 0);
-    }
-    else
-    {
-        CVReturn status = CVPixelBufferPoolCreatePixelBuffer (NULL, [assetWriterPixelBufferInput pixelBufferPool], &pixel_buffer);
-        if ((pixel_buffer == NULL) || (status != kCVReturnSuccess))
+    GPUImageFramebuffer *inputFramebufferForBlock = firstInputFramebuffer;
+    glFinish();
+
+    runAsynchronouslyOnContextQueue(_movieWriterContext, ^{
+        if (!assetWriterVideoInput.readyForMoreMediaData && _encodingLiveVideo)
         {
-            CVPixelBufferRelease(pixel_buffer);
+            [inputFramebufferForBlock unlock];
+            NSLog(@"1: Had to drop a video frame: %@", CFBridgingRelease(CMTimeCopyDescription(kCFAllocatorDefault, frameTime)));
             return;
         }
-        else
-        {
-            CVPixelBufferLockBaseAddress(pixel_buffer, 0);
-            
-            GLubyte *pixelBufferData = (GLubyte *)CVPixelBufferGetBaseAddress(pixel_buffer);
-            glReadPixels(0, 0, videoSize.width, videoSize.height, GL_RGBA, GL_UNSIGNED_BYTE, pixelBufferData);
-        }
-    }
-
-    void(^write)() = ^() {
-        while( ! assetWriterVideoInput.readyForMoreMediaData && ! _encodingLiveVideo && ! videoEncodingIsFinished ) {
-            NSDate *maxDate = [NSDate dateWithTimeIntervalSinceNow:0.1];
-//            NSLog(@"video waiting...");
-            [[NSRunLoop currentRunLoop] runUntilDate:maxDate];
-        }
-        if (!assetWriterVideoInput.readyForMoreMediaData)
-        {
-            NSLog(@"2: Had to drop a video frame: %@", CFBridgingRelease(CMTimeCopyDescription(kCFAllocatorDefault, frameTime)));
-        }
-        else if(self.assetWriter.status == AVAssetWriterStatusWriting)
-        {
-            if (![assetWriterPixelBufferInput appendPixelBuffer:pixel_buffer withPresentationTime:frameTime])
-                NSLog(@"Problem appending pixel buffer at time: %@", CFBridgingRelease(CMTimeCopyDescription(kCFAllocatorDefault, frameTime)));
-        }
-        else
-        {
-            //NSLog(@"Wrote a video frame: %@", CFBridgingRelease(CMTimeCopyDescription(kCFAllocatorDefault, frameTime)));
-        }
-        CVPixelBufferUnlockBaseAddress(pixel_buffer, 0);
-
-        previousFrameTime = frameTime;
         
-        if (![GPUImageContext supportsFastTextureUpload])
+        // Render the frame with swizzled colors, so that they can be uploaded quickly as BGRA frames
+        [_movieWriterContext useAsCurrentContext];
+        [self renderAtInternalSizeUsingFramebuffer:inputFramebufferForBlock];
+        
+        CVPixelBufferRef pixel_buffer = NULL;
+        
+        if ([GPUImageContext supportsFastTextureUpload])
         {
-            CVPixelBufferRelease(pixel_buffer);
+            pixel_buffer = renderTarget;
+            CVPixelBufferLockBaseAddress(pixel_buffer, 0);
         }
-    };
-
-    if( _encodingLiveVideo )
-    {
-        dispatch_async(movieWritingQueue, write);
-    }
-    else
-    {
+        else
+        {
+            CVReturn status = CVPixelBufferPoolCreatePixelBuffer (NULL, [assetWriterPixelBufferInput pixelBufferPool], &pixel_buffer);
+            if ((pixel_buffer == NULL) || (status != kCVReturnSuccess))
+            {
+                CVPixelBufferRelease(pixel_buffer);
+                return;
+            }
+            else
+            {
+                CVPixelBufferLockBaseAddress(pixel_buffer, 0);
+                
+                GLubyte *pixelBufferData = (GLubyte *)CVPixelBufferGetBaseAddress(pixel_buffer);
+                glReadPixels(0, 0, videoSize.width, videoSize.height, GL_RGBA, GL_UNSIGNED_BYTE, pixelBufferData);
+            }
+        }
+        
+        void(^write)() = ^() {
+            while( ! assetWriterVideoInput.readyForMoreMediaData && ! _encodingLiveVideo && ! videoEncodingIsFinished ) {
+                NSDate *maxDate = [NSDate dateWithTimeIntervalSinceNow:0.1];
+                //            NSLog(@"video waiting...");
+                [[NSRunLoop currentRunLoop] runUntilDate:maxDate];
+            }
+            if (!assetWriterVideoInput.readyForMoreMediaData)
+            {
+                NSLog(@"2: Had to drop a video frame: %@", CFBridgingRelease(CMTimeCopyDescription(kCFAllocatorDefault, frameTime)));
+            }
+            else if(self.assetWriter.status == AVAssetWriterStatusWriting)
+            {
+                if (![assetWriterPixelBufferInput appendPixelBuffer:pixel_buffer withPresentationTime:frameTime])
+                    NSLog(@"Problem appending pixel buffer at time: %@", CFBridgingRelease(CMTimeCopyDescription(kCFAllocatorDefault, frameTime)));
+            }
+            else
+            {
+                NSLog(@"Couldn't write a frame");
+                //NSLog(@"Wrote a video frame: %@", CFBridgingRelease(CMTimeCopyDescription(kCFAllocatorDefault, frameTime)));
+            }
+            CVPixelBufferUnlockBaseAddress(pixel_buffer, 0);
+            
+            previousFrameTime = frameTime;
+            
+            if (![GPUImageContext supportsFastTextureUpload])
+            {
+                CVPixelBufferRelease(pixel_buffer);
+            }
+        };
+        
         write();
-    }
+        
+        [inputFramebufferForBlock unlock];
+    });
 }
 
 - (NSInteger)nextAvailableTextureIndex;
@@ -725,8 +739,10 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 
 - (void)setInputFramebuffer:(GPUImageFramebuffer *)newInputFramebuffer atIndex:(NSInteger)textureIndex;
 {
-    firstInputFramebuffer = newInputFramebuffer;
-    [firstInputFramebuffer lock];
+    [newInputFramebuffer lock];
+//    runSynchronouslyOnContextQueue(_movieWriterContext, ^{
+        firstInputFramebuffer = newInputFramebuffer;
+//    });
 }
 
 - (void)setInputRotation:(GPUImageRotationMode)newInputRotation atIndex:(NSInteger)textureIndex;

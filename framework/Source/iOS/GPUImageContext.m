@@ -71,7 +71,12 @@ static void *openGLESContextQueueKey;
 
 + (void)useImageProcessingContext;
 {
-    EAGLContext *imageProcessingContext = [[GPUImageContext sharedImageProcessingContext] context];
+    [[GPUImageContext sharedImageProcessingContext] useAsCurrentContext];
+}
+
+- (void)useAsCurrentContext;
+{
+    EAGLContext *imageProcessingContext = [self context];
     if ([EAGLContext currentContext] != imageProcessingContext)
     {
         [EAGLContext setCurrentContext:imageProcessingContext];
@@ -81,15 +86,20 @@ static void *openGLESContextQueueKey;
 + (void)setActiveShaderProgram:(GLProgram *)shaderProgram;
 {
     GPUImageContext *sharedContext = [GPUImageContext sharedImageProcessingContext];
-    EAGLContext *imageProcessingContext = [sharedContext context];
+    [sharedContext setContextShaderProgram:shaderProgram];
+}
+
+- (void)setContextShaderProgram:(GLProgram *)shaderProgram;
+{
+    EAGLContext *imageProcessingContext = [self context];
     if ([EAGLContext currentContext] != imageProcessingContext)
     {
         [EAGLContext setCurrentContext:imageProcessingContext];
     }
     
-    if (sharedContext.currentShaderProgram != shaderProgram)
+    if (self.currentShaderProgram != shaderProgram)
     {
-        sharedContext.currentShaderProgram = shaderProgram;
+        self.currentShaderProgram = shaderProgram;
         [shaderProgram use];
     }
 }

@@ -30,7 +30,7 @@
     videoCamera.horizontallyMirrorFrontFacingCamera = NO;
     videoCamera.horizontallyMirrorRearFacingCamera = NO;
 
-    filter = [[GPUImageSepiaFilter alloc] init];
+//    filter = [[GPUImageSepiaFilter alloc] init];
     
 //    filter = [[GPUImageTiltShiftFilter alloc] init];
 //    [(GPUImageTiltShiftFilter *)filter setTopFocusLevel:0.65];
@@ -39,6 +39,7 @@
 //    [(GPUImageTiltShiftFilter *)filter setFocusFallOffRate:0.2];
     
 //    filter = [[GPUImageSketchFilter alloc] init];
+    filter = [[GPUImageColorInvertFilter alloc] init];
 //    filter = [[GPUImageSmoothToonFilter alloc] init];
 //    GPUImageRotationFilter *rotationFilter = [[GPUImageRotationFilter alloc] initWithRotation:kGPUImageRotateRightFlipVertical];
     
@@ -67,7 +68,7 @@
     dispatch_after(startTime, dispatch_get_main_queue(), ^(void){
         NSLog(@"Start recording");
         
-//        videoCamera.audioEncodingTarget = movieWriter;
+        videoCamera.audioEncodingTarget = movieWriter;
         [movieWriter startRecording];
 
 //        NSError *error = nil;
