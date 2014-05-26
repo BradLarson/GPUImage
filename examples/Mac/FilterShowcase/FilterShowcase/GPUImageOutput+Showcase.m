@@ -1070,6 +1070,8 @@
 @end
 
 @implementation GPUImagePoissonBlendFilter (Showcase)
+// TODO: fix and re-enable
++ (BOOL)excludeFromShowcase { return YES; }
 - (NSString *)sliderKeyPath { return @"mix"; }
 - (BOOL)needsSecondImage { return YES; }
 @end
