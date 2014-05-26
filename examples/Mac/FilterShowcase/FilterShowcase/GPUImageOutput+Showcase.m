@@ -179,27 +179,27 @@
 @end
 
 @implementation GPUImageTwoInputFilter (Showcase)
-+ (BOOL)excludeFromShowcase { return YES; }
++ (BOOL)excludeFromShowcase { return self == [GPUImageTwoInputFilter class]; }
 @end
 
 @implementation GPUImageTwoPassFilter (Showcase)
-+ (BOOL)excludeFromShowcase { return YES; }
++ (BOOL)excludeFromShowcase { return self == [GPUImageTwoPassFilter class]; }
 @end
 
 @implementation GPUImageTwoPassTextureSamplingFilter (Showcase)
-+ (BOOL)excludeFromShowcase { return YES; }
++ (BOOL)excludeFromShowcase { return self == [GPUImageTwoPassTextureSamplingFilter class]; }
 @end
 
 @implementation GPUImageTwoInputCrossTextureSamplingFilter (Showcase)
-+ (BOOL)excludeFromShowcase { return YES; }
++ (BOOL)excludeFromShowcase { return self == [GPUImageTwoInputCrossTextureSamplingFilter class]; }
 @end
 
 @implementation GPUImageThreeInputFilter (Showcase)
-+ (BOOL)excludeFromShowcase { return YES; }
++ (BOOL)excludeFromShowcase { return self == [GPUImageThreeInputFilter class]; }
 @end
 
 @implementation GPUImage3x3TextureSamplingFilter (Showcase)
-+ (BOOL)excludeFromShowcase { return YES; }
++ (BOOL)excludeFromShowcase { return self == [GPUImage3x3TextureSamplingFilter class]; }
 @end
 
 #pragma mark - Color Processing Filters
@@ -229,6 +229,7 @@
 //			NSLog(@"Average color: %f, %f, %f, %f", redComponent, greenComponent, blueComponent, alphaComponent);
         }];
         
+		[output addTarget:self];
         [colorGenerator addTarget:view];
 	}
 	return self;
@@ -991,6 +992,7 @@
 
 @implementation GPUImageDissolveBlendFilter (Showcase)
 - (NSString *)sliderKeyPath { return @"mix"; }
+- (BOOL)needsSecondImage { return YES; }
 @end
 
 @implementation GPUImageDivideBlendFilter (Showcase)
