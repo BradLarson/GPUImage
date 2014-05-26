@@ -92,7 +92,10 @@
 	if (_enableSlider) {
 		self.minimumSliderValue = [_activeFilter minSliderValue];
 		self.maximumSliderValue = [_activeFilter maxSliderValue];
-		self.currentSliderValue = [[_activeFilter valueForKeyPath:[_activeFilter sliderKeyPath]] floatValue];
+		
+		[self willChangeValueForKey:@"currentSliderValue"];
+		_currentSliderValue = [[_activeFilter valueForKeyPath:[_activeFilter sliderKeyPath]] floatValue];
+		[self didChangeValueForKey:@"currentSliderValue"];
 	}
     
     if ([_activeFilter needsSecondImage]) {
