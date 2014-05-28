@@ -44,6 +44,9 @@
     CGBitmapInfo bitmapInfo = CGImageGetBitmapInfo(subimageSource);
     CGBitmapInfo byteOrderInfo = bitmapInfo & kCGBitmapByteOrderMask;
     if (byteOrderInfo != kCGBitmapByteOrderDefault && byteOrderInfo != kCGBitmapByteOrder32Big) {
+        shouldRedrawUsingCoreGraphics = YES;
+    }
+    else {
         CGImageAlphaInfo alphaInfo = bitmapInfo & kCGBitmapAlphaInfoMask;
         if (alphaInfo != kCGImageAlphaPremultipliedLast && alphaInfo != kCGImageAlphaLast && alphaInfo != kCGImageAlphaNoneSkipLast) {
             shouldRedrawUsingCoreGraphics = YES;
