@@ -28,8 +28,8 @@
     NSAssert(self.framebufferForOutput.textureOptions.internalFormat == GL_RGBA, @"For replacing subtexture the internal texture format must be GL_RGBA.");
 
     CGRect subimageRect = (CGRect){.origin = CGPointZero, .size = (CGSize){.width = CGImageGetWidth(subimageSource), .height = CGImageGetHeight(subimageSource)}};
-    NSAssert(CGRectIsEmpty(subimageRect), @"Passed sub image must not be empty - it should be at least 1px tall and wide");
-    NSAssert(CGRectIsEmpty(subRect), @"Passed sub rect must not be empty");
+    NSAssert(!CGRectIsEmpty(subimageRect), @"Passed sub image must not be empty - it should be at least 1px tall and wide");
+    NSAssert(!CGRectIsEmpty(subRect), @"Passed sub rect must not be empty");
 
     NSAssert(CGSizeEqualToSize(subimageRect.size, subRect.size), @"Subimage size must match the size of sub rect");
     
