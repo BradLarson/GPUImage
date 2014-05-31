@@ -67,26 +67,23 @@
 
 - (GPUImageOutput<GPUImageInput> *)imageFilterAtIndex:(NSUInteger)index
 {
+	// this creates and connects the new filter to the source and destination
 	return [NSClassFromString([self objectInImageFilterClassNamesAtIndex:index]) showcaseImageOutputWithSource:_inputCamera targetView:_glView];
 }
 
-- (void)setSelectedRow:(NSUInteger)selectedRow
+- (void)clearCurrentFilter
 {
-	if (selectedRow == _selectedRow && nil == _activeFilter) {
-		return;
-	}
-	
-    _selectedRow = selectedRow;
-	
-    if (_activeFilter) {
+	if (_activeFilter) {
         [_inputCamera removeAllTargets];
         [_imageForBlending removeAllTargets];
-        // Disconnect older filter before replacing with new one
         [_activeFilter removeAllTargets];
         _activeFilter = nil;
     }
-	
-	_activeFilter = [self imageFilterAtIndex:_selectedRow];
+}
+
+- (void)setActiveFilter:(GPUImageOutput<GPUImageInput> *)filter
+{
+	_activeFilter = filter;
 	
 	self.enableSlider = [_activeFilter enableSlider];
 	if (_enableSlider) {
@@ -105,6 +102,16 @@
     }
 	else {
 		_imageForBlending = nil;
+	}
+}
+
+- (void)setSelectedRow:(NSUInteger)selectedRow
+{
+	if (selectedRow != _selectedRow || nil == _activeFilter) {
+		_selectedRow = selectedRow;
+		// clear the current filter before creating the new filter
+		[self clearCurrentFilter];
+		[self setActiveFilter:[self imageFilterAtIndex:_selectedRow]];
 	}
 }
 
