@@ -97,6 +97,17 @@
                                                 </items>
                                             </menu>
                                         </popUpButtonCell>
+                                        <connections>
+                                            <action selector="updateSelectedVariable:" target="-2" id="0vG-f2-pHr"/>
+                                            <binding destination="Nok-66-vCa" name="content" keyPath="arrangedObjects" id="5uD-Ni-d71"/>
+                                            <binding destination="Nok-66-vCa" name="contentValues" keyPath="arrangedObjects.name" previousBinding="5uD-Ni-d71" id="yJR-0e-8nr">
+                                                <dictionary key="options">
+                                                    <string key="NSNoSelectionPlaceholder">No selection</string>
+                                                </dictionary>
+                                            </binding>
+                                            <binding destination="-2" name="enabled" keyPath="enableSlider" id="mkX-f8-yWW"/>
+                                            <binding destination="Nok-66-vCa" name="selectedIndex" keyPath="selectionIndex" previousBinding="yJR-0e-8nr" id="55N-Z5-UkW"/>
+                                        </connections>
                                     </popUpButton>
                                     <customView id="09N-cM-G8r">
                                         <rect key="frame" x="208" y="0.0" width="423" height="69"/>
@@ -135,7 +146,7 @@
                                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                 </textFieldCell>
                                                 <connections>
-                                                    <binding destination="-2" name="value" keyPath="maximumSliderValue" id="S3C-i2-dhB"/>
+                                                    <binding destination="-2" name="value" keyPath="currentSliderValue" id="QBq-u6-UDx"/>
                                                 </connections>
                                             </textField>
                                             <slider verticalHuggingPriority="750" id="39">
@@ -165,5 +176,14 @@
                 <outlet property="delegate" destination="-2" id="4"/>
             </connections>
         </window>
+        <arrayController objectClassName="GPUImageFilterVariable" editable="NO" id="Nok-66-vCa">
+            <connections>
+                <binding destination="-2" name="contentArray" keyPath="filterVariables" id="GWZ-PG-WRp">
+                    <dictionary key="options">
+                        <bool key="NSConditionallySetsEditable" value="NO"/>
+                    </dictionary>
+                </binding>
+            </connections>
+        </arrayController>
     </objects>
 </document>

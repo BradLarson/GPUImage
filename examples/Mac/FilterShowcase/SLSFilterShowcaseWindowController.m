@@ -171,4 +171,10 @@
 	self.selectedRow = [[aNotification object] selectedRow];
 }
 
+#pragma mark - Actions
+
+- (IBAction)updateSelectedVariable:(NSPopUpButton *)sender {
+	self.selectedVariableIndex = [sender indexOfSelectedItem];
+}
+
 @end

@@ -15,4 +15,6 @@
 @property (nonatomic) NSUInteger selectedRow;
 @property (nonatomic) NSUInteger selectedVariableIndex;
 
+- (IBAction)updateSelectedVariable:(NSPopUpButton *)sender;
+
 @end
