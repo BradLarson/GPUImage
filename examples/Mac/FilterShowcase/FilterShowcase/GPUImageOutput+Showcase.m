@@ -9,10 +9,11 @@
 #import "GPUImageOutput+Showcase.h"
 
 // Not in GPUImage.h
-#import <GPUImage/GPUImageSourceOverBlendFilter.h>
 #import <GPUImage/GPUImageNonMaximumSuppressionFilter.h>
-#import <GPUImage/GPUImageWeakPixelInclusionFilter.h>
+#import <GPUImage/GPUImageSimplexNoiseFilter.h>
 #import <GPUImage/GPUImageSolidColorGenerator.h>
+#import <GPUImage/GPUImageSourceOverBlendFilter.h>
+#import <GPUImage/GPUImageWeakPixelInclusionFilter.h>
 
 @implementation GPUImageTransform3DFilter
 @end
@@ -854,7 +855,8 @@
 
 @implementation GPUImagePerlinNoiseFilter (Showcase)
 - (NSString *)sliderKeyPath { return @"scale"; }
-- (CGFloat)maxSliderValue { return 30.; }
+- (CGFloat)minSliderValue { return 1.; }
+- (CGFloat)maxSliderValue { return 32.; }
 @end
 
 @implementation GPUImagePinchDistortionFilter (Showcase)
@@ -908,6 +910,17 @@
 
 @implementation GPUImageRGBOpeningFilter (Showcase)
 - (BOOL)enableSlider { return NO; }
+@end
+
+@implementation GPUImageSimplexNoiseFilter (Showcase)
+- (NSArray *)filterVariables
+{
+	return @[
+			 [GPUImageFilterVariable filterVariableWithName:@"scale" min:1. max:32. initial:16.],
+			 [GPUImageFilterVariable filterVariableWithName:@"permuteScale" min:1. max:100. initial:34.],
+			 [GPUImageFilterVariable filterVariableWithName:@"permuteOffset" min:1. max:100. initial:1.],
+			 ];
+}
 @end
 
 @implementation GPUImageSketchFilter (Showcase)

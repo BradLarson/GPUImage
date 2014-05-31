@@ -72,14 +72,14 @@
 
 - (CGFloat)currentSliderValue
 {
-	NSString *key = [(GPUImageFilterVariable *)_filterVariables[_selectedVariableIndex] name];
-	return [[_activeFilter valueForKeyPath:key] floatValue];
+	NSString *keyPath = [(GPUImageFilterVariable *)_filterVariables[_selectedVariableIndex] name];
+	return [[_activeFilter valueForKeyPath:keyPath] floatValue];
 }
 
 - (void)setCurrentSliderValue:(CGFloat)newValue;
 {
     _currentSliderValue = newValue;
-	NSString *keyPath = [_activeFilter sliderKeyPath];
+	NSString *keyPath = [(GPUImageFilterVariable *)_filterVariables[_selectedVariableIndex] name];
 	[_activeFilter setValue:@(newValue) forKeyPath:keyPath];
 }
 

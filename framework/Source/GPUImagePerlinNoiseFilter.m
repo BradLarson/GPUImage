@@ -194,7 +194,7 @@ NSString *const kGPUImagePerlinNoiseFragmentShaderString = SHADER_STRING
 
 - (id)init;
 {
-    if (!(self = [super initWithFragmentShaderFromString:kGPUImagePerlinNoiseFragmentShaderString]))
+    if (!(self = [super initWithFragmentShaderFromString:[self fragmentShaderString]]))
     {
 		return nil;
     }
@@ -210,6 +210,11 @@ NSString *const kGPUImagePerlinNoiseFragmentShaderString = SHADER_STRING
     [self setColorFinish:(GPUVector4){1.0, 1.0, 1.0, 1.0}];    
     
     return self;
+}
+
+- (NSString *)fragmentShaderString
+{
+	return kGPUImagePerlinNoiseFragmentShaderString;
 }
 
 #pragma mark -

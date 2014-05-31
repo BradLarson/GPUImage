@@ -10,4 +10,6 @@
 
 @property (readwrite, nonatomic) float scale;
 
+- (NSString *)fragmentShaderString;
+
 @end

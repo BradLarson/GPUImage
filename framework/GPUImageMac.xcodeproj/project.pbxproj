@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		845846C3193970AE008FFE77 /* GPUImageSimplexNoiseFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = 845846C1193970AE008FFE77 /* GPUImageSimplexNoiseFilter.h */; };
+		845846C4193970AE008FFE77 /* GPUImageSimplexNoiseFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 845846C2193970AE008FFE77 /* GPUImageSimplexNoiseFilter.m */; };
 		8482C1501930D49700751F97 /* GPUImageInput.h in Headers */ = {isa = PBXBuildFile; fileRef = 8482C14F1930D49700751F97 /* GPUImageInput.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A87E5E12177648F3007FD5B1 /* GPUImageRawDataOutput.h in Headers */ = {isa = PBXBuildFile; fileRef = A87E5E10177648F3007FD5B1 /* GPUImageRawDataOutput.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A87E5E13177648F3007FD5B1 /* GPUImageRawDataOutput.m in Sources */ = {isa = PBXBuildFile; fileRef = A87E5E11177648F3007FD5B1 /* GPUImageRawDataOutput.m */; };
@@ -319,6 +321,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		845846C1193970AE008FFE77 /* GPUImageSimplexNoiseFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GPUImageSimplexNoiseFilter.h; path = Source/GPUImageSimplexNoiseFilter.h; sourceTree = SOURCE_ROOT; };
+		845846C2193970AE008FFE77 /* GPUImageSimplexNoiseFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GPUImageSimplexNoiseFilter.m; path = Source/GPUImageSimplexNoiseFilter.m; sourceTree = SOURCE_ROOT; };
 		8482C14F1930D49700751F97 /* GPUImageInput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GPUImageInput.h; path = Source/GPUImageInput.h; sourceTree = SOURCE_ROOT; };
 		A87E5E10177648F3007FD5B1 /* GPUImageRawDataOutput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GPUImageRawDataOutput.h; path = Source/GPUImageRawDataOutput.h; sourceTree = SOURCE_ROOT; };
 		A87E5E11177648F3007FD5B1 /* GPUImageRawDataOutput.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GPUImageRawDataOutput.m; path = Source/GPUImageRawDataOutput.m; sourceTree = SOURCE_ROOT; };
@@ -901,6 +905,8 @@
 				BCA20B901747081A0097C84A /* GPUImageRGBErosionFilter.m */,
 				BCA20B911747081A0097C84A /* GPUImageRGBOpeningFilter.h */,
 				BCA20B921747081B0097C84A /* GPUImageRGBOpeningFilter.m */,
+				845846C1193970AE008FFE77 /* GPUImageSimplexNoiseFilter.h */,
+				845846C2193970AE008FFE77 /* GPUImageSimplexNoiseFilter.m */,
 				BCF867CD172789B200912E34 /* GPUImageSketchFilter.h */,
 				BCF867CE172789B200912E34 /* GPUImageSketchFilter.m */,
 				BCA20B631746D3C30097C84A /* GPUImageSmoothToonFilter.h */,
@@ -1193,6 +1199,7 @@
 				BCE2EF9817459E2400C0628C /* GPUImageHoughTransformLineDetector.h in Headers */,
 				BCE2EF9C17459E5100C0628C /* GPUImageParallelCoordinateLineTransformFilter.h in Headers */,
 				BC56957A174683620081491B /* GPUImageCrosshairGenerator.h in Headers */,
+				845846C3193970AE008FFE77 /* GPUImageSimplexNoiseFilter.h in Headers */,
 				BC56957C174683620081491B /* GPUImageLineGenerator.h in Headers */,
 				BCA20B571746C9EC0097C84A /* GPUImageBuffer.h in Headers */,
 				BCA20B591746C9EC0097C84A /* GPUImageHighPassFilter.h in Headers */,
@@ -1434,6 +1441,7 @@
 				BCA20BB01747081D0097C84A /* GPUImageStretchDistortionFilter.m in Sources */,
 				BCA20BB21747081D0097C84A /* GPUImageSwirlFilter.m in Sources */,
 				BCA20BB6174708630097C84A /* GPUImageOpeningFilter.m in Sources */,
+				845846C4193970AE008FFE77 /* GPUImageSimplexNoiseFilter.m in Sources */,
 				BCA20BC217471C4B0097C84A /* GPUImageJFAVoronoiFilter.m in Sources */,
 				BCA20BC417471C4B0097C84A /* GPUImageLocalBinaryPatternFilter.m in Sources */,
 				BCA20BC617471C4B0097C84A /* GPUImageMosaicFilter.m in Sources */,

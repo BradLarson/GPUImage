@@ -24,7 +24,7 @@
                 <subviews>
                     <splitView dividerStyle="thin" vertical="YES" id="8Xb-zc-xL2">
                         <rect key="frame" x="0.0" y="0.0" width="854" height="614"/>
-                        <autoresizingMask key="autoresizingMask"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <scrollView autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" id="5">
                                 <rect key="frame" x="0.0" y="0.0" width="202" height="614"/>
@@ -66,7 +66,7 @@
                                     <rect key="frame" x="1" y="490" width="162" height="16"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
-                                <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" doubleValue="37" horizontal="NO" id="9">
+                                <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="9">
                                     <rect key="frame" x="224" y="17" width="15" height="102"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
@@ -154,10 +154,10 @@
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                                 <sliderCell key="cell" continuous="YES" state="on" alignment="left" maxValue="100" doubleValue="50" tickMarkPosition="above" sliderType="linear" id="40"/>
                                                 <connections>
+                                                    <binding destination="-2" name="value" keyPath="currentSliderValue" previousBinding="60" id="62"/>
                                                     <binding destination="-2" name="enabled" keyPath="enableSlider" id="68"/>
                                                     <binding destination="-2" name="maxValue" keyPath="maximumSliderValue" id="59"/>
                                                     <binding destination="-2" name="minValue" keyPath="minimumSliderValue" previousBinding="59" id="60"/>
-                                                    <binding destination="-2" name="value" keyPath="currentSliderValue" previousBinding="60" id="62"/>
                                                 </connections>
                                             </slider>
                                         </subviews>
