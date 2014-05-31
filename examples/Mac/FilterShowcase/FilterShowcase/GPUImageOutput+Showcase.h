@@ -11,6 +11,14 @@
 @interface GPUImageTransform3DFilter : GPUImageTransformFilter
 @end
 
+@interface GPUImageFilterVariable : NSObject
+@property (nonatomic, strong) NSString *name;
+@property (nonatomic) CGFloat minimum;
+@property (nonatomic) CGFloat maximum;
+@property (nonatomic) CGFloat initial;
++ (instancetype)filterVariableWithName:(NSString *)name min:(CGFloat)min max:(CGFloat)max initial:(CGFloat)initial;
+@end
+
 @interface GPUImageOutput (Showcase)
 
 - (instancetype)initWithSource:(GPUImageOutput *)output targetView:(GPUImageView *)view;

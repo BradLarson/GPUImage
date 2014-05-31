@@ -17,6 +17,18 @@
 @implementation GPUImageTransform3DFilter
 @end
 
+@implementation GPUImageFilterVariable
++ (instancetype)filterVariableWithName:(NSString *)name min:(CGFloat)min max:(CGFloat)max initial:(CGFloat)initial
+{
+	GPUImageFilterVariable *variable = [[self alloc] init];
+	variable.name = name;
+	variable.minimum = min;
+	variable.maximum = max;
+	variable.initial = initial;
+	return variable;
+}
+@end
+
 @implementation GPUImageOutput (Showcase)
 
 - (instancetype)initWithSource:(GPUImageOutput *)output targetView:(GPUImageView *)view
