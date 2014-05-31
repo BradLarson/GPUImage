@@ -27,6 +27,9 @@
 - (BOOL)needsSecondImage;
 - (NSImage *)secondInputImage;
 - (void)setSecondImage:(GPUImagePicture *)image;
+
+- (NSArray *)filterVariables;
+
 - (BOOL)enableSlider;
 - (NSString *)sliderKeyPath;
 - (CGFloat)minSliderValue;

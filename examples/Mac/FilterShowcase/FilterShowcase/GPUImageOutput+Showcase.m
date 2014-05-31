@@ -41,6 +41,8 @@
 	return [[self class] displayName];
 }
 
+#pragma mark - Blend images
+
 - (BOOL)needsSecondImage
 {
 	return NO;
@@ -55,6 +57,15 @@
 - (void)setSecondImage:(GPUImagePicture *)image
 {
 	// overridden by Input classes
+}
+
+#pragma mark - Filter Variables
+
+- (NSArray *)filterVariables
+{
+	NSString *keyPath = [self sliderKeyPath];
+	CGFloat initialValue = [[self valueForKeyPath:keyPath] floatValue];
+	return @[[GPUImageFilterVariable filterVariableWithName:keyPath min:[self minSliderValue] max:[self maxSliderValue] initial:initialValue]];
 }
 
 - (BOOL)enableSlider
