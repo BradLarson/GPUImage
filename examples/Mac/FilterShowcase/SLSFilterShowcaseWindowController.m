@@ -16,6 +16,8 @@
 	NSArray *_filterGroupClassNames;
 }
 
+@synthesize currentSliderValue=_currentSliderValue;
+
 #pragma mark - Initialization and teardown
 
 - (id)initWithWindow:(NSWindow *)window
@@ -44,11 +46,51 @@
     [_inputCamera startCameraCapture];
 }
 
+#pragma mark - Keypath dependencies
+
++ (NSSet *)keyPathsForValuesAffectingCurrentSliderValue
+{
+	return [NSSet setWithArray:@[@"selectedVariableIndex"]];
+}
+
++ (NSSet *)keyPathsForValuesAffectingMinimumSliderValue
+{
+	return [NSSet setWithArray:@[@"selectedVariableIndex"]];
+}
+
++ (NSSet *)keyPathsForValuesAffectingMaximumSliderValue
+{
+	return [NSSet setWithArray:@[@"selectedVariableIndex"]];
+}
+
 #pragma mark - Accessors
 
 - (NSUInteger)countOfImageFilterClassNames
 {
 	return [_filterClassNames count] + [_filterGroupClassNames count];
+}
+
+- (CGFloat)currentSliderValue
+{
+	NSString *key = [(GPUImageFilterVariable *)_filterVariables[_selectedVariableIndex] name];
+	return [[_activeFilter valueForKeyPath:key] floatValue];
+}
+
+- (void)setCurrentSliderValue:(CGFloat)newValue;
+{
+    _currentSliderValue = newValue;
+	NSString *keyPath = [_activeFilter sliderKeyPath];
+	[_activeFilter setValue:@(newValue) forKeyPath:keyPath];
+}
+
+- (CGFloat)minimumSliderValue
+{
+	return [(GPUImageFilterVariable *)_filterVariables[_selectedVariableIndex] minimum];
+}
+
+- (CGFloat)maximumSliderValue
+{
+	return [(GPUImageFilterVariable *)_filterVariables[_selectedVariableIndex] maximum];
 }
 
 - (NSString *)objectInImageFilterClassNamesAtIndex:(NSUInteger)index
@@ -87,12 +129,8 @@
 	
 	self.enableSlider = [_activeFilter enableSlider];
 	if (_enableSlider) {
-		self.minimumSliderValue = [_activeFilter minSliderValue];
-		self.maximumSliderValue = [_activeFilter maxSliderValue];
-		
-		[self willChangeValueForKey:@"currentSliderValue"];
-		_currentSliderValue = [[_activeFilter valueForKeyPath:[_activeFilter sliderKeyPath]] floatValue];
-		[self didChangeValueForKey:@"currentSliderValue"];
+		self.filterVariables = _activeFilter.filterVariables;
+		self.selectedVariableIndex = 0;
 	}
     
     if ([_activeFilter needsSecondImage]) {
@@ -113,15 +151,6 @@
 		[self clearCurrentFilter];
 		[self setActiveFilter:[self imageFilterAtIndex:_selectedRow]];
 	}
-}
-
-#pragma mark - Filter settings
-
-- (void)setCurrentSliderValue:(CGFloat)newValue;
-{
-    _currentSliderValue = newValue;
-	NSString *keyPath = [_activeFilter sliderKeyPath];
-	[_activeFilter setValue:@(newValue) forKeyPath:keyPath];
 }
 
 #pragma mark - NSTableViewDelegate

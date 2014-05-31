@@ -3,13 +3,16 @@
 
 @interface SLSFilterShowcaseWindowController : NSWindowController
 
-@property (readwrite) IBOutlet GPUImageView *glView;
-@property (readwrite) BOOL enableSlider;
-@property (readwrite, nonatomic) CGFloat minimumSliderValue;
-@property (readwrite, nonatomic) CGFloat maximumSliderValue;
-@property (readwrite, nonatomic) CGFloat currentSliderValue;
-@property (readwrite, nonatomic) NSUInteger selectedRow;
+@property (nonatomic, strong) IBOutlet GPUImageView *glView;
 
-@property (readwrite, nonatomic) NSArray *imageFilterClassNames;
+@property (nonatomic) BOOL enableSlider;
+@property (nonatomic) CGFloat minimumSliderValue;
+@property (nonatomic) CGFloat maximumSliderValue;
+@property (nonatomic) CGFloat currentSliderValue;
+
+@property (nonatomic, strong) NSArray *imageFilterClassNames;
+@property (nonatomic, strong) NSArray *filterVariables;
+@property (nonatomic) NSUInteger selectedRow;
+@property (nonatomic) NSUInteger selectedVariableIndex;
 
 @end
