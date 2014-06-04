@@ -1,3 +1,6 @@
+#import <OpenGL/OpenGL.h>
+#import <OpenGL/gl.h>
+#import <Cocoa/Cocoa.h>
 #import <GPUImage/GLProgram.h>
 
 // Base classes

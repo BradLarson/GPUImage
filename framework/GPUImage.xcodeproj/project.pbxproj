@@ -97,6 +97,8 @@
 		BC1B718F14F56C1D00ACA2AB /* GPUImageSwirlFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = BC1B718D14F56C1D00ACA2AB /* GPUImageSwirlFilter.m */; };
 		BC1B728114FB16AF00ACA2AB /* GPUImageMovieWriter.h in Headers */ = {isa = PBXBuildFile; fileRef = BC1B727F14FB16AF00ACA2AB /* GPUImageMovieWriter.h */; };
 		BC1B728214FB16AF00ACA2AB /* GPUImageMovieWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = BC1B728014FB16AF00ACA2AB /* GPUImageMovieWriter.m */; };
+		BC1BBFA8193BC55B0025FC88 /* GPUImageFASTCornerDetectionFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = BC1BBFA6193BC55B0025FC88 /* GPUImageFASTCornerDetectionFilter.h */; };
+		BC1BBFA9193BC55B0025FC88 /* GPUImageFASTCornerDetectionFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = BC1BBFA7193BC55B0025FC88 /* GPUImageFASTCornerDetectionFilter.m */; };
 		BC245DCA14DDBED7009FE7EB /* GPUImageFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = BC245DC814DDBED7009FE7EB /* GPUImageFilter.h */; };
 		BC245DCB14DDBED7009FE7EB /* GPUImageFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = BC245DC914DDBED7009FE7EB /* GPUImageFilter.m */; };
 		BC27A3CB15654F5A004F2D45 /* GPUImagePerlinNoiseFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = BC27A3C915654F5A004F2D45 /* GPUImagePerlinNoiseFilter.h */; };
@@ -451,6 +453,8 @@
 		BC1B718D14F56C1D00ACA2AB /* GPUImageSwirlFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GPUImageSwirlFilter.m; path = Source/GPUImageSwirlFilter.m; sourceTree = SOURCE_ROOT; };
 		BC1B727F14FB16AF00ACA2AB /* GPUImageMovieWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GPUImageMovieWriter.h; path = Source/iOS/GPUImageMovieWriter.h; sourceTree = SOURCE_ROOT; };
 		BC1B728014FB16AF00ACA2AB /* GPUImageMovieWriter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GPUImageMovieWriter.m; path = Source/iOS/GPUImageMovieWriter.m; sourceTree = SOURCE_ROOT; };
+		BC1BBFA6193BC55B0025FC88 /* GPUImageFASTCornerDetectionFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GPUImageFASTCornerDetectionFilter.h; path = Source/GPUImageFASTCornerDetectionFilter.h; sourceTree = SOURCE_ROOT; };
+		BC1BBFA7193BC55B0025FC88 /* GPUImageFASTCornerDetectionFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GPUImageFASTCornerDetectionFilter.m; path = Source/GPUImageFASTCornerDetectionFilter.m; sourceTree = SOURCE_ROOT; };
 		BC245DBF14DDBCF5009FE7EB /* GPUImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GPUImage.h; path = Source/GPUImage.h; sourceTree = SOURCE_ROOT; };
 		BC245DC814DDBED7009FE7EB /* GPUImageFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GPUImageFilter.h; path = Source/GPUImageFilter.h; sourceTree = SOURCE_ROOT; };
 		BC245DC914DDBED7009FE7EB /* GPUImageFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GPUImageFilter.m; path = Source/GPUImageFilter.m; sourceTree = SOURCE_ROOT; };
@@ -1061,6 +1065,8 @@
 				BCAD4CA2156F0F35001E50E1 /* GPUImageNobleCornerDetectionFilter.m */,
 				BCAD4C9C156F0D8E001E50E1 /* GPUImageShiTomasiFeatureDetectionFilter.h */,
 				BCAD4C9D156F0D8E001E50E1 /* GPUImageShiTomasiFeatureDetectionFilter.m */,
+				BC1BBFA6193BC55B0025FC88 /* GPUImageFASTCornerDetectionFilter.h */,
+				BC1BBFA7193BC55B0025FC88 /* GPUImageFASTCornerDetectionFilter.m */,
 				BCAD099D15506F6E00278521 /* GPUImageNonMaximumSuppressionFilter.h */,
 				BCAD099E15506F6E00278521 /* GPUImageNonMaximumSuppressionFilter.m */,
 				BCA6327F1623C80800EEB24F /* GPUImageThresholdedNonMaximumSuppressionFilter.h */,
@@ -1308,6 +1314,7 @@
 				BC0690BD157C1B38009274F9 /* GPUImageOpeningFilter.h in Headers */,
 				BC0690C1157C2368009274F9 /* GPUImageClosingFilter.h in Headers */,
 				BC0690D0157C2EBA009274F9 /* GPUImageRGBDilationFilter.h in Headers */,
+				BC1BBFA8193BC55B0025FC88 /* GPUImageFASTCornerDetectionFilter.h in Headers */,
 				BC0690D5157C31C9009274F9 /* GPUImageRGBErosionFilter.h in Headers */,
 				BC0690D9157C33B9009274F9 /* GPUImageRGBOpeningFilter.h in Headers */,
 				BC0690DD157C344D009274F9 /* GPUImageRGBClosingFilter.h in Headers */,
@@ -1402,7 +1409,7 @@
 			name = GPUImageTests;
 			productName = GPUImageTests;
 			productReference = BCF1A34414DDB1EC00852800 /* GPUImageTests.octest */;
-			productType = "com.apple.product-type.bundle";
+			productType = "com.apple.product-type.bundle.ocunit-test";
 		};
 /* End PBXNativeTarget section */
 
@@ -1411,7 +1418,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastTestingUpgradeCheck = 0510;
-				LastUpgradeCheck = 0500;
+				LastUpgradeCheck = 0600;
 				ORGANIZATIONNAME = "Brad Larson";
 			};
 			buildConfigurationList = BCF1A32E14DDB1EC00852800 /* Build configuration list for PBXProject "GPUImage" */;
@@ -1577,6 +1584,7 @@
 				BCAD4D211571CB50001E50E1 /* GPUImageWeakPixelInclusionFilter.m in Sources */,
 				BC56D82B1579779700CC9C1E /* GPUImageUIElement.m in Sources */,
 				BC56D84B157ADA4F00CC9C1E /* GPUImageDilationFilter.m in Sources */,
+				BC1BBFA9193BC55B0025FC88 /* GPUImageFASTCornerDetectionFilter.m in Sources */,
 				BC56D850157ADA6F00CC9C1E /* GPUImageErosionFilter.m in Sources */,
 				BC0690B9157C0C28009274F9 /* GPUImageTwoPassTextureSamplingFilter.m in Sources */,
 				BC0690BE157C1B38009274F9 /* GPUImageOpeningFilter.m in Sources */,
@@ -1698,8 +1706,11 @@
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEFINES_MODULE = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -1718,7 +1729,9 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
+				MODULEMAP_FILE = "";
 				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_MODULE_NAME = GPUImage;
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SDKROOT = iphoneos;
 				SYMROOT = "$(PROJECT_DIR)/../build";
@@ -1735,8 +1748,11 @@
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = YES;
+				DEFINES_MODULE = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
@@ -1748,6 +1764,8 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
+				MODULEMAP_FILE = "";
+				PRODUCT_MODULE_NAME = GPUImage;
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SDKROOT = iphoneos;
 				SYMROOT = "$(PROJECT_DIR)/../build";
