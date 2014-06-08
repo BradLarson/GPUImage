@@ -99,7 +99,7 @@
     }
     
     GLubyte *imageData = NULL;
-    CFDataRef dataFromImageDataProvider;
+    CFDataRef dataFromImageDataProvider = NULL;
     GLenum format = GL_BGRA;
     
     if (!shouldRedrawUsingCoreGraphics) {
@@ -206,7 +206,10 @@
     }
     else
     {
-        CFRelease(dataFromImageDataProvider);
+        if (dataFromImageDataProvider)
+        {
+            CFRelease(dataFromImageDataProvider);
+        }
     }
     
     return self;
