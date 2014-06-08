@@ -115,6 +115,14 @@
 		BC56D84B157ADA4F00CC9C1E /* GPUImageDilationFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = BC56D849157ADA4F00CC9C1E /* GPUImageDilationFilter.m */; };
 		BC56D84F157ADA6F00CC9C1E /* GPUImageErosionFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = BC56D84D157ADA6F00CC9C1E /* GPUImageErosionFilter.h */; };
 		BC56D850157ADA6F00CC9C1E /* GPUImageErosionFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = BC56D84E157ADA6F00CC9C1E /* GPUImageErosionFilter.m */; };
+		BC57607919441DD90096FFA5 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCB5E77814E20BAF00701302 /* CoreMedia.framework */; };
+		BC57607A19441DE00096FFA5 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCB5E77614E20BA800701302 /* CoreVideo.framework */; };
+		BC57607B19441DE80096FFA5 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCB5E77414E20B9700701302 /* OpenGLES.framework */; };
+		BC57607C19441DF10096FFA5 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCB5E77214E20B9100701302 /* QuartzCore.framework */; };
+		BC57607D19441DF60096FFA5 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCB5E77014E20B8A00701302 /* AVFoundation.framework */; };
+		BC57607E19441E010096FFA5 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCB5E76E14E20B7F00701302 /* UIKit.framework */; };
+		BC57607F19441E060096FFA5 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCF1A33714DDB1EC00852800 /* Foundation.framework */; };
+		BC57608019441E610096FFA5 /* GPUImageContext.m in Sources */ = {isa = PBXBuildFile; fileRef = BCB5E76B14E20AD700701302 /* GPUImageContext.m */; };
 		BC61F4B116B9CAEB009F6234 /* GPUImagePoissonBlendFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 46A8097C16B8A6A2000C29ED /* GPUImagePoissonBlendFilter.m */; };
 		BC6C55401730679D00EB222D /* GPUImageLaplacianFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = BC6C553E1730679D00EB222D /* GPUImageLaplacianFilter.h */; };
 		BC6C55411730679D00EB222D /* GPUImageLaplacianFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = BC6C553F1730679D00EB222D /* GPUImageLaplacianFilter.m */; };
@@ -471,7 +479,6 @@
 		BCD81F2B194404F8007133DB /* GPUImageTextureOutput.h in Headers */ = {isa = PBXBuildFile; fileRef = BCB6B8B91505BF940041703B /* GPUImageTextureOutput.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BCD81F2C194404F8007133DB /* GPUImageRawDataOutput.h in Headers */ = {isa = PBXBuildFile; fileRef = BC1B715514F49DAA00ACA2AB /* GPUImageRawDataOutput.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BCD81F2D19440604007133DB /* GLProgram.m in Sources */ = {isa = PBXBuildFile; fileRef = BCB5E79314E3275200701302 /* GLProgram.m */; };
-		BCD81F2E19440604007133DB /* GPUImageContext.m in Sources */ = {isa = PBXBuildFile; fileRef = BCB5E76B14E20AD700701302 /* GPUImageContext.m */; };
 		BCD81F2F19440604007133DB /* GPUImageFramebuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = BCC887CB18A1CEEB008DB37D /* GPUImageFramebuffer.m */; };
 		BCD81F3019440604007133DB /* GPUImageFramebufferCache.m in Sources */ = {isa = PBXBuildFile; fileRef = BCC887CF18A1D3AD008DB37D /* GPUImageFramebufferCache.m */; };
 		BCD81F3119440604007133DB /* GPUImageOutput.m in Sources */ = {isa = PBXBuildFile; fileRef = BCB5E77E14E22E4200701302 /* GPUImageOutput.m */; };
@@ -1047,6 +1054,13 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BC57607F19441E060096FFA5 /* Foundation.framework in Frameworks */,
+				BC57607E19441E010096FFA5 /* UIKit.framework in Frameworks */,
+				BC57607D19441DF60096FFA5 /* AVFoundation.framework in Frameworks */,
+				BC57607C19441DF10096FFA5 /* QuartzCore.framework in Frameworks */,
+				BC57607B19441DE80096FFA5 /* OpenGLES.framework in Frameworks */,
+				BC57607A19441DE00096FFA5 /* CoreVideo.framework in Frameworks */,
+				BC57607919441DD90096FFA5 /* CoreMedia.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2026,8 +2040,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BC57608019441E610096FFA5 /* GPUImageContext.m in Sources */,
 				BCD81F2D19440604007133DB /* GLProgram.m in Sources */,
-				BCD81F2E19440604007133DB /* GPUImageContext.m in Sources */,
 				BCD81F2F19440604007133DB /* GPUImageFramebuffer.m in Sources */,
 				BCD81F3019440604007133DB /* GPUImageFramebufferCache.m in Sources */,
 				BCD81F3119440604007133DB /* GPUImageOutput.m in Sources */,
@@ -2452,7 +2466,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_NS_ASSERTIONS = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				INFOPLIST_FILE = Source/iOS/Framework/Info.plist;
