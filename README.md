@@ -167,7 +167,7 @@ There are a couple of ways to process a still image and create a result. The fir
 	GPUImageSepiaFilter *stillImageFilter = [[GPUImageSepiaFilter alloc] init];
 
 	[stillImageSource addTarget:stillImageFilter];
-	[stillImageFilter useNextFrameForImageCapture]
+	[stillImageFilter useNextFrameForImageCapture];
 	[stillImageSource processImage];
 
 	UIImage *currentFilteredVideoFrame = [stillImageFilter imageFromCurrentFramebuffer];
