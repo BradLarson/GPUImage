@@ -2,6 +2,8 @@
 
 <div style="float: right"><img src="http://sunsetlakesoftware.com/sites/default/files/GPUImageLogo.png" /></div>
 
+<a href="https://zenodo.org/record/10416#.U5YGaF773Md"><img src="https://zenodo.org/badge/doi/10.5281/zenodo.10416.png" /></a>
+
 Brad Larson
 
 http://www.sunsetlakesoftware.com
