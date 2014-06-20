@@ -5,9 +5,9 @@
 
 + (NSString *)vertexShaderForOptimizedBlurOfRadius:(NSUInteger)blurRadius sigma:(CGFloat)sigma;
 {
-    if (blurRadius == 0)
+    if (blurRadius < 1)
     {
-        return nil;
+        return kGPUImageVertexShaderString;
     }
 
     // From these weights we calculate the offsets to read interpolated values from
@@ -49,9 +49,9 @@
 
 + (NSString *)fragmentShaderForOptimizedBlurOfRadius:(NSUInteger)blurRadius sigma:(CGFloat)sigma;
 {
-    if (blurRadius == 0)
+    if (blurRadius < 1)
     {
-        return nil;
+        return kGPUImagePassthroughFragmentShaderString;
     }
 
     NSUInteger numberOfOptimizedOffsets = MIN(blurRadius / 2 + (blurRadius % 2), 7);

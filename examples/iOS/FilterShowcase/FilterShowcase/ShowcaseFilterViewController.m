@@ -1149,7 +1149,7 @@
             self.title = @"Gaussian Blur";
             self.filterSettingsSlider.hidden = NO;
             
-            [self.filterSettingsSlider setMinimumValue:1.0];
+            [self.filterSettingsSlider setMinimumValue:0.0];
             [self.filterSettingsSlider setMaximumValue:24.0];
             [self.filterSettingsSlider setValue:2.0];
             
@@ -1160,7 +1160,7 @@
             self.title = @"Box Blur";
             self.filterSettingsSlider.hidden = NO;
             
-            [self.filterSettingsSlider setMinimumValue:1.0];
+            [self.filterSettingsSlider setMinimumValue:0.0];
             [self.filterSettingsSlider setMaximumValue:24.0];
             [self.filterSettingsSlider setValue:2.0];
             
@@ -1323,8 +1323,9 @@
 				inputImage = [UIImage imageNamed:@"WID-small.jpg"];
 			}
 			
+//            sourcePicture = [[GPUImagePicture alloc] initWithImage:inputImage smoothlyScaleOutput:NO];
             sourcePicture = [[GPUImagePicture alloc] initWithImage:inputImage smoothlyScaleOutput:YES];
-            [sourcePicture processImage];            
+            [sourcePicture processImage];
             [sourcePicture addTarget:filter];
         }
 
@@ -1421,7 +1422,6 @@
         }
         else if (filterType == GPUIMAGE_BUFFER)
         {
-            
             GPUImageDifferenceBlendFilter *blendFilter = [[GPUImageDifferenceBlendFilter alloc] init];
 
             [videoCamera removeTarget:filter];
@@ -1508,21 +1508,22 @@
             [self.view addSubview:faceView];
             faceView.hidden = YES;
             
+            __unsafe_unretained ShowcaseFilterViewController * weakSelf = self;
             [(GPUImageMotionDetector *) filter setMotionDetectionBlock:^(CGPoint motionCentroid, CGFloat motionIntensity, CMTime frameTime) {
                 if (motionIntensity > 0.01)
                 {
                     CGFloat motionBoxWidth = 1500.0 * motionIntensity;
-                    CGSize viewBounds = self.view.bounds.size;
+                    CGSize viewBounds = weakSelf.view.bounds.size;
                     dispatch_async(dispatch_get_main_queue(), ^{
-                        faceView.frame = CGRectMake(round(viewBounds.width * motionCentroid.x - motionBoxWidth / 2.0), round(viewBounds.height * motionCentroid.y - motionBoxWidth / 2.0), motionBoxWidth, motionBoxWidth);
-                        faceView.hidden = NO;
+                        weakSelf->faceView.frame = CGRectMake(round(viewBounds.width * motionCentroid.x - motionBoxWidth / 2.0), round(viewBounds.height * motionCentroid.y - motionBoxWidth / 2.0), motionBoxWidth, motionBoxWidth);
+                        weakSelf->faceView.hidden = NO;
                     });
                     
                 }
                 else
                 {
                     dispatch_async(dispatch_get_main_queue(), ^{
-                        faceView.hidden = YES;
+                        weakSelf->faceView.hidden = YES;
                     });
                 }
                 

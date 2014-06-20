@@ -237,8 +237,8 @@
 
         unsigned char *data = (unsigned char *)CVPixelBufferGetBaseAddress(pixelBuffer);
 
-        int bufferHeight = CVPixelBufferGetHeight(pixelBuffer);
-        int bufferWidth = CVPixelBufferGetWidth(pixelBuffer);
+        size_t bufferHeight = CVPixelBufferGetHeight(pixelBuffer);
+        size_t bufferWidth = CVPixelBufferGetWidth(pixelBuffer);
         NSInteger myDataLength = bufferWidth * bufferHeight * 4;
         
         

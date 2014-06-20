@@ -27,6 +27,7 @@
 		BCB3C40A16BCA69F003D26B0 /* iTunesArtwork.png in Resources */ = {isa = PBXBuildFile; fileRef = BCB3C40516BCA69F003D26B0 /* iTunesArtwork.png */; };
 		BCB5DD6614E76CD2000AF3C2 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCB5DD6514E76CD2000AF3C2 /* AVFoundation.framework */; };
 		BCF867101725A58F00912E34 /* libGPUImage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BCF8670B1725A56D00912E34 /* libGPUImage.a */; };
+		E5066F471855A86D008C7682 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E5066F461855A86D008C7682 /* Default-568h@2x.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -79,6 +80,7 @@
 		BCB3C40416BCA69F003D26B0 /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon@2x.png"; path = "../../SharedIcons/Icon@2x.png"; sourceTree = "<group>"; };
 		BCB3C40516BCA69F003D26B0 /* iTunesArtwork.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = iTunesArtwork.png; path = ../../SharedIcons/iTunesArtwork.png; sourceTree = "<group>"; };
 		BCB5DD6514E76CD2000AF3C2 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		E5066F461855A86D008C7682 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -104,6 +106,7 @@
 		BC01CA7614E7620600967264 = {
 			isa = PBXGroup;
 			children = (
+				E5066F461855A86D008C7682 /* Default-568h@2x.png */,
 				BC01CA8B14E7620600967264 /* MultiViewFilterExample */,
 				BC01CA8414E7620600967264 /* Frameworks */,
 				BC01CA8214E7620600967264 /* Products */,
@@ -200,7 +203,7 @@
 		BC01CA7814E7620600967264 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0420;
+				LastUpgradeCheck = 0500;
 				ORGANIZATIONNAME = "Cell Phone";
 			};
 			buildConfigurationList = BC01CA7B14E7620600967264 /* Build configuration list for PBXProject "MultiViewFilterExample" */;
@@ -250,6 +253,7 @@
 			files = (
 				BC01CA9014E7620600967264 /* InfoPlist.strings in Resources */,
 				BC3145C814E76BA700824EA0 /* Shader1.fsh in Resources */,
+				E5066F471855A86D008C7682 /* Default-568h@2x.png in Resources */,
 				BC3145C914E76BA700824EA0 /* Shader2.fsh in Resources */,
 				BCB3C40616BCA69F003D26B0 /* Icon-72.png in Resources */,
 				BCB3C40716BCA69F003D26B0 /* Icon-72@2x.png in Resources */,
@@ -298,7 +302,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
@@ -312,11 +321,16 @@
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = "../../../framework/**";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
+				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "-fobjc-arc";
 				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
@@ -328,15 +342,24 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				FRAMEWORK_SEARCH_PATHS = "";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = "../../../framework/**";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
@@ -356,10 +379,6 @@
 				GCC_PREFIX_HEADER = "MultiViewFilterExample/MultiViewFilterExample-Prefix.pch";
 				INFOPLIST_FILE = "MultiViewFilterExample/MultiViewFilterExample-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SYSTEM_APPS_DIR)/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/lib/arc\"",
-				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -372,10 +391,6 @@
 				GCC_PREFIX_HEADER = "MultiViewFilterExample/MultiViewFilterExample-Prefix.pch";
 				INFOPLIST_FILE = "MultiViewFilterExample/MultiViewFilterExample-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SYSTEM_APPS_DIR)/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/lib/arc\"",
-				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};

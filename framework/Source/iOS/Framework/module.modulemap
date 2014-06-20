@@ -1,0 +1,6 @@
+framework module GPUImage {
+  umbrella header "GPUImageFramework.h"
+
+  export *
+  module * { export * }
+}

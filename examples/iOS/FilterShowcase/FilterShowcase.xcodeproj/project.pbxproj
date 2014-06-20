@@ -36,6 +36,7 @@
 		BCF9D9AC15CCD1AF007E7FBA /* lookup_miss_etikate.png in Resources */ = {isa = PBXBuildFile; fileRef = BCF9D9A815CCD1AF007E7FBA /* lookup_miss_etikate.png */; };
 		BCF9D9AD15CCD1AF007E7FBA /* lookup_soft_elegance_1.png in Resources */ = {isa = PBXBuildFile; fileRef = BCF9D9A915CCD1AF007E7FBA /* lookup_soft_elegance_1.png */; };
 		BCF9D9AE15CCD1AF007E7FBA /* lookup_soft_elegance_2.png in Resources */ = {isa = PBXBuildFile; fileRef = BCF9D9AA15CCD1AF007E7FBA /* lookup_soft_elegance_2.png */; };
+		E5530A36180FD1D500597F98 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E5530A35180FD1D500597F98 /* Default-568h@2x.png */; };
 		F2F3361E156585C400B0FBB8 /* voroni_points2.png in Resources */ = {isa = PBXBuildFile; fileRef = F2F3361D156585C400B0FBB8 /* voroni_points2.png */; };
 		F2F336271565906000B0FBB8 /* dotletterstiles.png in Resources */ = {isa = PBXBuildFile; fileRef = F2F336261565906000B0FBB8 /* dotletterstiles.png */; };
 		F2F33629156591CA00B0FBB8 /* curvies.png in Resources */ = {isa = PBXBuildFile; fileRef = F2F33628156591CA00B0FBB8 /* curvies.png */; };
@@ -102,6 +103,7 @@
 		BCF9D9A815CCD1AF007E7FBA /* lookup_miss_etikate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = lookup_miss_etikate.png; path = ../../../../framework/Resources/lookup_miss_etikate.png; sourceTree = "<group>"; };
 		BCF9D9A915CCD1AF007E7FBA /* lookup_soft_elegance_1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = lookup_soft_elegance_1.png; path = ../../../../framework/Resources/lookup_soft_elegance_1.png; sourceTree = "<group>"; };
 		BCF9D9AA15CCD1AF007E7FBA /* lookup_soft_elegance_2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = lookup_soft_elegance_2.png; path = ../../../../framework/Resources/lookup_soft_elegance_2.png; sourceTree = "<group>"; };
+		E5530A35180FD1D500597F98 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		F2F3361D156585C400B0FBB8 /* voroni_points2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = voroni_points2.png; sourceTree = "<group>"; };
 		F2F336261565906000B0FBB8 /* dotletterstiles.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = dotletterstiles.png; sourceTree = "<group>"; };
 		F2F33628156591CA00B0FBB8 /* curvies.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = curvies.png; sourceTree = "<group>"; };
@@ -132,6 +134,7 @@
 		BC982AF714F046AC0001FF6F = {
 			isa = PBXGroup;
 			children = (
+				E5530A35180FD1D500597F98 /* Default-568h@2x.png */,
 				BC982B0C14F046AC0001FF6F /* FilterShowcase */,
 				BC982B0514F046AC0001FF6F /* Frameworks */,
 				BC982B0314F046AC0001FF6F /* Products */,
@@ -243,8 +246,13 @@
 			isa = PBXProject;
 			attributes = {
 				CLASSPREFIX = Showcase;
-				LastUpgradeCheck = 0430;
+				LastUpgradeCheck = 0500;
 				ORGANIZATIONNAME = "Cell Phone";
+				TargetAttributes = {
+					BC982B0114F046AC0001FF6F = {
+						DevelopmentTeam = J2U2U9GBML;
+					};
+				};
 			};
 			buildConfigurationList = BC982AFC14F046AC0001FF6F /* Build configuration list for PBXProject "FilterShowcase" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -304,6 +312,7 @@
 				BCF9D9AB15CCD1AF007E7FBA /* lookup_amatorka.png in Resources */,
 				BCF9D9AC15CCD1AF007E7FBA /* lookup_miss_etikate.png in Resources */,
 				BCF9D9AD15CCD1AF007E7FBA /* lookup_soft_elegance_1.png in Resources */,
+				E5530A36180FD1D500597F98 /* Default-568h@2x.png in Resources */,
 				BCF9D9AE15CCD1AF007E7FBA /* lookup_soft_elegance_2.png in Resources */,
 				BCB3C3C516BCA2EB003D26B0 /* Icon-72.png in Resources */,
 				BCB3C3C616BCA2EB003D26B0 /* Icon-72@2x.png in Resources */,
@@ -353,8 +362,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -366,11 +380,18 @@
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = "../../../framework/**";
+				HEADER_SEARCH_PATHS = (
+					../../../framework/Source,
+					../../../framework/Source/iOS,
+				);
 				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
+				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "-ObjC";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -381,16 +402,27 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = "../../../framework/**";
+				HEADER_SEARCH_PATHS = (
+					../../../framework/Source,
+					../../../framework/Source/iOS,
+				);
 				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				OTHER_LDFLAGS = "-ObjC";
@@ -403,10 +435,13 @@
 		BC982B1B14F046AC0001FF6F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "FilterShowcase/FilterShowcase-Prefix.pch";
 				INFOPLIST_FILE = "FilterShowcase/FilterShowcase-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -414,10 +449,13 @@
 		BC982B1C14F046AC0001FF6F /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "FilterShowcase/FilterShowcase-Prefix.pch";
 				INFOPLIST_FILE = "FilterShowcase/FilterShowcase-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

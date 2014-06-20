@@ -362,30 +362,6 @@ NSString *const kGPUImageJFAVoronoiFragmentShaderString = SHADER_STRING
 #pragma mark -
 #pragma mark Managing the display FBOs
 
-
-- (void)initializeOutputTextureIfNeeded;
-{
-    [GPUImageContext useImageProcessingContext];
-    
-    glActiveTexture(GL_TEXTURE2);
-    glGenTextures(1, &outputTexture);
-	glBindTexture(GL_TEXTURE_2D, outputTexture);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, self.outputTextureOptions.minFilter);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, self.outputTextureOptions.magFilter);
-	// This is necessary for non-power-of-two textures
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, self.outputTextureOptions.wrapS);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, self.outputTextureOptions.wrapT);
-    glBindTexture(GL_TEXTURE_2D, 0);
-    
-    glGenTextures(1, &secondFilterOutputTexture);
-	glBindTexture(GL_TEXTURE_2D, secondFilterOutputTexture);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, self.outputTextureOptions.minFilter);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, self.outputTextureOptions.magFilter);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, self.outputTextureOptions.wrapS);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, self.outputTextureOptions.wrapT);
-    glBindTexture(GL_TEXTURE_2D, 0);
-}
-
 -(NSUInteger)nextPowerOfTwo:(CGPoint)input {
     NSUInteger val;
     if (input.x > input.y) {
@@ -404,146 +380,24 @@ NSString *const kGPUImageJFAVoronoiFragmentShaderString = SHADER_STRING
     return val;
 }
 
-- (void)createFilterFBOofSize:(CGSize)currentFBOSize
-{
-    
-    [self prepareForImageCapture];
-    numPasses = (int)log2([self nextPowerOfTwo:CGPointMake(currentFBOSize.width, currentFBOSize.height)]);
-    
-    if ([GPUImageContext supportsFastTextureUpload] && preparedToCaptureImage)
-    {
-        //preparedToCaptureImage = NO;
-        [super createFilterFBOofSize:currentFBOSize];
-        //preparedToCaptureImage = YES;
-        
-    }
-    else
-    {
-        [super createFilterFBOofSize:currentFBOSize];
-        
-    }
-    
-    glGenFramebuffers(1, &secondFilterFramebuffer);
-    glBindFramebuffer(GL_FRAMEBUFFER, secondFilterFramebuffer);
-    
-    if ([GPUImageContext supportsFastTextureUpload] && preparedToCaptureImage)
-    {
-#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
-#if defined(__IPHONE_6_0)
-        CVReturn err = CVOpenGLESTextureCacheCreate(kCFAllocatorDefault, NULL, [[GPUImageContext sharedImageProcessingContext] context], NULL, &filterTextureCache);
-#else
-        CVReturn err = CVOpenGLESTextureCacheCreate(kCFAllocatorDefault, NULL, (__bridge void *)[[GPUImageContext sharedImageProcessingContext] context], NULL, &filterTextureCache);
-#endif
-        
-        if (err)
-        {
-            NSAssert(NO, @"Error at CVOpenGLESTextureCacheCreate %d", err);
-        }
-        
-        // Code originally sourced from http://allmybrain.com/2011/12/08/rendering-to-a-texture-with-ios-5-texture-cache-api/
-        
-        CFDictionaryRef empty; // empty value for attr value.
-        CFMutableDictionaryRef attrs;
-        empty = CFDictionaryCreate(kCFAllocatorDefault, NULL, NULL, 0, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks); // our empty IOSurface properties dictionary
-        attrs = CFDictionaryCreateMutable(kCFAllocatorDefault, 1, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
-        CFDictionarySetValue(attrs, kCVPixelBufferIOSurfacePropertiesKey, empty);
-        
-        err = CVPixelBufferCreate(kCFAllocatorDefault, (int)currentFBOSize.width, (int)currentFBOSize.height, kCVPixelFormatType_32BGRA, attrs, &renderTarget);
-        if (err)
-        {
-            NSLog(@"FBO size: %f, %f", currentFBOSize.width, currentFBOSize.height);
-            NSAssert(NO, @"Error at CVPixelBufferCreate %d", err);
-        }
-        
-        err = CVOpenGLESTextureCacheCreateTextureFromImage (kCFAllocatorDefault,
-                                                            filterTextureCache, renderTarget,
-                                                            NULL, // texture attributes
-                                                            GL_TEXTURE_2D,
-                                                            self.outputTextureOptions.internalFormat, // opengl format
-                                                            (int)currentFBOSize.width,
-                                                            (int)currentFBOSize.height,
-                                                            self.outputTextureOptions.format, // native iOS format
-                                                            self.outputTextureOptions.type,
-                                                            0,
-                                                            &renderTexture);
-        if (err)
-        {
-            NSAssert(NO, @"Error at CVOpenGLESTextureCacheCreateTextureFromImage %d", err);
-        }
-        
-        CFRelease(attrs);
-        CFRelease(empty);
-        glBindTexture(CVOpenGLESTextureGetTarget(renderTexture), CVOpenGLESTextureGetName(renderTexture));
-        secondFilterOutputTexture = CVOpenGLESTextureGetName(renderTexture);
-        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, self.outputTextureOptions.wrapS);
-        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, self.outputTextureOptions.wrapS);
-        
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, CVOpenGLESTextureGetName(renderTexture), 0);
-        
-        [self notifyTargetsAboutNewOutputTexture];
-#endif
-    }
-    else
-    {
-        [self initializeOutputTextureIfNeeded];
-        
-        glBindTexture(GL_TEXTURE_2D, secondFilterOutputTexture);
-        glTexImage2D(GL_TEXTURE_2D,
-                     0,
-                     self.outputTextureOptions.internalFormat,
-                     (int)currentFBOSize.width,
-                     (int)currentFBOSize.height,
-                     0,
-                     self.outputTextureOptions.format,
-                     self.outputTextureOptions.type,
-                     0);
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, secondFilterOutputTexture, 0);
-        
-        [self notifyTargetsAboutNewOutputTexture];
-    }
-    
-    glBindTexture(GL_TEXTURE_2D, outputTexture);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, self.outputTextureOptions.magFilter);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, self.outputTextureOptions.minFilter);
-    
-    glBindTexture(GL_TEXTURE_2D, secondFilterOutputTexture);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, self.outputTextureOptions.magFilter);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, self.outputTextureOptions.minFilter);
-    
-	GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
-    
-    NSAssert(status == GL_FRAMEBUFFER_COMPLETE, @"Incomplete filter FBO: %d", status);
-    
-    glBindTexture(GL_TEXTURE_2D, 0);
-}
+//- (void)setOutputFBO;
+//{
+//    if (currentPass % 2 == 1) {
+//        [self setSecondFilterFBO];
+//    } else {
+//        [self setFilterFBO];
+//    }
+//    
+//}
 
-
-//we may not need these
-- (void)setSecondFilterFBO;
-{
-    glBindFramebuffer(GL_FRAMEBUFFER, secondFilterFramebuffer);
-    //
-    //    CGSize currentFBOSize = [self sizeOfFBO];
-    //    glViewport(0, 0, (int)currentFBOSize.width, (int)currentFBOSize.height);
-}
-
-- (void)setOutputFBO;
-{
-    if (currentPass % 2 == 1) {
-        [self setSecondFilterFBO];
-    } else {
-        [self setFilterFBO];
-    }
-    
-}
-
-
-- (void)renderToTextureWithVertices:(const GLfloat *)vertices textureCoordinates:(const GLfloat *)textureCoordinates sourceTexture:(GLuint)sourceTexture;
+- (void)renderToTextureWithVertices:(const GLfloat *)vertices textureCoordinates:(const GLfloat *)textureCoordinates;
 {
     // Run the first stage of the two-pass filter
     [GPUImageContext setActiveShaderProgram:filterProgram];
     currentPass = 0;
-    [self setFilterFBO];
+    
+    outputFramebuffer = [[GPUImageContext sharedFramebufferCache] fetchFramebufferForSize:[self sizeOfFBO] textureOptions:self.outputTextureOptions onlyTexture:NO];
+    [outputFramebuffer activateFramebuffer];
     
     glActiveTexture(GL_TEXTURE2);
     
@@ -554,7 +408,7 @@ NSString *const kGPUImageJFAVoronoiFragmentShaderString = SHADER_STRING
     
     glUniform2f(sizeUniform, _sizeInPixels.width, _sizeInPixels.height);
     
-    glBindTexture(GL_TEXTURE_2D, sourceTexture);
+    glBindTexture(GL_TEXTURE_2D, [firstInputFramebuffer texture]);
     
     glUniform1i(filterInputTextureUniform, 2);
     
@@ -565,7 +419,7 @@ NSString *const kGPUImageJFAVoronoiFragmentShaderString = SHADER_STRING
     
     for (int pass = 1; pass <= numPasses + 1; pass++) {
         currentPass = pass;
-        [self setOutputFBO];
+//        [self setOutputFBO];
         
         //glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
@@ -574,7 +428,7 @@ NSString *const kGPUImageJFAVoronoiFragmentShaderString = SHADER_STRING
         if (pass % 2 == 0) {
             glBindTexture(GL_TEXTURE_2D, secondFilterOutputTexture);
         } else {
-            glBindTexture(GL_TEXTURE_2D, outputTexture);
+            glBindTexture(GL_TEXTURE_2D, [outputFramebuffer texture]);
         }
         glUniform1i(filterInputTextureUniform, 2);
         

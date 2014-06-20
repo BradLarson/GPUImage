@@ -51,14 +51,31 @@
     [movieWriter startRecording];
     [movieFile startProcessing];
     
+    timer = [NSTimer scheduledTimerWithTimeInterval:0.3f
+                                             target:self
+                                           selector:@selector(retrievingProgress)
+                                           userInfo:nil
+                                            repeats:YES];
+    
     [movieWriter setCompletionBlock:^{
         [filter removeTarget:movieWriter];
         [movieWriter finishRecording];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [timer invalidate];
+            self.progressLabel.text = @"100%";
+        });
     }];
+}
+
+- (void)retrievingProgress
+{
+    self.progressLabel.text = [NSString stringWithFormat:@"%d%%", (int)(movieFile.progress * 100)];
 }
 
 - (void)viewDidUnload
 {
+    [self setProgressLabel:nil];
     [super viewDidUnload];
 }
 
@@ -73,4 +90,8 @@
     [(GPUImagePixellateFilter *)filter setFractionalWidthOfAPixel:[(UISlider *)sender value]];
 }
 
+- (void)dealloc {
+    [_progressLabel release];
+    [super dealloc];
+}
 @end

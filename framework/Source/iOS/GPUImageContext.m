@@ -18,6 +18,8 @@
 @synthesize context = _context;
 @synthesize currentShaderProgram = _currentShaderProgram;
 @synthesize contextQueue = _contextQueue;
+@synthesize coreVideoTextureCache = _coreVideoTextureCache;
+@synthesize framebufferCache = _framebufferCache;
 
 static void *openGLESContextQueueKey;
 
@@ -62,9 +64,19 @@ static void *openGLESContextQueueKey;
     return [[self sharedImageProcessingContext] contextQueue];
 }
 
++ (GPUImageFramebufferCache *)sharedFramebufferCache;
+{
+    return [[self sharedImageProcessingContext] framebufferCache];
+}
+
 + (void)useImageProcessingContext;
 {
-    EAGLContext *imageProcessingContext = [[GPUImageContext sharedImageProcessingContext] context];
+    [[GPUImageContext sharedImageProcessingContext] useAsCurrentContext];
+}
+
+- (void)useAsCurrentContext;
+{
+    EAGLContext *imageProcessingContext = [self context];
     if ([EAGLContext currentContext] != imageProcessingContext)
     {
         [EAGLContext setCurrentContext:imageProcessingContext];
@@ -74,15 +86,20 @@ static void *openGLESContextQueueKey;
 + (void)setActiveShaderProgram:(GLProgram *)shaderProgram;
 {
     GPUImageContext *sharedContext = [GPUImageContext sharedImageProcessingContext];
-    EAGLContext *imageProcessingContext = [sharedContext context];
+    [sharedContext setContextShaderProgram:shaderProgram];
+}
+
+- (void)setContextShaderProgram:(GLProgram *)shaderProgram;
+{
+    EAGLContext *imageProcessingContext = [self context];
     if ([EAGLContext currentContext] != imageProcessingContext)
     {
         [EAGLContext setCurrentContext:imageProcessingContext];
     }
     
-    if (sharedContext.currentShaderProgram != shaderProgram)
+    if (self.currentShaderProgram != shaderProgram)
     {
-        sharedContext.currentShaderProgram = shaderProgram;
+        self.currentShaderProgram = shaderProgram;
         [shaderProgram use];
     }
 }
@@ -262,6 +279,36 @@ static void *openGLESContextQueueKey;
     }
     
     return _context;
+}
+
+- (CVOpenGLESTextureCacheRef)coreVideoTextureCache;
+{
+    if (_coreVideoTextureCache == NULL)
+    {
+#if defined(__IPHONE_6_0)
+        CVReturn err = CVOpenGLESTextureCacheCreate(kCFAllocatorDefault, NULL, [self context], NULL, &_coreVideoTextureCache);
+#else
+        CVReturn err = CVOpenGLESTextureCacheCreate(kCFAllocatorDefault, NULL, (__bridge void *)[self context], NULL, &_coreVideoTextureCache);
+#endif
+        
+        if (err)
+        {
+            NSAssert(NO, @"Error at CVOpenGLESTextureCacheCreate %d", err);
+        }
+
+    }
+    
+    return _coreVideoTextureCache;
+}
+
+- (GPUImageFramebufferCache *)framebufferCache;
+{
+    if (_framebufferCache == nil)
+    {
+        _framebufferCache = [[GPUImageFramebufferCache alloc] init];
+    }
+    
+    return _framebufferCache;
 }
 
 @end

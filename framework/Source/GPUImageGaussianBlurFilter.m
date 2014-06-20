@@ -40,6 +40,11 @@
 
 + (NSString *)vertexShaderForStandardBlurOfRadius:(NSUInteger)blurRadius sigma:(CGFloat)sigma;
 {
+    if (blurRadius < 1)
+    {
+        return kGPUImageVertexShaderString;
+    }
+    
 //    NSLog(@"Max varyings: %d", [GPUImageContext maximumVaryingVectorsForThisDevice]);
     NSMutableString *shaderString = [[NSMutableString alloc] init];
 
@@ -85,6 +90,11 @@
 
 + (NSString *)fragmentShaderForStandardBlurOfRadius:(NSUInteger)blurRadius sigma:(CGFloat)sigma;
 {
+    if (blurRadius < 1)
+    {
+        return kGPUImagePassthroughFragmentShaderString;
+    }
+
     // First, generate the normal Gaussian weights for a given sigma
     GLfloat *standardGaussianWeights = calloc(blurRadius + 1, sizeof(GLfloat));
     GLfloat sumOfWeights = 0.0;
@@ -157,10 +167,11 @@
 
 + (NSString *)vertexShaderForOptimizedBlurOfRadius:(NSUInteger)blurRadius sigma:(CGFloat)sigma;
 {
-    if (blurRadius == 0)
+    if (blurRadius < 1)
     {
-        return nil;
+        return kGPUImageVertexShaderString;
     }
+
     // First, generate the normal Gaussian weights for a given sigma
     GLfloat *standardGaussianWeights = calloc(blurRadius + 1, sizeof(GLfloat));
     GLfloat sumOfWeights = 0.0;
@@ -234,10 +245,11 @@
 
 + (NSString *)fragmentShaderForOptimizedBlurOfRadius:(NSUInteger)blurRadius sigma:(CGFloat)sigma;
 {
-    if (blurRadius == 0)
+    if (blurRadius < 1)
     {
-        return nil;
+        return kGPUImagePassthroughFragmentShaderString;
     }
+    
     // First, generate the normal Gaussian weights for a given sigma
     GLfloat *standardGaussianWeights = calloc(blurRadius + 1, sizeof(GLfloat));
     GLfloat sumOfWeights = 0.0;
@@ -349,13 +361,13 @@
 #pragma mark -
 #pragma mark Rendering
 
-- (void)renderToTextureWithVertices:(const GLfloat *)vertices textureCoordinates:(const GLfloat *)textureCoordinates sourceTexture:(GLuint)sourceTexture;
+- (void)renderToTextureWithVertices:(const GLfloat *)vertices textureCoordinates:(const GLfloat *)textureCoordinates;
 {
-    [super renderToTextureWithVertices:vertices textureCoordinates:textureCoordinates sourceTexture:sourceTexture];
+    [super renderToTextureWithVertices:vertices textureCoordinates:textureCoordinates];
     
     for (NSUInteger currentAdditionalBlurPass = 1; currentAdditionalBlurPass < _blurPasses; currentAdditionalBlurPass++)
     {
-        [super renderToTextureWithVertices:vertices textureCoordinates:[[self class] textureCoordinatesForRotation:kGPUImageNoRotation] sourceTexture:secondFilterOutputTexture];
+        [super renderToTextureWithVertices:vertices textureCoordinates:[[self class] textureCoordinatesForRotation:kGPUImageNoRotation]];
     }
 }
 
@@ -451,10 +463,14 @@
     {
         _blurRadiusInPixels = round(newValue); // For now, only do integral sigmas
         
-        // Calculate the number of pixels to sample from by setting a bottom limit for the contribution of the outermost pixel
-        CGFloat minimumWeightToFindEdgeOfSamplingArea = 1.0/256.0;
-        NSUInteger calculatedSampleRadius = floor(sqrt(-2.0 * pow(_blurRadiusInPixels, 2.0) * log(minimumWeightToFindEdgeOfSamplingArea * sqrt(2.0 * M_PI * pow(_blurRadiusInPixels, 2.0))) ));
-        calculatedSampleRadius += calculatedSampleRadius % 2; // There's nothing to gain from handling odd radius sizes, due to the optimizations I use
+        NSUInteger calculatedSampleRadius = 0;
+        if (_blurRadiusInPixels >= 1) // Avoid a divide-by-zero error here
+        {
+            // Calculate the number of pixels to sample from by setting a bottom limit for the contribution of the outermost pixel
+            CGFloat minimumWeightToFindEdgeOfSamplingArea = 1.0/256.0;
+            calculatedSampleRadius = floor(sqrt(-2.0 * pow(_blurRadiusInPixels, 2.0) * log(minimumWeightToFindEdgeOfSamplingArea * sqrt(2.0 * M_PI * pow(_blurRadiusInPixels, 2.0))) ));
+            calculatedSampleRadius += calculatedSampleRadius % 2; // There's nothing to gain from handling odd radius sizes, due to the optimizations I use
+        }
         
 //        NSLog(@"Blur radius: %f, calculated sample radius: %d", _blurRadiusInPixels, calculatedSampleRadius);
 //        

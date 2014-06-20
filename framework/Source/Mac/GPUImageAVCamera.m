@@ -81,14 +81,12 @@ NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = SHAD
     GLProgram *yuvConversionProgram;
     GLint yuvConversionPositionAttribute, yuvConversionTextureCoordinateAttribute;
     GLint yuvConversionLuminanceTextureUniform, yuvConversionChrominanceTextureUniform;
-    GLuint yuvConversionFramebuffer;
     
     int imageBufferWidth, imageBufferHeight;
 }
 
 - (void)updateOrientationSendToTargets;
 - (void)convertYUVToRGBOutput;
-- (void)setYUVConversionFBO;
 
 @end
 
@@ -155,7 +153,8 @@ NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = SHAD
     _runBenchmark = NO;
     capturePaused = NO;
     outputRotation = kGPUImageNoRotation;
-    captureAsYUV = YES;
+//    captureAsYUV = YES;
+    captureAsYUV = NO;
 
     runSynchronouslyOnVideoProcessingQueue(^{
         
@@ -199,8 +198,6 @@ NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = SHAD
             glEnableVertexAttribArray(yuvConversionPositionAttribute);
             glEnableVertexAttribArray(yuvConversionTextureCoordinateAttribute);
         }
-        
-        [self initializeOutputTextureIfNeeded];
     });
     
 	// Grab the back-facing or front-facing camera
@@ -264,8 +261,8 @@ NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = SHAD
     else
     {
         // Despite returning a longer list of supported pixel formats, only RGB, RGBA, BGRA, and the YUV 4:2:2 variants seem to return cleanly
-//        [videoOutput setVideoSettings:[NSDictionary dictionaryWithObject:[NSNumber numberWithInt:kCVPixelFormatType_32BGRA] forKey:(id)kCVPixelBufferPixelFormatTypeKey]];
-        [videoOutput setVideoSettings:[NSDictionary dictionaryWithObject:[NSNumber numberWithInt:kCVPixelFormatType_422YpCbCr8_yuvs] forKey:(id)kCVPixelBufferPixelFormatTypeKey]];
+        [videoOutput setVideoSettings:[NSDictionary dictionaryWithObject:[NSNumber numberWithInt:kCVPixelFormatType_32BGRA] forKey:(id)kCVPixelBufferPixelFormatTypeKey]];
+//        [videoOutput setVideoSettings:[NSDictionary dictionaryWithObject:[NSNumber numberWithInt:kCVPixelFormatType_422YpCbCr8_yuvs] forKey:(id)kCVPixelBufferPixelFormatTypeKey]];
     }
     
     [videoOutput setSampleBufferDelegate:self queue:cameraProcessingQueue];
@@ -321,12 +318,6 @@ NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = SHAD
         dispatch_release(frameRenderingSemaphore);
     }
 #endif
-    
-//    if (captureAsYUV && [GPUImageContext deviceSupportsRedTextures])
-    if (captureAsYUV && [GPUImageContext supportsFastTextureUpload])
-    {
-        [self destroyYUVConversionFBO];
-    }
 }
 
 - (void)removeInputsAndOutputs;
@@ -467,7 +458,7 @@ NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = SHAD
 		for (AVCaptureConnection *connection in videoOutput.connections)
 		{
 			if ([connection respondsToSelector:@selector(setVideoMinFrameDuration:)])
-				connection.videoMinFrameDuration = CMTimeMake(1, _frameRate);
+				connection.videoMinFrameDuration = CMTimeMake(1, (int32_t)_frameRate);
 			
 		}
 	}
@@ -502,6 +493,7 @@ NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = SHAD
 
 - (void)updateTargetsForVideoCameraUsingCacheTextureAtWidth:(int)bufferWidth height:(int)bufferHeight time:(CMTime)currentTime;
 {
+    // First, update all the framebuffers in the targets
     for (id<GPUImageInput> currentTarget in targets)
     {
         if ([currentTarget enabled])
@@ -517,20 +509,37 @@ NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = SHAD
                 if ([currentTarget wantsMonochromeInput] && captureAsYUV)
                 {
                     [currentTarget setCurrentlyReceivingMonochromeInput:YES];
-                    [currentTarget setInputTexture:luminanceTexture atIndex:textureIndexOfTarget];
+                    // TODO: Replace optimization for monochrome output
+                    [currentTarget setInputFramebuffer:outputFramebuffer atIndex:textureIndexOfTarget];
                 }
                 else
                 {
                     [currentTarget setCurrentlyReceivingMonochromeInput:NO];
-                    [currentTarget setInputTexture:outputTexture atIndex:textureIndexOfTarget];
+                    [currentTarget setInputFramebuffer:outputFramebuffer atIndex:textureIndexOfTarget];
                 }
-                
-                [currentTarget newFrameReadyAtTime:currentTime atIndex:textureIndexOfTarget];
             }
             else
             {
                 [currentTarget setInputRotation:outputRotation atIndex:textureIndexOfTarget];
-                [currentTarget setInputTexture:outputTexture atIndex:textureIndexOfTarget];
+                [currentTarget setInputFramebuffer:outputFramebuffer atIndex:textureIndexOfTarget];
+            }
+        }
+    }
+    
+    // Then release our hold on the local framebuffer to send it back to the cache as soon as it's no longer needed
+    [outputFramebuffer unlock];
+    
+    // Finally, trigger rendering as needed
+    for (id<GPUImageInput> currentTarget in targets)
+    {
+        if ([currentTarget enabled])
+        {
+            NSInteger indexOfObject = [targets indexOfObject:currentTarget];
+            NSInteger textureIndexOfTarget = [[targetTextureIndices objectAtIndex:indexOfObject] integerValue];
+            
+            if (currentTarget != self.targetToIgnoreForUpdates)
+            {
+                [currentTarget newFrameReadyAtTime:currentTime atIndex:textureIndexOfTarget];
             }
         }
     }
@@ -554,29 +563,33 @@ NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = SHAD
 
     CVPixelBufferLockBaseAddress(cameraFrame, 0);
     
-    glBindTexture(GL_TEXTURE_2D, outputTexture);
+    outputFramebuffer = [[GPUImageContext sharedFramebufferCache] fetchFramebufferForSize:CGSizeMake(bufferWidth, bufferHeight) onlyTexture:YES];
+    
+    glBindTexture(GL_TEXTURE_2D, [outputFramebuffer texture]);
     
     //        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, bufferWidth, bufferHeight, 0, GL_BGRA, GL_UNSIGNED_BYTE, CVPixelBufferGetBaseAddress(cameraFrame));
     
     // Using BGRA extension to pull in video frame data directly
 //    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, bytesPerRow / 3, bufferHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, CVPixelBufferGetBaseAddress(cameraFrame));
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, bufferWidth, bufferHeight, 0, GL_YCBCR_422_APPLE, GL_UNSIGNED_SHORT_8_8_REV_APPLE, CVPixelBufferGetBaseAddress(cameraFrame));
-//    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, bytesPerRow / 4, bufferHeight, 0, GL_BGRA, GL_UNSIGNED_BYTE, CVPixelBufferGetBaseAddress(cameraFrame));
-    
-    for (id<GPUImageInput> currentTarget in targets)
-    {
-        if ([currentTarget enabled])
-        {
-            if (currentTarget != self.targetToIgnoreForUpdates)
-            {
-                NSInteger indexOfObject = [targets indexOfObject:currentTarget];
-                NSInteger textureIndexOfTarget = [[targetTextureIndices objectAtIndex:indexOfObject] integerValue];
-                
-                [currentTarget setInputSize:CGSizeMake(bufferWidth, bufferHeight) atIndex:textureIndexOfTarget];
-                [currentTarget newFrameReadyAtTime:currentTime atIndex:textureIndexOfTarget];
-            }
-        }
-    }
+//	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, bufferWidth, bufferHeight, 0, GL_YCBCR_422_APPLE, GL_UNSIGNED_SHORT_8_8_REV_APPLE, CVPixelBufferGetBaseAddress(cameraFrame));
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, bufferWidth, bufferHeight, 0, GL_BGRA, GL_UNSIGNED_BYTE, CVPixelBufferGetBaseAddress(cameraFrame));
+
+    [self updateTargetsForVideoCameraUsingCacheTextureAtWidth:bufferWidth height:bufferHeight time:currentTime];
+
+//    for (id<GPUImageInput> currentTarget in targets)
+//    {
+//        if ([currentTarget enabled])
+//        {
+//            if (currentTarget != self.targetToIgnoreForUpdates)
+//            {
+//                NSInteger indexOfObject = [targets indexOfObject:currentTarget];
+//                NSInteger textureIndexOfTarget = [[targetTextureIndices objectAtIndex:indexOfObject] integerValue];
+//                
+//                [currentTarget setInputSize:CGSizeMake(bufferWidth, bufferHeight) atIndex:textureIndexOfTarget];
+//                [currentTarget newFrameReadyAtTime:currentTime atIndex:textureIndexOfTarget];
+//            }
+//        }
+//    }
     
     CVPixelBufferUnlockBaseAddress(cameraFrame, 0);
     
@@ -601,7 +614,9 @@ NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = SHAD
 - (void)convertYUVToRGBOutput;
 {
     [GPUImageContext setActiveShaderProgram:yuvConversionProgram];
-    [self setYUVConversionFBO];
+
+    outputFramebuffer = [[GPUImageContext sharedFramebufferCache] fetchFramebufferForSize:CGSizeMake(imageBufferWidth, imageBufferHeight) textureOptions:self.outputTextureOptions onlyTexture:NO];
+    [outputFramebuffer activateFramebuffer];
     
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -633,54 +648,6 @@ NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = SHAD
     
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 }
-
-- (void)setYUVConversionFBO;
-{
-    if (!yuvConversionFramebuffer)
-    {
-        [self createYUVConversionFBO];
-    }
-    
-    glBindFramebuffer(GL_FRAMEBUFFER, yuvConversionFramebuffer);
-    
-    glViewport(0, 0, imageBufferWidth, imageBufferHeight);
-}
-
-- (void)createYUVConversionFBO;
-{
-    [self initializeOutputTextureIfNeeded];
-    
-    glActiveTexture(GL_TEXTURE1);
-    glGenFramebuffers(1, &yuvConversionFramebuffer);
-    glBindFramebuffer(GL_FRAMEBUFFER, yuvConversionFramebuffer);
-    
-    glBindTexture(GL_TEXTURE_2D, outputTexture);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, imageBufferWidth, imageBufferHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, outputTexture, 0);
-    
-	GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
-    [self notifyTargetsAboutNewOutputTexture];
-
-    NSAssert(status == GL_FRAMEBUFFER_COMPLETE, @"Incomplete filter FBO: %d", status);
-    glBindTexture(GL_TEXTURE_2D, 0);
-
-}
-
-- (void)destroyYUVConversionFBO;
-{
-    if (yuvConversionFramebuffer)
-	{
-		glDeleteFramebuffers(1, &yuvConversionFramebuffer);
-		yuvConversionFramebuffer = 0;
-	}
-    
-    if (outputTexture)
-    {
-        glDeleteTextures(1, &outputTexture);
-        outputTexture = 0;
-    }
-}
-
 
 #pragma mark -
 #pragma mark Benchmarking

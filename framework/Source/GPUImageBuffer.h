@@ -2,7 +2,7 @@
 
 @interface GPUImageBuffer : GPUImageFilter
 {
-    NSMutableArray *bufferedTextures;
+    NSMutableArray *bufferedFramebuffers;
 }
 
 @property(readwrite, nonatomic) NSUInteger bufferSize;

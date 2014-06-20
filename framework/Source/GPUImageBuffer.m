@@ -2,10 +2,6 @@
 
 @interface GPUImageBuffer()
 
-//Texture management
-- (GLuint)generateTexture;
-- (void)removeTexture:(GLuint)textureToRemove;
-
 @end
 
 @implementation GPUImageBuffer
@@ -22,9 +18,8 @@
         return nil;
     }
     
-    bufferedTextures = [[NSMutableArray alloc] init];
-    [self initializeOutputTextureIfNeeded];
-    [bufferedTextures addObject:[NSNumber numberWithInt:outputTexture]];
+    bufferedFramebuffers = [[NSMutableArray alloc] init];
+//    [bufferedTextures addObject:[NSNumber numberWithInt:outputTexture]];
     _bufferSize = 1;
     
     return self;
@@ -32,9 +27,9 @@
 
 - (void)dealloc
 {
-    for (NSNumber *currentTextureName in bufferedTextures)
+    for (GPUImageFramebuffer *currentFramebuffer in bufferedFramebuffers)
     {
-        [self removeTexture:[currentTextureName intValue]];
+        [currentFramebuffer unlock];
     }
 }
 
@@ -43,120 +38,41 @@
 
 - (void)newFrameReadyAtTime:(CMTime)frameTime atIndex:(NSInteger)textureIndex;
 {
-    outputTextureRetainCount = [targets count];
-
-    static const GLfloat imageVertices[] = {
-        -1.0f, -1.0f,
-        1.0f, -1.0f,
-        -1.0f,  1.0f,
-        1.0f,  1.0f,
-    };
-    
-    [self notifyTargetsAboutNewOutputTexture];
-
-    // Let the downstream video elements see the previous frame from the buffer before rendering a new one into place
-    [self informTargetsAboutNewFrameAtTime:frameTime];
-    
-    // Move the last frame to the back of the buffer, if needed
-    if (_bufferSize > 1)
+    if ([bufferedFramebuffers count] >= _bufferSize)
     {
-        NSNumber *lastTextureName = [bufferedTextures objectAtIndex:0];
-        [bufferedTextures removeObjectAtIndex:0];
-        [bufferedTextures addObject:lastTextureName];
+        outputFramebuffer = [bufferedFramebuffers objectAtIndex:0];
+        [bufferedFramebuffers removeObjectAtIndex:0];
     }
     else
     {
-        // Make sure the previous rendering has finished before enqueuing the current frame when simply delaying by one frame
-        glFinish();
-    }    
-    
-    // Render the new frame to the back of the buffer
-    [self renderToTextureWithVertices:imageVertices textureCoordinates:[[self class] textureCoordinatesForRotation:inputRotation] sourceTexture:filterSourceTexture];
-}
-
-- (void)renderToTextureWithVertices:(const GLfloat *)vertices textureCoordinates:(const GLfloat *)textureCoordinates sourceTexture:(GLuint)sourceTexture;
-{
-    if (self.preventRendering)
-    {
-        return;
+        // Nothing yet in the buffer, so don't process further until the buffer is full
+        outputFramebuffer = firstInputFramebuffer;
+        [firstInputFramebuffer lock];
     }
     
-    [GPUImageContext setActiveShaderProgram:filterProgram];
-    [self setFilterFBO];
-    
-    glBindTexture(GL_TEXTURE_2D, [[bufferedTextures lastObject] intValue]);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, [[bufferedTextures lastObject] intValue], 0);
-        
-    glClearColor(backgroundColorRed, backgroundColorGreen, backgroundColorBlue, backgroundColorAlpha);
-    glClear(GL_COLOR_BUFFER_BIT);
-    
-	glActiveTexture(GL_TEXTURE2);
-	glBindTexture(GL_TEXTURE_2D, sourceTexture);
-	
-	glUniform1i(filterInputTextureUniform, 2);	
-    
-    glVertexAttribPointer(filterPositionAttribute, 2, GL_FLOAT, 0, 0, vertices);
-	glVertexAttribPointer(filterTextureCoordinateAttribute, 2, GL_FLOAT, 0, 0, textureCoordinates);
-    
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);    
+    [bufferedFramebuffers addObject:firstInputFramebuffer];
+
+    // Need to pass along rotation information, as we're just holding on to buffered framebuffers and not rotating them ourselves
+    for (id<GPUImageInput> currentTarget in targets)
+    {
+        if (currentTarget != self.targetToIgnoreForUpdates)
+        {
+            NSInteger indexOfObject = [targets indexOfObject:currentTarget];
+            NSInteger textureIndex = [[targetTextureIndices objectAtIndex:indexOfObject] integerValue];
+            
+            [currentTarget setInputRotation:inputRotation atIndex:textureIndex];
+        }
+    }
+
+    // Let the downstream video elements see the previous frame from the buffer before rendering a new one into place
+    [self informTargetsAboutNewFrameAtTime:frameTime];
+ 
+//    [self renderToTextureWithVertices:imageVertices textureCoordinates:[[self class] textureCoordinatesForRotation:inputRotation]];
 }
 
-- (void)prepareForImageCapture;
+- (void)renderToTextureWithVertices:(const GLfloat *)vertices textureCoordinates:(const GLfloat *)textureCoordinates;
 {
-    // Disable this for now, until I figure out how to integrate the texture caches with a buffer like this
-}
-
-#pragma mark -
-#pragma mark Managing targets
-
-- (GLuint)textureForOutput;
-{
-    return [[bufferedTextures objectAtIndex:0] intValue];
-}
-
-#pragma mark -
-#pragma mark Texture management
-
-- (GLuint)generateTexture;
-{
-    __block GLuint newTextureName = 0;
-
-    runSynchronouslyOnVideoProcessingQueue(^{
-        [GPUImageContext useImageProcessingContext];
-
-        glActiveTexture(GL_TEXTURE0);
-        glGenTextures(1, &newTextureName);
-        glBindTexture(GL_TEXTURE_2D, newTextureName);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, self.outputTextureOptions.minFilter);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, self.outputTextureOptions.magFilter);
-        // This is necessary for non-power-of-two textures
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, self.outputTextureOptions.wrapS);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, self.outputTextureOptions.wrapT);
-        
-        CGSize currentFBOSize = [self sizeOfFBO];
-        glTexImage2D(GL_TEXTURE_2D,
-                     0,
-                     self.outputTextureOptions.internalFormat,
-                     (int)currentFBOSize.width,
-                     (int)currentFBOSize.height,
-                     0,
-                     self.outputTextureOptions.format,
-                     self.outputTextureOptions.type,
-                     0);
-        glBindTexture(GL_TEXTURE_2D, 0);
-        
-    });
-
-    return newTextureName;
-}
-
-- (void)removeTexture:(GLuint)textureToRemove;
-{
-    runSynchronouslyOnVideoProcessingQueue(^{
-        [GPUImageContext useImageProcessingContext];
-
-        glDeleteTextures(1, &textureToRemove);
-    });
+    // No need to render to another texture anymore, since we'll be hanging on to the textures in our buffer
 }
 
 #pragma mark -
@@ -174,7 +90,7 @@
         NSUInteger texturesToAdd = newValue - _bufferSize;
         for (NSUInteger currentTextureIndex = 0; currentTextureIndex < texturesToAdd; currentTextureIndex++)
         {
-            [bufferedTextures addObject:[NSNumber numberWithInt:[self generateTexture]]];
+            // TODO: Deal with the growth of the size of the buffer by rotating framebuffers, no textures
         }
     }
     else
@@ -182,9 +98,11 @@
         NSUInteger texturesToRemove = _bufferSize - newValue;
         for (NSUInteger currentTextureIndex = 0; currentTextureIndex < texturesToRemove; currentTextureIndex++)
         {
-            NSNumber *lastTextureName = [bufferedTextures lastObject];
-            [bufferedTextures removeObjectAtIndex:([bufferedTextures count] - 1)];
-            [self removeTexture:[lastTextureName intValue]];
+            GPUImageFramebuffer *lastFramebuffer = [bufferedFramebuffers lastObject];
+            [bufferedFramebuffers removeObjectAtIndex:([bufferedFramebuffers count] - 1)];
+            
+            [lastFramebuffer unlock];
+            lastFramebuffer = nil;
         }
     }
 

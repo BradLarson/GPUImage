@@ -5,8 +5,10 @@
 #import "GPUImageOutput.h"
 
 extern const GLfloat kColorConversion601[];
+extern const GLfloat kColorConversion601FullRange[];
 extern const GLfloat kColorConversion709[];
 extern NSString *const kGPUImageYUVVideoRangeConversionForRGFragmentShaderString;
+extern NSString *const kGPUImageYUVFullRangeConversionForLAFragmentShaderString;
 extern NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString;
 
 
@@ -23,8 +25,6 @@ extern NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString
 */
 @interface GPUImageVideoCamera : GPUImageOutput <AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptureAudioDataOutputSampleBufferDelegate>
 {
-    CVOpenGLESTextureCacheRef coreVideoTextureCache;    
-
     NSUInteger numberOfFramesCaptured;
     CGFloat totalFrameTimeDuringCapture;
     
@@ -35,7 +35,7 @@ extern NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString
 	AVCaptureVideoDataOutput *videoOutput;
 
     BOOL capturePaused;
-    GPUImageRotationMode outputRotation;
+    GPUImageRotationMode outputRotation, internalRotation;
     dispatch_semaphore_t frameRenderingSemaphore;
         
     BOOL captureAsYUV;

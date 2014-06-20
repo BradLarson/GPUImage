@@ -64,11 +64,11 @@ NSString *const kGPUImageMaskShaderString = SHADER_STRING
     return self;
 }
 
-- (void)renderToTextureWithVertices:(const GLfloat *)vertices textureCoordinates:(const GLfloat *)textureCoordinates sourceTexture:(GLuint)sourceTexture;
+- (void)renderToTextureWithVertices:(const GLfloat *)vertices textureCoordinates:(const GLfloat *)textureCoordinates;
 {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    [super renderToTextureWithVertices:vertices textureCoordinates:textureCoordinates sourceTexture:sourceTexture];
+    [super renderToTextureWithVertices:vertices textureCoordinates:textureCoordinates];
     glDisable(GL_BLEND);
 }
 

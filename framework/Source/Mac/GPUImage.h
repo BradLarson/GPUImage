@@ -1,4 +1,4 @@
-#import <GPUImage/GLProgram.h>
+#import <Cocoa/Cocoa.h>
 
 // Base classes
 #import <GPUImage/GLProgram.h>
