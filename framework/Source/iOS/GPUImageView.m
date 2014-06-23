@@ -183,11 +183,9 @@
 //    NSLog(@"Backing width: %d, height: %d", backingWidth, backingHeight);
 
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, displayRenderbuffer);
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wunused-const-variable"
     GLuint framebufferCreationStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
     NSAssert(framebufferCreationStatus == GL_FRAMEBUFFER_COMPLETE, @"Failure with display framebuffer generation for display of size: %f, %f", self.bounds.size.width, self.bounds.size.height);
-#pragma clang diagnostic pop
+#pragma unused(framebufferCreationStatus)
 
     boundsSizeAtFrameBufferEpoch = self.bounds.size;
 }
