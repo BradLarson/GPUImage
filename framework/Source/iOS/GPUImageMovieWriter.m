@@ -543,13 +543,10 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
         glRenderbufferStorage(GL_RENDERBUFFER, GL_RGBA8_OES, (int)videoSize.width, (int)videoSize.height);
         glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, movieRenderbuffer);
     }
-    
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wunused-const-variable"
+
 	GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
     NSAssert(status == GL_FRAMEBUFFER_COMPLETE, @"Incomplete filter FBO: %d", status);
-
-#pragma clang diagnostic pop
+#pragma unused(status)
     
 }
 
