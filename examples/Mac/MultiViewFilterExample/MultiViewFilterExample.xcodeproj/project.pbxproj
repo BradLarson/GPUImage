@@ -1,0 +1,401 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		BCB00A15172B0CC500DB804C /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCB00A14172B0CC500DB804C /* Cocoa.framework */; };
+		BCB00A1F172B0CC500DB804C /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = BCB00A1D172B0CC500DB804C /* InfoPlist.strings */; };
+		BCB00A21172B0CC500DB804C /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = BCB00A20172B0CC500DB804C /* main.m */; };
+		BCB00A25172B0CC500DB804C /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = BCB00A23172B0CC500DB804C /* Credits.rtf */; };
+		BCB00A28172B0CC500DB804C /* SLSAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = BCB00A27172B0CC500DB804C /* SLSAppDelegate.m */; };
+		BCB00A2B172B0CC600DB804C /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = BCB00A29172B0CC600DB804C /* MainMenu.xib */; };
+		BCB00A39172B0CEF00DB804C /* GPUImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCB00A36172B0CD700DB804C /* GPUImage.framework */; };
+		BCB00A3B172B0CFF00DB804C /* GPUImage.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = BCB00A36172B0CD700DB804C /* GPUImage.framework */; };
+		BCB00A3F172B0D2F00DB804C /* SLSMultiViewWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = BCB00A3D172B0D2F00DB804C /* SLSMultiViewWindowController.m */; };
+		BCB00A40172B0D2F00DB804C /* SLSMultiViewWindowController.xib in Resources */ = {isa = PBXBuildFile; fileRef = BCB00A3E172B0D2F00DB804C /* SLSMultiViewWindowController.xib */; };
+		BCB00A43172B0F2200DB804C /* Shader1.fsh in Resources */ = {isa = PBXBuildFile; fileRef = BCB00A42172B0F2200DB804C /* Shader1.fsh */; };
+		BCB00A45172B0F3300DB804C /* Shader2.fsh in Resources */ = {isa = PBXBuildFile; fileRef = BCB00A44172B0F3300DB804C /* Shader2.fsh */; };
+		BCB00A48172B105800DB804C /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCB00A47172B105800DB804C /* AVFoundation.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		BCB00A35172B0CD700DB804C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BCB00A31172B0CD700DB804C /* GPUImageMac.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = BCA3F31C17239B6500E28AEC;
+			remoteInfo = GPUImage;
+		};
+		BCB00A37172B0CE500DB804C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BCB00A31172B0CD700DB804C /* GPUImageMac.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = BCA3F31B17239B6500E28AEC;
+			remoteInfo = GPUImage;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		BCB00A3A172B0CF400DB804C /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				BCB00A3B172B0CFF00DB804C /* GPUImage.framework in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		BCB00A11172B0CC500DB804C /* MultiViewFilterExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MultiViewFilterExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		BCB00A14172B0CC500DB804C /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+		BCB00A17172B0CC500DB804C /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
+		BCB00A18172B0CC500DB804C /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		BCB00A19172B0CC500DB804C /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		BCB00A1C172B0CC500DB804C /* MultiViewFilterExample-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "MultiViewFilterExample-Info.plist"; sourceTree = "<group>"; };
+		BCB00A1E172B0CC500DB804C /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		BCB00A20172B0CC500DB804C /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		BCB00A22172B0CC500DB804C /* MultiViewFilterExample-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MultiViewFilterExample-Prefix.pch"; sourceTree = "<group>"; };
+		BCB00A24172B0CC500DB804C /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = en.lproj/Credits.rtf; sourceTree = "<group>"; };
+		BCB00A26172B0CC500DB804C /* SLSAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SLSAppDelegate.h; sourceTree = "<group>"; };
+		BCB00A27172B0CC500DB804C /* SLSAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SLSAppDelegate.m; sourceTree = "<group>"; };
+		BCB00A2A172B0CC600DB804C /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		BCB00A31172B0CD700DB804C /* GPUImageMac.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = GPUImageMac.xcodeproj; path = ../../../framework/GPUImageMac.xcodeproj; sourceTree = "<group>"; };
+		BCB00A3C172B0D2F00DB804C /* SLSMultiViewWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLSMultiViewWindowController.h; sourceTree = "<group>"; };
+		BCB00A3D172B0D2F00DB804C /* SLSMultiViewWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLSMultiViewWindowController.m; sourceTree = "<group>"; };
+		BCB00A3E172B0D2F00DB804C /* SLSMultiViewWindowController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SLSMultiViewWindowController.xib; sourceTree = "<group>"; };
+		BCB00A42172B0F2200DB804C /* Shader1.fsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = Shader1.fsh; sourceTree = "<group>"; };
+		BCB00A44172B0F3300DB804C /* Shader2.fsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = Shader2.fsh; sourceTree = "<group>"; };
+		BCB00A47172B105800DB804C /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		BCB00A0E172B0CC500DB804C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BCB00A48172B105800DB804C /* AVFoundation.framework in Frameworks */,
+				BCB00A39172B0CEF00DB804C /* GPUImage.framework in Frameworks */,
+				BCB00A15172B0CC500DB804C /* Cocoa.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		BCB00A08172B0CC500DB804C = {
+			isa = PBXGroup;
+			children = (
+				BCB00A47172B105800DB804C /* AVFoundation.framework */,
+				BCB00A1A172B0CC500DB804C /* MultiViewFilterExample */,
+				BCB00A13172B0CC500DB804C /* Frameworks */,
+				BCB00A12172B0CC500DB804C /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		BCB00A12172B0CC500DB804C /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				BCB00A11172B0CC500DB804C /* MultiViewFilterExample.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		BCB00A13172B0CC500DB804C /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				BCB00A31172B0CD700DB804C /* GPUImageMac.xcodeproj */,
+				BCB00A14172B0CC500DB804C /* Cocoa.framework */,
+				BCB00A16172B0CC500DB804C /* Other Frameworks */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		BCB00A16172B0CC500DB804C /* Other Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				BCB00A17172B0CC500DB804C /* AppKit.framework */,
+				BCB00A18172B0CC500DB804C /* CoreData.framework */,
+				BCB00A19172B0CC500DB804C /* Foundation.framework */,
+			);
+			name = "Other Frameworks";
+			sourceTree = "<group>";
+		};
+		BCB00A1A172B0CC500DB804C /* MultiViewFilterExample */ = {
+			isa = PBXGroup;
+			children = (
+				BCB00A26172B0CC500DB804C /* SLSAppDelegate.h */,
+				BCB00A27172B0CC500DB804C /* SLSAppDelegate.m */,
+				BCB00A29172B0CC600DB804C /* MainMenu.xib */,
+				BCB00A3C172B0D2F00DB804C /* SLSMultiViewWindowController.h */,
+				BCB00A3D172B0D2F00DB804C /* SLSMultiViewWindowController.m */,
+				BCB00A3E172B0D2F00DB804C /* SLSMultiViewWindowController.xib */,
+				BCB00A1B172B0CC500DB804C /* Supporting Files */,
+			);
+			path = MultiViewFilterExample;
+			sourceTree = "<group>";
+		};
+		BCB00A1B172B0CC500DB804C /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				BCB00A1C172B0CC500DB804C /* MultiViewFilterExample-Info.plist */,
+				BCB00A1D172B0CC500DB804C /* InfoPlist.strings */,
+				BCB00A20172B0CC500DB804C /* main.m */,
+				BCB00A22172B0CC500DB804C /* MultiViewFilterExample-Prefix.pch */,
+				BCB00A23172B0CC500DB804C /* Credits.rtf */,
+				BCB00A42172B0F2200DB804C /* Shader1.fsh */,
+				BCB00A44172B0F3300DB804C /* Shader2.fsh */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		BCB00A32172B0CD700DB804C /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				BCB00A36172B0CD700DB804C /* GPUImage.framework */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		BCB00A10172B0CC500DB804C /* MultiViewFilterExample */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BCB00A2E172B0CC600DB804C /* Build configuration list for PBXNativeTarget "MultiViewFilterExample" */;
+			buildPhases = (
+				BCB00A0D172B0CC500DB804C /* Sources */,
+				BCB00A3A172B0CF400DB804C /* CopyFiles */,
+				BCB00A0E172B0CC500DB804C /* Frameworks */,
+				BCB00A0F172B0CC500DB804C /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				BCB00A38172B0CE500DB804C /* PBXTargetDependency */,
+			);
+			name = MultiViewFilterExample;
+			productName = MultiViewFilterExample;
+			productReference = BCB00A11172B0CC500DB804C /* MultiViewFilterExample.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		BCB00A09172B0CC500DB804C /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				CLASSPREFIX = SLS;
+				LastUpgradeCheck = 0500;
+				ORGANIZATIONNAME = "Sunset Lake Software LLC";
+			};
+			buildConfigurationList = BCB00A0C172B0CC500DB804C /* Build configuration list for PBXProject "MultiViewFilterExample" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = BCB00A08172B0CC500DB804C;
+			productRefGroup = BCB00A12172B0CC500DB804C /* Products */;
+			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = BCB00A32172B0CD700DB804C /* Products */;
+					ProjectRef = BCB00A31172B0CD700DB804C /* GPUImageMac.xcodeproj */;
+				},
+			);
+			projectRoot = "";
+			targets = (
+				BCB00A10172B0CC500DB804C /* MultiViewFilterExample */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		BCB00A36172B0CD700DB804C /* GPUImage.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = GPUImage.framework;
+			remoteRef = BCB00A35172B0CD700DB804C /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
+
+/* Begin PBXResourcesBuildPhase section */
+		BCB00A0F172B0CC500DB804C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BCB00A43172B0F2200DB804C /* Shader1.fsh in Resources */,
+				BCB00A45172B0F3300DB804C /* Shader2.fsh in Resources */,
+				BCB00A1F172B0CC500DB804C /* InfoPlist.strings in Resources */,
+				BCB00A25172B0CC500DB804C /* Credits.rtf in Resources */,
+				BCB00A2B172B0CC600DB804C /* MainMenu.xib in Resources */,
+				BCB00A40172B0D2F00DB804C /* SLSMultiViewWindowController.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		BCB00A0D172B0CC500DB804C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BCB00A21172B0CC500DB804C /* main.m in Sources */,
+				BCB00A28172B0CC500DB804C /* SLSAppDelegate.m in Sources */,
+				BCB00A3F172B0D2F00DB804C /* SLSMultiViewWindowController.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		BCB00A38172B0CE500DB804C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = GPUImage;
+			targetProxy = BCB00A37172B0CE500DB804C /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		BCB00A1D172B0CC500DB804C /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				BCB00A1E172B0CC500DB804C /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		BCB00A23172B0CC500DB804C /* Credits.rtf */ = {
+			isa = PBXVariantGroup;
+			children = (
+				BCB00A24172B0CC500DB804C /* en */,
+			);
+			name = Credits.rtf;
+			sourceTree = "<group>";
+		};
+		BCB00A29172B0CC600DB804C /* MainMenu.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				BCB00A2A172B0CC600DB804C /* en */,
+			);
+			name = MainMenu.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		BCB00A2C172B0CC600DB804C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		BCB00A2D172B0CC600DB804C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		BCB00A2F172B0CC600DB804C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "MultiViewFilterExample/MultiViewFilterExample-Prefix.pch";
+				INFOPLIST_FILE = "MultiViewFilterExample/MultiViewFilterExample-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		BCB00A30172B0CC600DB804C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "MultiViewFilterExample/MultiViewFilterExample-Prefix.pch";
+				INFOPLIST_FILE = "MultiViewFilterExample/MultiViewFilterExample-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		BCB00A0C172B0CC500DB804C /* Build configuration list for PBXProject "MultiViewFilterExample" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BCB00A2C172B0CC600DB804C /* Debug */,
+				BCB00A2D172B0CC600DB804C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		BCB00A2E172B0CC600DB804C /* Build configuration list for PBXNativeTarget "MultiViewFilterExample" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BCB00A2F172B0CC600DB804C /* Debug */,
+				BCB00A30172B0CC600DB804C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = BCB00A09172B0CC500DB804C /* Project object */;
+}

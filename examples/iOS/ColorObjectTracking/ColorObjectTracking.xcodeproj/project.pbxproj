@@ -1,0 +1,425 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		BC245DDF14DDC959009FE7EB /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC245DDE14DDC959009FE7EB /* UIKit.framework */; };
+		BC245DE114DDC959009FE7EB /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC245DE014DDC959009FE7EB /* Foundation.framework */; };
+		BC245DE314DDC959009FE7EB /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC245DE214DDC959009FE7EB /* CoreGraphics.framework */; };
+		BC245DE914DDC959009FE7EB /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = BC245DE714DDC959009FE7EB /* InfoPlist.strings */; };
+		BC245DEB14DDC959009FE7EB /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = BC245DEA14DDC959009FE7EB /* main.m */; };
+		BC245DEF14DDC959009FE7EB /* ColorTrackingAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = BC245DEE14DDC959009FE7EB /* ColorTrackingAppDelegate.m */; };
+		BCB3C3DF16BCA51E003D26B0 /* Icon-72.png in Resources */ = {isa = PBXBuildFile; fileRef = BCB3C3DA16BCA51E003D26B0 /* Icon-72.png */; };
+		BCB3C3E016BCA51E003D26B0 /* Icon-72@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BCB3C3DB16BCA51E003D26B0 /* Icon-72@2x.png */; };
+		BCB3C3E116BCA51E003D26B0 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = BCB3C3DC16BCA51E003D26B0 /* Icon.png */; };
+		BCB3C3E216BCA51E003D26B0 /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BCB3C3DD16BCA51E003D26B0 /* Icon@2x.png */; };
+		BCB3C3E316BCA51E003D26B0 /* iTunesArtwork.png in Resources */ = {isa = PBXBuildFile; fileRef = BCB3C3DE16BCA51E003D26B0 /* iTunesArtwork.png */; };
+		BCB5DD8314E85CB0000AF3C2 /* PositionColor.fsh in Resources */ = {isa = PBXBuildFile; fileRef = BCB5DD8214E85CB0000AF3C2 /* PositionColor.fsh */; };
+		BCB5E74614DDCF4F00701302 /* ColorTrackingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = BCB5E74514DDCF4F00701302 /* ColorTrackingViewController.m */; };
+		BCB5E74814DDD1B300701302 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCB5E74714DDD1B300701302 /* QuartzCore.framework */; };
+		BCB5E7A314E346BE00701302 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCB5E7A214E346BE00701302 /* AVFoundation.framework */; };
+		BCB5E7A614E346F100701302 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCB5E7A514E346F100701302 /* OpenGLES.framework */; };
+		BCB5E7A814E3471100701302 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCB5E7A714E3471100701302 /* CoreVideo.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		BCB5E7AA14E3472100701302 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCB5E7A914E3472100701302 /* CoreMedia.framework */; };
+		BCB5E7B214E460D300701302 /* Threshold.fsh in Resources */ = {isa = PBXBuildFile; fileRef = BCB5E7B114E460D300701302 /* Threshold.fsh */; };
+		BCF866E91725A39D00912E34 /* libGPUImage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BCF866E41725A38C00912E34 /* libGPUImage.a */; };
+		E5066F2A1855A595008C7682 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E5066F291855A595008C7682 /* Default-568h@2x.png */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		BCF866E31725A38C00912E34 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BC245E0C14DDCA1F009FE7EB /* GPUImage.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = BCF1A33414DDB1EC00852800;
+			remoteInfo = GPUImage;
+		};
+		BCF866E51725A38C00912E34 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BC245E0C14DDCA1F009FE7EB /* GPUImage.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = BCF1A34414DDB1EC00852800;
+			remoteInfo = GPUImageTests;
+		};
+		BCF866E71725A39800912E34 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BC245E0C14DDCA1F009FE7EB /* GPUImage.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = BCF1A33314DDB1EC00852800;
+			remoteInfo = GPUImage;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		BC245DDA14DDC959009FE7EB /* ColorObjectTracking.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ColorObjectTracking.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		BC245DDE14DDC959009FE7EB /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		BC245DE014DDC959009FE7EB /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		BC245DE214DDC959009FE7EB /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		BC245DE614DDC959009FE7EB /* ColorObjectTracking-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "ColorObjectTracking-Info.plist"; sourceTree = "<group>"; };
+		BC245DE814DDC959009FE7EB /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		BC245DEA14DDC959009FE7EB /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		BC245DEC14DDC959009FE7EB /* ColorObjectTracking-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ColorObjectTracking-Prefix.pch"; sourceTree = "<group>"; };
+		BC245DED14DDC959009FE7EB /* ColorTrackingAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ColorTrackingAppDelegate.h; sourceTree = "<group>"; };
+		BC245DEE14DDC959009FE7EB /* ColorTrackingAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ColorTrackingAppDelegate.m; sourceTree = "<group>"; };
+		BC245E0C14DDCA1F009FE7EB /* GPUImage.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = GPUImage.xcodeproj; path = ../../../framework/GPUImage.xcodeproj; sourceTree = "<group>"; };
+		BCB3C3DA16BCA51E003D26B0 /* Icon-72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-72.png"; path = "../../SharedIcons/Icon-72.png"; sourceTree = "<group>"; };
+		BCB3C3DB16BCA51E003D26B0 /* Icon-72@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-72@2x.png"; path = "../../SharedIcons/Icon-72@2x.png"; sourceTree = "<group>"; };
+		BCB3C3DC16BCA51E003D26B0 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Icon.png; path = ../../SharedIcons/Icon.png; sourceTree = "<group>"; };
+		BCB3C3DD16BCA51E003D26B0 /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon@2x.png"; path = "../../SharedIcons/Icon@2x.png"; sourceTree = "<group>"; };
+		BCB3C3DE16BCA51E003D26B0 /* iTunesArtwork.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = iTunesArtwork.png; path = ../../SharedIcons/iTunesArtwork.png; sourceTree = "<group>"; };
+		BCB5DD8214E85CB0000AF3C2 /* PositionColor.fsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = PositionColor.fsh; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.glsl; };
+		BCB5E74414DDCF4F00701302 /* ColorTrackingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColorTrackingViewController.h; sourceTree = "<group>"; };
+		BCB5E74514DDCF4F00701302 /* ColorTrackingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColorTrackingViewController.m; sourceTree = "<group>"; };
+		BCB5E74714DDD1B300701302 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		BCB5E7A214E346BE00701302 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		BCB5E7A514E346F100701302 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
+		BCB5E7A714E3471100701302 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
+		BCB5E7A914E3472100701302 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
+		BCB5E7B114E460D300701302 /* Threshold.fsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = Threshold.fsh; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.glsl; };
+		E5066F291855A595008C7682 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		BC245DD714DDC959009FE7EB /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BCF866E91725A39D00912E34 /* libGPUImage.a in Frameworks */,
+				BCB5E7AA14E3472100701302 /* CoreMedia.framework in Frameworks */,
+				BCB5E7A814E3471100701302 /* CoreVideo.framework in Frameworks */,
+				BCB5E7A614E346F100701302 /* OpenGLES.framework in Frameworks */,
+				BCB5E7A314E346BE00701302 /* AVFoundation.framework in Frameworks */,
+				BCB5E74814DDD1B300701302 /* QuartzCore.framework in Frameworks */,
+				BC245DDF14DDC959009FE7EB /* UIKit.framework in Frameworks */,
+				BC245DE114DDC959009FE7EB /* Foundation.framework in Frameworks */,
+				BC245DE314DDC959009FE7EB /* CoreGraphics.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		BC245DCF14DDC959009FE7EB = {
+			isa = PBXGroup;
+			children = (
+				E5066F291855A595008C7682 /* Default-568h@2x.png */,
+				BC245DE414DDC959009FE7EB /* ColorObjectTracking */,
+				BC245DDD14DDC959009FE7EB /* Frameworks */,
+				BC245DDB14DDC959009FE7EB /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		BC245DDB14DDC959009FE7EB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				BC245DDA14DDC959009FE7EB /* ColorObjectTracking.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		BC245DDD14DDC959009FE7EB /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				BC245E0C14DDCA1F009FE7EB /* GPUImage.xcodeproj */,
+				BCB5E7A914E3472100701302 /* CoreMedia.framework */,
+				BCB5E7A714E3471100701302 /* CoreVideo.framework */,
+				BCB5E7A514E346F100701302 /* OpenGLES.framework */,
+				BCB5E7A214E346BE00701302 /* AVFoundation.framework */,
+				BCB5E74714DDD1B300701302 /* QuartzCore.framework */,
+				BC245DDE14DDC959009FE7EB /* UIKit.framework */,
+				BC245DE014DDC959009FE7EB /* Foundation.framework */,
+				BC245DE214DDC959009FE7EB /* CoreGraphics.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		BC245DE414DDC959009FE7EB /* ColorObjectTracking */ = {
+			isa = PBXGroup;
+			children = (
+				BC245DED14DDC959009FE7EB /* ColorTrackingAppDelegate.h */,
+				BC245DEE14DDC959009FE7EB /* ColorTrackingAppDelegate.m */,
+				BCB5E74414DDCF4F00701302 /* ColorTrackingViewController.h */,
+				BCB5E74514DDCF4F00701302 /* ColorTrackingViewController.m */,
+				BCB5E7B014E4606200701302 /* Shaders */,
+				BC245DE514DDC959009FE7EB /* Supporting Files */,
+			);
+			path = ColorObjectTracking;
+			sourceTree = "<group>";
+		};
+		BC245DE514DDC959009FE7EB /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				BCB3C3DA16BCA51E003D26B0 /* Icon-72.png */,
+				BCB3C3DB16BCA51E003D26B0 /* Icon-72@2x.png */,
+				BCB3C3DC16BCA51E003D26B0 /* Icon.png */,
+				BCB3C3DD16BCA51E003D26B0 /* Icon@2x.png */,
+				BCB3C3DE16BCA51E003D26B0 /* iTunesArtwork.png */,
+				BC245DE614DDC959009FE7EB /* ColorObjectTracking-Info.plist */,
+				BC245DE714DDC959009FE7EB /* InfoPlist.strings */,
+				BC245DEA14DDC959009FE7EB /* main.m */,
+				BC245DEC14DDC959009FE7EB /* ColorObjectTracking-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		BCB5E7B014E4606200701302 /* Shaders */ = {
+			isa = PBXGroup;
+			children = (
+				BCB5DD8214E85CB0000AF3C2 /* PositionColor.fsh */,
+				BCB5E7B114E460D300701302 /* Threshold.fsh */,
+			);
+			name = Shaders;
+			sourceTree = "<group>";
+		};
+		BCF866DE1725A38C00912E34 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				BCF866E41725A38C00912E34 /* libGPUImage.a */,
+				BCF866E61725A38C00912E34 /* GPUImageTests.octest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		BC245DD914DDC959009FE7EB /* ColorObjectTracking */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BC245DF214DDC959009FE7EB /* Build configuration list for PBXNativeTarget "ColorObjectTracking" */;
+			buildPhases = (
+				BC245DD614DDC959009FE7EB /* Sources */,
+				BC245DD714DDC959009FE7EB /* Frameworks */,
+				BC245DD814DDC959009FE7EB /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				BCF866E81725A39800912E34 /* PBXTargetDependency */,
+			);
+			name = ColorObjectTracking;
+			productName = ColorObjectTracking;
+			productReference = BC245DDA14DDC959009FE7EB /* ColorObjectTracking.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		BC245DD114DDC959009FE7EB /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0500;
+				ORGANIZATIONNAME = "Cell Phone";
+			};
+			buildConfigurationList = BC245DD414DDC959009FE7EB /* Build configuration list for PBXProject "ColorObjectTracking" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = BC245DCF14DDC959009FE7EB;
+			productRefGroup = BC245DDB14DDC959009FE7EB /* Products */;
+			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = BCF866DE1725A38C00912E34 /* Products */;
+					ProjectRef = BC245E0C14DDCA1F009FE7EB /* GPUImage.xcodeproj */;
+				},
+			);
+			projectRoot = "";
+			targets = (
+				BC245DD914DDC959009FE7EB /* ColorObjectTracking */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		BCF866E41725A38C00912E34 /* libGPUImage.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libGPUImage.a;
+			remoteRef = BCF866E31725A38C00912E34 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		BCF866E61725A38C00912E34 /* GPUImageTests.octest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = GPUImageTests.octest;
+			remoteRef = BCF866E51725A38C00912E34 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
+
+/* Begin PBXResourcesBuildPhase section */
+		BC245DD814DDC959009FE7EB /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BC245DE914DDC959009FE7EB /* InfoPlist.strings in Resources */,
+				BCB5E7B214E460D300701302 /* Threshold.fsh in Resources */,
+				E5066F2A1855A595008C7682 /* Default-568h@2x.png in Resources */,
+				BCB5DD8314E85CB0000AF3C2 /* PositionColor.fsh in Resources */,
+				BCB3C3DF16BCA51E003D26B0 /* Icon-72.png in Resources */,
+				BCB3C3E016BCA51E003D26B0 /* Icon-72@2x.png in Resources */,
+				BCB3C3E116BCA51E003D26B0 /* Icon.png in Resources */,
+				BCB3C3E216BCA51E003D26B0 /* Icon@2x.png in Resources */,
+				BCB3C3E316BCA51E003D26B0 /* iTunesArtwork.png in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		BC245DD614DDC959009FE7EB /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BC245DEB14DDC959009FE7EB /* main.m in Sources */,
+				BC245DEF14DDC959009FE7EB /* ColorTrackingAppDelegate.m in Sources */,
+				BCB5E74614DDCF4F00701302 /* ColorTrackingViewController.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		BCF866E81725A39800912E34 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = GPUImage;
+			targetProxy = BCF866E71725A39800912E34 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		BC245DE714DDC959009FE7EB /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				BC245DE814DDC959009FE7EB /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		BC245DF014DDC959009FE7EB /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "../../../framework/**";
+				IPHONEOS_DEPLOYMENT_TARGET = 4.1;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		BC245DF114DDC959009FE7EB /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "../../../framework/**";
+				IPHONEOS_DEPLOYMENT_TARGET = 4.1;
+				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		BC245DF314DDC959009FE7EB /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "ColorObjectTracking/ColorObjectTracking-Prefix.pch";
+				GCC_THUMB_SUPPORT = "";
+				INFOPLIST_FILE = "ColorObjectTracking/ColorObjectTracking-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		BC245DF414DDC959009FE7EB /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "ColorObjectTracking/ColorObjectTracking-Prefix.pch";
+				GCC_THUMB_SUPPORT = "";
+				INFOPLIST_FILE = "ColorObjectTracking/ColorObjectTracking-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		BC245DD414DDC959009FE7EB /* Build configuration list for PBXProject "ColorObjectTracking" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BC245DF014DDC959009FE7EB /* Debug */,
+				BC245DF114DDC959009FE7EB /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		BC245DF214DDC959009FE7EB /* Build configuration list for PBXNativeTarget "ColorObjectTracking" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BC245DF314DDC959009FE7EB /* Debug */,
+				BC245DF414DDC959009FE7EB /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = BC245DD114DDC959009FE7EB /* Project object */;
+}

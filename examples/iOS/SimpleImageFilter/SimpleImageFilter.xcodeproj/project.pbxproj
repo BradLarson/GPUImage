@@ -1,0 +1,421 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		BCB3C42016BCA7B7003D26B0 /* Icon-72.png in Resources */ = {isa = PBXBuildFile; fileRef = BCB3C41B16BCA7B7003D26B0 /* Icon-72.png */; };
+		BCB3C42116BCA7B7003D26B0 /* Icon-72@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BCB3C41C16BCA7B7003D26B0 /* Icon-72@2x.png */; };
+		BCB3C42216BCA7B7003D26B0 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = BCB3C41D16BCA7B7003D26B0 /* Icon.png */; };
+		BCB3C42316BCA7B7003D26B0 /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BCB3C41E16BCA7B7003D26B0 /* Icon@2x.png */; };
+		BCB3C42416BCA7B7003D26B0 /* iTunesArtwork.png in Resources */ = {isa = PBXBuildFile; fileRef = BCB3C41F16BCA7B7003D26B0 /* iTunesArtwork.png */; };
+		BCB5E7ED14E605A900701302 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCB5E7EC14E605A900701302 /* UIKit.framework */; };
+		BCB5E7EF14E605A900701302 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCB5E7EE14E605A900701302 /* Foundation.framework */; };
+		BCB5E7F114E605A900701302 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCB5E7F014E605A900701302 /* CoreGraphics.framework */; };
+		BCB5E7F714E605A900701302 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = BCB5E7F514E605A900701302 /* InfoPlist.strings */; };
+		BCB5E7F914E605A900701302 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = BCB5E7F814E605A900701302 /* main.m */; };
+		BCB5E7FD14E605A900701302 /* SimpleImageAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = BCB5E7FC14E605A900701302 /* SimpleImageAppDelegate.m */; };
+		BCB5E80614E605A900701302 /* SimpleImageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = BCB5E80514E605A900701302 /* SimpleImageViewController.m */; };
+		BCB5E82314E62A3C00701302 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCB5E81E14E62A3C00701302 /* AVFoundation.framework */; };
+		BCB5E82414E62A3C00701302 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCB5E81F14E62A3C00701302 /* CoreMedia.framework */; };
+		BCB5E82514E62A3C00701302 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCB5E82014E62A3C00701302 /* CoreVideo.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		BCB5E82614E62A3C00701302 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCB5E82114E62A3C00701302 /* OpenGLES.framework */; };
+		BCB5E82714E62A3C00701302 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCB5E82214E62A3C00701302 /* QuartzCore.framework */; };
+		BCB5E86314E6F05A00701302 /* WID-small.jpg in Resources */ = {isa = PBXBuildFile; fileRef = BCB5E86214E6F05A00701302 /* WID-small.jpg */; };
+		BCB5E86514E6F1D700701302 /* Lambeau.jpg in Resources */ = {isa = PBXBuildFile; fileRef = BCB5E86414E6F1D700701302 /* Lambeau.jpg */; };
+		BCC9005F18DA278200A5A5C7 /* lookup_amatorka.png in Resources */ = {isa = PBXBuildFile; fileRef = BCC9005E18DA278200A5A5C7 /* lookup_amatorka.png */; };
+		BCF8672A1725A6B400912E34 /* libGPUImage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BCF867251725A69A00912E34 /* libGPUImage.a */; };
+		E5066F511855A9F2008C7682 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E5066F501855A9F2008C7682 /* Default-568h@2x.png */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		BCF867241725A69A00912E34 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BCB5E80C14E610BE00701302 /* GPUImage.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = BCF1A33414DDB1EC00852800;
+			remoteInfo = GPUImage;
+		};
+		BCF867261725A69A00912E34 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BCB5E80C14E610BE00701302 /* GPUImage.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = BCF1A34414DDB1EC00852800;
+			remoteInfo = GPUImageTests;
+		};
+		BCF867281725A6AD00912E34 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BCB5E80C14E610BE00701302 /* GPUImage.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = BCF1A33314DDB1EC00852800;
+			remoteInfo = GPUImage;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		BCB3C41B16BCA7B7003D26B0 /* Icon-72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-72.png"; path = "../../SharedIcons/Icon-72.png"; sourceTree = "<group>"; };
+		BCB3C41C16BCA7B7003D26B0 /* Icon-72@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-72@2x.png"; path = "../../SharedIcons/Icon-72@2x.png"; sourceTree = "<group>"; };
+		BCB3C41D16BCA7B7003D26B0 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Icon.png; path = ../../SharedIcons/Icon.png; sourceTree = "<group>"; };
+		BCB3C41E16BCA7B7003D26B0 /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon@2x.png"; path = "../../SharedIcons/Icon@2x.png"; sourceTree = "<group>"; };
+		BCB3C41F16BCA7B7003D26B0 /* iTunesArtwork.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = iTunesArtwork.png; path = ../../SharedIcons/iTunesArtwork.png; sourceTree = "<group>"; };
+		BCB5E7E814E605A900701302 /* SimpleImageFilter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SimpleImageFilter.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		BCB5E7EC14E605A900701302 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		BCB5E7EE14E605A900701302 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		BCB5E7F014E605A900701302 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		BCB5E7F414E605A900701302 /* SimpleImageFilter-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "SimpleImageFilter-Info.plist"; sourceTree = "<group>"; };
+		BCB5E7F614E605A900701302 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		BCB5E7F814E605A900701302 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		BCB5E7FA14E605A900701302 /* SimpleImageFilter-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SimpleImageFilter-Prefix.pch"; sourceTree = "<group>"; };
+		BCB5E7FB14E605A900701302 /* SimpleImageAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SimpleImageAppDelegate.h; sourceTree = "<group>"; };
+		BCB5E7FC14E605A900701302 /* SimpleImageAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SimpleImageAppDelegate.m; sourceTree = "<group>"; };
+		BCB5E80414E605A900701302 /* SimpleImageViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SimpleImageViewController.h; sourceTree = "<group>"; };
+		BCB5E80514E605A900701302 /* SimpleImageViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SimpleImageViewController.m; sourceTree = "<group>"; };
+		BCB5E80C14E610BE00701302 /* GPUImage.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = GPUImage.xcodeproj; path = ../../../framework/GPUImage.xcodeproj; sourceTree = "<group>"; };
+		BCB5E81E14E62A3C00701302 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		BCB5E81F14E62A3C00701302 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
+		BCB5E82014E62A3C00701302 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
+		BCB5E82114E62A3C00701302 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
+		BCB5E82214E62A3C00701302 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		BCB5E86214E6F05A00701302 /* WID-small.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "WID-small.jpg"; sourceTree = "<group>"; };
+		BCB5E86414E6F1D700701302 /* Lambeau.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = Lambeau.jpg; sourceTree = "<group>"; };
+		BCC9005E18DA278200A5A5C7 /* lookup_amatorka.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = lookup_amatorka.png; path = ../../../../framework/Resources/lookup_amatorka.png; sourceTree = "<group>"; };
+		E5066F501855A9F2008C7682 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		BCB5E7E514E605A900701302 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BCF8672A1725A6B400912E34 /* libGPUImage.a in Frameworks */,
+				BCB5E82314E62A3C00701302 /* AVFoundation.framework in Frameworks */,
+				BCB5E82414E62A3C00701302 /* CoreMedia.framework in Frameworks */,
+				BCB5E82514E62A3C00701302 /* CoreVideo.framework in Frameworks */,
+				BCB5E82614E62A3C00701302 /* OpenGLES.framework in Frameworks */,
+				BCB5E82714E62A3C00701302 /* QuartzCore.framework in Frameworks */,
+				BCB5E7ED14E605A900701302 /* UIKit.framework in Frameworks */,
+				BCB5E7EF14E605A900701302 /* Foundation.framework in Frameworks */,
+				BCB5E7F114E605A900701302 /* CoreGraphics.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		BCB5E7DD14E605A900701302 = {
+			isa = PBXGroup;
+			children = (
+				E5066F501855A9F2008C7682 /* Default-568h@2x.png */,
+				BCB5E7F214E605A900701302 /* SimpleImageFilter */,
+				BCB5E7EB14E605A900701302 /* Frameworks */,
+				BCB5E7E914E605A900701302 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		BCB5E7E914E605A900701302 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				BCB5E7E814E605A900701302 /* SimpleImageFilter.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		BCB5E7EB14E605A900701302 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				BCB5E80C14E610BE00701302 /* GPUImage.xcodeproj */,
+				BCB5E81E14E62A3C00701302 /* AVFoundation.framework */,
+				BCB5E81F14E62A3C00701302 /* CoreMedia.framework */,
+				BCB5E82014E62A3C00701302 /* CoreVideo.framework */,
+				BCB5E82114E62A3C00701302 /* OpenGLES.framework */,
+				BCB5E82214E62A3C00701302 /* QuartzCore.framework */,
+				BCB5E7EC14E605A900701302 /* UIKit.framework */,
+				BCB5E7EE14E605A900701302 /* Foundation.framework */,
+				BCB5E7F014E605A900701302 /* CoreGraphics.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		BCB5E7F214E605A900701302 /* SimpleImageFilter */ = {
+			isa = PBXGroup;
+			children = (
+				BCB5E7FB14E605A900701302 /* SimpleImageAppDelegate.h */,
+				BCB5E7FC14E605A900701302 /* SimpleImageAppDelegate.m */,
+				BCB5E80414E605A900701302 /* SimpleImageViewController.h */,
+				BCB5E80514E605A900701302 /* SimpleImageViewController.m */,
+				BCB5E7F314E605A900701302 /* Supporting Files */,
+			);
+			path = SimpleImageFilter;
+			sourceTree = "<group>";
+		};
+		BCB5E7F314E605A900701302 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				BCC9005E18DA278200A5A5C7 /* lookup_amatorka.png */,
+				BCB3C41B16BCA7B7003D26B0 /* Icon-72.png */,
+				BCB3C41C16BCA7B7003D26B0 /* Icon-72@2x.png */,
+				BCB3C41D16BCA7B7003D26B0 /* Icon.png */,
+				BCB3C41E16BCA7B7003D26B0 /* Icon@2x.png */,
+				BCB3C41F16BCA7B7003D26B0 /* iTunesArtwork.png */,
+				BCB5E86414E6F1D700701302 /* Lambeau.jpg */,
+				BCB5E86214E6F05A00701302 /* WID-small.jpg */,
+				BCB5E7F414E605A900701302 /* SimpleImageFilter-Info.plist */,
+				BCB5E7F514E605A900701302 /* InfoPlist.strings */,
+				BCB5E7F814E605A900701302 /* main.m */,
+				BCB5E7FA14E605A900701302 /* SimpleImageFilter-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		BCF8671F1725A69A00912E34 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				BCF867251725A69A00912E34 /* libGPUImage.a */,
+				BCF867271725A69A00912E34 /* GPUImageTests.octest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		BCB5E7E714E605A900701302 /* SimpleImageFilter */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BCB5E80914E605A900701302 /* Build configuration list for PBXNativeTarget "SimpleImageFilter" */;
+			buildPhases = (
+				BCB5E7E414E605A900701302 /* Sources */,
+				BCB5E7E514E605A900701302 /* Frameworks */,
+				BCB5E7E614E605A900701302 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				BCF867291725A6AD00912E34 /* PBXTargetDependency */,
+			);
+			name = SimpleImageFilter;
+			productName = SimpleImageFilter;
+			productReference = BCB5E7E814E605A900701302 /* SimpleImageFilter.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		BCB5E7DF14E605A900701302 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0500;
+				ORGANIZATIONNAME = "Cell Phone";
+			};
+			buildConfigurationList = BCB5E7E214E605A900701302 /* Build configuration list for PBXProject "SimpleImageFilter" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = BCB5E7DD14E605A900701302;
+			productRefGroup = BCB5E7E914E605A900701302 /* Products */;
+			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = BCF8671F1725A69A00912E34 /* Products */;
+					ProjectRef = BCB5E80C14E610BE00701302 /* GPUImage.xcodeproj */;
+				},
+			);
+			projectRoot = "";
+			targets = (
+				BCB5E7E714E605A900701302 /* SimpleImageFilter */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		BCF867251725A69A00912E34 /* libGPUImage.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libGPUImage.a;
+			remoteRef = BCF867241725A69A00912E34 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		BCF867271725A69A00912E34 /* GPUImageTests.octest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = GPUImageTests.octest;
+			remoteRef = BCF867261725A69A00912E34 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
+
+/* Begin PBXResourcesBuildPhase section */
+		BCB5E7E614E605A900701302 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BCB5E7F714E605A900701302 /* InfoPlist.strings in Resources */,
+				BCB5E86314E6F05A00701302 /* WID-small.jpg in Resources */,
+				E5066F511855A9F2008C7682 /* Default-568h@2x.png in Resources */,
+				BCB5E86514E6F1D700701302 /* Lambeau.jpg in Resources */,
+				BCB3C42016BCA7B7003D26B0 /* Icon-72.png in Resources */,
+				BCC9005F18DA278200A5A5C7 /* lookup_amatorka.png in Resources */,
+				BCB3C42116BCA7B7003D26B0 /* Icon-72@2x.png in Resources */,
+				BCB3C42216BCA7B7003D26B0 /* Icon.png in Resources */,
+				BCB3C42316BCA7B7003D26B0 /* Icon@2x.png in Resources */,
+				BCB3C42416BCA7B7003D26B0 /* iTunesArtwork.png in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		BCB5E7E414E605A900701302 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BCB5E7F914E605A900701302 /* main.m in Sources */,
+				BCB5E7FD14E605A900701302 /* SimpleImageAppDelegate.m in Sources */,
+				BCB5E80614E605A900701302 /* SimpleImageViewController.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		BCF867291725A6AD00912E34 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = GPUImage;
+			targetProxy = BCF867281725A6AD00912E34 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		BCB5E7F514E605A900701302 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				BCB5E7F614E605A900701302 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		BCB5E80714E605A900701302 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "../../../framework/**";
+				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
+				ONLY_ACTIVE_ARCH = YES;
+				OTHER_LDFLAGS = "-ObjC";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		BCB5E80814E605A900701302 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "../../../framework/**";
+				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
+				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				OTHER_LDFLAGS = "-ObjC";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		BCB5E80A14E605A900701302 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "SimpleImageFilter/SimpleImageFilter-Prefix.pch";
+				INFOPLIST_FILE = "SimpleImageFilter/SimpleImageFilter-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		BCB5E80B14E605A900701302 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "SimpleImageFilter/SimpleImageFilter-Prefix.pch";
+				INFOPLIST_FILE = "SimpleImageFilter/SimpleImageFilter-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		BCB5E7E214E605A900701302 /* Build configuration list for PBXProject "SimpleImageFilter" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BCB5E80714E605A900701302 /* Debug */,
+				BCB5E80814E605A900701302 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		BCB5E80914E605A900701302 /* Build configuration list for PBXNativeTarget "SimpleImageFilter" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BCB5E80A14E605A900701302 /* Debug */,
+				BCB5E80B14E605A900701302 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = BCB5E7DF14E605A900701302 /* Project object */;
+}

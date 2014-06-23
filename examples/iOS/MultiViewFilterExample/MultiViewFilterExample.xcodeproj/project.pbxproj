@@ -1,0 +1,423 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		BC01CA8614E7620600967264 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC01CA8514E7620600967264 /* UIKit.framework */; };
+		BC01CA8814E7620600967264 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC01CA8714E7620600967264 /* Foundation.framework */; };
+		BC01CA8A14E7620600967264 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC01CA8914E7620600967264 /* CoreGraphics.framework */; };
+		BC01CA9014E7620600967264 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = BC01CA8E14E7620600967264 /* InfoPlist.strings */; };
+		BC01CA9214E7620600967264 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = BC01CA9114E7620600967264 /* main.m */; };
+		BC01CA9614E7620600967264 /* MultiViewAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = BC01CA9514E7620600967264 /* MultiViewAppDelegate.m */; };
+		BC01CAAC14E762E600967264 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC01CAAB14E762E600967264 /* CoreMedia.framework */; };
+		BC01CAAE14E762EE00967264 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC01CAAD14E762EE00967264 /* CoreVideo.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		BC01CAB014E762F600967264 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC01CAAF14E762F600967264 /* QuartzCore.framework */; };
+		BC01CAB214E762FD00967264 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC01CAB114E762FD00967264 /* OpenGLES.framework */; };
+		BC01CAB514E763FC00967264 /* MultiViewViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = BC01CAB414E763FC00967264 /* MultiViewViewController.m */; };
+		BC3145C814E76BA700824EA0 /* Shader1.fsh in Resources */ = {isa = PBXBuildFile; fileRef = BC3145C614E76BA700824EA0 /* Shader1.fsh */; };
+		BC3145C914E76BA700824EA0 /* Shader2.fsh in Resources */ = {isa = PBXBuildFile; fileRef = BC3145C714E76BA700824EA0 /* Shader2.fsh */; };
+		BCB3C40616BCA69F003D26B0 /* Icon-72.png in Resources */ = {isa = PBXBuildFile; fileRef = BCB3C40116BCA69F003D26B0 /* Icon-72.png */; };
+		BCB3C40716BCA69F003D26B0 /* Icon-72@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BCB3C40216BCA69F003D26B0 /* Icon-72@2x.png */; };
+		BCB3C40816BCA69F003D26B0 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = BCB3C40316BCA69F003D26B0 /* Icon.png */; };
+		BCB3C40916BCA69F003D26B0 /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BCB3C40416BCA69F003D26B0 /* Icon@2x.png */; };
+		BCB3C40A16BCA69F003D26B0 /* iTunesArtwork.png in Resources */ = {isa = PBXBuildFile; fileRef = BCB3C40516BCA69F003D26B0 /* iTunesArtwork.png */; };
+		BCB5DD6614E76CD2000AF3C2 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCB5DD6514E76CD2000AF3C2 /* AVFoundation.framework */; };
+		BCF867101725A58F00912E34 /* libGPUImage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BCF8670B1725A56D00912E34 /* libGPUImage.a */; };
+		E5066F471855A86D008C7682 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E5066F461855A86D008C7682 /* Default-568h@2x.png */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		BCF8670A1725A56D00912E34 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BC01CA9C14E762BE00967264 /* GPUImage.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = BCF1A33414DDB1EC00852800;
+			remoteInfo = GPUImage;
+		};
+		BCF8670C1725A56D00912E34 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BC01CA9C14E762BE00967264 /* GPUImage.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = BCF1A34414DDB1EC00852800;
+			remoteInfo = GPUImageTests;
+		};
+		BCF8670E1725A58A00912E34 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BC01CA9C14E762BE00967264 /* GPUImage.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = BCF1A33314DDB1EC00852800;
+			remoteInfo = GPUImage;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		BC01CA8114E7620600967264 /* MultiViewFilterExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MultiViewFilterExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		BC01CA8514E7620600967264 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		BC01CA8714E7620600967264 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		BC01CA8914E7620600967264 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		BC01CA8D14E7620600967264 /* MultiViewFilterExample-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "MultiViewFilterExample-Info.plist"; sourceTree = "<group>"; };
+		BC01CA8F14E7620600967264 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		BC01CA9114E7620600967264 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		BC01CA9314E7620600967264 /* MultiViewFilterExample-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MultiViewFilterExample-Prefix.pch"; sourceTree = "<group>"; };
+		BC01CA9414E7620600967264 /* MultiViewAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MultiViewAppDelegate.h; sourceTree = "<group>"; };
+		BC01CA9514E7620600967264 /* MultiViewAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MultiViewAppDelegate.m; sourceTree = "<group>"; };
+		BC01CA9C14E762BE00967264 /* GPUImage.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = GPUImage.xcodeproj; path = ../../../framework/GPUImage.xcodeproj; sourceTree = "<group>"; };
+		BC01CAAB14E762E600967264 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
+		BC01CAAD14E762EE00967264 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
+		BC01CAAF14E762F600967264 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		BC01CAB114E762FD00967264 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
+		BC01CAB314E763FC00967264 /* MultiViewViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MultiViewViewController.h; sourceTree = "<group>"; };
+		BC01CAB414E763FC00967264 /* MultiViewViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MultiViewViewController.m; sourceTree = "<group>"; };
+		BC3145C614E76BA700824EA0 /* Shader1.fsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = Shader1.fsh; sourceTree = "<group>"; };
+		BC3145C714E76BA700824EA0 /* Shader2.fsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = Shader2.fsh; sourceTree = "<group>"; };
+		BCB3C40116BCA69F003D26B0 /* Icon-72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-72.png"; path = "../../SharedIcons/Icon-72.png"; sourceTree = "<group>"; };
+		BCB3C40216BCA69F003D26B0 /* Icon-72@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-72@2x.png"; path = "../../SharedIcons/Icon-72@2x.png"; sourceTree = "<group>"; };
+		BCB3C40316BCA69F003D26B0 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Icon.png; path = ../../SharedIcons/Icon.png; sourceTree = "<group>"; };
+		BCB3C40416BCA69F003D26B0 /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon@2x.png"; path = "../../SharedIcons/Icon@2x.png"; sourceTree = "<group>"; };
+		BCB3C40516BCA69F003D26B0 /* iTunesArtwork.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = iTunesArtwork.png; path = ../../SharedIcons/iTunesArtwork.png; sourceTree = "<group>"; };
+		BCB5DD6514E76CD2000AF3C2 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		E5066F461855A86D008C7682 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		BC01CA7E14E7620600967264 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BCF867101725A58F00912E34 /* libGPUImage.a in Frameworks */,
+				BCB5DD6614E76CD2000AF3C2 /* AVFoundation.framework in Frameworks */,
+				BC01CAB214E762FD00967264 /* OpenGLES.framework in Frameworks */,
+				BC01CAB014E762F600967264 /* QuartzCore.framework in Frameworks */,
+				BC01CAAE14E762EE00967264 /* CoreVideo.framework in Frameworks */,
+				BC01CAAC14E762E600967264 /* CoreMedia.framework in Frameworks */,
+				BC01CA8614E7620600967264 /* UIKit.framework in Frameworks */,
+				BC01CA8814E7620600967264 /* Foundation.framework in Frameworks */,
+				BC01CA8A14E7620600967264 /* CoreGraphics.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		BC01CA7614E7620600967264 = {
+			isa = PBXGroup;
+			children = (
+				E5066F461855A86D008C7682 /* Default-568h@2x.png */,
+				BC01CA8B14E7620600967264 /* MultiViewFilterExample */,
+				BC01CA8414E7620600967264 /* Frameworks */,
+				BC01CA8214E7620600967264 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		BC01CA8214E7620600967264 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				BC01CA8114E7620600967264 /* MultiViewFilterExample.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		BC01CA8414E7620600967264 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				BC01CA9C14E762BE00967264 /* GPUImage.xcodeproj */,
+				BC01CAB114E762FD00967264 /* OpenGLES.framework */,
+				BC01CAAF14E762F600967264 /* QuartzCore.framework */,
+				BC01CAAD14E762EE00967264 /* CoreVideo.framework */,
+				BC01CAAB14E762E600967264 /* CoreMedia.framework */,
+				BC01CA8514E7620600967264 /* UIKit.framework */,
+				BC01CA8714E7620600967264 /* Foundation.framework */,
+				BC01CA8914E7620600967264 /* CoreGraphics.framework */,
+				BCB5DD6514E76CD2000AF3C2 /* AVFoundation.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		BC01CA8B14E7620600967264 /* MultiViewFilterExample */ = {
+			isa = PBXGroup;
+			children = (
+				BC01CA9414E7620600967264 /* MultiViewAppDelegate.h */,
+				BC01CA9514E7620600967264 /* MultiViewAppDelegate.m */,
+				BC01CAB314E763FC00967264 /* MultiViewViewController.h */,
+				BC01CAB414E763FC00967264 /* MultiViewViewController.m */,
+				BC3145C614E76BA700824EA0 /* Shader1.fsh */,
+				BC3145C714E76BA700824EA0 /* Shader2.fsh */,
+				BC01CA8C14E7620600967264 /* Supporting Files */,
+			);
+			path = MultiViewFilterExample;
+			sourceTree = "<group>";
+		};
+		BC01CA8C14E7620600967264 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				BCB3C40116BCA69F003D26B0 /* Icon-72.png */,
+				BCB3C40216BCA69F003D26B0 /* Icon-72@2x.png */,
+				BCB3C40316BCA69F003D26B0 /* Icon.png */,
+				BCB3C40416BCA69F003D26B0 /* Icon@2x.png */,
+				BCB3C40516BCA69F003D26B0 /* iTunesArtwork.png */,
+				BC01CA8D14E7620600967264 /* MultiViewFilterExample-Info.plist */,
+				BC01CA8E14E7620600967264 /* InfoPlist.strings */,
+				BC01CA9114E7620600967264 /* main.m */,
+				BC01CA9314E7620600967264 /* MultiViewFilterExample-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		BCF867051725A56D00912E34 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				BCF8670B1725A56D00912E34 /* libGPUImage.a */,
+				BCF8670D1725A56D00912E34 /* GPUImageTests.octest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		BC01CA8014E7620600967264 /* MultiViewFilterExample */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BC01CA9914E7620600967264 /* Build configuration list for PBXNativeTarget "MultiViewFilterExample" */;
+			buildPhases = (
+				BC01CA7D14E7620600967264 /* Sources */,
+				BC01CA7E14E7620600967264 /* Frameworks */,
+				BC01CA7F14E7620600967264 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				BCF8670F1725A58A00912E34 /* PBXTargetDependency */,
+			);
+			name = MultiViewFilterExample;
+			productName = MultiViewFilterExample;
+			productReference = BC01CA8114E7620600967264 /* MultiViewFilterExample.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		BC01CA7814E7620600967264 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0500;
+				ORGANIZATIONNAME = "Cell Phone";
+			};
+			buildConfigurationList = BC01CA7B14E7620600967264 /* Build configuration list for PBXProject "MultiViewFilterExample" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = BC01CA7614E7620600967264;
+			productRefGroup = BC01CA8214E7620600967264 /* Products */;
+			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = BCF867051725A56D00912E34 /* Products */;
+					ProjectRef = BC01CA9C14E762BE00967264 /* GPUImage.xcodeproj */;
+				},
+			);
+			projectRoot = "";
+			targets = (
+				BC01CA8014E7620600967264 /* MultiViewFilterExample */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		BCF8670B1725A56D00912E34 /* libGPUImage.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libGPUImage.a;
+			remoteRef = BCF8670A1725A56D00912E34 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		BCF8670D1725A56D00912E34 /* GPUImageTests.octest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = GPUImageTests.octest;
+			remoteRef = BCF8670C1725A56D00912E34 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
+
+/* Begin PBXResourcesBuildPhase section */
+		BC01CA7F14E7620600967264 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BC01CA9014E7620600967264 /* InfoPlist.strings in Resources */,
+				BC3145C814E76BA700824EA0 /* Shader1.fsh in Resources */,
+				E5066F471855A86D008C7682 /* Default-568h@2x.png in Resources */,
+				BC3145C914E76BA700824EA0 /* Shader2.fsh in Resources */,
+				BCB3C40616BCA69F003D26B0 /* Icon-72.png in Resources */,
+				BCB3C40716BCA69F003D26B0 /* Icon-72@2x.png in Resources */,
+				BCB3C40816BCA69F003D26B0 /* Icon.png in Resources */,
+				BCB3C40916BCA69F003D26B0 /* Icon@2x.png in Resources */,
+				BCB3C40A16BCA69F003D26B0 /* iTunesArtwork.png in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		BC01CA7D14E7620600967264 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BC01CA9214E7620600967264 /* main.m in Sources */,
+				BC01CA9614E7620600967264 /* MultiViewAppDelegate.m in Sources */,
+				BC01CAB514E763FC00967264 /* MultiViewViewController.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		BCF8670F1725A58A00912E34 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = GPUImage;
+			targetProxy = BCF8670E1725A58A00912E34 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		BC01CA8E14E7620600967264 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				BC01CA8F14E7620600967264 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		BC01CA9714E7620600967264 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = "";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "../../../framework/**";
+				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
+				ONLY_ACTIVE_ARCH = YES;
+				OTHER_LDFLAGS = "-fobjc-arc";
+				PROVISIONING_PROFILE = "";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		BC01CA9814E7620600967264 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				FRAMEWORK_SEARCH_PATHS = "";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "../../../framework/**";
+				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
+				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				OTHER_LDFLAGS = "-fobjc-arc";
+				PROVISIONING_PROFILE = "";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		BC01CA9A14E7620600967264 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "MultiViewFilterExample/MultiViewFilterExample-Prefix.pch";
+				INFOPLIST_FILE = "MultiViewFilterExample/MultiViewFilterExample-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		BC01CA9B14E7620600967264 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "MultiViewFilterExample/MultiViewFilterExample-Prefix.pch";
+				INFOPLIST_FILE = "MultiViewFilterExample/MultiViewFilterExample-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		BC01CA7B14E7620600967264 /* Build configuration list for PBXProject "MultiViewFilterExample" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BC01CA9714E7620600967264 /* Debug */,
+				BC01CA9814E7620600967264 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		BC01CA9914E7620600967264 /* Build configuration list for PBXNativeTarget "MultiViewFilterExample" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BC01CA9A14E7620600967264 /* Debug */,
+				BC01CA9B14E7620600967264 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = BC01CA7814E7620600967264 /* Project object */;
+}

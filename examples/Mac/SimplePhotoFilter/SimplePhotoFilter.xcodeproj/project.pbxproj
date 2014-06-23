@@ -1,0 +1,389 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		BCA3F3411723A2E800E28AEC /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCA3F3401723A2E800E28AEC /* Cocoa.framework */; };
+		BCA3F34D1723A2E800E28AEC /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = BCA3F34C1723A2E800E28AEC /* main.m */; };
+		BCA3F3511723A2E800E28AEC /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = BCA3F34F1723A2E800E28AEC /* Credits.rtf */; };
+		BCA3F3541723A2E800E28AEC /* SLSDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = BCA3F3531723A2E800E28AEC /* SLSDocument.m */; };
+		BCA3F3571723A2E800E28AEC /* SLSDocument.xib in Resources */ = {isa = PBXBuildFile; fileRef = BCA3F3551723A2E800E28AEC /* SLSDocument.xib */; };
+		BCA3F35A1723A2E800E28AEC /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = BCA3F3581723A2E800E28AEC /* MainMenu.xib */; };
+		BCF40F331724A083005AE36A /* GPUImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCF40F3017249F6F005AE36A /* GPUImage.framework */; };
+		BCF40F351724AFA0005AE36A /* GPUImage.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = BCF40F3017249F6F005AE36A /* GPUImage.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		BCF40F2F17249F6F005AE36A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BCF40F2B17249F6F005AE36A /* GPUImageMac.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = BCA3F31C17239B6500E28AEC;
+			remoteInfo = GPUImage;
+		};
+		BCF40F311724A042005AE36A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BCF40F2B17249F6F005AE36A /* GPUImageMac.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = BCA3F31B17239B6500E28AEC;
+			remoteInfo = GPUImage;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		BCF40F341724AF95005AE36A /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				BCF40F351724AFA0005AE36A /* GPUImage.framework in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		BCA3F33D1723A2E800E28AEC /* SimplePhotoFilter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SimplePhotoFilter.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		BCA3F3401723A2E800E28AEC /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+		BCA3F3431723A2E800E28AEC /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
+		BCA3F3441723A2E800E28AEC /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		BCA3F3451723A2E800E28AEC /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		BCA3F3481723A2E800E28AEC /* SimplePhotoFilter-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "SimplePhotoFilter-Info.plist"; sourceTree = "<group>"; };
+		BCA3F34A1723A2E800E28AEC /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		BCA3F34C1723A2E800E28AEC /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		BCA3F34E1723A2E800E28AEC /* SimplePhotoFilter-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SimplePhotoFilter-Prefix.pch"; sourceTree = "<group>"; };
+		BCA3F3501723A2E800E28AEC /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = en.lproj/Credits.rtf; sourceTree = "<group>"; };
+		BCA3F3521723A2E800E28AEC /* SLSDocument.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SLSDocument.h; sourceTree = "<group>"; };
+		BCA3F3531723A2E800E28AEC /* SLSDocument.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SLSDocument.m; sourceTree = "<group>"; };
+		BCA3F3561723A2E800E28AEC /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/SLSDocument.xib; sourceTree = "<group>"; };
+		BCA3F3591723A2E800E28AEC /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		BCF40F2B17249F6F005AE36A /* GPUImageMac.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = GPUImageMac.xcodeproj; path = ../../../framework/GPUImageMac.xcodeproj; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		BCA3F33A1723A2E800E28AEC /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BCF40F331724A083005AE36A /* GPUImage.framework in Frameworks */,
+				BCA3F3411723A2E800E28AEC /* Cocoa.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		BCA3F3341723A2E800E28AEC = {
+			isa = PBXGroup;
+			children = (
+				BCA3F3461723A2E800E28AEC /* SimplePhotoFilter */,
+				BCA3F33F1723A2E800E28AEC /* Frameworks */,
+				BCA3F33E1723A2E800E28AEC /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		BCA3F33E1723A2E800E28AEC /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				BCA3F33D1723A2E800E28AEC /* SimplePhotoFilter.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		BCA3F33F1723A2E800E28AEC /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				BCF40F2B17249F6F005AE36A /* GPUImageMac.xcodeproj */,
+				BCA3F3401723A2E800E28AEC /* Cocoa.framework */,
+				BCA3F3421723A2E800E28AEC /* Other Frameworks */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		BCA3F3421723A2E800E28AEC /* Other Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				BCA3F3431723A2E800E28AEC /* AppKit.framework */,
+				BCA3F3441723A2E800E28AEC /* CoreData.framework */,
+				BCA3F3451723A2E800E28AEC /* Foundation.framework */,
+			);
+			name = "Other Frameworks";
+			sourceTree = "<group>";
+		};
+		BCA3F3461723A2E800E28AEC /* SimplePhotoFilter */ = {
+			isa = PBXGroup;
+			children = (
+				BCA3F3581723A2E800E28AEC /* MainMenu.xib */,
+				BCA3F3521723A2E800E28AEC /* SLSDocument.h */,
+				BCA3F3531723A2E800E28AEC /* SLSDocument.m */,
+				BCA3F3551723A2E800E28AEC /* SLSDocument.xib */,
+				BCA3F3471723A2E800E28AEC /* Supporting Files */,
+			);
+			path = SimplePhotoFilter;
+			sourceTree = "<group>";
+		};
+		BCA3F3471723A2E800E28AEC /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				BCA3F3481723A2E800E28AEC /* SimplePhotoFilter-Info.plist */,
+				BCA3F3491723A2E800E28AEC /* InfoPlist.strings */,
+				BCA3F34C1723A2E800E28AEC /* main.m */,
+				BCA3F34E1723A2E800E28AEC /* SimplePhotoFilter-Prefix.pch */,
+				BCA3F34F1723A2E800E28AEC /* Credits.rtf */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		BCF40F2C17249F6F005AE36A /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				BCF40F3017249F6F005AE36A /* GPUImage.framework */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		BCA3F33C1723A2E800E28AEC /* SimplePhotoFilter */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BCA3F35D1723A2E800E28AEC /* Build configuration list for PBXNativeTarget "SimplePhotoFilter" */;
+			buildPhases = (
+				BCA3F3391723A2E800E28AEC /* Sources */,
+				BCA3F33A1723A2E800E28AEC /* Frameworks */,
+				BCA3F33B1723A2E800E28AEC /* Resources */,
+				BCF40F341724AF95005AE36A /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				BCF40F321724A042005AE36A /* PBXTargetDependency */,
+			);
+			name = SimplePhotoFilter;
+			productName = SimplePhotoFilter;
+			productReference = BCA3F33D1723A2E800E28AEC /* SimplePhotoFilter.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		BCA3F3351723A2E800E28AEC /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				CLASSPREFIX = SLS;
+				LastUpgradeCheck = 0500;
+				ORGANIZATIONNAME = "Sunset Lake Software LLC";
+			};
+			buildConfigurationList = BCA3F3381723A2E800E28AEC /* Build configuration list for PBXProject "SimplePhotoFilter" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = BCA3F3341723A2E800E28AEC;
+			productRefGroup = BCA3F33E1723A2E800E28AEC /* Products */;
+			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = BCF40F2C17249F6F005AE36A /* Products */;
+					ProjectRef = BCF40F2B17249F6F005AE36A /* GPUImageMac.xcodeproj */;
+				},
+			);
+			projectRoot = "";
+			targets = (
+				BCA3F33C1723A2E800E28AEC /* SimplePhotoFilter */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		BCF40F3017249F6F005AE36A /* GPUImage.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = GPUImage.framework;
+			remoteRef = BCF40F2F17249F6F005AE36A /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
+
+/* Begin PBXResourcesBuildPhase section */
+		BCA3F33B1723A2E800E28AEC /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BCA3F3511723A2E800E28AEC /* Credits.rtf in Resources */,
+				BCA3F3571723A2E800E28AEC /* SLSDocument.xib in Resources */,
+				BCA3F35A1723A2E800E28AEC /* MainMenu.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		BCA3F3391723A2E800E28AEC /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BCA3F34D1723A2E800E28AEC /* main.m in Sources */,
+				BCA3F3541723A2E800E28AEC /* SLSDocument.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		BCF40F321724A042005AE36A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = GPUImage;
+			targetProxy = BCF40F311724A042005AE36A /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		BCA3F3491723A2E800E28AEC /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				BCA3F34A1723A2E800E28AEC /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		BCA3F34F1723A2E800E28AEC /* Credits.rtf */ = {
+			isa = PBXVariantGroup;
+			children = (
+				BCA3F3501723A2E800E28AEC /* en */,
+			);
+			name = Credits.rtf;
+			sourceTree = "<group>";
+		};
+		BCA3F3551723A2E800E28AEC /* SLSDocument.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				BCA3F3561723A2E800E28AEC /* en */,
+			);
+			name = SLSDocument.xib;
+			sourceTree = "<group>";
+		};
+		BCA3F3581723A2E800E28AEC /* MainMenu.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				BCA3F3591723A2E800E28AEC /* en */,
+			);
+			name = MainMenu.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		BCA3F35B1723A2E800E28AEC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		BCA3F35C1723A2E800E28AEC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		BCA3F35E1723A2E800E28AEC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "SimplePhotoFilter/SimplePhotoFilter-Prefix.pch";
+				INFOPLIST_FILE = "SimplePhotoFilter/SimplePhotoFilter-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		BCA3F35F1723A2E800E28AEC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "SimplePhotoFilter/SimplePhotoFilter-Prefix.pch";
+				INFOPLIST_FILE = "SimplePhotoFilter/SimplePhotoFilter-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		BCA3F3381723A2E800E28AEC /* Build configuration list for PBXProject "SimplePhotoFilter" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BCA3F35B1723A2E800E28AEC /* Debug */,
+				BCA3F35C1723A2E800E28AEC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		BCA3F35D1723A2E800E28AEC /* Build configuration list for PBXNativeTarget "SimplePhotoFilter" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BCA3F35E1723A2E800E28AEC /* Debug */,
+				BCA3F35F1723A2E800E28AEC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = BCA3F3351723A2E800E28AEC /* Project object */;
+}

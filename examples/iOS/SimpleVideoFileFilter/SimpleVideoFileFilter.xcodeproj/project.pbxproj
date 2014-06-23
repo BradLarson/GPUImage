@@ -1,0 +1,429 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		466AE00B14F2A196004FE0E5 /* sample_iPod.m4v in Resources */ = {isa = PBXBuildFile; fileRef = 466AE00A14F2A196004FE0E5 /* sample_iPod.m4v */; };
+		BC11C28315BCBE2300E5BEC7 /* WID-small.jpg in Resources */ = {isa = PBXBuildFile; fileRef = BC11C28215BCBE2300E5BEC7 /* WID-small.jpg */; };
+		BCB3C43A16BCA871003D26B0 /* Icon-72.png in Resources */ = {isa = PBXBuildFile; fileRef = BCB3C43516BCA871003D26B0 /* Icon-72.png */; };
+		BCB3C43B16BCA871003D26B0 /* Icon-72@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BCB3C43616BCA871003D26B0 /* Icon-72@2x.png */; };
+		BCB3C43C16BCA871003D26B0 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = BCB3C43716BCA871003D26B0 /* Icon.png */; };
+		BCB3C43D16BCA871003D26B0 /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BCB3C43816BCA871003D26B0 /* Icon@2x.png */; };
+		BCB3C43E16BCA871003D26B0 /* iTunesArtwork.png in Resources */ = {isa = PBXBuildFile; fileRef = BCB3C43916BCA871003D26B0 /* iTunesArtwork.png */; };
+		BCB5DDCF14E86899000AF3C2 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCB5DDCE14E86899000AF3C2 /* UIKit.framework */; };
+		BCB5DDD114E86899000AF3C2 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCB5DDD014E86899000AF3C2 /* Foundation.framework */; };
+		BCB5DDD314E86899000AF3C2 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCB5DDD214E86899000AF3C2 /* CoreGraphics.framework */; };
+		BCB5DDD914E86899000AF3C2 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = BCB5DDD714E86899000AF3C2 /* InfoPlist.strings */; };
+		BCB5DDDB14E86899000AF3C2 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = BCB5DDDA14E86899000AF3C2 /* main.m */; };
+		BCB5DDDF14E86899000AF3C2 /* SimpleVideoFileFilterAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = BCB5DDDE14E86899000AF3C2 /* SimpleVideoFileFilterAppDelegate.m */; };
+		BCB5DDE814E868C0000AF3C2 /* SimpleVideoFileFilterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = BCB5DDE614E868C0000AF3C2 /* SimpleVideoFileFilterViewController.m */; };
+		BCB5DDE914E868C0000AF3C2 /* SimpleVideoFileFilterViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = BCB5DDE714E868C0000AF3C2 /* SimpleVideoFileFilterViewController.xib */; };
+		BCB5DDF914E876DD000AF3C2 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCB5DDF814E876DD000AF3C2 /* AVFoundation.framework */; };
+		BCB5DDFC14E876ED000AF3C2 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCB5DDFA14E876ED000AF3C2 /* CoreMedia.framework */; };
+		BCB5DDFD14E876ED000AF3C2 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCB5DDFB14E876ED000AF3C2 /* CoreVideo.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		BCB5DDFF14E87783000AF3C2 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCB5DDFE14E87783000AF3C2 /* QuartzCore.framework */; };
+		BCB5DE0114E87789000AF3C2 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCB5DE0014E87789000AF3C2 /* OpenGLES.framework */; };
+		BCF867441725AAA300912E34 /* libGPUImage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BCF8673F1725AA7E00912E34 /* libGPUImage.a */; };
+		E5066F5C1855AC55008C7682 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E5066F5B1855AC55008C7682 /* Default-568h@2x.png */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		BCF8673E1725AA7E00912E34 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BCB5DDEA14E8756A000AF3C2 /* GPUImage.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = BCF1A33414DDB1EC00852800;
+			remoteInfo = GPUImage;
+		};
+		BCF867401725AA7E00912E34 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BCB5DDEA14E8756A000AF3C2 /* GPUImage.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = BCF1A34414DDB1EC00852800;
+			remoteInfo = GPUImageTests;
+		};
+		BCF867421725AA9E00912E34 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BCB5DDEA14E8756A000AF3C2 /* GPUImage.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = BCF1A33314DDB1EC00852800;
+			remoteInfo = GPUImage;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		466AE00A14F2A196004FE0E5 /* sample_iPod.m4v */ = {isa = PBXFileReference; lastKnownFileType = file; path = sample_iPod.m4v; sourceTree = "<group>"; };
+		BC11C28215BCBE2300E5BEC7 /* WID-small.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "WID-small.jpg"; sourceTree = "<group>"; };
+		BCB3C43516BCA871003D26B0 /* Icon-72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-72.png"; path = "../../SharedIcons/Icon-72.png"; sourceTree = "<group>"; };
+		BCB3C43616BCA871003D26B0 /* Icon-72@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-72@2x.png"; path = "../../SharedIcons/Icon-72@2x.png"; sourceTree = "<group>"; };
+		BCB3C43716BCA871003D26B0 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Icon.png; path = ../../SharedIcons/Icon.png; sourceTree = "<group>"; };
+		BCB3C43816BCA871003D26B0 /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon@2x.png"; path = "../../SharedIcons/Icon@2x.png"; sourceTree = "<group>"; };
+		BCB3C43916BCA871003D26B0 /* iTunesArtwork.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = iTunesArtwork.png; path = ../../SharedIcons/iTunesArtwork.png; sourceTree = "<group>"; };
+		BCB5DDCA14E86899000AF3C2 /* SimpleVideoFileFilter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SimpleVideoFileFilter.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		BCB5DDCE14E86899000AF3C2 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		BCB5DDD014E86899000AF3C2 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		BCB5DDD214E86899000AF3C2 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		BCB5DDD614E86899000AF3C2 /* SimpleVideoFileFilter-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "SimpleVideoFileFilter-Info.plist"; sourceTree = "<group>"; };
+		BCB5DDD814E86899000AF3C2 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		BCB5DDDA14E86899000AF3C2 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		BCB5DDDC14E86899000AF3C2 /* SimpleVideoFileFilter-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SimpleVideoFileFilter-Prefix.pch"; sourceTree = "<group>"; };
+		BCB5DDDD14E86899000AF3C2 /* SimpleVideoFileFilterAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SimpleVideoFileFilterAppDelegate.h; sourceTree = "<group>"; };
+		BCB5DDDE14E86899000AF3C2 /* SimpleVideoFileFilterAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SimpleVideoFileFilterAppDelegate.m; sourceTree = "<group>"; };
+		BCB5DDE514E868C0000AF3C2 /* SimpleVideoFileFilterViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SimpleVideoFileFilterViewController.h; sourceTree = "<group>"; };
+		BCB5DDE614E868C0000AF3C2 /* SimpleVideoFileFilterViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SimpleVideoFileFilterViewController.m; sourceTree = "<group>"; };
+		BCB5DDE714E868C0000AF3C2 /* SimpleVideoFileFilterViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SimpleVideoFileFilterViewController.xib; sourceTree = "<group>"; };
+		BCB5DDEA14E8756A000AF3C2 /* GPUImage.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = GPUImage.xcodeproj; path = ../../../framework/GPUImage.xcodeproj; sourceTree = "<group>"; };
+		BCB5DDF814E876DD000AF3C2 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		BCB5DDFA14E876ED000AF3C2 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
+		BCB5DDFB14E876ED000AF3C2 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
+		BCB5DDFE14E87783000AF3C2 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		BCB5DE0014E87789000AF3C2 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
+		E5066F5B1855AC55008C7682 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		BCB5DDC714E86899000AF3C2 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BCF867441725AAA300912E34 /* libGPUImage.a in Frameworks */,
+				BCB5DE0114E87789000AF3C2 /* OpenGLES.framework in Frameworks */,
+				BCB5DDFF14E87783000AF3C2 /* QuartzCore.framework in Frameworks */,
+				BCB5DDFC14E876ED000AF3C2 /* CoreMedia.framework in Frameworks */,
+				BCB5DDFD14E876ED000AF3C2 /* CoreVideo.framework in Frameworks */,
+				BCB5DDF914E876DD000AF3C2 /* AVFoundation.framework in Frameworks */,
+				BCB5DDCF14E86899000AF3C2 /* UIKit.framework in Frameworks */,
+				BCB5DDD114E86899000AF3C2 /* Foundation.framework in Frameworks */,
+				BCB5DDD314E86899000AF3C2 /* CoreGraphics.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		BCB5DDBF14E86899000AF3C2 = {
+			isa = PBXGroup;
+			children = (
+				E5066F5B1855AC55008C7682 /* Default-568h@2x.png */,
+				BCB5DDD414E86899000AF3C2 /* SimpleVideoFileFilter */,
+				BCB5DDCD14E86899000AF3C2 /* Frameworks */,
+				BCB5DDCB14E86899000AF3C2 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		BCB5DDCB14E86899000AF3C2 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				BCB5DDCA14E86899000AF3C2 /* SimpleVideoFileFilter.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		BCB5DDCD14E86899000AF3C2 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				BCB5DDEA14E8756A000AF3C2 /* GPUImage.xcodeproj */,
+				BCB5DE0014E87789000AF3C2 /* OpenGLES.framework */,
+				BCB5DDFE14E87783000AF3C2 /* QuartzCore.framework */,
+				BCB5DDFA14E876ED000AF3C2 /* CoreMedia.framework */,
+				BCB5DDFB14E876ED000AF3C2 /* CoreVideo.framework */,
+				BCB5DDF814E876DD000AF3C2 /* AVFoundation.framework */,
+				BCB5DDCE14E86899000AF3C2 /* UIKit.framework */,
+				BCB5DDD014E86899000AF3C2 /* Foundation.framework */,
+				BCB5DDD214E86899000AF3C2 /* CoreGraphics.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		BCB5DDD414E86899000AF3C2 /* SimpleVideoFileFilter */ = {
+			isa = PBXGroup;
+			children = (
+				BCB5DDDD14E86899000AF3C2 /* SimpleVideoFileFilterAppDelegate.h */,
+				BCB5DDDE14E86899000AF3C2 /* SimpleVideoFileFilterAppDelegate.m */,
+				BCB5DDE514E868C0000AF3C2 /* SimpleVideoFileFilterViewController.h */,
+				BCB5DDE614E868C0000AF3C2 /* SimpleVideoFileFilterViewController.m */,
+				BCB5DDE714E868C0000AF3C2 /* SimpleVideoFileFilterViewController.xib */,
+				BCB5DDD514E86899000AF3C2 /* Supporting Files */,
+			);
+			path = SimpleVideoFileFilter;
+			sourceTree = "<group>";
+		};
+		BCB5DDD514E86899000AF3C2 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				BCB3C43516BCA871003D26B0 /* Icon-72.png */,
+				BCB3C43616BCA871003D26B0 /* Icon-72@2x.png */,
+				BCB3C43716BCA871003D26B0 /* Icon.png */,
+				BCB3C43816BCA871003D26B0 /* Icon@2x.png */,
+				BCB3C43916BCA871003D26B0 /* iTunesArtwork.png */,
+				BC11C28215BCBE2300E5BEC7 /* WID-small.jpg */,
+				466AE00A14F2A196004FE0E5 /* sample_iPod.m4v */,
+				BCB5DDD614E86899000AF3C2 /* SimpleVideoFileFilter-Info.plist */,
+				BCB5DDD714E86899000AF3C2 /* InfoPlist.strings */,
+				BCB5DDDA14E86899000AF3C2 /* main.m */,
+				BCB5DDDC14E86899000AF3C2 /* SimpleVideoFileFilter-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		BCF867391725AA7E00912E34 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				BCF8673F1725AA7E00912E34 /* libGPUImage.a */,
+				BCF867411725AA7E00912E34 /* GPUImageTests.octest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		BCB5DDC914E86899000AF3C2 /* SimpleVideoFileFilter */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BCB5DDE214E86899000AF3C2 /* Build configuration list for PBXNativeTarget "SimpleVideoFileFilter" */;
+			buildPhases = (
+				BCB5DDC614E86899000AF3C2 /* Sources */,
+				BCB5DDC714E86899000AF3C2 /* Frameworks */,
+				BCB5DDC814E86899000AF3C2 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				BCF867431725AA9E00912E34 /* PBXTargetDependency */,
+			);
+			name = SimpleVideoFileFilter;
+			productName = SimpleVideoFileFilter;
+			productReference = BCB5DDCA14E86899000AF3C2 /* SimpleVideoFileFilter.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		BCB5DDC114E86899000AF3C2 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0600;
+				ORGANIZATIONNAME = "Cell Phone";
+			};
+			buildConfigurationList = BCB5DDC414E86899000AF3C2 /* Build configuration list for PBXProject "SimpleVideoFileFilter" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = BCB5DDBF14E86899000AF3C2;
+			productRefGroup = BCB5DDCB14E86899000AF3C2 /* Products */;
+			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = BCF867391725AA7E00912E34 /* Products */;
+					ProjectRef = BCB5DDEA14E8756A000AF3C2 /* GPUImage.xcodeproj */;
+				},
+			);
+			projectRoot = "";
+			targets = (
+				BCB5DDC914E86899000AF3C2 /* SimpleVideoFileFilter */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		BCF8673F1725AA7E00912E34 /* libGPUImage.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libGPUImage.a;
+			remoteRef = BCF8673E1725AA7E00912E34 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		BCF867411725AA7E00912E34 /* GPUImageTests.octest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = GPUImageTests.octest;
+			remoteRef = BCF867401725AA7E00912E34 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
+
+/* Begin PBXResourcesBuildPhase section */
+		BCB5DDC814E86899000AF3C2 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BCB5DDD914E86899000AF3C2 /* InfoPlist.strings in Resources */,
+				BCB5DDE914E868C0000AF3C2 /* SimpleVideoFileFilterViewController.xib in Resources */,
+				466AE00B14F2A196004FE0E5 /* sample_iPod.m4v in Resources */,
+				E5066F5C1855AC55008C7682 /* Default-568h@2x.png in Resources */,
+				BC11C28315BCBE2300E5BEC7 /* WID-small.jpg in Resources */,
+				BCB3C43A16BCA871003D26B0 /* Icon-72.png in Resources */,
+				BCB3C43B16BCA871003D26B0 /* Icon-72@2x.png in Resources */,
+				BCB3C43C16BCA871003D26B0 /* Icon.png in Resources */,
+				BCB3C43D16BCA871003D26B0 /* Icon@2x.png in Resources */,
+				BCB3C43E16BCA871003D26B0 /* iTunesArtwork.png in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		BCB5DDC614E86899000AF3C2 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BCB5DDDB14E86899000AF3C2 /* main.m in Sources */,
+				BCB5DDDF14E86899000AF3C2 /* SimpleVideoFileFilterAppDelegate.m in Sources */,
+				BCB5DDE814E868C0000AF3C2 /* SimpleVideoFileFilterViewController.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		BCF867431725AA9E00912E34 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = GPUImage;
+			targetProxy = BCF867421725AA9E00912E34 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		BCB5DDD714E86899000AF3C2 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				BCB5DDD814E86899000AF3C2 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		BCB5DDE014E86899000AF3C2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "../../../framework/**";
+				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
+				ONLY_ACTIVE_ARCH = YES;
+				OTHER_LDFLAGS = (
+					"-ObjC",
+					"-fobjc-arc",
+				);
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		BCB5DDE114E86899000AF3C2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "../../../framework/**";
+				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
+				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				OTHER_LDFLAGS = (
+					"-ObjC",
+					"-fobjc-arc",
+				);
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		BCB5DDE314E86899000AF3C2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "SimpleVideoFileFilter/SimpleVideoFileFilter-Prefix.pch";
+				INFOPLIST_FILE = "SimpleVideoFileFilter/SimpleVideoFileFilter-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		BCB5DDE414E86899000AF3C2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "SimpleVideoFileFilter/SimpleVideoFileFilter-Prefix.pch";
+				INFOPLIST_FILE = "SimpleVideoFileFilter/SimpleVideoFileFilter-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		BCB5DDC414E86899000AF3C2 /* Build configuration list for PBXProject "SimpleVideoFileFilter" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BCB5DDE014E86899000AF3C2 /* Debug */,
+				BCB5DDE114E86899000AF3C2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		BCB5DDE214E86899000AF3C2 /* Build configuration list for PBXNativeTarget "SimpleVideoFileFilter" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BCB5DDE314E86899000AF3C2 /* Debug */,
+				BCB5DDE414E86899000AF3C2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = BCB5DDC114E86899000AF3C2 /* Project object */;
+}
