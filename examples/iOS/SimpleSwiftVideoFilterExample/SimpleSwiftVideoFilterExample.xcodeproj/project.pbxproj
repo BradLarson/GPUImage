@@ -1,0 +1,427 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		BC73FD2419612C19004A9191 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC73FD2319612C19004A9191 /* AppDelegate.swift */; };
+		BC73FD2619612C19004A9191 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC73FD2519612C19004A9191 /* ViewController.swift */; };
+		BC73FD2919612C19004A9191 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BC73FD2719612C19004A9191 /* Main.storyboard */; };
+		BC73FD2B19612C19004A9191 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BC73FD2A19612C19004A9191 /* Images.xcassets */; };
+		BC73FD3719612C19004A9191 /* SimpleSwiftVideoFilterExampleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC73FD3619612C19004A9191 /* SimpleSwiftVideoFilterExampleTests.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		BC73FD3119612C19004A9191 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BC73FD1619612C19004A9191 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = BC73FD1D19612C19004A9191;
+			remoteInfo = SimpleSwiftVideoFilterExample;
+		};
+		BC73FD4019612C23004A9191 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BC73FD1619612C19004A9191 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = BC73FD1D19612C19004A9191;
+			remoteInfo = SimpleSwiftVideoFilterExample;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		BC73FD1E19612C19004A9191 /* SimpleSwiftVideoFilterExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SimpleSwiftVideoFilterExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		BC73FD2219612C19004A9191 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		BC73FD2319612C19004A9191 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		BC73FD2519612C19004A9191 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		BC73FD2819612C19004A9191 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		BC73FD2A19612C19004A9191 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		BC73FD3019612C19004A9191 /* SimpleSwiftVideoFilterExampleTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SimpleSwiftVideoFilterExampleTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		BC73FD3519612C19004A9191 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		BC73FD3619612C19004A9191 /* SimpleSwiftVideoFilterExampleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleSwiftVideoFilterExampleTests.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		BC73FD1B19612C19004A9191 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BC73FD2D19612C19004A9191 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		BC73FD1519612C19004A9191 = {
+			isa = PBXGroup;
+			children = (
+				BC73FD2019612C19004A9191 /* SimpleSwiftVideoFilterExample */,
+				BC73FD3319612C19004A9191 /* SimpleSwiftVideoFilterExampleTests */,
+				BC73FD1F19612C19004A9191 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		BC73FD1F19612C19004A9191 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				BC73FD1E19612C19004A9191 /* SimpleSwiftVideoFilterExample.app */,
+				BC73FD3019612C19004A9191 /* SimpleSwiftVideoFilterExampleTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		BC73FD2019612C19004A9191 /* SimpleSwiftVideoFilterExample */ = {
+			isa = PBXGroup;
+			children = (
+				BC73FD2319612C19004A9191 /* AppDelegate.swift */,
+				BC73FD2519612C19004A9191 /* ViewController.swift */,
+				BC73FD2719612C19004A9191 /* Main.storyboard */,
+				BC73FD2A19612C19004A9191 /* Images.xcassets */,
+				BC73FD2119612C19004A9191 /* Supporting Files */,
+			);
+			path = SimpleSwiftVideoFilterExample;
+			sourceTree = "<group>";
+		};
+		BC73FD2119612C19004A9191 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				BC73FD2219612C19004A9191 /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		BC73FD3319612C19004A9191 /* SimpleSwiftVideoFilterExampleTests */ = {
+			isa = PBXGroup;
+			children = (
+				BC73FD3619612C19004A9191 /* SimpleSwiftVideoFilterExampleTests.swift */,
+				BC73FD3419612C19004A9191 /* Supporting Files */,
+			);
+			path = SimpleSwiftVideoFilterExampleTests;
+			sourceTree = "<group>";
+		};
+		BC73FD3419612C19004A9191 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				BC73FD3519612C19004A9191 /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		BC73FD1D19612C19004A9191 /* SimpleSwiftVideoFilterExample */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BC73FD3A19612C19004A9191 /* Build configuration list for PBXNativeTarget "SimpleSwiftVideoFilterExample" */;
+			buildPhases = (
+				BC73FD1A19612C19004A9191 /* Sources */,
+				BC73FD1B19612C19004A9191 /* Frameworks */,
+				BC73FD1C19612C19004A9191 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SimpleSwiftVideoFilterExample;
+			productName = SimpleSwiftVideoFilterExample;
+			productReference = BC73FD1E19612C19004A9191 /* SimpleSwiftVideoFilterExample.app */;
+			productType = "com.apple.product-type.application";
+		};
+		BC73FD2F19612C19004A9191 /* SimpleSwiftVideoFilterExampleTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BC73FD3D19612C19004A9191 /* Build configuration list for PBXNativeTarget "SimpleSwiftVideoFilterExampleTests" */;
+			buildPhases = (
+				BC73FD2C19612C19004A9191 /* Sources */,
+				BC73FD2D19612C19004A9191 /* Frameworks */,
+				BC73FD2E19612C19004A9191 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				BC73FD3219612C19004A9191 /* PBXTargetDependency */,
+				BC73FD4119612C23004A9191 /* PBXTargetDependency */,
+			);
+			name = SimpleSwiftVideoFilterExampleTests;
+			productName = SimpleSwiftVideoFilterExampleTests;
+			productReference = BC73FD3019612C19004A9191 /* SimpleSwiftVideoFilterExampleTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		BC73FD1619612C19004A9191 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0600;
+				ORGANIZATIONNAME = "Sunset Lake Software";
+				TargetAttributes = {
+					BC73FD1D19612C19004A9191 = {
+						CreatedOnToolsVersion = 6.0;
+					};
+					BC73FD2F19612C19004A9191 = {
+						CreatedOnToolsVersion = 6.0;
+						TestTargetID = BC73FD1D19612C19004A9191;
+					};
+				};
+			};
+			buildConfigurationList = BC73FD1919612C19004A9191 /* Build configuration list for PBXProject "SimpleSwiftVideoFilterExample" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = BC73FD1519612C19004A9191;
+			productRefGroup = BC73FD1F19612C19004A9191 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				BC73FD1D19612C19004A9191 /* SimpleSwiftVideoFilterExample */,
+				BC73FD2F19612C19004A9191 /* SimpleSwiftVideoFilterExampleTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		BC73FD1C19612C19004A9191 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BC73FD2919612C19004A9191 /* Main.storyboard in Resources */,
+				BC73FD2B19612C19004A9191 /* Images.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BC73FD2E19612C19004A9191 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		BC73FD1A19612C19004A9191 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BC73FD2619612C19004A9191 /* ViewController.swift in Sources */,
+				BC73FD2419612C19004A9191 /* AppDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BC73FD2C19612C19004A9191 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BC73FD3719612C19004A9191 /* SimpleSwiftVideoFilterExampleTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		BC73FD3219612C19004A9191 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = BC73FD1D19612C19004A9191 /* SimpleSwiftVideoFilterExample */;
+			targetProxy = BC73FD3119612C19004A9191 /* PBXContainerItemProxy */;
+		};
+		BC73FD4119612C23004A9191 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = BC73FD1D19612C19004A9191 /* SimpleSwiftVideoFilterExample */;
+			targetProxy = BC73FD4019612C23004A9191 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		BC73FD2719612C19004A9191 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				BC73FD2819612C19004A9191 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		BC73FD3819612C19004A9191 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				METAL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		BC73FD3919612C19004A9191 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				METAL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		BC73FD3B19612C19004A9191 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				INFOPLIST_FILE = SimpleSwiftVideoFilterExample/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		BC73FD3C19612C19004A9191 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				INFOPLIST_FILE = SimpleSwiftVideoFilterExample/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		BC73FD3E19612C19004A9191 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/SimpleSwiftVideoFilterExample.app/SimpleSwiftVideoFilterExample";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = SimpleSwiftVideoFilterExampleTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				METAL_ENABLE_DEBUG_INFO = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+			};
+			name = Debug;
+		};
+		BC73FD3F19612C19004A9191 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/SimpleSwiftVideoFilterExample.app/SimpleSwiftVideoFilterExample";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = SimpleSwiftVideoFilterExampleTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				METAL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		BC73FD1919612C19004A9191 /* Build configuration list for PBXProject "SimpleSwiftVideoFilterExample" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BC73FD3819612C19004A9191 /* Debug */,
+				BC73FD3919612C19004A9191 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		BC73FD3A19612C19004A9191 /* Build configuration list for PBXNativeTarget "SimpleSwiftVideoFilterExample" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BC73FD3B19612C19004A9191 /* Debug */,
+				BC73FD3C19612C19004A9191 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		BC73FD3D19612C19004A9191 /* Build configuration list for PBXNativeTarget "SimpleSwiftVideoFilterExampleTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BC73FD3E19612C19004A9191 /* Debug */,
+				BC73FD3F19612C19004A9191 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = BC73FD1619612C19004A9191 /* Project object */;
+}
