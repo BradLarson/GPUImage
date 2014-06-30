@@ -4,7 +4,7 @@ import GPUImage
 // Use of this causes LLVM to faceplant, so have to split out the closures for now
 //enum FilterSliderSetting {
 //    case Disabled
-//    case Enabled(minimumValue:Float, initialValue:Float, maximumValue:Float, stringValue:String)
+//    case Enabled(minimumValue:Float, initialValue:Float, maximumValue:Float, sliderUpdateCallback:((filter:GPUImageOutput, sliderValue:Float) -> ())?)
 //}
 
 enum FilterSliderSetting {
@@ -26,7 +26,6 @@ enum FilterOperationType {
 }
 
 class FilterOperation {
-    let test:FilterSliderSetting = .Enabled(minimumValue:0.0, initialValue:1.0, maximumValue:1.0)
     let listName: String
     let titleName: String
     let sliderConfiguration: FilterSliderSetting

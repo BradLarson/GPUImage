@@ -11,25 +11,53 @@
 		BC73FD2619612C19004A9191 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC73FD2519612C19004A9191 /* ViewController.swift */; };
 		BC73FD2919612C19004A9191 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BC73FD2719612C19004A9191 /* Main.storyboard */; };
 		BC73FD2B19612C19004A9191 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BC73FD2A19612C19004A9191 /* Images.xcassets */; };
-		BC73FD3719612C19004A9191 /* SimpleSwiftVideoFilterExampleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC73FD3619612C19004A9191 /* SimpleSwiftVideoFilterExampleTests.swift */; };
+		BC73FD5519612C75004A9191 /* GPUImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC73FD5419612C75004A9191 /* GPUImage.framework */; };
+		BC73FD5719612C8F004A9191 /* GPUImage.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = BC73FD5419612C75004A9191 /* GPUImage.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		BC73FD3119612C19004A9191 /* PBXContainerItemProxy */ = {
+		BC73FD4919612C6F004A9191 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = BC73FD1619612C19004A9191 /* Project object */;
+			containerPortal = BC73FD4419612C4E004A9191 /* GPUImage.xcodeproj */;
 			proxyType = 1;
-			remoteGlobalIDString = BC73FD1D19612C19004A9191;
-			remoteInfo = SimpleSwiftVideoFilterExample;
+			remoteGlobalIDString = BCE209E41943F20C002FEED8;
+			remoteInfo = GPUImageFramework;
 		};
-		BC73FD4019612C23004A9191 /* PBXContainerItemProxy */ = {
+		BC73FD4F19612C75004A9191 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = BC73FD1619612C19004A9191 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = BC73FD1D19612C19004A9191;
-			remoteInfo = SimpleSwiftVideoFilterExample;
+			containerPortal = BC73FD4419612C4E004A9191 /* GPUImage.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = BCF1A33414DDB1EC00852800;
+			remoteInfo = GPUImage;
+		};
+		BC73FD5119612C75004A9191 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BC73FD4419612C4E004A9191 /* GPUImage.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = BCF1A34414DDB1EC00852800;
+			remoteInfo = GPUImageTests;
+		};
+		BC73FD5319612C75004A9191 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BC73FD4419612C4E004A9191 /* GPUImage.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = BCE209E51943F20C002FEED8;
+			remoteInfo = GPUImageFramework;
 		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		BC73FD5619612C86004A9191 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				BC73FD5719612C8F004A9191 /* GPUImage.framework in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		BC73FD1E19612C19004A9191 /* SimpleSwiftVideoFilterExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SimpleSwiftVideoFilterExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -38,9 +66,7 @@
 		BC73FD2519612C19004A9191 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		BC73FD2819612C19004A9191 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		BC73FD2A19612C19004A9191 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
-		BC73FD3019612C19004A9191 /* SimpleSwiftVideoFilterExampleTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SimpleSwiftVideoFilterExampleTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		BC73FD3519612C19004A9191 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		BC73FD3619612C19004A9191 /* SimpleSwiftVideoFilterExampleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleSwiftVideoFilterExampleTests.swift; sourceTree = "<group>"; };
+		BC73FD4419612C4E004A9191 /* GPUImage.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = GPUImage.xcodeproj; path = ../../../framework/GPUImage.xcodeproj; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -48,13 +74,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		BC73FD2D19612C19004A9191 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
+				BC73FD5519612C75004A9191 /* GPUImage.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -65,7 +85,7 @@
 			isa = PBXGroup;
 			children = (
 				BC73FD2019612C19004A9191 /* SimpleSwiftVideoFilterExample */,
-				BC73FD3319612C19004A9191 /* SimpleSwiftVideoFilterExampleTests */,
+				BC73FD4419612C4E004A9191 /* GPUImage.xcodeproj */,
 				BC73FD1F19612C19004A9191 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -74,7 +94,6 @@
 			isa = PBXGroup;
 			children = (
 				BC73FD1E19612C19004A9191 /* SimpleSwiftVideoFilterExample.app */,
-				BC73FD3019612C19004A9191 /* SimpleSwiftVideoFilterExampleTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -99,21 +118,14 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		BC73FD3319612C19004A9191 /* SimpleSwiftVideoFilterExampleTests */ = {
+		BC73FD4719612C54004A9191 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				BC73FD3619612C19004A9191 /* SimpleSwiftVideoFilterExampleTests.swift */,
-				BC73FD3419612C19004A9191 /* Supporting Files */,
+				BC73FD5019612C75004A9191 /* libGPUImage.a */,
+				BC73FD5219612C75004A9191 /* GPUImageTests.octest */,
+				BC73FD5419612C75004A9191 /* GPUImage.framework */,
 			);
-			path = SimpleSwiftVideoFilterExampleTests;
-			sourceTree = "<group>";
-		};
-		BC73FD3419612C19004A9191 /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				BC73FD3519612C19004A9191 /* Info.plist */,
-			);
-			name = "Supporting Files";
+			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -125,35 +137,18 @@
 			buildPhases = (
 				BC73FD1A19612C19004A9191 /* Sources */,
 				BC73FD1B19612C19004A9191 /* Frameworks */,
+				BC73FD5619612C86004A9191 /* CopyFiles */,
 				BC73FD1C19612C19004A9191 /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				BC73FD4A19612C6F004A9191 /* PBXTargetDependency */,
 			);
 			name = SimpleSwiftVideoFilterExample;
 			productName = SimpleSwiftVideoFilterExample;
 			productReference = BC73FD1E19612C19004A9191 /* SimpleSwiftVideoFilterExample.app */;
 			productType = "com.apple.product-type.application";
-		};
-		BC73FD2F19612C19004A9191 /* SimpleSwiftVideoFilterExampleTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = BC73FD3D19612C19004A9191 /* Build configuration list for PBXNativeTarget "SimpleSwiftVideoFilterExampleTests" */;
-			buildPhases = (
-				BC73FD2C19612C19004A9191 /* Sources */,
-				BC73FD2D19612C19004A9191 /* Frameworks */,
-				BC73FD2E19612C19004A9191 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				BC73FD3219612C19004A9191 /* PBXTargetDependency */,
-				BC73FD4119612C23004A9191 /* PBXTargetDependency */,
-			);
-			name = SimpleSwiftVideoFilterExampleTests;
-			productName = SimpleSwiftVideoFilterExampleTests;
-			productReference = BC73FD3019612C19004A9191 /* SimpleSwiftVideoFilterExampleTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
 
@@ -166,10 +161,6 @@
 				TargetAttributes = {
 					BC73FD1D19612C19004A9191 = {
 						CreatedOnToolsVersion = 6.0;
-					};
-					BC73FD2F19612C19004A9191 = {
-						CreatedOnToolsVersion = 6.0;
-						TestTargetID = BC73FD1D19612C19004A9191;
 					};
 				};
 			};
@@ -184,13 +175,42 @@
 			mainGroup = BC73FD1519612C19004A9191;
 			productRefGroup = BC73FD1F19612C19004A9191 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = BC73FD4719612C54004A9191 /* Products */;
+					ProjectRef = BC73FD4419612C4E004A9191 /* GPUImage.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				BC73FD1D19612C19004A9191 /* SimpleSwiftVideoFilterExample */,
-				BC73FD2F19612C19004A9191 /* SimpleSwiftVideoFilterExampleTests */,
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		BC73FD5019612C75004A9191 /* libGPUImage.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libGPUImage.a;
+			remoteRef = BC73FD4F19612C75004A9191 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		BC73FD5219612C75004A9191 /* GPUImageTests.octest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = GPUImageTests.octest;
+			remoteRef = BC73FD5119612C75004A9191 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		BC73FD5419612C75004A9191 /* GPUImage.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = GPUImage.framework;
+			remoteRef = BC73FD5319612C75004A9191 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		BC73FD1C19612C19004A9191 /* Resources */ = {
@@ -199,13 +219,6 @@
 			files = (
 				BC73FD2919612C19004A9191 /* Main.storyboard in Resources */,
 				BC73FD2B19612C19004A9191 /* Images.xcassets in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		BC73FD2E19612C19004A9191 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -221,26 +234,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		BC73FD2C19612C19004A9191 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				BC73FD3719612C19004A9191 /* SimpleSwiftVideoFilterExampleTests.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		BC73FD3219612C19004A9191 /* PBXTargetDependency */ = {
+		BC73FD4A19612C6F004A9191 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = BC73FD1D19612C19004A9191 /* SimpleSwiftVideoFilterExample */;
-			targetProxy = BC73FD3119612C19004A9191 /* PBXContainerItemProxy */;
-		};
-		BC73FD4119612C23004A9191 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = BC73FD1D19612C19004A9191 /* SimpleSwiftVideoFilterExample */;
-			targetProxy = BC73FD4019612C23004A9191 /* PBXContainerItemProxy */;
+			name = GPUImageFramework;
+			targetProxy = BC73FD4919612C6F004A9191 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -290,7 +290,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				METAL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -327,7 +327,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				METAL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -357,42 +357,6 @@
 			};
 			name = Release;
 		};
-		BC73FD3E19612C19004A9191 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/SimpleSwiftVideoFilterExample.app/SimpleSwiftVideoFilterExample";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-				);
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = SimpleSwiftVideoFilterExampleTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				METAL_ENABLE_DEBUG_INFO = YES;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUNDLE_LOADER)";
-			};
-			name = Debug;
-		};
-		BC73FD3F19612C19004A9191 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/SimpleSwiftVideoFilterExample.app/SimpleSwiftVideoFilterExample";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = SimpleSwiftVideoFilterExampleTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				METAL_ENABLE_DEBUG_INFO = NO;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUNDLE_LOADER)";
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -410,14 +374,6 @@
 			buildConfigurations = (
 				BC73FD3B19612C19004A9191 /* Debug */,
 				BC73FD3C19612C19004A9191 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-		};
-		BC73FD3D19612C19004A9191 /* Build configuration list for PBXNativeTarget "SimpleSwiftVideoFilterExampleTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				BC73FD3E19612C19004A9191 /* Debug */,
-				BC73FD3F19612C19004A9191 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 		};
