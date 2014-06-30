@@ -70,7 +70,10 @@ void GPUImageCreateResizedSampleBuffer(CVPixelBufferRef cameraFrame, CGSize fina
     }
     
     /* Detect iOS version < 6 which require a texture cache corruption workaround */
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     requiresFrontCameraTextureCacheCorruptionWorkaround = [[[UIDevice currentDevice] systemVersion] compare:@"6.0" options:NSNumericSearch] == NSOrderedAscending;
+#pragma clang diagnostic pop
     
     [self.captureSession beginConfiguration];
     
