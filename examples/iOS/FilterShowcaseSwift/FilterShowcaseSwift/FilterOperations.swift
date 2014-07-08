@@ -2,59 +2,59 @@ import Foundation
 import GPUImage
 import QuartzCore
 
-let filterOperations: Array<FilterOperation> = [
-    FilterOperation(
+let filterOperations: Array<FilterOperationInterface> = [
+    FilterOperation <GPUImageSepiaFilter>(
         listName:"Sepia tone",
         titleName:"Sepia Tone",
         sliderConfiguration:.Enabled(minimumValue:0.0, initialValue:1.0, maximumValue:1.0),
-        sliderUpdateCallback: {(filter:GPUImageOutput, sliderValue:Float) in
-            (filter as GPUImageSepiaFilter).intensity = CGFloat(sliderValue) // Why do I need to cast this for non-Simulator builds? That seems broken
+        sliderUpdateCallback: {(filter, sliderValue) in
+            filter.intensity = CGFloat(sliderValue) // Why do I need to cast this for non-Simulator builds? That seems broken
         },
-        filterOperationType:.SingleInput(filter:GPUImageSepiaFilter()),
+        filterOperationType:.SingleInput,
         customFilterSetupFunction: nil
     ),
-    FilterOperation(
+    FilterOperation <GPUImagePixellateFilter>(
         listName:"Pixellate",
         titleName:"Pixellate",
         sliderConfiguration:.Enabled(minimumValue:0.0, initialValue:0.05, maximumValue:0.3),
-        sliderUpdateCallback: {(filter:GPUImageOutput, sliderValue:Float) in
-            (filter as GPUImagePixellateFilter).fractionalWidthOfAPixel = CGFloat(sliderValue)
+        sliderUpdateCallback: {(filter, sliderValue) in
+            filter.fractionalWidthOfAPixel = CGFloat(sliderValue)
         },
-        filterOperationType:.SingleInput(filter:GPUImagePixellateFilter()),
+        filterOperationType:.SingleInput,
         customFilterSetupFunction: nil
     ),
-    FilterOperation(
+    FilterOperation <GPUImageColorInvertFilter>(
         listName:"Color invert",
         titleName:"Color Invert",
         sliderConfiguration:.Disabled,
         sliderUpdateCallback: nil,
-        filterOperationType:.SingleInput(filter:GPUImageColorInvertFilter()),
+        filterOperationType:.SingleInput,
         customFilterSetupFunction: nil
     ),
-    FilterOperation(
+    FilterOperation <GPUImageTransformFilter>(
         listName:"Transform (3-D)",
         titleName:"Transform (3-D)",
         sliderConfiguration:.Enabled(minimumValue:0.0, initialValue:0.75, maximumValue:6.28),
-        sliderUpdateCallback:{(filter:GPUImageOutput, sliderValue:Float) in
+        sliderUpdateCallback:{(filter, sliderValue) in
             var perspectiveTransform = CATransform3DIdentity
             perspectiveTransform.m34 = 0.4
             perspectiveTransform.m33 = 0.4
             perspectiveTransform = CATransform3DScale(perspectiveTransform, 0.75, 0.75, 0.75)
             perspectiveTransform = CATransform3DRotate(perspectiveTransform, CGFloat(sliderValue), 0.0, 1.0, 0.0)
-            (filter as GPUImageTransformFilter).transform3D = perspectiveTransform
+            filter.transform3D = perspectiveTransform
         },
-        filterOperationType:.SingleInput(filter:GPUImageTransformFilter()),
+        filterOperationType:.SingleInput,
         customFilterSetupFunction: nil
     ),
-    FilterOperation(
+    FilterOperation <GPUImageSphereRefractionFilter>(
         listName:"Sphere refraction",
         titleName:"Sphere Refraction",
         sliderConfiguration:.Enabled(minimumValue:0.0, initialValue:0.15, maximumValue:1.0),
-        sliderUpdateCallback:{(filter:GPUImageOutput, sliderValue:Float) in
-            (filter as GPUImageSphereRefractionFilter).radius = CGFloat(sliderValue)
+        sliderUpdateCallback:{(filter, sliderValue) in
+            filter.radius = CGFloat(sliderValue)
         },
         filterOperationType:.Custom,
-        customFilterSetupFunction:{(camera:GPUImageVideoCamera, outputView:GPUImageView, blendImage:UIImage?) in
+        customFilterSetupFunction:{(camera, outputView, blendImage) in
             let filter = GPUImageSphereRefractionFilter()
             camera.addTarget(filter)
             
@@ -74,3 +74,5 @@ let filterOperations: Array<FilterOperation> = [
         }
     ),
 ]
+
+// Corner detector would use this: http://stackoverflow.com/questions/24051395/how-to-go-from-cmutablepointercgfloat-to-cgfloat-in-swift/24414058#24414058

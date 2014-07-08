@@ -28,7 +28,7 @@ class FilterListViewController: UITableViewController {
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("Cell", forIndexPath: indexPath) as UITableViewCell
 
-        let filterInList:FilterOperation = filterOperations[indexPath.row]
+        let filterInList:FilterOperationInterface = filterOperations[indexPath.row]
         cell.textLabel.text = filterInList.listName
         return cell
     }
