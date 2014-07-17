@@ -53,6 +53,7 @@ extern NSString *const kGPUImageColorSwizzlingFragmentShaderString;
 - (id)initWithMovieURL:(NSURL *)newMovieURL size:(CGSize)newSize fileType:(NSString *)newFileType outputSettings:(NSDictionary *)outputSettings;
 
 - (void)setHasAudioTrack:(BOOL)hasAudioTrack audioSettings:(NSDictionary *)audioOutputSettings;
+- (void)setHasAudioTrack:(BOOL)hasAudioTrack audioSettings:(NSDictionary *)audioOutputSettings sourceFormatHint:(CMFormatDescriptionRef)sourceFormatHint;
 
 // Movie recording
 - (void)startRecording;
