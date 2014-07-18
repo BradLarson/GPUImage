@@ -1,5 +1,7 @@
 #import "GPUImageOutput.h"
 
+#import <CoreMedia/CoreMedia.h>
+
 // The bytes passed into this input are not copied or retained, but you are free to deallocate them after they are used by this filter.
 // The bytes are uploaded and stored within a texture, so nothing is kept locally.
 // The default format for input bytes is GPUPixelFormatBGRA, unless specified with pixelFormat:

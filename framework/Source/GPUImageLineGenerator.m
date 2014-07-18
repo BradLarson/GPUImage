@@ -1,4 +1,5 @@
 #import "GPUImageLineGenerator.h"
+#import "GPUImageFramebufferCache.h"
 
 NSString *const kGPUImageLineGeneratorVertexShaderString = SHADER_STRING
 (

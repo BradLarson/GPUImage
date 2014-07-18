@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8482C1A51930E90F00751F97 /* GPUImageOutput+Showcase.m in Sources */ = {isa = PBXBuildFile; fileRef = 8482C1A41930E90F00751F97 /* GPUImageOutput+Showcase.m */; };
+		8482C1A81932AF9900751F97 /* NSObject+GPUImageHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 8482C1A71932AF9900751F97 /* NSObject+GPUImageHelpers.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		BC78B702172DCC7F00342C6A /* lookup_amatorka.png in Resources */ = {isa = PBXBuildFile; fileRef = BC78B6FE172DCC7F00342C6A /* lookup_amatorka.png */; };
 		BC78B703172DCC7F00342C6A /* lookup_miss_etikate.png in Resources */ = {isa = PBXBuildFile; fileRef = BC78B6FF172DCC7F00342C6A /* lookup_miss_etikate.png */; };
 		BC78B704172DCC7F00342C6A /* lookup_soft_elegance_1.png in Resources */ = {isa = PBXBuildFile; fileRef = BC78B700172DCC7F00342C6A /* lookup_soft_elegance_1.png */; };
@@ -60,6 +62,10 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		8482C1A31930E90F00751F97 /* GPUImageOutput+Showcase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "GPUImageOutput+Showcase.h"; sourceTree = "<group>"; };
+		8482C1A41930E90F00751F97 /* GPUImageOutput+Showcase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GPUImageOutput+Showcase.m"; sourceTree = "<group>"; };
+		8482C1A61932AF9900751F97 /* NSObject+GPUImageHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+GPUImageHelpers.h"; sourceTree = "<group>"; };
+		8482C1A71932AF9900751F97 /* NSObject+GPUImageHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+GPUImageHelpers.m"; sourceTree = "<group>"; };
 		BC78B6FE172DCC7F00342C6A /* lookup_amatorka.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = lookup_amatorka.png; path = ../../../../framework/Resources/lookup_amatorka.png; sourceTree = "<group>"; };
 		BC78B6FF172DCC7F00342C6A /* lookup_miss_etikate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = lookup_miss_etikate.png; path = ../../../../framework/Resources/lookup_miss_etikate.png; sourceTree = "<group>"; };
 		BC78B700172DCC7F00342C6A /* lookup_soft_elegance_1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = lookup_soft_elegance_1.png; path = ../../../../framework/Resources/lookup_soft_elegance_1.png; sourceTree = "<group>"; };
@@ -153,6 +159,10 @@
 				BCF8679417263FCF00912E34 /* SLSFilterShowcaseWindowController.m */,
 				BCF8679517263FCF00912E34 /* SLSFilterShowcaseWindowController.xib */,
 				BCF8677417263EAC00912E34 /* Supporting Files */,
+				8482C1A31930E90F00751F97 /* GPUImageOutput+Showcase.h */,
+				8482C1A41930E90F00751F97 /* GPUImageOutput+Showcase.m */,
+				8482C1A61932AF9900751F97 /* NSObject+GPUImageHelpers.h */,
+				8482C1A71932AF9900751F97 /* NSObject+GPUImageHelpers.m */,
 			);
 			path = FilterShowcase;
 			sourceTree = "<group>";
@@ -278,8 +288,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				BCF8677A17263EAC00912E34 /* main.m in Sources */,
+				8482C1A51930E90F00751F97 /* GPUImageOutput+Showcase.m in Sources */,
 				BCF8678117263EAD00912E34 /* SLSAppDelegate.m in Sources */,
 				BCF8679617263FCF00912E34 /* SLSFilterShowcaseWindowController.m in Sources */,
+				8482C1A81932AF9900751F97 /* NSObject+GPUImageHelpers.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

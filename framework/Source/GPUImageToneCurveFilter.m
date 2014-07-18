@@ -1,5 +1,7 @@
 #import "GPUImageToneCurveFilter.h"
 
+#import "GPUImageFramebufferCache.h"
+
 #pragma mark -
 #pragma mark GPUImageACVFile Helper
 

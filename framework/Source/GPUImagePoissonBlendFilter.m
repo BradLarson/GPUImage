@@ -1,5 +1,7 @@
 #import "GPUImagePoissonBlendFilter.h"
 
+#import "GPUImageFramebufferCache.h"
+
 #if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
 NSString *const kGPUImagePoissonBlendFragmentShaderString = SHADER_STRING
 (

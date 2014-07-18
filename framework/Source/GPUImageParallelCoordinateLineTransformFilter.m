@@ -1,4 +1,5 @@
 #import "GPUImageParallelCoordinateLineTransformFilter.h"
+#import "GPUImageFramebufferCache.h"
 
 NSString *const kGPUImageHoughAccumulationVertexShaderString = SHADER_STRING
 (

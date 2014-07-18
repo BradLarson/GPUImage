@@ -1,5 +1,6 @@
 #import "GPUImageThreeInputFilter.h"
 
+#import "GPUImageFramebufferCache.h"
 
 NSString *const kGPUImageThreeInputTextureVertexShaderString = SHADER_STRING
 (

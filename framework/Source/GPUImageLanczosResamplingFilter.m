@@ -1,4 +1,5 @@
 #import "GPUImageLanczosResamplingFilter.h"
+#import "GPUImageFramebufferCache.h"
 
 NSString *const kGPUImageLanczosVertexShaderString = SHADER_STRING
 (

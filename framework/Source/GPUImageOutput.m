@@ -1,4 +1,6 @@
 #import "GPUImageOutput.h"
+
+#import "GPUImageInput.h"
 #import "GPUImageMovieWriter.h"
 #import "GPUImagePicture.h"
 #import <mach/mach.h>
@@ -356,7 +358,7 @@ void reportAvailableMemoryForGPUImage(NSString *tag)
 
 - (NSImage *)imageFromCurrentFramebuffer;
 {
-    return [self imageFromCurrentFramebufferWithOrientation:UIImageOrientationLeft];
+    return [self imageFromCurrentFramebufferWithOrientation:0];
 }
 
 - (NSImage *)imageFromCurrentFramebufferWithOrientation:(UIImageOrientation)imageOrientation;

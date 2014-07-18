@@ -1,5 +1,6 @@
 #import <Foundation/Foundation.h>
 #import "GPUImageContext.h"
+#import "GPUImageInput.h"
 
 struct GPUByteColorVector {
     GLubyte red;

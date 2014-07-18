@@ -2,7 +2,6 @@
 //  A description of this can be found at his page on the topic:
 //  http://iphonedevelopment.blogspot.com/2010/11/opengl-es-20-for-ios-chapter-4.html
 
-
 #import "GLProgram.h"
 // START:typedefs
 #pragma mark Function Pointer Definitions
@@ -101,7 +100,7 @@ typedef void (*GLLogFunction) (GLuint program,
 
     GLint status;
     const GLchar *source;
-    
+	   
     source = 
       (GLchar *)[shaderString UTF8String];
     if (!source)
