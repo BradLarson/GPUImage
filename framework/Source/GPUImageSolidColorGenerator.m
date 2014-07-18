@@ -1,4 +1,5 @@
 #import "GPUImageSolidColorGenerator.h"
+#import "GPUImageFramebufferCache.h"
 
 #if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
 NSString *const kGPUSolidColorFragmentShaderString = SHADER_STRING

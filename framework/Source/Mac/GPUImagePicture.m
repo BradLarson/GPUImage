@@ -1,5 +1,8 @@
 #import "GPUImagePicture.h"
 
+#import "GPUImageFramebufferCache.h"
+#import "GPUImageInput.h"
+
 @implementation GPUImagePicture
 
 #pragma mark -

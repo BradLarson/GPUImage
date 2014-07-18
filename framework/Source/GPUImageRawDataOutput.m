@@ -1,8 +1,8 @@
 #import "GPUImageRawDataOutput.h"
 
 #import "GPUImageContext.h"
-#import "GLProgram.h"
 #import "GPUImageFilter.h"
+#import "GPUImageFramebufferCache.h"
 #import "GPUImageMovieWriter.h"
 
 @interface GPUImageRawDataOutput ()

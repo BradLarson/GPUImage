@@ -1,11 +1,11 @@
 #import "GPUImageFilterGroup.h"
 
-@class GPUImageGaussianBlurFilter;
-@class GPUImageXYDerivativeFilter;
-@class GPUImageGrayscaleFilter;
-@class GPUImageGaussianBlurFilter;
-@class GPUImageThresholdedNonMaximumSuppressionFilter;
 @class GPUImageColorPackingFilter;
+@class GPUImageGaussianBlurFilter;
+@class GPUImageGrayscaleFilter;
+@class GPUImageFilter;
+@class GPUImageThresholdedNonMaximumSuppressionFilter;
+@class GPUImageXYDerivativeFilter;
 
 //#define DEBUGFEATUREDETECTION
 

@@ -1,6 +1,9 @@
 #import "GPUImageAVCamera.h"
+
+#import "GPUImageContext.h"
 #import "GPUImageMovieWriter.h"
 #import "GPUImageFilter.h"
+#import "GPUImageFramebufferCache.h"
 
 NSString *const kGPUImageYUVVideoRangeConversionForRGFragmentShaderString = SHADER_STRING
 (

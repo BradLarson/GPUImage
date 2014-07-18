@@ -1,5 +1,6 @@
 #import "GPUImageFilterGroup.h"
 
+@class GPUImageFilter;
 @class GPUImageGaussianBlurFilter;
 
 @interface GPUImageUnsharpMaskFilter : GPUImageFilterGroup

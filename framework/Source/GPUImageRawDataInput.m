@@ -1,5 +1,8 @@
 #import "GPUImageRawDataInput.h"
 
+#import "GPUImageFramebufferCache.h"
+#import "GPUImageInput.h"
+
 @interface GPUImageRawDataInput()
 - (void)uploadBytes:(GLubyte *)bytesToUpload;
 @end

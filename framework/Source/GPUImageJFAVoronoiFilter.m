@@ -1,6 +1,7 @@
 //  adapted from unitzeroone - http://unitzeroone.com/labs/jfavoronoi/
 
 #import "GPUImageJFAVoronoiFilter.h"
+#import "GPUImageFramebufferCache.h"
 
 //  The shaders are mostly taken from UnitZeroOne's WebGL example here:
 //  http://unitzeroone.com/blog/2011/03/22/jump-flood-voronoi-for-webgl/

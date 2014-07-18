@@ -1,4 +1,6 @@
+#import "GLProgram.h"
 #import "GPUImageOutput.h"
+#import "GPUImageInput.h"
 
 #define STRINGIZE(x) #x
 #define STRINGIZE2(x) STRINGIZE(x)

@@ -1,4 +1,9 @@
 #import "GPUImageContext.h"
+
+#import "GPUImageFramebuffer.h"
+#import "GPUImageFramebufferCache.h"
+#import "GLProgram.h"
+
 #import <AVFoundation/AVFoundation.h>
 
 @interface GPUImageContext()

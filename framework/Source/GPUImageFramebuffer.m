@@ -1,4 +1,5 @@
 #import "GPUImageFramebuffer.h"
+#import "GPUImageFramebufferCache.h"
 #import "GPUImageOutput.h"
 
 @interface GPUImageFramebuffer()

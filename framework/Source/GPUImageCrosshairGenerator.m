@@ -1,4 +1,5 @@
 #import "GPUImageCrosshairGenerator.h"
+#import "GPUImageFramebufferCache.h"
 
 NSString *const kGPUImageCrosshairVertexShaderString = SHADER_STRING
 (

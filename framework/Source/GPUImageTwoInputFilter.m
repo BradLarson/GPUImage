@@ -1,4 +1,5 @@
 #import "GPUImageTwoInputFilter.h"
+#import "GPUImageFramebufferCache.h"
 
 NSString *const kGPUImageTwoInputTextureVertexShaderString = SHADER_STRING
 (

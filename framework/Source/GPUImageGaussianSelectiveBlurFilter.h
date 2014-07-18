@@ -1,6 +1,7 @@
 #import "GPUImageFilterGroup.h"
 
 @class GPUImageGaussianBlurFilter;
+@class GPUImageFilter;
 
 /** A Gaussian blur that preserves focus within a circular region
  */

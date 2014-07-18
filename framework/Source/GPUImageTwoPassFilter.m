@@ -1,4 +1,5 @@
 #import "GPUImageTwoPassFilter.h"
+#import "GPUImageFramebufferCache.h"
 
 @implementation GPUImageTwoPassFilter
 

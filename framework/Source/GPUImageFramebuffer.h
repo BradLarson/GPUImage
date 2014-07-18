@@ -9,10 +9,6 @@
 #import <OpenGL/gl.h>
 #endif
 
-#import <QuartzCore/QuartzCore.h>
-#import <CoreMedia/CoreMedia.h>
-
-
 typedef struct GPUTextureOptions {
     GLenum minFilter;
     GLenum magFilter;
