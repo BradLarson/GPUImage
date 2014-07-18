@@ -193,7 +193,10 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size);
         }
         
         #ifndef NS_BLOCK_ASSERTIONS
+        #pragma clang diagnostic push
+        #pragma clang diagnostic ignored "-Wunused-const-variable"
         GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+        #pragma clang diagnostic pop
         NSAssert(status == GL_FRAMEBUFFER_COMPLETE, @"Incomplete filter FBO: %d", status);
         #endif
         
