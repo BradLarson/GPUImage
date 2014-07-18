@@ -882,9 +882,7 @@
             [(GPUImageMosaicFilter *)filter setColorOn:NO];
             //[(GPUImageMosaicFilter *)filter setTileSet:@"dotletterstiles.png"];
             //[(GPUImageMosaicFilter *)filter setTileSet:@"curvies.png"]; 
-            
-            [filter setInputRotation:kGPUImageRotateRight atIndex:0];
-            
+                        
         }; break;
         case GPUIMAGE_CHROMAKEY:
         {
