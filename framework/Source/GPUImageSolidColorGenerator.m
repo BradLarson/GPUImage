@@ -100,12 +100,12 @@ NSString *const kGPUSolidColorFragmentShaderString = SHADER_STRING
 	[self setColorRed:newValue.one green:newValue.two blue:newValue.three alpha:newValue.four];
 }
 
-- (void)setColorRed:(GLfloat)redComponent green:(GLfloat)greenComponent blue:(GLfloat)blueComponent alpha:(GLfloat)alphaComponent;
+- (void)setColorRed:(CGFloat)redComponent green:(CGFloat)greenComponent blue:(CGFloat)blueComponent alpha:(CGFloat)alphaComponent;
 {
-    _color.one = redComponent;
-    _color.two = greenComponent;
-    _color.three = blueComponent;
-    _color.four = alphaComponent;
+    _color.one = (GLfloat)redComponent;
+    _color.two = (GLfloat)greenComponent;
+    _color.three = (GLfloat)blueComponent;
+    _color.four = (GLfloat)alphaComponent;
     
 //    [self setVec4:_color forUniform:colorUniform program:filterProgram];
     runAsynchronouslyOnVideoProcessingQueue(^{

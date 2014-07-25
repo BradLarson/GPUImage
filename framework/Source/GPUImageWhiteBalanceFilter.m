@@ -89,18 +89,18 @@ NSString *const kGPUImageWhiteBalanceFragmentShaderString = SHADER_STRING
 #pragma mark -
 #pragma mark Accessors
 
-- (void)setTemperature:(int)newValue;
+- (void)setTemperature:(CGFloat)newValue;
 {
     _temperature = newValue;
     
-    [self setFloat:_temperature < 5000 ? 0.0004 * (float)(_temperature-5000.0) : 0.00006 * (float)(_temperature-5000.0) forUniform:temperatureUniform program:filterProgram];
+    [self setFloat:_temperature < 5000 ? 0.0004 * (_temperature-5000.0) : 0.00006 * (_temperature-5000.0) forUniform:temperatureUniform program:filterProgram];
 }
 
-- (void)setTint:(int)newValue;
+- (void)setTint:(CGFloat)newValue;
 {
 	_tint = newValue;
 	
-	[self setFloat:(float)(_tint) / 100.0 forUniform:tintUniform program:filterProgram];
+	[self setFloat:_tint / 100.0 forUniform:tintUniform program:filterProgram];
 }
 
 @end

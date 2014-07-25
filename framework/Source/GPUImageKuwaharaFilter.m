@@ -213,11 +213,11 @@ NSString *const kGPUImageKuwaharaFragmentShaderString = SHADER_STRING
 #pragma mark -
 #pragma mark Accessors
 
-- (void)setRadius:(GLuint)newValue;
+- (void)setRadius:(NSUInteger)newValue;
 {
     _radius = newValue;
     
-    [self setInteger:_radius forUniform:radiusUniform program:filterProgram];
+    [self setInteger:(GLint)_radius forUniform:radiusUniform program:filterProgram];
 }
 
 @end
