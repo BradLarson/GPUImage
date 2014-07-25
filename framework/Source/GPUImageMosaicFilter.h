@@ -17,6 +17,6 @@
 @property(readwrite, nonatomic) float numTiles;
 @property(readwrite, nonatomic) CGSize displayTileSize;
 @property(readwrite, nonatomic) BOOL colorOn;
-@property(readwrite, nonatomic) NSString *tileSet;
+@property(readwrite, nonatomic, copy) NSString *tileSet;
 
 @end
