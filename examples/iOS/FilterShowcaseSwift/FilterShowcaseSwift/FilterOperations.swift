@@ -507,7 +507,7 @@ let filterOperations: Array<FilterOperationInterface> = [
             crosshairGenerator.crosshairWidth = 15.0
             crosshairGenerator.forceProcessingAtSize(outputView.sizeInPixels)
             
-            filter.cornersDetectedBlock = { (cornerArray:UnsafePointer<GLfloat>, cornersDetected:UInt, frameTime:CMTime) in
+            filter.cornersDetectedBlock = { (cornerArray:UnsafeMutablePointer<GLfloat>, cornersDetected:UInt, frameTime:CMTime) in
                 crosshairGenerator.renderCrosshairsFromArray(cornerArray, count:cornersDetected, frameTime:frameTime)
             }
             
@@ -540,7 +540,7 @@ let filterOperations: Array<FilterOperationInterface> = [
             crosshairGenerator.crosshairWidth = 15.0
             crosshairGenerator.forceProcessingAtSize(outputView.sizeInPixels)
             
-            filter.cornersDetectedBlock = { (cornerArray:UnsafePointer<GLfloat>, cornersDetected:UInt, frameTime:CMTime) in
+            filter.cornersDetectedBlock = { (cornerArray:UnsafeMutablePointer<GLfloat>, cornersDetected:UInt, frameTime:CMTime) in
                 crosshairGenerator.renderCrosshairsFromArray(cornerArray, count:cornersDetected, frameTime:frameTime)
             }
             
@@ -573,7 +573,7 @@ let filterOperations: Array<FilterOperationInterface> = [
             crosshairGenerator.crosshairWidth = 15.0
             crosshairGenerator.forceProcessingAtSize(outputView.sizeInPixels)
             
-            filter.cornersDetectedBlock = { (cornerArray:UnsafePointer<GLfloat>, cornersDetected:UInt, frameTime:CMTime) in
+            filter.cornersDetectedBlock = { (cornerArray:UnsafeMutablePointer<GLfloat>, cornersDetected:UInt, frameTime:CMTime) in
                 crosshairGenerator.renderCrosshairsFromArray(cornerArray, count:cornersDetected, frameTime:frameTime)
             }
             
@@ -607,7 +607,7 @@ let filterOperations: Array<FilterOperationInterface> = [
             lineGenerator.forceProcessingAtSize(outputView.sizeInPixels)
             lineGenerator.setLineColorRed(1.0, green:0.0, blue:0.0)
             
-            filter.linesDetectedBlock = { (lineArray:UnsafePointer<GLfloat>, linesDetected:UInt, frameTime:CMTime) in
+            filter.linesDetectedBlock = { (lineArray:UnsafeMutablePointer<GLfloat>, linesDetected:UInt, frameTime:CMTime) in
                 lineGenerator.renderLinesFromArray(lineArray, count:linesDetected, frameTime:frameTime)
             }
             
