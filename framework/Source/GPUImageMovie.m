@@ -500,6 +500,9 @@
     
     CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
 
+    // Fix issue 1580
+    [GPUImageContext useImageProcessingContext];
+    
     if ([GPUImageContext supportsFastTextureUpload])
     {
         CVOpenGLESTextureRef luminanceTextureRef = NULL;
