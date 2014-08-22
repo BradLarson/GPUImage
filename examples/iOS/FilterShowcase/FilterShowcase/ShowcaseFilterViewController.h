@@ -2,6 +2,7 @@
 #import "GPUImage.h"
 
 typedef enum {
+    GPUIMAGE_NOTHING,
     GPUIMAGE_SATURATION,
     GPUIMAGE_CONTRAST,
     GPUIMAGE_BRIGHTNESS,
