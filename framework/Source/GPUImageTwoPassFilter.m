@@ -87,6 +87,7 @@
     if (self.preventRendering)
     {
         [firstInputFramebuffer unlock];
+        firstInputFramebuffer = nil;
         return;
     }
     

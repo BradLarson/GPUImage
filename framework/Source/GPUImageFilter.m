@@ -291,6 +291,7 @@ NSString *const kGPUImagePassthroughFragmentShaderString = SHADER_STRING
     if (self.preventRendering)
     {
         [firstInputFramebuffer unlock];
+        firstInputFramebuffer = nil;
         return;
     }
     
@@ -319,6 +320,7 @@ NSString *const kGPUImagePassthroughFragmentShaderString = SHADER_STRING
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
     
     [firstInputFramebuffer unlock];
+    firstInputFramebuffer = nil;
     
     if (usingNextFrameForImageCapture)
     {
@@ -573,6 +575,10 @@ NSString *const kGPUImagePassthroughFragmentShaderString = SHADER_STRING
 
 - (void)setInputFramebuffer:(GPUImageFramebuffer *)newInputFramebuffer atIndex:(NSInteger)textureIndex;
 {
+    if (firstInputFramebuffer) {
+        [firstInputFramebuffer unlock];
+        firstInputFramebuffer = nil;
+    }
     firstInputFramebuffer = newInputFramebuffer;
     [firstInputFramebuffer lock];
 }
@@ -661,6 +667,11 @@ NSString *const kGPUImagePassthroughFragmentShaderString = SHADER_STRING
         if (CGSizeEqualToSize(rotatedSize, CGSizeZero))
         {
             inputTextureSize = rotatedSize;
+            
+            if (firstInputFramebuffer) {
+                [firstInputFramebuffer unlock];
+                firstInputFramebuffer = nil;
+            }
         }
         else if (!CGSizeEqualToSize(inputTextureSize, rotatedSize))
         {

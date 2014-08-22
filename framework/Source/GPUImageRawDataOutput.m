@@ -198,6 +198,10 @@
 
 - (void)setInputFramebuffer:(GPUImageFramebuffer *)newInputFramebuffer atIndex:(NSInteger)textureIndex;
 {
+    if (firstInputFramebuffer) {
+        [firstInputFramebuffer unlock];
+        firstInputFramebuffer = nil;
+    }
     firstInputFramebuffer = newInputFramebuffer;
     [firstInputFramebuffer lock];
 }

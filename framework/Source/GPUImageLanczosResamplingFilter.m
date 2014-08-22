@@ -167,6 +167,7 @@ NSString *const kGPUImageLanczosFragmentShaderString = SHADER_STRING
     if (self.preventRendering)
     {
         [firstInputFramebuffer unlock];
+        firstInputFramebuffer = nil;
         return;
     }
     
@@ -200,6 +201,7 @@ NSString *const kGPUImageLanczosFragmentShaderString = SHADER_STRING
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
     
     [firstInputFramebuffer unlock];
+    firstInputFramebuffer = nil;
     
     // Run the second stage of the two-pass filter
     [GPUImageContext setActiveShaderProgram:secondFilterProgram];

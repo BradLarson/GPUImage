@@ -85,6 +85,9 @@ NSString *const kGPUImageThreeInputTextureVertexShaderString = SHADER_STRING
         [firstInputFramebuffer unlock];
         [secondInputFramebuffer unlock];
         [thirdInputFramebuffer unlock];
+        firstInputFramebuffer = nil;
+        secondInputFramebuffer = nil;
+        thirdInputFramebuffer = nil;
         return;
     }
     
@@ -122,6 +125,9 @@ NSString *const kGPUImageThreeInputTextureVertexShaderString = SHADER_STRING
     [firstInputFramebuffer unlock];
     [secondInputFramebuffer unlock];
     [thirdInputFramebuffer unlock];
+    firstInputFramebuffer = nil;
+    secondInputFramebuffer = nil;
+    thirdInputFramebuffer = nil;
     if (usingNextFrameForImageCapture)
     {
         dispatch_semaphore_signal(imageCaptureSemaphore);
@@ -151,18 +157,30 @@ NSString *const kGPUImageThreeInputTextureVertexShaderString = SHADER_STRING
 {
     if (textureIndex == 0)
     {
+        if (firstInputFramebuffer) {
+            [firstInputFramebuffer unlock];
+            firstInputFramebuffer = nil;
+        }
         firstInputFramebuffer = newInputFramebuffer;
         hasSetFirstTexture = YES;
         [firstInputFramebuffer lock];
     }
     else if (textureIndex == 1)
     {
+        if (secondInputFramebuffer) {
+            [secondInputFramebuffer unlock];
+            secondInputFramebuffer = nil;
+        }
         secondInputFramebuffer = newInputFramebuffer;
         hasSetSecondTexture = YES;
         [secondInputFramebuffer lock];
     }
     else
     {
+        if (thirdInputFramebuffer) {
+            [thirdInputFramebuffer unlock];
+            thirdInputFramebuffer = nil;
+        }
         thirdInputFramebuffer = newInputFramebuffer;
         [thirdInputFramebuffer lock];
     }
@@ -177,6 +195,10 @@ NSString *const kGPUImageThreeInputTextureVertexShaderString = SHADER_STRING
         if (CGSizeEqualToSize(newSize, CGSizeZero))
         {
             hasSetFirstTexture = NO;
+            if (firstInputFramebuffer) {
+                [firstInputFramebuffer unlock];
+                firstInputFramebuffer = nil;
+            }
         }
     }
     else if (textureIndex == 1)
@@ -184,6 +206,18 @@ NSString *const kGPUImageThreeInputTextureVertexShaderString = SHADER_STRING
         if (CGSizeEqualToSize(newSize, CGSizeZero))
         {
             hasSetSecondTexture = NO;
+            if (secondInputFramebuffer) {
+                [secondInputFramebuffer unlock];
+                secondInputFramebuffer = nil;
+            }
+        }
+    }
+    else {
+        if (CGSizeEqualToSize(newSize, CGSizeZero)) {
+            if (thirdInputFramebuffer) {
+                [thirdInputFramebuffer unlock];
+                thirdInputFramebuffer = nil;
+            }
         }
     }
 }
