@@ -218,7 +218,7 @@ NSString *const kGPUImageHistogramAccumulationFragmentShaderString = SHADER_STRI
 
 - (void)dealloc;
 {
-    if (vertexSamplingCoordinates != NULL)
+    if (vertexSamplingCoordinates != NULL && ![GPUImageContext supportsFastTextureUpload])
     {
         free(vertexSamplingCoordinates);
     }
@@ -227,11 +227,6 @@ NSString *const kGPUImageHistogramAccumulationFragmentShaderString = SHADER_STRI
 #pragma mark -
 #pragma mark Rendering
 
-- (void)generatePointCoordinates;
-{
-    vertexSamplingCoordinates = calloc(inputTextureSize.width * inputTextureSize.height * 4, sizeof(GLubyte));
-}
-
 - (CGSize)sizeOfFBO;
 {
     return CGSizeMake(256.0, 3.0);
@@ -239,11 +234,6 @@ NSString *const kGPUImageHistogramAccumulationFragmentShaderString = SHADER_STRI
 
 - (void)newFrameReadyAtTime:(CMTime)frameTime atIndex:(NSInteger)textureIndex;
 {
-    if (vertexSamplingCoordinates == NULL)
-    {
-        [self generatePointCoordinates];
-    }
-    
     [self renderToTextureWithVertices:NULL textureCoordinates:NULL];
     
     [self informTargetsAboutNewFrameAtTime:frameTime];
@@ -282,8 +272,19 @@ NSString *const kGPUImageHistogramAccumulationFragmentShaderString = SHADER_STRI
     }
     
     [GPUImageContext useImageProcessingContext];
+
+    if ([GPUImageContext supportsFastTextureUpload])
+    {
+        glFinish();
+        vertexSamplingCoordinates = [firstInputFramebuffer byteBuffer];
+    } else {
+        if (vertexSamplingCoordinates == NULL)
+        {
+            vertexSamplingCoordinates = calloc(inputTextureSize.width * inputTextureSize.height * 4, sizeof(GLubyte));
+        }
+        glReadPixels(0, 0, inputTextureSize.width, inputTextureSize.height, GL_RGBA, GL_UNSIGNED_BYTE, vertexSamplingCoordinates);
+    }
     
-    glReadPixels(0, 0, inputTextureSize.width, inputTextureSize.height, GL_RGBA, GL_UNSIGNED_BYTE, vertexSamplingCoordinates);
     outputFramebuffer = [[GPUImageContext sharedFramebufferCache] fetchFramebufferForSize:[self sizeOfFBO] textureOptions:self.outputTextureOptions onlyTexture:NO];
     [outputFramebuffer activateFramebuffer];
     if (usingNextFrameForImageCapture)
