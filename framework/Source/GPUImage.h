@@ -91,6 +91,7 @@
 #import "GPUImageMaskFilter.h"
 #import "GPUImageHistogramFilter.h"
 #import "GPUImageHistogramGenerator.h"
+#import "GPUImageHistogramEqualizationFilter.h"
 #import "GPUImagePrewittEdgeDetectionFilter.h"
 #import "GPUImageXYDerivativeFilter.h"
 #import "GPUImageHarrisCornerDetectionFilter.h"

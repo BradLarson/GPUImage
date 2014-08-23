@@ -87,6 +87,7 @@
 		case GPUIMAGE_HAZE: cell.textLabel.text = @"Haze"; break;
         case GPUIMAGE_CHROMAKEYNONBLEND: cell.textLabel.text = @"Chroma key"; break;
         case GPUIMAGE_HISTOGRAM: cell.textLabel.text = @"Histogram"; break;
+        case GPUIMAGE_HISTOGRAM_EQUALIZATION: cell.textLabel.text = @"Histogram Equalization"; break;
         case GPUIMAGE_AVERAGECOLOR: cell.textLabel.text = @"Average color"; break;
         case GPUIMAGE_LUMINOSITY: cell.textLabel.text = @"Luminosity"; break;
 		case GPUIMAGE_THRESHOLD: cell.textLabel.text = @"Threshold"; break;
