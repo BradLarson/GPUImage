@@ -81,6 +81,7 @@
     if (hasProcessedData)
     {
         [newTarget setInputSize:uploadedImageSize atIndex:textureLocation];
+        [newTarget setInputFramebuffer:outputFramebuffer atIndex:textureLocation];
         [newTarget newFrameReadyAtTime:kCMTimeIndefinite atIndex:textureLocation];
     }
 }
@@ -158,6 +159,7 @@
 			NSInteger textureIndexOfTarget = [[targetTextureIndices objectAtIndex:indexOfObject] integerValue];
             
 			[currentTarget setInputSize:pixelSizeOfImage atIndex:textureIndexOfTarget];
+            [currentTarget setInputFramebuffer:outputFramebuffer atIndex:textureIndexOfTarget];
 			[currentTarget newFrameReadyAtTime:frameTime atIndex:textureIndexOfTarget];
 		}
         
