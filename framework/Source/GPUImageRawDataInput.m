@@ -53,6 +53,9 @@
 // ARC forbids explicit message send of 'release'; since iOS 6 even for dispatch_release() calls: stripping it out in that case is required.
 - (void)dealloc;
 {
+    [outputFramebuffer enableReferenceCounting];
+    [outputFramebuffer unlock];
+
 #if ( (__IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_6_0) || (!defined(__IPHONE_6_0)) )
     if (dataUpdateSemaphore != NULL)
     {
@@ -69,7 +72,12 @@
     [GPUImageContext useImageProcessingContext];
 
     // TODO: This probably isn't right, and will need to be corrected
+    if (outputFramebuffer) {
+        [outputFramebuffer enableReferenceCounting];
+        [outputFramebuffer unlock];
+    }
     outputFramebuffer = [[GPUImageContext sharedFramebufferCache] fetchFramebufferForSize:uploadedImageSize textureOptions:self.outputTextureOptions onlyTexture:YES];
+    [outputFramebuffer disableReferenceCounting];
     
     glBindTexture(GL_TEXTURE_2D, [outputFramebuffer texture]);
     glTexImage2D(GL_TEXTURE_2D, 0, _pixelFormat==GPUPixelFormatRGB ? GL_RGB : GL_RGBA, (int)uploadedImageSize.width, (int)uploadedImageSize.height, 0, (GLint)_pixelFormat, (GLenum)_pixelType, bytesToUpload);
