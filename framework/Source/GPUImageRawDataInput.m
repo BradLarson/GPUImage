@@ -41,6 +41,7 @@
     
 	dataUpdateSemaphore = dispatch_semaphore_create(1);
 
+    hasProcessedData = NO;
     uploadedImageSize = imageSize;
 	self.pixelFormat = pixelFormat;
 	self.pixelType = pixelType;
@@ -63,6 +64,27 @@
     }
 #endif
 }
+
+#pragma mark -
+#pragma mark GPUImageOutput overrides
+
+- (void)removeAllTargets;
+{
+    [super removeAllTargets];
+    hasProcessedData = NO;
+}
+
+- (void)addTarget:(id<GPUImageInput>)newTarget atTextureLocation:(NSInteger)textureLocation;
+{
+    [super addTarget:newTarget atTextureLocation:textureLocation];
+
+    if (hasProcessedData)
+    {
+        [newTarget setInputSize:uploadedImageSize atIndex:textureLocation];
+        [newTarget newFrameReadyAtTime:kCMTimeIndefinite atIndex:textureLocation];
+    }
+}
+
 
 #pragma mark -
 #pragma mark Image rendering
@@ -92,6 +114,8 @@
 
 - (void)processData;
 {
+    hasProcessedData = YES;
+
 	if (dispatch_semaphore_wait(dataUpdateSemaphore, DISPATCH_TIME_NOW) != 0)
     {
         return;
@@ -117,6 +141,8 @@
 
 - (void)processDataForTimestamp:(CMTime)frameTime;
 {
+    hasProcessedData = YES;
+
 	if (dispatch_semaphore_wait(dataUpdateSemaphore, DISPATCH_TIME_NOW) != 0)
     {
         return;
