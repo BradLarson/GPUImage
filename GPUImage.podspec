@@ -13,7 +13,6 @@ Pod::Spec.new do |s|
   s.xcconfig = { 'CLANG_MODULES_AUTOLINK' => 'YES' }
   
   s.ios.deployment_target = '5.0'
-  s.compiler_flags = '-DOS_OBJECT_USE_OBJC=1'
   s.ios.exclude_files = 'framework/Source/Mac'
   s.ios.frameworks   = ['OpenGLES', 'CoreMedia', 'QuartzCore', 'AVFoundation']
   
