@@ -275,7 +275,7 @@
 
         }
 
-        if (reader.status == AVAssetWriterStatusCompleted) {
+        if (reader.status == AVAssetReaderStatusCompleted) {
                 
             [reader cancelReading];
 
