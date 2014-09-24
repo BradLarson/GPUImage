@@ -454,7 +454,7 @@ NSString *const kGPUImageToneCurveFragmentShaderString = SHADER_STRING
     matrix[n-1][0]=0;
     matrix[n-1][2]=0;
     
-  	// solving pass1 (up->down)
+  	// Solving pass1 (up->down)
   	for(int i=1;i<n;i++) 
     {
 		double k = matrix[i][0]/matrix[i-1][1];
@@ -462,7 +462,7 @@ NSString *const kGPUImageToneCurveFragmentShaderString = SHADER_STRING
 		matrix[i][0] = 0;
 		result[i] -= k*result[i-1];
     }
-	// solving pass2 (down->up)
+	// Solving pass2 (down->up)
 	for(NSInteger i=n-2;i>=0;i--)
     {
 		double k = matrix[i][2]/matrix[i+1][1];

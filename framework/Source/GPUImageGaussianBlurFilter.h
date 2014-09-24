@@ -23,7 +23,7 @@
 @property (readwrite, nonatomic) CGFloat blurRadiusAsFractionOfImageWidth;
 @property (readwrite, nonatomic) CGFloat blurRadiusAsFractionOfImageHeight;
 
-/// The number of times to sequentially blur the incoming image. The more passes, the slower the filter.
+// The number of times to sequentially blur the incoming image. The more passes, the slower the filter.
 @property(readwrite, nonatomic) NSUInteger blurPasses;
 
 + (NSString *)vertexShaderForStandardBlurOfRadius:(NSUInteger)blurRadius sigma:(CGFloat)sigma;

@@ -135,7 +135,7 @@ NSString *const kGPUImageColorAveragingFragmentShaderString = SHADER_STRING
         {
             // A really small last stage seems to cause significant errors in the average, so I abort and leave the rest to the CPU at this point
             break;
-            //                currentStageSize.height = 2.0; // TODO: Rotate the image to account for this case, which causes FBO construction to fail
+            // currentStageSize.height = 2.0; // TODO: Rotate the image to account for this case, which causes FBO construction to fail
         }
 
         [outputFramebuffer unlock];
@@ -170,7 +170,7 @@ NSString *const kGPUImageColorAveragingFragmentShaderString = SHADER_STRING
 - (void)extractAverageColorAtFrameTime:(CMTime)frameTime;
 {
     runSynchronouslyOnVideoProcessingQueue(^{
-        // we need a normal color texture for averaging the color values
+        // We need a normal color texture for averaging the color values
         NSAssert(self.outputTextureOptions.internalFormat == GL_RGBA, @"The output texture internal format for this filter must be GL_RGBA.");
         NSAssert(self.outputTextureOptions.type == GL_UNSIGNED_BYTE, @"The type of the output texture of this filter must be GL_UNSIGNED_BYTE.");
         

@@ -130,7 +130,7 @@ void reportAvailableMemoryForGPUImage(NSString *tag)
     allTargetsWantMonochromeData = YES;
     usingNextFrameForImageCapture = NO;
     
-    // set default texture options
+    // Set default texture options
     _outputTextureOptions.minFilter = GL_LINEAR;
     _outputTextureOptions.magFilter = GL_LINEAR;
     _outputTextureOptions.wrapS = GL_CLAMP_TO_EDGE;

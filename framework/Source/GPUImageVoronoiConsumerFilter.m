@@ -75,7 +75,7 @@ NSString *const kGPUImageVoronoiConsumerFragmentShaderString = SHADER_STRING
 -(void)setSizeInPixels:(CGSize)sizeInPixels {
     _sizeInPixels = sizeInPixels;
     
-    //validate that it's a power of 2 and square
+    // Validate that it's a power of 2 and square
     
     float width = log2(sizeInPixels.width);
     float height = log2(sizeInPixels.height);

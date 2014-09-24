@@ -8,10 +8,10 @@
 {
     GLint temperatureUniform, tintUniform;
 }
-//choose color temperature, in degrees Kelvin
+// Choose color temperature, in degrees Kelvin
 @property(readwrite, nonatomic) CGFloat temperature;
 
-//adjust tint to compensate
+// Adjust tint to compensate
 @property(readwrite, nonatomic) CGFloat tint;
 
 @end

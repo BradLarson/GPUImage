@@ -55,33 +55,33 @@ NSString *const kGPUImageHueBlendFragmentShaderString = SHADER_STRING
      if (c.r > c.g) {
          if (c.r > c.b) {
              if (c.g > c.b) {
-                 /* g is mid, b is min */
+                 // g is mid, b is min 
                  c.g = mid(c.b, c.g, c.r, s);
                  c.b = 0.0;
              } else {
-                 /* b is mid, g is min */
+                 // b is mid, g is min 
                  c.b = mid(c.g, c.b, c.r, s);
                  c.g = 0.0;
              }
              c.r = s;
          } else {
-             /* b is max, r is mid, g is min */
+             // b is max, r is mid, g is min 
              c.r = mid(c.g, c.r, c.b, s);
              c.b = s;
              c.r = 0.0;
          }
      } else if (c.r > c.b) {
-         /* g is max, r is mid, b is min */
+         // g is max, r is mid, b is min 
          c.r = mid(c.b, c.r, c.g, s);
          c.g = s;
          c.b = 0.0;
      } else if (c.g > c.b) {
-         /* g is max, b is mid, r is min */
+         // g is max, b is mid, r is min 
          c.b = mid(c.r, c.b, c.g, s);
          c.g = s;
          c.r = 0.0;
      } else if (c.b > c.g) {
-         /* b is max, g is mid, r is min */
+         // b is max, g is mid, r is min 
          c.g = mid(c.r, c.g, c.b, s);
          c.b = s;
          c.r = 0.0;
@@ -151,33 +151,33 @@ NSString *const kGPUImageHueBlendFragmentShaderString = SHADER_STRING
      if (c.r > c.g) {
          if (c.r > c.b) {
              if (c.g > c.b) {
-                 /* g is mid, b is min */
+                 // g is mid, b is min 
                  c.g = mid(c.b, c.g, c.r, s);
                  c.b = 0.0;
              } else {
-                 /* b is mid, g is min */
+                 // b is mid, g is min
                  c.b = mid(c.g, c.b, c.r, s);
                  c.g = 0.0;
              }
              c.r = s;
          } else {
-             /* b is max, r is mid, g is min */
+             // b is max, r is mid, g is min 
              c.r = mid(c.g, c.r, c.b, s);
              c.b = s;
              c.r = 0.0;
          }
      } else if (c.r > c.b) {
-         /* g is max, r is mid, b is min */
+         // g is max, r is mid, b is min 
          c.r = mid(c.b, c.r, c.g, s);
          c.g = s;
          c.b = 0.0;
      } else if (c.g > c.b) {
-         /* g is max, b is mid, r is min */
+         // g is max, b is mid, r is min 
          c.b = mid(c.r, c.b, c.g, s);
          c.g = s;
          c.r = 0.0;
      } else if (c.b > c.g) {
-         /* b is max, g is mid, r is min */
+         // b is max, g is mid, r is min 
          c.g = mid(c.r, c.g, c.b, s);
          c.b = s;
          c.r = 0.0;

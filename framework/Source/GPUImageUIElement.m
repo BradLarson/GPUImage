@@ -91,7 +91,7 @@
 //    CGContextRotateCTM(imageContext, M_PI_2);
 	CGContextTranslateCTM(imageContext, 0.0f, layerPixelSize.height);
     CGContextScaleCTM(imageContext, layer.contentsScale, -layer.contentsScale);
-    //        CGContextSetBlendMode(imageContext, kCGBlendModeCopy); // From Technical Q&A QA1708: http://developer.apple.com/library/ios/#qa/qa1708/_index.html
+//    CGContextSetBlendMode(imageContext, kCGBlendModeCopy); // From Technical Q&A QA1708: http://developer.apple.com/library/ios/#qa/qa1708/_index.html
     
     [layer renderInContext:imageContext];
     
@@ -102,7 +102,7 @@
     outputFramebuffer = [[GPUImageContext sharedFramebufferCache] fetchFramebufferForSize:layerPixelSize textureOptions:self.outputTextureOptions onlyTexture:YES];
 
     glBindTexture(GL_TEXTURE_2D, [outputFramebuffer texture]);
-    // no need to use self.outputTextureOptions here, we always need these texture options
+    // No need to use self.outputTextureOptions here, we always need these texture options
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (int)layerPixelSize.width, (int)layerPixelSize.height, 0, GL_BGRA, GL_UNSIGNED_BYTE, imageData);
     
     free(imageData);

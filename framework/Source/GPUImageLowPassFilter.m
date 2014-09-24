@@ -52,7 +52,7 @@
 - (void)addTarget:(id<GPUImageInput>)newTarget atTextureLocation:(NSInteger)textureLocation;
 {
     [self.terminalFilter addTarget:newTarget atTextureLocation:textureLocation];
-    //if use GPUImagePipline,will cause self.termainlFilter removeAllTargets,so need add bufferFilter back
+    //If use GPUImagePipline, will cause self.termainlFilter removeAllTargets, so need add bufferFilter back
     if (self.terminalFilter == dissolveBlendFilter && ![self.terminalFilter.targets containsObject:bufferFilter]) {
         [self.terminalFilter addTarget:bufferFilter atTextureLocation:1];
     }

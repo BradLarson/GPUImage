@@ -65,14 +65,14 @@
 //#define GLUM (0.6094f)
 //#define BLUM (0.0820f)
 
-/* This is the vector value from the PDF specification, and may be closer to what Photoshop uses */
+// This is the vector value from the PDF specification, and may be closer to what Photoshop uses 
 #define RLUM (0.3f)
 #define GLUM (0.59f)
 #define BLUM (0.11f)
 
 /*
  *	matrixmult -
- *		multiply two matricies
+ *		Multiply two matricies
  */
 static void matrixmult(a,b,c)
 float a[4][4], b[4][4], c[4][4];
@@ -94,7 +94,7 @@ float a[4][4], b[4][4], c[4][4];
 
 /*
  *	identmat -
- *		make an identity matrix
+ *		Make an identity matrix
  */
 static void identmat(matrix)
 float matrix[4][4];
@@ -108,7 +108,7 @@ float matrix[4][4];
 
 /*
  *	xformpnt -
- *		transform a 3D point using a matrix
+ *		Transform a 3D point using a matrix
  */
 static void xformpnt(matrix,x,y,z,tx,ty,tz)
 float matrix[4][4];
@@ -122,7 +122,7 @@ float *tx,*ty,*tz;
 
 /*
  *	cscalemat -
- *		make a color scale marix
+ *		Make a color scale matrix
  */
 static void cscalemat(mat,rscale,gscale,bscale)
 float mat[4][4];
@@ -155,7 +155,7 @@ float rscale, gscale, bscale;
 
 /*
  *	saturatemat -
- *		make a saturation marix
+ *		Make a saturation matrix
  */
 static void saturatemat(mat,sat)
 float mat[4][4];
@@ -202,7 +202,7 @@ float sat;
 
 /*
  *	xrotate -
- *		rotate about the x (red) axis
+ *		Rotate about the x (red) axis
  */
 static void xrotatemat(mat,rs,rc)
 float mat[4][4];
@@ -234,7 +234,7 @@ float rs, rc;
 
 /*
  *	yrotate -
- *		rotate about the y (green) axis
+ *		Rotate about the y (green) axis
  */
 static void yrotatemat(mat,rs,rc)
 float mat[4][4];
@@ -266,7 +266,7 @@ float rs, rc;
 
 /*
  *	zrotate -
- *		rotate about the z (blue) axis
+ *		Rotate about the z (blue) axis
  */
 static void zrotatemat(mat,rs,rc)
 float mat[4][4];
@@ -298,7 +298,7 @@ float rs, rc;
 
 /*
  *	zshear -
- *		shear z using x and y.
+ *		Shear z using x and y.
  */
 static void zshearmat(mat,dx,dy)
 float mat[4][4];
@@ -330,7 +330,7 @@ float dx, dy;
 
 /*
  *	simplehuerotatemat -
- *		simple hue rotation. This changes luminance
+ *		Simple hue rotation. This changes luminance
  */
 //static void simplehuerotatemat(mat,rot)
 //float mat[4][4];
@@ -364,7 +364,7 @@ float dx, dy;
 
 /*
  *	huerotatemat -
- *		rotate the hue, while maintaining luminance.
+ *		Rotate the hue, while maintaining luminance.
  */
 static void huerotatemat(mat,rot)
 float mat[4][4];
@@ -380,7 +380,7 @@ float rot;
     
     identmat(mmat);
     
-    /* rotate the grey vector into positive Z */
+    // Rotate the grey vector into positive Z 
     mag = sqrt(2.0);
     xrs = 1.0/mag;
     xrc = 1.0/mag;
@@ -390,21 +390,21 @@ float rot;
     yrc = sqrt(2.0)/mag;
     yrotatemat(mmat,yrs,yrc);
     
-    /* shear the space to make the luminance plane horizontal */
+    // Shear the space to make the luminance plane horizontal 
     xformpnt(mmat,RLUM,GLUM,BLUM,&lx,&ly,&lz);
     zsx = lx/lz;
     zsy = ly/lz;
     zshearmat(mmat,zsx,zsy);
     
-    /* rotate the hue */
+    // Rotate the hue 
     zrs = sin(rot*M_PI/180.0);
     zrc = cos(rot*M_PI/180.0);
     zrotatemat(mmat,zrs,zrc);
     
-    /* unshear the space to put the luminance plane back */
+    // Unshear the space to put the luminance plane back 
     zshearmat(mmat,-zsx,-zsy);
     
-    /* rotate the grey vector back into place */
+    // Rotate the grey vector back into place 
     yrotatemat(mmat,-yrs,yrc);
     xrotatemat(mmat,-xrs,xrc);
     

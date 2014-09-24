@@ -77,10 +77,10 @@ NSString *const kGPUImageFASTDetectorFragmentShaderString = SHADER_STRING
 //    [derivativeFilter addTarget:blurFilter];
 //    [blurFilter addTarget:harrisCornerDetectionFilter];
 //    [harrisCornerDetectionFilter addTarget:nonMaximumSuppressionFilter];
-    //    [simpleThresholdFilter addTarget:colorPackingFilter];
+//    [simpleThresholdFilter addTarget:colorPackingFilter];
     
 //    self.initialFilters = [NSArray arrayWithObjects:derivativeFilter, nil];
-    //    self.terminalFilter = colorPackingFilter;
+//    self.terminalFilter = colorPackingFilter;
 //    self.terminalFilter = nonMaximumSuppressionFilter;
 
     return self;
