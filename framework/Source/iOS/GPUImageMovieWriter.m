@@ -251,7 +251,7 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
     [assetWriter addInput:assetWriterVideoInput];
 }
 
-- (void)setEncodingLiveVideo:(bool) value
+- (void)setEncodingLiveVideo:(BOOL) value
 {
     _encodingLiveVideo = value;
     if (isRecording) {
