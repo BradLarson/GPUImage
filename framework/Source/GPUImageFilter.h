@@ -47,31 +47,22 @@ typedef struct GPUMatrix3x3 GPUMatrix3x3;
  */
 @interface GPUImageFilter : GPUImageOutput <GPUImageInput>
 {
-    GLuint filterSourceTexture;
-
-    GLuint filterFramebuffer;
-
+    GPUImageFramebuffer *firstInputFramebuffer;
+    
     GLProgram *filterProgram;
     GLint filterPositionAttribute, filterTextureCoordinateAttribute;
     GLint filterInputTextureUniform;
     GLfloat backgroundColorRed, backgroundColorGreen, backgroundColorBlue, backgroundColorAlpha;
     
-    BOOL preparedToCaptureImage;
+    BOOL isEndProcessing;
 
-    // Texture caches are an iOS-specific capability
-#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
-    CVOpenGLESTextureCacheRef filterTextureCache;
-    CVPixelBufferRef renderTarget;
-    CVOpenGLESTextureRef renderTexture;
-#else
-#endif
-    
     CGSize currentFilterSize;
     GPUImageRotationMode inputRotation;
     
     BOOL currentlyReceivingMonochromeInput;
     
     NSMutableDictionary *uniformStateRestorationBlocks;
+    dispatch_semaphore_t imageCaptureSemaphore;
 }
 
 @property(readonly) CVPixelBufferRef renderTarget;
@@ -106,24 +97,14 @@ typedef struct GPUMatrix3x3 GPUMatrix3x3;
 - (CGSize)rotatedSize:(CGSize)sizeToRotate forIndex:(NSInteger)textureIndex;
 - (CGPoint)rotatedPoint:(CGPoint)pointToRotate forRotation:(GPUImageRotationMode)rotation;
 
-- (void)recreateFilterFBO;
-
 /// @name Managing the display FBOs
 /** Size of the frame buffer object
  */
 - (CGSize)sizeOfFBO;
-- (void)createFilterFBOofSize:(CGSize)currentFBOSize;
-
-/** Destroy the current filter frame buffer object
- */
-- (void)destroyFilterFBO;
-- (void)setFilterFBO;
-- (void)setOutputFBO;
-- (void)releaseInputTexturesIfNeeded;
 
 /// @name Rendering
 + (const GLfloat *)textureCoordinatesForRotation:(GPUImageRotationMode)rotationMode;
-- (void)renderToTextureWithVertices:(const GLfloat *)vertices textureCoordinates:(const GLfloat *)textureCoordinates sourceTexture:(GLuint)sourceTexture;
+- (void)renderToTextureWithVertices:(const GLfloat *)vertices textureCoordinates:(const GLfloat *)textureCoordinates;
 - (void)informTargetsAboutNewFrameAtTime:(CMTime)frameTime;
 - (CGSize)outputFrameSize;
 

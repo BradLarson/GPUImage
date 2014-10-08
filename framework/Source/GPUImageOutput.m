@@ -18,7 +18,7 @@ void runOnMainQueueWithoutDeadlocking(void (^block)(void))
 void runSynchronouslyOnVideoProcessingQueue(void (^block)(void))
 {
     dispatch_queue_t videoProcessingQueue = [GPUImageContext sharedContextQueue];
-#if (!defined(__IPHONE_6_0) || (__IPHONE_OS_VERSION_MAX_ALLOWED < __IPHONE_6_0))
+#if !OS_OBJECT_USE_OBJC
     if (dispatch_get_current_queue() == videoProcessingQueue)
 #else
 	if (dispatch_get_specific([GPUImageContext contextKey]))
@@ -35,7 +35,7 @@ void runAsynchronouslyOnVideoProcessingQueue(void (^block)(void))
 {
     dispatch_queue_t videoProcessingQueue = [GPUImageContext sharedContextQueue];
     
-#if (!defined(__IPHONE_6_0) || (__IPHONE_OS_VERSION_MAX_ALLOWED < __IPHONE_6_0))
+#if !OS_OBJECT_USE_OBJC
     if (dispatch_get_current_queue() == videoProcessingQueue)
 #else
     if (dispatch_get_specific([GPUImageContext contextKey]))
@@ -46,6 +46,39 @@ void runAsynchronouslyOnVideoProcessingQueue(void (^block)(void))
 	{
 		dispatch_async(videoProcessingQueue, block);
 	}
+}
+
+void runSynchronouslyOnContextQueue(GPUImageContext *context, void (^block)(void))
+{
+    dispatch_queue_t videoProcessingQueue = [context contextQueue];
+#if !OS_OBJECT_USE_OBJC
+    if (dispatch_get_current_queue() == videoProcessingQueue)
+#else
+        if (dispatch_get_specific([GPUImageContext contextKey]))
+#endif
+        {
+            block();
+        }else
+        {
+            dispatch_sync(videoProcessingQueue, block);
+        }
+}
+
+void runAsynchronouslyOnContextQueue(GPUImageContext *context, void (^block)(void))
+{
+    dispatch_queue_t videoProcessingQueue = [context contextQueue];
+    
+#if !OS_OBJECT_USE_OBJC
+    if (dispatch_get_current_queue() == videoProcessingQueue)
+#else
+        if (dispatch_get_specific([GPUImageContext contextKey]))
+#endif
+        {
+            block();
+        }else
+        {
+            dispatch_async(videoProcessingQueue, block);
+        }
 }
 
 void reportAvailableMemoryForGPUImage(NSString *tag) 
@@ -79,6 +112,7 @@ void reportAvailableMemoryForGPUImage(NSString *tag)
 @synthesize targetToIgnoreForUpdates = _targetToIgnoreForUpdates;
 @synthesize frameProcessingCompletionBlock = _frameProcessingCompletionBlock;
 @synthesize enabled = _enabled;
+@synthesize outputTextureOptions = _outputTextureOptions;
 
 #pragma mark -
 #pragma mark Initialization and teardown
@@ -94,6 +128,16 @@ void reportAvailableMemoryForGPUImage(NSString *tag)
     targetTextureIndices = [[NSMutableArray alloc] init];
     _enabled = YES;
     allTargetsWantMonochromeData = YES;
+    usingNextFrameForImageCapture = NO;
+    
+    // set default texture options
+    _outputTextureOptions.minFilter = GL_LINEAR;
+    _outputTextureOptions.magFilter = GL_LINEAR;
+    _outputTextureOptions.wrapS = GL_CLAMP_TO_EDGE;
+    _outputTextureOptions.wrapT = GL_CLAMP_TO_EDGE;
+    _outputTextureOptions.internalFormat = GL_RGBA;
+    _outputTextureOptions.format = GL_BGRA;
+    _outputTextureOptions.type = GL_UNSIGNED_BYTE;
 
     return self;
 }
@@ -101,20 +145,24 @@ void reportAvailableMemoryForGPUImage(NSString *tag)
 - (void)dealloc 
 {
     [self removeAllTargets];
-    [self deleteOutputTexture];
 }
 
 #pragma mark -
 #pragma mark Managing targets
 
-- (void)setInputTextureForTarget:(id<GPUImageInput>)target atIndex:(NSInteger)inputTextureIndex;
+- (void)setInputFramebufferForTarget:(id<GPUImageInput>)target atIndex:(NSInteger)inputTextureIndex;
 {
-    [target setInputTexture:[self textureForOutput] atIndex:inputTextureIndex];
+    [target setInputFramebuffer:[self framebufferForOutput] atIndex:inputTextureIndex];
 }
 
-- (GLuint)textureForOutput;
+- (GPUImageFramebuffer *)framebufferForOutput;
 {
-    return outputTexture;
+    return outputFramebuffer;
+}
+
+- (void)removeOutputFramebuffer;
+{
+    outputFramebuffer = nil;
 }
 
 - (void)notifyTargetsAboutNewOutputTexture;
@@ -124,7 +172,7 @@ void reportAvailableMemoryForGPUImage(NSString *tag)
         NSInteger indexOfObject = [targets indexOfObject:currentTarget];
         NSInteger textureIndex = [[targetTextureIndices objectAtIndex:indexOfObject] integerValue];
         
-        [self setInputTextureForTarget:currentTarget atIndex:textureIndex];
+        [self setInputFramebufferForTarget:currentTarget atIndex:textureIndex];
     }
 }
 
@@ -153,8 +201,7 @@ void reportAvailableMemoryForGPUImage(NSString *tag)
     
     cachedMaximumOutputSize = CGSizeZero;
     runSynchronouslyOnVideoProcessingQueue(^{
-        [self setInputTextureForTarget:newTarget atIndex:textureLocation];
-        [newTarget setTextureDelegate:self atIndex:textureLocation];
+        [self setInputFramebufferForTarget:newTarget atIndex:textureLocation];
         [targets addObject:newTarget];
         [targetTextureIndices addObject:[NSNumber numberWithInteger:textureLocation]];
         
@@ -180,9 +227,7 @@ void reportAvailableMemoryForGPUImage(NSString *tag)
     NSInteger textureIndexOfTarget = [[targetTextureIndices objectAtIndex:indexOfObject] integerValue];
 
     runSynchronouslyOnVideoProcessingQueue(^{
-        [targetToRemove setInputTexture:0 atIndex:textureIndexOfTarget];
         [targetToRemove setInputSize:CGSizeZero atIndex:textureIndexOfTarget];
-        [targetToRemove setTextureDelegate:nil atIndex:textureIndexOfTarget];
 		[targetToRemove setInputRotation:kGPUImageNoRotation atIndex:textureIndexOfTarget];
 
         [targetTextureIndices removeObjectAtIndex:indexOfObject];
@@ -200,9 +245,7 @@ void reportAvailableMemoryForGPUImage(NSString *tag)
             NSInteger indexOfObject = [targets indexOfObject:targetToRemove];
             NSInteger textureIndexOfTarget = [[targetTextureIndices objectAtIndex:indexOfObject] integerValue];
             
-            [targetToRemove setInputTexture:0 atIndex:textureIndexOfTarget];
             [targetToRemove setInputSize:CGSizeZero atIndex:textureIndexOfTarget];
-            [targetToRemove setTextureDelegate:nil atIndex:textureIndexOfTarget];
             [targetToRemove setInputRotation:kGPUImageNoRotation atIndex:textureIndexOfTarget];
         }
         [targets removeAllObjects];
@@ -215,39 +258,6 @@ void reportAvailableMemoryForGPUImage(NSString *tag)
 #pragma mark -
 #pragma mark Manage the output texture
 
-- (void)initializeOutputTextureIfNeeded;
-{
-    runSynchronouslyOnVideoProcessingQueue(^{
-        if (!outputTexture)
-        {
-            [GPUImageContext useImageProcessingContext];
-            
-            glActiveTexture(GL_TEXTURE0);
-            glGenTextures(1, &outputTexture);
-            glBindTexture(GL_TEXTURE_2D, outputTexture);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-            // This is necessary for non-power-of-two textures
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-            glBindTexture(GL_TEXTURE_2D, 0);
-        }
-    });
-}
-
-- (void)deleteOutputTexture;
-{
-    runSynchronouslyOnVideoProcessingQueue(^{
-        [GPUImageContext useImageProcessingContext];
-
-        if (outputTexture)
-        {
-            glDeleteTextures(1, &outputTexture);
-            outputTexture = 0;
-        }
-    });
-}
-
 - (void)forceProcessingAtSize:(CGSize)frameSize;
 {
     
@@ -257,34 +267,28 @@ void reportAvailableMemoryForGPUImage(NSString *tag)
 {
 }
 
-- (void)cleanupOutputImage;
-{
-    NSLog(@"WARNING: Undefined image cleanup");
-}
-
 #pragma mark -
 #pragma mark Still image processing
 
-- (CGImageRef)newCGImageFromCurrentlyProcessedOutputWithOrientation:(UIImageOrientation)imageOrientation;
+- (void)useNextFrameForImageCapture;
+{
+
+}
+
+- (CGImageRef)newCGImageFromCurrentlyProcessedOutput;
 {
     return nil;
 }
 
-- (CGImageRef)newCGImageByFilteringCGImage:(CGImageRef)imageToFilter
-{
-    return [self newCGImageByFilteringCGImage:imageToFilter orientation:UIImageOrientationUp];
-}
-
-- (CGImageRef)newCGImageByFilteringCGImage:(CGImageRef)imageToFilter orientation:(UIImageOrientation)orientation;
+- (CGImageRef)newCGImageByFilteringCGImage:(CGImageRef)imageToFilter;
 {
     GPUImagePicture *stillImageSource = [[GPUImagePicture alloc] initWithCGImage:imageToFilter];
     
-    [self prepareForImageCapture];
-    
+    [self useNextFrameForImageCapture];
     [stillImageSource addTarget:(id<GPUImageInput>)self];
     [stillImageSource processImage];
     
-    CGImageRef processedImage = [self newCGImageFromCurrentlyProcessedOutputWithOrientation:orientation];
+    CGImageRef processedImage = [self newCGImageFromCurrentlyProcessedOutput];
     
     [stillImageSource removeTarget:(id<GPUImageInput>)self];
     return processedImage;
@@ -295,30 +299,12 @@ void reportAvailableMemoryForGPUImage(NSString *tag)
     return NO;
 }
 
-- (void)prepareForImageCapture;
-{
-    
-}
-
-- (void)conserveMemoryForNextFrame;
-{
-    shouldConserveMemoryForNextFrame = YES;
-    
-    for (id<GPUImageInput> currentTarget in targets)
-    {
-        if (currentTarget != self.targetToIgnoreForUpdates)
-        {
-            [currentTarget conserveMemoryForNextFrame];
-        }
-    }
-}
-
 #pragma mark -
 #pragma mark Platform-specific image output methods
 
 #if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
 
-- (CGImageRef)newCGImageFromCurrentlyProcessedOutput;
+- (UIImage *)imageFromCurrentFramebuffer;
 {
 	UIDeviceOrientation deviceOrientation = [[UIDevice currentDevice] orientation];
     UIImageOrientation imageOrientation = UIImageOrientationLeft;
@@ -341,38 +327,12 @@ void reportAvailableMemoryForGPUImage(NSString *tag)
 			break;
 	}
     
-    return [self newCGImageFromCurrentlyProcessedOutputWithOrientation:imageOrientation];
+    return [self imageFromCurrentFramebufferWithOrientation:imageOrientation];
 }
 
-- (UIImage *)imageFromCurrentlyProcessedOutput;
+- (UIImage *)imageFromCurrentFramebufferWithOrientation:(UIImageOrientation)imageOrientation;
 {
-	UIDeviceOrientation deviceOrientation = [[UIDevice currentDevice] orientation];
-    UIImageOrientation imageOrientation = UIImageOrientationLeft;
-	switch (deviceOrientation)
-    {
-		case UIDeviceOrientationPortrait:
-			imageOrientation = UIImageOrientationUp;
-			break;
-		case UIDeviceOrientationPortraitUpsideDown:
-			imageOrientation = UIImageOrientationDown;
-			break;
-		case UIDeviceOrientationLandscapeLeft:
-			imageOrientation = UIImageOrientationLeft;
-			break;
-		case UIDeviceOrientationLandscapeRight:
-			imageOrientation = UIImageOrientationRight;
-			break;
-		default:
-			imageOrientation = UIImageOrientationUp;
-			break;
-	}
-    
-    return [self imageFromCurrentlyProcessedOutputWithOrientation:imageOrientation];
-}
-
-- (UIImage *)imageFromCurrentlyProcessedOutputWithOrientation:(UIImageOrientation)imageOrientation;
-{
-    CGImageRef cgImageFromBytes = [self newCGImageFromCurrentlyProcessedOutputWithOrientation:imageOrientation];
+    CGImageRef cgImageFromBytes = [self newCGImageFromCurrentlyProcessedOutput];
     UIImage *finalImage = [UIImage imageWithCGImage:cgImageFromBytes scale:1.0 orientation:imageOrientation];
     CGImageRelease(cgImageFromBytes);
     
@@ -381,7 +341,7 @@ void reportAvailableMemoryForGPUImage(NSString *tag)
 
 - (UIImage *)imageByFilteringImage:(UIImage *)imageToFilter;
 {
-    CGImageRef image = [self newCGImageByFilteringCGImage:[imageToFilter CGImage] orientation:[imageToFilter imageOrientation]];
+    CGImageRef image = [self newCGImageByFilteringCGImage:[imageToFilter CGImage]];
     UIImage *processedImage = [UIImage imageWithCGImage:image scale:[imageToFilter scale] orientation:[imageToFilter imageOrientation]];
     CGImageRelease(image);
     return processedImage;
@@ -389,24 +349,19 @@ void reportAvailableMemoryForGPUImage(NSString *tag)
 
 - (CGImageRef)newCGImageByFilteringImage:(UIImage *)imageToFilter
 {
-    return [self newCGImageByFilteringCGImage:[imageToFilter CGImage] orientation:[imageToFilter imageOrientation]];
+    return [self newCGImageByFilteringCGImage:[imageToFilter CGImage]];
 }
 
 #else
 
-- (CGImageRef)newCGImageFromCurrentlyProcessedOutput;
+- (NSImage *)imageFromCurrentFramebuffer;
 {
-    return [self newCGImageFromCurrentlyProcessedOutputWithOrientation:UIImageOrientationLeft];
+    return [self imageFromCurrentFramebufferWithOrientation:UIImageOrientationLeft];
 }
 
-- (NSImage *)imageFromCurrentlyProcessedOutput;
+- (NSImage *)imageFromCurrentFramebufferWithOrientation:(UIImageOrientation)imageOrientation;
 {
-    return [self imageFromCurrentlyProcessedOutputWithOrientation:UIImageOrientationLeft];
-}
-
-- (NSImage *)imageFromCurrentlyProcessedOutputWithOrientation:(UIImageOrientation)imageOrientation;
-{
-    CGImageRef cgImageFromBytes = [self newCGImageFromCurrentlyProcessedOutputWithOrientation:imageOrientation];
+    CGImageRef cgImageFromBytes = [self newCGImageFromCurrentlyProcessedOutput];
     NSImage *finalImage = [[NSImage alloc] initWithCGImage:cgImageFromBytes size:NSZeroSize];
     CGImageRelease(cgImageFromBytes);
     
@@ -415,7 +370,7 @@ void reportAvailableMemoryForGPUImage(NSString *tag)
 
 - (NSImage *)imageByFilteringImage:(NSImage *)imageToFilter;
 {
-    CGImageRef image = [self newCGImageByFilteringCGImage:[imageToFilter CGImageForProposedRect:NULL context:[NSGraphicsContext currentContext] hints:nil] orientation:UIImageOrientationLeft];
+    CGImageRef image = [self newCGImageByFilteringCGImage:[imageToFilter CGImageForProposedRect:NULL context:[NSGraphicsContext currentContext] hints:nil]];
     NSImage *processedImage = [[NSImage alloc] initWithCGImage:image size:NSZeroSize];
     CGImageRelease(image);
     return processedImage;
@@ -423,22 +378,10 @@ void reportAvailableMemoryForGPUImage(NSString *tag)
 
 - (CGImageRef)newCGImageByFilteringImage:(NSImage *)imageToFilter
 {
-    return [self newCGImageByFilteringCGImage:[imageToFilter CGImageForProposedRect:NULL context:[NSGraphicsContext currentContext] hints:nil] orientation:UIImageOrientationLeft];
+    return [self newCGImageByFilteringCGImage:[imageToFilter CGImageForProposedRect:NULL context:[NSGraphicsContext currentContext] hints:nil]];
 }
 
 #endif
-
-#pragma mark -
-#pragma mark GPUImageTextureDelegate methods
-
-- (void)textureNoLongerNeededForTarget:(id<GPUImageInput>)textureTarget;
-{
-    outputTextureRetainCount--;
-    if (outputTextureRetainCount < 1)
-    {
-        [self cleanupOutputImage];
-    }
-}
 
 #pragma mark -
 #pragma mark Accessors
@@ -446,8 +389,10 @@ void reportAvailableMemoryForGPUImage(NSString *tag)
 - (void)setAudioEncodingTarget:(GPUImageMovieWriter *)newValue;
 {    
     _audioEncodingTarget = newValue;
-    
-    _audioEncodingTarget.hasAudioTrack = YES;
+    if( ! _audioEncodingTarget.hasAudioTrack )
+    {
+        _audioEncodingTarget.hasAudioTrack = YES;
+    }
 }
 
 @end

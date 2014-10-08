@@ -528,9 +528,9 @@
         case GPUIMAGE_SMOOTHTOON:
         {
             currentlySelectedFilter = [[GPUImageSmoothToonFilter alloc] init];
-            self.minimumSliderValue = 0.0;
-            self.maximumSliderValue = 1.0;
-            self.currentSliderValue = 0.5;
+            self.minimumSliderValue = 1.0;
+            self.maximumSliderValue = 6.0;
+            self.currentSliderValue = 1.0;
             self.enableSlider = YES;
         }; break;
         case GPUIMAGE_TILTSHIFT:
@@ -609,9 +609,9 @@
         {
             currentlySelectedFilter = [[GPUImageGaussianBlurFilter alloc] init];
             
-            self.minimumSliderValue = 0.0;
-            self.maximumSliderValue = 10.0;
-            self.currentSliderValue = 1.0;
+            self.minimumSliderValue = 1.0;
+            self.maximumSliderValue = 24.0;
+            self.currentSliderValue = 2.0;
             self.enableSlider = YES;
         }; break;
         case GPUIMAGE_GAUSSIAN_SELECTIVE:
@@ -634,20 +634,14 @@
             self.currentSliderValue = 40.0/320.0;
             self.enableSlider = YES;
         }; break;
-        case GPUIMAGE_FASTBLUR:
-        {
-            currentlySelectedFilter = [[GPUImageFastBlurFilter alloc] init];
-            
-            self.minimumSliderValue = 1.0;
-            self.maximumSliderValue = 10.0;
-            self.currentSliderValue = 1.0;
-            self.enableSlider = YES;
-        }; break;
         case GPUIMAGE_BOXBLUR:
         {
             currentlySelectedFilter = [[GPUImageBoxBlurFilter alloc] init];
             
-            self.enableSlider = NO;
+            self.minimumSliderValue = 1.0;
+            self.maximumSliderValue = 24.0;
+            self.currentSliderValue = 2.0;
+            self.enableSlider = YES;
         }; break;
         case GPUIMAGE_MEDIAN:
         {
@@ -1089,7 +1083,7 @@
         // Provide a blurred image for a cool-looking background
         GPUImageGaussianBlurFilter *gaussianBlur = [[GPUImageGaussianBlurFilter alloc] init];
         [inputCamera addTarget:gaussianBlur];
-        gaussianBlur.blurSize = 2.0;
+        gaussianBlur.blurRadiusInPixels = 10.0;
         
         GPUImageAlphaBlendFilter *blendFilter = [[GPUImageAlphaBlendFilter alloc] init];
         blendFilter.mix = 1.0;
@@ -1208,9 +1202,9 @@
         case GPUIMAGE_PREWITTEDGEDETECTION: [(GPUImagePrewittEdgeDetectionFilter *)currentlySelectedFilter setEdgeStrength:_currentSliderValue]; break;
         case GPUIMAGE_HISTOGRAM: [(GPUImageHistogramFilter *)currentlySelectedFilter setDownsamplingFactor:round(_currentSliderValue)]; break;
         case GPUIMAGE_THRESHOLD: [(GPUImageLuminanceThresholdFilter *)currentlySelectedFilter setThreshold:_currentSliderValue]; break;
-        case GPUIMAGE_ADAPTIVETHRESHOLD: [(GPUImageAdaptiveThresholdFilter *)currentlySelectedFilter setBlurSize:_currentSliderValue]; break;
+        case GPUIMAGE_ADAPTIVETHRESHOLD: [(GPUImageAdaptiveThresholdFilter *)currentlySelectedFilter setBlurRadiusInPixels:_currentSliderValue]; break;
         case GPUIMAGE_AVERAGELUMINANCETHRESHOLD: [(GPUImageAverageLuminanceThresholdFilter *)currentlySelectedFilter setThresholdMultiplier:_currentSliderValue]; break;        
-        case GPUIMAGE_CANNYEDGEDETECTION: [(GPUImageCannyEdgeDetectionFilter *)currentlySelectedFilter setBlurSize:_currentSliderValue]; break;
+        case GPUIMAGE_CANNYEDGEDETECTION: [(GPUImageCannyEdgeDetectionFilter *)currentlySelectedFilter setBlurTexelSpacingMultiplier:_currentSliderValue]; break;
         case GPUIMAGE_THRESHOLDEDGEDETECTION: [(GPUImageThresholdEdgeDetectionFilter *)currentlySelectedFilter setThreshold:_currentSliderValue]; break;
         case GPUIMAGE_HARRISCORNERDETECTION: [(GPUImageHarrisCornerDetectionFilter *)currentlySelectedFilter setThreshold:_currentSliderValue]; break;
         case GPUIMAGE_NOBLECORNERDETECTION: [(GPUImageNobleCornerDetectionFilter *)currentlySelectedFilter setThreshold:_currentSliderValue]; break;
@@ -1221,7 +1215,7 @@
         case GPUIMAGE_MOTIONDETECTOR: [(GPUImageMotionDetector *)currentlySelectedFilter setLowPassFilterStrength:_currentSliderValue]; break;
         case GPUIMAGE_SKETCH: [(GPUImageSketchFilter *)currentlySelectedFilter setEdgeStrength:_currentSliderValue]; break;
         case GPUIMAGE_THRESHOLDSKETCH: [(GPUImageThresholdSketchFilter *)currentlySelectedFilter setThreshold:_currentSliderValue]; break;
-        case GPUIMAGE_SMOOTHTOON: [(GPUImageSmoothToonFilter *)currentlySelectedFilter setBlurSize:_currentSliderValue]; break;
+        case GPUIMAGE_SMOOTHTOON: [(GPUImageSmoothToonFilter *)currentlySelectedFilter setBlurRadiusInPixels:_currentSliderValue]; break;
         case GPUIMAGE_POSTERIZE: [(GPUImagePosterizeFilter *)currentlySelectedFilter setColorLevels:round(_currentSliderValue)]; break;
         case GPUIMAGE_TILTSHIFT:
         {
@@ -1247,10 +1241,10 @@
             [(GPUImageTransformFilter *)currentlySelectedFilter setTransform3D:perspectiveTransform];
         }; break;
         case GPUIMAGE_CROP: [(GPUImageCropFilter *)currentlySelectedFilter setCropRegion:CGRectMake(0.0, 0.0, 1.0, _currentSliderValue)]; break;
-        case GPUIMAGE_GAUSSIAN: [(GPUImageGaussianBlurFilter *)currentlySelectedFilter setBlurSize:_currentSliderValue]; break;
+        case GPUIMAGE_GAUSSIAN: [(GPUImageGaussianBlurFilter *)currentlySelectedFilter setBlurRadiusInPixels:_currentSliderValue]; break;
+        case GPUIMAGE_BOXBLUR: [(GPUImageBoxBlurFilter *)currentlySelectedFilter setBlurRadiusInPixels:_currentSliderValue]; break;
         case GPUIMAGE_GAUSSIAN_SELECTIVE: [(GPUImageGaussianSelectiveBlurFilter *)currentlySelectedFilter setExcludeCircleRadius:_currentSliderValue]; break;
         case GPUIMAGE_GAUSSIAN_POSITION: [(GPUImageGaussianBlurPositionFilter *)currentlySelectedFilter setBlurRadius:_currentSliderValue]; break;
-        case GPUIMAGE_FASTBLUR: [(GPUImageFastBlurFilter *)currentlySelectedFilter setBlurPasses:round(_currentSliderValue)]; break;
         case GPUIMAGE_BILATERAL: [(GPUImageBilateralFilter *)currentlySelectedFilter setDistanceNormalizationFactor:_currentSliderValue]; break;
         case GPUIMAGE_MOTIONBLUR: [(GPUImageMotionBlurFilter *)currentlySelectedFilter setBlurAngle:_currentSliderValue]; break;
         case GPUIMAGE_ZOOMBLUR: [(GPUImageZoomBlurFilter *)currentlySelectedFilter setBlurSize:_currentSliderValue]; break;
@@ -1356,7 +1350,6 @@
         case GPUIMAGE_GAUSSIAN: tableRowTitle = @"Gaussian blur"; break;
         case GPUIMAGE_GAUSSIAN_SELECTIVE: tableRowTitle = @"Gaussian selective blur"; break;
         case GPUIMAGE_GAUSSIAN_POSITION: tableRowTitle = @"Gaussian (centered)"; break;
-        case GPUIMAGE_FASTBLUR: tableRowTitle = @"Gaussian blur (optimized)"; break;
         case GPUIMAGE_BOXBLUR: tableRowTitle = @"Box blur"; break;
         case GPUIMAGE_MEDIAN: tableRowTitle = @"Median (3x3)"; break;
         case GPUIMAGE_BILATERAL: tableRowTitle = @"Bilateral blur"; break;

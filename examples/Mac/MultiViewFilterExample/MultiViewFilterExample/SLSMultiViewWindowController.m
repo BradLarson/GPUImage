@@ -22,7 +22,7 @@
 {
     [super windowDidLoad];
     
-    videoCamera = [[GPUImageAVCamera alloc] initWithSessionPreset:AVCaptureSessionPreset640x480 cameraPosition:AVCaptureDevicePositionUnspecified];
+    videoCamera = [[GPUImageAVCamera alloc] initWithSessionPreset:AVCaptureSessionPreset640x480 cameraDevice:nil];
     
     filter1 = [[GPUImageFilter alloc] initWithFragmentShaderFromFile:@"Shader1"];
     filter2 = [[GPUImageFilter alloc] initWithFragmentShaderFromFile:@"Shader2"];

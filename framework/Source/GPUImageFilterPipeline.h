@@ -1,5 +1,5 @@
 #import <Foundation/Foundation.h>
-#import "GPUImageFilter.h"
+#import "GPUImageOutput.h"
 
 @interface GPUImageFilterPipeline : NSObject
 {
@@ -15,16 +15,16 @@
 - (id) initWithConfiguration:(NSDictionary*) configuration input:(GPUImageOutput*)input output:(id <GPUImageInput>)output;
 - (id) initWithConfigurationFile:(NSURL*) configuration input:(GPUImageOutput*)input output:(id <GPUImageInput>)output;
 
-- (void) addFilter:(GPUImageFilter*)filter;
-- (void) addFilter:(GPUImageFilter*)filter atIndex:(NSUInteger)insertIndex;
-- (void) replaceFilterAtIndex:(NSUInteger)index withFilter:(GPUImageFilter*)filter;
-- (void) replaceAllFilters:(NSArray*) newFilters;
+- (void) addFilter:(GPUImageOutput<GPUImageInput> *)filter;
+- (void) addFilter:(GPUImageOutput<GPUImageInput> *)filter atIndex:(NSUInteger)insertIndex;
+- (void) replaceFilterAtIndex:(NSUInteger)index withFilter:(GPUImageOutput<GPUImageInput> *)filter;
+- (void) replaceAllFilters:(NSArray *) newFilters;
+- (void) removeFilter:(GPUImageOutput<GPUImageInput> *)filter;
 - (void) removeFilterAtIndex:(NSUInteger)index;
 - (void) removeAllFilters;
 
 - (UIImage *) currentFilteredFrame;
 - (UIImage *) currentFilteredFrameWithOrientation:(UIImageOrientation)imageOrientation;
 - (CGImageRef) newCGImageFromCurrentFilteredFrame;
-- (CGImageRef) newCGImageFromCurrentFilteredFrameWithOrientation:(UIImageOrientation)imageOrientation;
 
 @end

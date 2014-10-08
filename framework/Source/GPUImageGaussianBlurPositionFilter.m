@@ -191,6 +191,7 @@ NSString *const kGPUImageGaussianBlurPositionFragmentShaderString = SHADER_STRIN
 - (void)setInputRotation:(GPUImageRotationMode)newInputRotation atIndex:(NSInteger)textureIndex;
 {
     [super setInputRotation:newInputRotation atIndex:textureIndex];
+    [self setBlurCenter:self.blurCenter];    
     [self adjustAspectRatio];
 }
 
@@ -210,8 +211,8 @@ NSString *const kGPUImageGaussianBlurPositionFragmentShaderString = SHADER_STRIN
 - (void) setBlurCenter:(CGPoint)blurCenter;
 {
     _blurCenter = blurCenter;
-
-    [self setPoint:_blurCenter forUniform:blurCenterUniform program:secondFilterProgram];
+    CGPoint rotatedPoint = [self rotatedPoint:blurCenter forRotation:inputRotation];
+    [self setPoint:rotatedPoint forUniform:blurCenterUniform program:secondFilterProgram];
 }
 
 - (void) setBlurRadius:(CGFloat)blurRadius;

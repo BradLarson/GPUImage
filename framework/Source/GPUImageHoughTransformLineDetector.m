@@ -25,17 +25,20 @@
 #endif
     
     // First pass: do edge detection and threshold that to just have white pixels for edges
-    if ([GPUImageContext deviceSupportsFramebufferReads])
-    {
+//    if ([GPUImageContext deviceSupportsFramebufferReads])
+//    if ([GPUImageContext deviceSupportsFramebufferReads])
+//    {
         thresholdEdgeDetectionFilter = [[GPUImageThresholdEdgeDetectionFilter alloc] init];
 //        thresholdEdgeDetectionFilter = [[GPUImageSobelEdgeDetectionFilter alloc] init];
-        [(GPUImageThresholdEdgeDetectionFilter *)thresholdEdgeDetectionFilter setThreshold:0.8];
+        [(GPUImageThresholdEdgeDetectionFilter *)thresholdEdgeDetectionFilter setThreshold:0.4];
+//        [(GPUImageThresholdEdgeDetectionFilter *)thresholdEdgeDetectionFilter setEdgeStrength:0.25];
+        [(GPUImageThresholdEdgeDetectionFilter *)thresholdEdgeDetectionFilter setEdgeStrength:1.0];
 //        thresholdEdgeDetectionFilter = [[GPUImageCannyEdgeDetectionFilter alloc] init];
-    }
-    else
-    {
-        thresholdEdgeDetectionFilter = [[GPUImageCannyEdgeDetectionFilter alloc] init];
-    }
+//    }
+//    else
+//    {
+//        thresholdEdgeDetectionFilter = [[GPUImageCannyEdgeDetectionFilter alloc] init];
+//    }
     [self addFilter:thresholdEdgeDetectionFilter];
     
 #ifdef DEBUGLINEDETECTION
@@ -111,6 +114,9 @@
 
 - (void)extractLineParametersFromImageAtFrameTime:(CMTime)frameTime;
 {
+    // we need a normal color texture for this filter
+    NSAssert(self.outputTextureOptions.internalFormat == GL_RGBA, @"The output texture format for this filter must be GL_RGBA.");
+    NSAssert(self.outputTextureOptions.type == GL_UNSIGNED_BYTE, @"The type of the output texture of this filter must be GL_UNSIGNED_BYTE.");
     
     NSUInteger numberOfLines = 0;
     CGSize imageSize = nonMaximumSuppressionFilter.outputFrameSize;
@@ -195,7 +201,8 @@
 
 - (BOOL)wantsMonochromeInput;
 {
-    return YES;
+//    return YES;
+    return NO;
 }
 
 #pragma mark -

@@ -17,6 +17,8 @@
 #import "GPUImageTextureInput.h"
 #import "GPUImageUIElement.h"
 #import "GPUImageBuffer.h"
+#import "GPUImageFramebuffer.h"
+#import "GPUImageFramebufferCache.h"
 
 // Filters
 #import "GPUImageFilter.h"
@@ -48,7 +50,6 @@
 #import "GPUImageDarkenBlendFilter.h"
 #import "GPUImageLightenBlendFilter.h"
 #import "GPUImageSwirlFilter.h"
-#import "GPUImageFastBlurFilter.h"
 #import "GPUImageSourceOverBlendFilter.h"
 #import "GPUImageColorBurnBlendFilter.h"
 #import "GPUImageColorDodgeBlendFilter.h"
@@ -90,6 +91,7 @@
 #import "GPUImageMaskFilter.h"
 #import "GPUImageHistogramFilter.h"
 #import "GPUImageHistogramGenerator.h"
+#import "GPUImageHistogramEqualizationFilter.h"
 #import "GPUImagePrewittEdgeDetectionFilter.h"
 #import "GPUImageXYDerivativeFilter.h"
 #import "GPUImageHarrisCornerDetectionFilter.h"
@@ -117,6 +119,7 @@
 #import "GPUImageOpacityFilter.h"
 #import "GPUImageHighlightShadowFilter.h"
 #import "GPUImageFalseColorFilter.h"
+#import "GPUImageHSBFilter.h"
 #import "GPUImageHueFilter.h"
 #import "GPUImageGlassSphereFilter.h"
 #import "GPUImageLookupFilter.h"
@@ -151,3 +154,5 @@
 #import "GPUImageMotionBlurFilter.h"
 #import "GPUImageZoomBlurFilter.h"
 #import "GPUImageLaplacianFilter.h"
+#import "GPUImageiOSBlurFilter.h"
+#import "GPUImageLuminanceRangeFilter.h"

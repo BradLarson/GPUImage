@@ -303,7 +303,7 @@ NSString *const kGPUImageToneCurveFragmentShaderString = SHADER_STRING
 
         // Insert points similarly at the end, if necessary.
 #if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
-        CGPoint lastSplinePoint = [[splinePoints objectAtIndex:([splinePoints count] - 1)] CGPointValue];
+        CGPoint lastSplinePoint = [[splinePoints lastObject] CGPointValue];
 
         if (lastSplinePoint.x < 255) {
             for (int i = lastSplinePoint.x + 1; i <= 255; i++) {
@@ -312,7 +312,7 @@ NSString *const kGPUImageToneCurveFragmentShaderString = SHADER_STRING
             }
         }
 #else
-        NSPoint lastSplinePoint = [[splinePoints objectAtIndex:([splinePoints count] - 1)] pointValue];
+        NSPoint lastSplinePoint = [[splinePoints lastObject] pointValue];
         
         if (lastSplinePoint.x < 255) {
             for (int i = lastSplinePoint.x + 1; i <= 255; i++) {
@@ -354,8 +354,7 @@ NSString *const kGPUImageToneCurveFragmentShaderString = SHADER_STRING
 {
     NSMutableArray *sdA = [self secondDerivative:points];
     
-    // Is [points count] equal to [sdA count]?
-//    int n = [points count];
+    // [points count] is equal to [sdA count]
     NSInteger n = [sdA count];
     if (n < 1)
     {
@@ -408,16 +407,14 @@ NSString *const kGPUImageToneCurveFragmentShaderString = SHADER_STRING
         }
     }
     
-    // If the last point is (255, 255) it doesn't get added.
-    if ([output count] == 255) {
-        [output addObject:[points lastObject]];
-    }
+    // The above always misses the last point because the last point is the last next, so we approach but don't equal it.
+    [output addObject:[points lastObject]];
     return output;
 }
 
 - (NSMutableArray *)secondDerivative:(NSArray *)points
 {
-    NSInteger n = [points count];
+    const NSInteger n = [points count];
     if ((n <= 0) || (n == 1))
     {
         return nil;
@@ -513,9 +510,12 @@ NSString *const kGPUImageToneCurveFragmentShaderString = SHADER_STRING
             for (unsigned int currentCurveIndex = 0; currentCurveIndex < 256; currentCurveIndex++)
             {
                 // BGRA for upload to texture
-                toneCurveByteArray[currentCurveIndex * 4] = fmin(fmax(currentCurveIndex + [[_blueCurve objectAtIndex:currentCurveIndex] floatValue] + [[_rgbCompositeCurve objectAtIndex:currentCurveIndex] floatValue], 0), 255);
-                toneCurveByteArray[currentCurveIndex * 4 + 1] = fmin(fmax(currentCurveIndex + [[_greenCurve objectAtIndex:currentCurveIndex] floatValue] + [[_rgbCompositeCurve objectAtIndex:currentCurveIndex] floatValue], 0), 255);
-                toneCurveByteArray[currentCurveIndex * 4 + 2] = fmin(fmax(currentCurveIndex + [[_redCurve objectAtIndex:currentCurveIndex] floatValue] + [[_rgbCompositeCurve objectAtIndex:currentCurveIndex] floatValue], 0), 255);
+                GLubyte b = fmin(fmax(currentCurveIndex + [[_blueCurve objectAtIndex:currentCurveIndex] floatValue], 0), 255);
+                toneCurveByteArray[currentCurveIndex * 4] = fmin(fmax(b + [[_rgbCompositeCurve objectAtIndex:b] floatValue], 0), 255);
+                GLubyte g = fmin(fmax(currentCurveIndex + [[_greenCurve objectAtIndex:currentCurveIndex] floatValue], 0), 255);
+                toneCurveByteArray[currentCurveIndex * 4 + 1] = fmin(fmax(g + [[_rgbCompositeCurve objectAtIndex:g] floatValue], 0), 255);
+                GLubyte r = fmin(fmax(currentCurveIndex + [[_redCurve objectAtIndex:currentCurveIndex] floatValue], 0), 255);
+                toneCurveByteArray[currentCurveIndex * 4 + 2] = fmin(fmax(r + [[_rgbCompositeCurve objectAtIndex:r] floatValue], 0), 255);
                 toneCurveByteArray[currentCurveIndex * 4 + 3] = 255;
             }
             
@@ -527,21 +527,27 @@ NSString *const kGPUImageToneCurveFragmentShaderString = SHADER_STRING
 #pragma mark -
 #pragma mark Rendering
 
-- (void)renderToTextureWithVertices:(const GLfloat *)vertices textureCoordinates:(const GLfloat *)textureCoordinates sourceTexture:(GLuint)sourceTexture;
+- (void)renderToTextureWithVertices:(const GLfloat *)vertices textureCoordinates:(const GLfloat *)textureCoordinates;
 {
     if (self.preventRendering)
     {
+        [firstInputFramebuffer unlock];
         return;
     }
     
     [GPUImageContext setActiveShaderProgram:filterProgram];
-    [self setFilterFBO];
-    
+    outputFramebuffer = [[GPUImageContext sharedFramebufferCache] fetchFramebufferForSize:[self sizeOfFBO] textureOptions:self.outputTextureOptions onlyTexture:NO];
+    [outputFramebuffer activateFramebuffer];
+    if (usingNextFrameForImageCapture)
+    {
+        [outputFramebuffer lock];
+    }
+
     glClearColor(backgroundColorRed, backgroundColorGreen, backgroundColorBlue, backgroundColorAlpha);
     glClear(GL_COLOR_BUFFER_BIT);
     
   	glActiveTexture(GL_TEXTURE2);
-  	glBindTexture(GL_TEXTURE_2D, sourceTexture);
+  	glBindTexture(GL_TEXTURE_2D, [firstInputFramebuffer texture]);
   	glUniform1i(filterInputTextureUniform, 2);	
     
     glActiveTexture(GL_TEXTURE3);
@@ -551,7 +557,12 @@ NSString *const kGPUImageToneCurveFragmentShaderString = SHADER_STRING
     glVertexAttribPointer(filterPositionAttribute, 2, GL_FLOAT, 0, 0, vertices);
     glVertexAttribPointer(filterTextureCoordinateAttribute, 2, GL_FLOAT, 0, 0, textureCoordinates);
     
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);    
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+    [firstInputFramebuffer unlock];
+    if (usingNextFrameForImageCapture)
+    {
+        dispatch_semaphore_signal(imageCaptureSemaphore);
+    }
 }
 
 #pragma mark -
