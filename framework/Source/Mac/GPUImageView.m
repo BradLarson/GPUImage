@@ -355,12 +355,24 @@
         glVertexAttribPointer(displayPositionAttribute, 2, GL_FLOAT, 0, 0, imageVertices);
         glVertexAttribPointer(displayTextureCoordinateAttribute, 2, GL_FLOAT, 0, 0, [GPUImageView textureCoordinatesForRotation:inputRotation]);
 
-        [self lockFocus];
-        glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-
-        [self presentFramebuffer];
-        glBindTexture(GL_TEXTURE_2D, 0);
-        [self unlockFocus];
+        BOOL canLockFocus = YES;
+        if ([self respondsToSelector:@selector(lockFocusIfCanDraw)])
+        {
+            canLockFocus = [self lockFocusIfCanDraw];
+        }
+        else
+        {
+            [self lockFocus];
+        }
+        
+        if (canLockFocus)
+        {
+            glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+            
+            [self presentFramebuffer];
+            glBindTexture(GL_TEXTURE_2D, 0);
+            [self unlockFocus];
+        }
         
         [inputFramebufferForDisplay unlock];
         inputFramebufferForDisplay = nil;
