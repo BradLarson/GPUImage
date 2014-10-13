@@ -102,6 +102,10 @@ extern NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString
 
 /// @name Manage the camera video stream
 
+/** Check if camera capturing now
+ */
+- (BOOL)isRunning;
+
 /** Start camera capturing
  */
 - (void)startCameraCapture;
