@@ -98,6 +98,7 @@ FOUNDATION_EXPORT const unsigned char GPUImageFrameworkVersionString[];
 #import <GPUImage/GPUImageThresholdEdgeDetectionFilter.h>
 #import <GPUImage/GPUImageMaskFilter.h>
 #import <GPUImage/GPUImageHistogramFilter.h>
+#import <GPUImage/GPUImageHistogramEqualizationFilter.h>
 #import <GPUImage/GPUImageHistogramGenerator.h>
 #import <GPUImage/GPUImagePrewittEdgeDetectionFilter.h>
 #import <GPUImage/GPUImageXYDerivativeFilter.h>
