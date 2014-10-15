@@ -212,7 +212,7 @@
 
     if (shouldRecordAudioTrack)
     {
-        [self.audioEncodingTarget setShouldInvalidateAudioSampleWhenDone:YES];
+        [self.audioEncodingTarget setShouldInvalidateAudioSampleWhenDone:NO];
         
         // This might need to be extended to handle movies with more than one audio track
         AVAssetTrack* audioTrack = [audioTracks objectAtIndex:0];
