@@ -117,6 +117,8 @@ typedef struct GPUMatrix3x3 GPUMatrix3x3;
 - (void)setFloatVec3:(GPUVector3)newVec3 forUniformName:(NSString *)uniformName;
 - (void)setFloatVec4:(GPUVector4)newVec4 forUniform:(NSString *)uniformName;
 - (void)setFloatArray:(GLfloat *)array length:(GLsizei)count forUniform:(NSString*)uniformName;
+- (void)setMatrix3f:(GPUMatrix3x3)matrix forUniformName:(NSString *)uniformName;
+- (void)setMatrix4f:(GPUMatrix4x4)matrix forUniformName:(NSString *)uniformName;
 
 - (void)setMatrix3f:(GPUMatrix3x3)matrix forUniform:(GLint)uniform program:(GLProgram *)shaderProgram;
 - (void)setMatrix4f:(GPUMatrix4x4)matrix forUniform:(GLint)uniform program:(GLProgram *)shaderProgram;
