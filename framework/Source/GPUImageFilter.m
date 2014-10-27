@@ -432,6 +432,18 @@ NSString *const kGPUImagePassthroughFragmentShaderString = SHADER_STRING
     [self setFloatArray:array length:count forUniform:uniformIndex program:filterProgram];
 }
 
+- (void)setMatrix3f:(GPUMatrix3x3)matrix forUniformName:(NSString *)uniformName {
+    GLint uniformIndex = [filterProgram uniformIndex:uniformName];
+    
+    [self setMatrix3f:matrix forUniform:uniformIndex program:filterProgram];
+}
+
+- (void)setMatrix4f:(GPUMatrix4x4)matrix forUniformName:(NSString *)uniformName {
+    GLint uniformIndex = [filterProgram uniformIndex:uniformName];
+    
+    [self setMatrix4f:matrix forUniform:uniformIndex program:filterProgram];
+}
+
 - (void)setMatrix3f:(GPUMatrix3x3)matrix forUniform:(GLint)uniform program:(GLProgram *)shaderProgram;
 {
     runAsynchronouslyOnVideoProcessingQueue(^{
