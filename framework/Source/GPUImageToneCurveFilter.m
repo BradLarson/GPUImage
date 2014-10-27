@@ -1,35 +1,5 @@
 #import "GPUImageToneCurveFilter.h"
 
-#pragma mark -
-#pragma mark GPUImageACVFile Helper
-
-//  GPUImageACVFile
-//
-//  ACV File format Parser
-//  Please refer to http://www.adobe.com/devnet-apps/photoshop/fileformatashtml/PhotoshopFileFormats.htm#50577411_pgfId-1056330
-//
-
-@interface GPUImageACVFile : NSObject{
-    short version;
-    short totalCurves;
-    
-    NSArray *rgbCompositeCurvePoints;
-    NSArray *redCurvePoints;
-    NSArray *greenCurvePoints;    
-    NSArray *blueCurvePoints;
-}
-
-@property(strong,nonatomic) NSArray *rgbCompositeCurvePoints;
-@property(strong,nonatomic) NSArray *redCurvePoints;
-@property(strong,nonatomic) NSArray *greenCurvePoints;    
-@property(strong,nonatomic) NSArray *blueCurvePoints;
-
-- (id) initWithACVFileData:(NSData*)data;
-
-
-unsigned short int16WithBytes(Byte* bytes);
-@end
-
 @implementation GPUImageACVFile
 
 @synthesize rgbCompositeCurvePoints, redCurvePoints, greenCurvePoints, blueCurvePoints;
@@ -212,6 +182,14 @@ NSString *const kGPUImageToneCurveFragmentShaderString = SHADER_STRING
 - (void)setPointsWithACV:(NSString*)curveFilename
 {
     [self setPointsWithACVURL:[[NSBundle mainBundle] URLForResource:curveFilename withExtension:@"acv"]];
+}
+
+- (void)setPointsWithACVFile:(GPUImageACVFile *)curve
+{
+    [self setRgbCompositeControlPoints:curve.rgbCompositeCurvePoints];
+    [self setRedControlPoints:curve.redCurvePoints];
+    [self setGreenControlPoints:curve.greenCurvePoints];
+    [self setBlueControlPoints:curve.blueCurvePoints];
 }
 
 - (void)setPointsWithACVURL:(NSURL*)curveFileURL
