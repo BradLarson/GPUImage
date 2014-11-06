@@ -200,16 +200,6 @@ NSString *const kGPUImageHistogramAccumulationFragmentShaderString = SHADER_STRI
     return self;
 }
 
-- (id)init;
-{
-    if (!(self = [self initWithHistogramType:kGPUImageHistogramRGB]))
-    {
-        return nil;
-    }
-
-    return self;
-}
-
 - (void)initializeSecondaryAttributes;
 {
     [secondFilterProgram addAttribute:@"position"];
@@ -268,6 +258,7 @@ NSString *const kGPUImageHistogramAccumulationFragmentShaderString = SHADER_STRI
     if (self.preventRendering)
     {
         [firstInputFramebuffer unlock];
+        firstInputFramebuffer = nil;
         return;
     }
     
@@ -319,6 +310,7 @@ NSString *const kGPUImageHistogramAccumulationFragmentShaderString = SHADER_STRI
     
     glDisable(GL_BLEND);
     [firstInputFramebuffer unlock];
+    firstInputFramebuffer = nil;
 
     if (usingNextFrameForImageCapture)
     {

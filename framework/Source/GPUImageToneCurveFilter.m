@@ -532,6 +532,7 @@ NSString *const kGPUImageToneCurveFragmentShaderString = SHADER_STRING
     if (self.preventRendering)
     {
         [firstInputFramebuffer unlock];
+        firstInputFramebuffer = nil;
         return;
     }
     
@@ -559,6 +560,7 @@ NSString *const kGPUImageToneCurveFragmentShaderString = SHADER_STRING
     
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
     [firstInputFramebuffer unlock];
+    firstInputFramebuffer = nil;
     if (usingNextFrameForImageCapture)
     {
         dispatch_semaphore_signal(imageCaptureSemaphore);

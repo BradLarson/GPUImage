@@ -114,6 +114,7 @@ NSString *const kGPUImageColorAveragingFragmentShaderString = SHADER_STRING
     if (self.preventRendering)
     {
         [firstInputFramebuffer unlock];
+        firstInputFramebuffer = nil;
         return;
     }
     
@@ -160,6 +161,7 @@ NSString *const kGPUImageColorAveragingFragmentShaderString = SHADER_STRING
     }
 
     [firstInputFramebuffer unlock];
+    firstInputFramebuffer = nil;
 }
 
 - (void)setInputRotation:(GPUImageRotationMode)newInputRotation atIndex:(NSInteger)textureIndex;

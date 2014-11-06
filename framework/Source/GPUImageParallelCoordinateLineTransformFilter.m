@@ -146,6 +146,7 @@ NSString *const kGPUImageHoughAccumulationFBOReadFragmentShaderString = SHADER_S
     if (self.preventRendering)
     {
         [firstInputFramebuffer unlock];
+        firstInputFramebuffer = nil;
         return;
     }
     
@@ -248,6 +249,7 @@ NSString *const kGPUImageHoughAccumulationFBOReadFragmentShaderString = SHADER_S
         glDisable(GL_BLEND);
     }
     [firstInputFramebuffer unlock];
+    firstInputFramebuffer = nil;
 }
 
 @end

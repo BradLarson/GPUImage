@@ -42,6 +42,10 @@
 // TODO: Deal with the fact that the texture changes regularly as a result of the caching
 - (void)setInputFramebuffer:(GPUImageFramebuffer *)newInputFramebuffer atIndex:(NSInteger)textureIndex;
 {
+    if (firstInputFramebuffer) {
+        [firstInputFramebuffer unlock];
+        firstInputFramebuffer = nil;
+    }
     firstInputFramebuffer = newInputFramebuffer;
     [firstInputFramebuffer lock];
     

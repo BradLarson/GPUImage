@@ -90,6 +90,8 @@ NSString *const kGPUImageTwoInputTextureVertexShaderString = SHADER_STRING
     {
         [firstInputFramebuffer unlock];
         [secondInputFramebuffer unlock];
+        firstInputFramebuffer = nil;
+        secondInputFramebuffer = nil;
         return;
     }
     
@@ -122,6 +124,8 @@ NSString *const kGPUImageTwoInputTextureVertexShaderString = SHADER_STRING
 
     [firstInputFramebuffer unlock];
     [secondInputFramebuffer unlock];
+    firstInputFramebuffer = nil;
+    secondInputFramebuffer = nil;
     if (usingNextFrameForImageCapture)
     {
         dispatch_semaphore_signal(imageCaptureSemaphore);
@@ -147,12 +151,20 @@ NSString *const kGPUImageTwoInputTextureVertexShaderString = SHADER_STRING
 {
     if (textureIndex == 0)
     {
+        if (firstInputFramebuffer) {
+            [firstInputFramebuffer unlock];
+            firstInputFramebuffer = nil;
+        }
         firstInputFramebuffer = newInputFramebuffer;
         hasSetFirstTexture = YES;
         [firstInputFramebuffer lock];
     }
     else
     {
+        if (secondInputFramebuffer) {
+            [secondInputFramebuffer unlock];
+            secondInputFramebuffer = nil;
+        }
         secondInputFramebuffer = newInputFramebuffer;
         [secondInputFramebuffer lock];
     }
@@ -167,6 +179,18 @@ NSString *const kGPUImageTwoInputTextureVertexShaderString = SHADER_STRING
         if (CGSizeEqualToSize(newSize, CGSizeZero))
         {
             hasSetFirstTexture = NO;
+            if (firstInputFramebuffer) {
+                [firstInputFramebuffer unlock];
+                firstInputFramebuffer = nil;
+            }
+        }
+    }
+    else {
+        if (CGSizeEqualToSize(newSize, CGSizeZero)) {
+            if (secondInputFramebuffer) {
+                [secondInputFramebuffer unlock];
+                secondInputFramebuffer = nil;
+            }
         }
     }
 }

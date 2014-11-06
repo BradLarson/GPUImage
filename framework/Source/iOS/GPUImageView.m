@@ -397,6 +397,10 @@
 
 - (void)setInputFramebuffer:(GPUImageFramebuffer *)newInputFramebuffer atIndex:(NSInteger)textureIndex;
 {
+    if (inputFramebufferForDisplay) {
+        [inputFramebufferForDisplay unlock];
+        inputFramebufferForDisplay = nil;
+    }
     inputFramebufferForDisplay = newInputFramebuffer;
     [inputFramebufferForDisplay lock];
 }
@@ -421,6 +425,12 @@
         {
             inputImageSize = rotatedSize;
             [self recalculateViewGeometry];
+        }
+        if (CGSizeEqualToSize(rotatedSize, CGSizeZero)) {
+            if (inputFramebufferForDisplay) {
+                [inputFramebufferForDisplay unlock];
+                inputFramebufferForDisplay = nil;
+            }
         }
     });
 }
