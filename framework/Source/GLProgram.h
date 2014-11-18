@@ -39,4 +39,5 @@
 - (NSString *)fragmentShaderLog;
 - (NSString *)programLog;
 - (void)validate;
+- (GLuint) getFilterProgramID;
 @end

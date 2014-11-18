@@ -255,6 +255,11 @@ typedef void (*GLLogFunction) (GLuint program,
 	}	
 }
 
+- (GLuint) getFilterProgramID;
+{
+  return program;
+}
+
 #pragma mark -
 // START:dealloc
 - (void)dealloc
