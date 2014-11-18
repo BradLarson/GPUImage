@@ -747,6 +747,16 @@ NSString *const kGPUImagePassthroughFragmentShaderString = SHADER_STRING
     return NO;
 }
 
+- (GLProgram*) getFilterProgram;
+{
+  return filterProgram;
+}
+
+- (GLuint) getFilterProgramID;
+{
+  return [filterProgram getFilterProgramID];
+}
+
 #pragma mark -
 #pragma mark Accessors
 

@@ -71,6 +71,9 @@ typedef struct GPUMatrix3x3 GPUMatrix3x3;
 
 /// @name Initialization and teardown
 
+- (GLProgram*) getFilterProgram;
+- (GLuint) getFilterProgramID;
+
 /**
  Initialize with vertex and fragment shaders
  
