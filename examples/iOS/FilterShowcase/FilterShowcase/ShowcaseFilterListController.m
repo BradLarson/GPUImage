@@ -69,6 +69,7 @@
     
 	switch (index)
 	{
+        case GPUIMAGE_NOTHING: cell.textLabel.text = @"Nothing"; break;
 		case GPUIMAGE_SATURATION: cell.textLabel.text = @"Saturation"; break;
 		case GPUIMAGE_CONTRAST: cell.textLabel.text = @"Contrast"; break;
 		case GPUIMAGE_BRIGHTNESS: cell.textLabel.text = @"Brightness"; break;

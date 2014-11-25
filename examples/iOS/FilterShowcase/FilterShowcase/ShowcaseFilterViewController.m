@@ -62,7 +62,7 @@
 
 - (void)setupFilter;
 {
-    videoCamera = [[GPUImageVideoCamera alloc] initWithSessionPreset:AVCaptureSessionPreset640x480 cameraPosition:AVCaptureDevicePositionBack];
+    videoCamera = [[GPUImageVideoCamera alloc] initWithSessionPreset:AVCaptureSessionPreset640x480 cameraPosition:AVCaptureDevicePositionFront];
 //    videoCamera = [[GPUImageVideoCamera alloc] initWithSessionPreset:AVCaptureSessionPreset1280x720 cameraPosition:AVCaptureDevicePositionBack];
 //    videoCamera = [[GPUImageVideoCamera alloc] initWithSessionPreset:AVCaptureSessionPreset1920x1080 cameraPosition:AVCaptureDevicePositionBack];
 //    videoCamera = [[GPUImageVideoCamera alloc] initWithSessionPreset:AVCaptureSessionPreset640x480 cameraPosition:AVCaptureDevicePositionFront];
@@ -73,6 +73,13 @@
     
     switch (filterType)
     {
+        case GPUIMAGE_NOTHING:
+        {
+            self.title = @"Nothing";
+            self.filterSettingsSlider.hidden = YES;
+            
+            filter = nil;
+        }; break;
         case GPUIMAGE_SEPIA:
         {
             self.title = @"Sepia Tone";
@@ -1296,6 +1303,7 @@
         default: filter = [[GPUImageSepiaFilter alloc] init]; break;
     }
     
+    videoCamera.runBenchmark = YES;
     if (filterType == GPUIMAGE_FILECONFIG)
     {
         self.title = @"File Configuration";
@@ -1307,12 +1315,11 @@
     else 
     {
     
-        if (filterType != GPUIMAGE_VORONOI)
+        if (filterType != GPUIMAGE_VORONOI && filterType != GPUIMAGE_NOTHING)
         {
             [videoCamera addTarget:filter];
         }
         
-        videoCamera.runBenchmark = YES;
         GPUImageView *filterView = (GPUImageView *)self.view;
         
         if (needsSecondImage)
@@ -1540,6 +1547,9 @@
             
             [videoCamera addTarget:filterView];
         }
+        else if (filterType == GPUIMAGE_NOTHING ) {
+            [videoCamera addTarget:filterView];
+        }
         else
         {
             [filter addTarget:filterView];
@@ -1552,9 +1562,13 @@
 #pragma mark -
 #pragma mark Filter adjustments
 
-- (IBAction)updateFilterFromSlider:(id)sender;
+- (IBAction)sliderInteractionBeganOrEnded:(id)sender
 {
     [videoCamera resetBenchmarkAverage];
+}
+
+- (IBAction)updateFilterFromSlider:(id)sender
+{
     switch(filterType)
     {
         case GPUIMAGE_SEPIA: [(GPUImageSepiaFilter *)filter setIntensity:[(UISlider *)sender value]]; break;
