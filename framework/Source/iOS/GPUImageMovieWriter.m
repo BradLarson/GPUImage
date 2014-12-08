@@ -146,7 +146,7 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 {
     [self destroyDataFBO];
 
-#if ( (__IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_6_0) || (!defined(__IPHONE_6_0)) )
+#if !OS_OBJECT_USE_OBJC
     if( audioQueue != NULL )
     {
         dispatch_release(audioQueue);
@@ -249,6 +249,19 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
     assetWriterPixelBufferInput = [AVAssetWriterInputPixelBufferAdaptor assetWriterInputPixelBufferAdaptorWithAssetWriterInput:assetWriterVideoInput sourcePixelBufferAttributes:sourcePixelBufferAttributesDictionary];
     
     [assetWriter addInput:assetWriterVideoInput];
+}
+
+- (void)setEncodingLiveVideo:(BOOL) value
+{
+    _encodingLiveVideo = value;
+    if (isRecording) {
+        NSAssert(NO, @"Can not change Encoding Live Video while recording");
+    }
+    else
+    {
+        assetWriterVideoInput.expectsMediaDataInRealTime = _encodingLiveVideo;
+        assetWriterAudioInput.expectsMediaDataInRealTime = _encodingLiveVideo;
+    }
 }
 
 - (void)startRecording;

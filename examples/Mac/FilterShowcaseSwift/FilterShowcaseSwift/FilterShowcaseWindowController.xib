@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="6185.11" systemVersion="13E28" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="6206.9" systemVersion="14A343f" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="6185.11"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="6206.9"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="FilterShowcaseWindowController" customModule="FilterShowcaseSwift" customModuleProvider="target">
@@ -17,7 +17,7 @@
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="196" y="240" width="854" height="553"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1440" height="878"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1417"/>
             <value key="minSize" type="size" width="854" height="553"/>
             <view key="contentView" id="se5-gp-TjO">
                 <rect key="frame" x="0.0" y="0.0" width="854" height="553"/>
@@ -30,7 +30,7 @@
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="none" alternatingRowBackgroundColors="YES" columnReordering="NO" columnResizing="NO" multipleSelection="NO" emptySelection="NO" autosaveColumns="NO" headerView="LVY-kd-B4F" id="r9a-fG-dm6">
-                                    <rect key="frame" x="0.0" y="0.0" width="164" height="495"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="163" height="19"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <size key="intercellSpacing" width="3" height="2"/>
                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -62,7 +62,7 @@
                             <rect key="frame" x="1" y="490" width="162" height="16"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
-                        <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" doubleValue="37" horizontal="NO" id="gCU-GR-Vbz">
+                        <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="gCU-GR-Vbz">
                             <rect key="frame" x="224" y="17" width="15" height="102"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
@@ -78,10 +78,10 @@
                         <rect key="frame" x="192" y="18" width="644" height="21"/>
                         <sliderCell key="cell" continuous="YES" state="on" alignment="left" maxValue="100" doubleValue="50" tickMarkPosition="above" sliderType="linear" id="eCP-Ee-swu">
                             <connections>
+                                <binding destination="-2" name="value" keyPath="currentSliderValue" previousBinding="FRC-jc-Gii" id="2XB-CD-K06"/>
                                 <binding destination="-2" name="enabled" keyPath="enableSlider" id="Hy7-QT-aYD"/>
                                 <binding destination="-2" name="maxValue" keyPath="maximumSliderValue" id="DXq-Mq-xJp"/>
                                 <binding destination="-2" name="minValue" keyPath="minimumSliderValue" previousBinding="DXq-Mq-xJp" id="FRC-jc-Gii"/>
-                                <binding destination="-2" name="value" keyPath="currentSliderValue" previousBinding="FRC-jc-Gii" id="2XB-CD-K06"/>
                             </connections>
                         </sliderCell>
                     </slider>

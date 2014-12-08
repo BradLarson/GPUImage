@@ -174,15 +174,17 @@
     GPUImageMovie __block *blockSelf = self;
     
     [inputAsset loadValuesAsynchronouslyForKeys:[NSArray arrayWithObject:@"tracks"] completionHandler: ^{
-        NSError *error = nil;
-        AVKeyValueStatus tracksStatus = [inputAsset statusOfValueForKey:@"tracks" error:&error];
-        if (tracksStatus != AVKeyValueStatusLoaded)
-        {
-            return;
-        }
-        blockSelf.asset = inputAsset;
-        [blockSelf processAsset];
-        blockSelf = nil;
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            NSError *error = nil;
+            AVKeyValueStatus tracksStatus = [inputAsset statusOfValueForKey:@"tracks" error:&error];
+            if (tracksStatus != AVKeyValueStatusLoaded)
+            {
+                return;
+            }
+            blockSelf.asset = inputAsset;
+            [blockSelf processAsset];
+            blockSelf = nil;
+        });
     }];
 }
 
@@ -275,7 +277,7 @@
 
         }
 
-        if (reader.status == AVAssetWriterStatusCompleted) {
+        if (reader.status == AVAssetReaderStatusCompleted) {
                 
             [reader cancelReading];
 
@@ -296,7 +298,7 @@
 {
     runSynchronouslyOnVideoProcessingQueue(^{
         displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(displayLinkCallback:)];
-        [displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+        [displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];
         [displayLink setPaused:YES];
 
         dispatch_queue_t videoProcessingQueue = [GPUImageContext sharedContextQueue];
