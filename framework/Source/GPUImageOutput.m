@@ -407,4 +407,22 @@ void reportAvailableMemoryForGPUImage(NSString *tag)
     }
 }
 
+-(void)setOutputTextureOptions:(GPUTextureOptions)outputTextureOptions
+{
+    _outputTextureOptions = outputTextureOptions;
+    
+    if( outputFramebuffer.texture )
+    {
+        glBindTexture(GL_TEXTURE_2D,  outputFramebuffer.texture);
+        //_outputTextureOptions.format
+        //_outputTextureOptions.internalFormat
+        //_outputTextureOptions.magFilter
+        //_outputTextureOptions.minFilter
+        //_outputTextureOptions.type
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, _outputTextureOptions.wrapS);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, _outputTextureOptions.wrapT);
+        glBindTexture(GL_TEXTURE_2D, 0);
+    }
+}
+
 @end
