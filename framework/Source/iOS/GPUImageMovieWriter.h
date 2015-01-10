@@ -22,7 +22,11 @@ extern NSString *const kGPUImageColorSwizzlingFragmentShaderString;
 	AVAssetWriterInput *assetWriterAudioInput;
 	AVAssetWriterInput *assetWriterVideoInput;
     AVAssetWriterInputPixelBufferAdaptor *assetWriterPixelBufferInput;
-    
+
+    AVAssetReader *assetAudioReader;
+    AVAssetReaderAudioMixOutput *assetAudioReaderTrackOutput;
+
+
     GPUImageContext *_movieWriterContext;
     CVPixelBufferRef renderTarget;
     CVOpenGLESTextureRef renderTexture;
@@ -64,4 +68,11 @@ extern NSString *const kGPUImageColorSwizzlingFragmentShaderString;
 - (void)processAudioBuffer:(CMSampleBufferRef)audioBuffer;
 - (void)enableSynchronizationCallbacks;
 
+- (void)setupAudioReaderWithTracks:(NSMutableArray *)audioTracks;
+
+- (void)startAudioWritingWithComplectionBlock:(void (^)())pFunction;
+
+- (void)startAudioRecording;
+
+- (void)finishVideoRecordingWithCompletionHandler:(void (^)(void))handler;
 @end

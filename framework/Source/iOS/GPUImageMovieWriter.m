@@ -275,7 +275,7 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
         }
     });
     isRecording = YES;
-	//    [assetWriter startSessionAtSourceTime:kCMTimeZero];
+    [assetWriter startSessionAtSourceTime:kCMTimeZero];
 }
 
 - (void)startRecordingInOrientation:(CGAffineTransform)orientationTransform;
@@ -308,6 +308,19 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
         }
         [assetWriter cancelWriting];
     });
+}
+
+- (void)finishVideoRecordingWithCompletionHandler:(void (^)(void))handler{
+
+    runSynchronouslyOnContextQueue(_movieWriterContext, ^{
+        isRecording = NO;
+        videoEncodingIsFinished = YES;
+        [assetWriterVideoInput markAsFinished];
+
+        if (handler)
+            runAsynchronouslyOnContextQueue(_movieWriterContext, handler);
+    });
+
 }
 
 - (void)finishRecording;
@@ -440,7 +453,7 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
             }
             else
             {
-                //NSLog(@"Wrote an audio frame %@", CFBridgingRelease(CMTimeCopyDescription(kCFAllocatorDefault, currentSampleTime)));
+                NSLog(@"Wrote an audio frame %@", CFBridgingRelease(CMTimeCopyDescription(kCFAllocatorDefault, currentSampleTime)));
             }
 
             if (_shouldInvalidateAudioSampleWhenDone)
@@ -744,12 +757,17 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
             }
             else if(self.assetWriter.status == AVAssetWriterStatusWriting)
             {
-                if (![assetWriterPixelBufferInput appendPixelBuffer:pixel_buffer withPresentationTime:frameTime])
+                if (![assetWriterPixelBufferInput appendPixelBuffer:pixel_buffer withPresentationTime:frameTime]){
+                    
                     NSLog(@"Problem appending pixel buffer at time: %@", CFBridgingRelease(CMTimeCopyDescription(kCFAllocatorDefault, frameTime)));
-            }
-            else
+                }else{
+                    //NSLog(@"Wrote a video frame: %@", CFBridgingRelease(CMTimeCopyDescription(kCFAllocatorDefault, frameTime)));
+                }
+                
+                
+            } else
             {
-                NSLog(@"Couldn't write a frame");
+                //NSLog(@"Couldn't write a frame");
                 //NSLog(@"Wrote a video frame: %@", CFBridgingRelease(CMTimeCopyDescription(kCFAllocatorDefault, frameTime)));
             }
             CVPixelBufferUnlockBaseAddress(pixel_buffer, 0);
@@ -929,6 +947,90 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 
 - (AVAssetWriter*)assetWriter {
     return assetWriter;
+}
+
+
+- (void)setupAudioReaderWithTracks:(NSMutableArray *)audioTracks {
+    if(audioTracks.count > 0){
+        AVMutableComposition* mixComposition = [AVMutableComposition composition];
+
+        for(AVAssetTrack *track in audioTracks){
+
+            NSLog(@"track url: %@ duration: %.2f", track.asset, CMTimeGetSeconds(track.asset.duration));
+            AVMutableCompositionTrack *compositionCommentaryTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeAudio
+
+                                                                                                preferredTrackID:kCMPersistentTrackID_Invalid];
+            [compositionCommentaryTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, track.asset.duration)
+                                                ofTrack:track
+                                                 atTime:kCMTimeZero error:nil];
+
+        }
+
+        assetAudioReader = [AVAssetReader assetReaderWithAsset:mixComposition error:nil];
+        assetAudioReaderTrackOutput =
+                [[AVAssetReaderAudioMixOutput alloc] initWithAudioTracks:[mixComposition tracksWithMediaType:AVMediaTypeAudio]
+                                                           audioSettings:nil];
+
+        [assetAudioReader addOutput:assetAudioReaderTrackOutput];
+    }
+}
+
+
+- (void)startAudioWritingWithComplectionBlock:(void (^)())completionBlock {
+    if(assetAudioReader){
+        NSLog(@"asset audio reader is prepared, kick off writing audio...");
+        audioQueue = dispatch_queue_create("com.sunsetlakesoftware.GPUImage.audioReadingQueue", NULL);
+
+        [assetWriterAudioInput requestMediaDataWhenReadyOnQueue:audioQueue usingBlock:^{
+            // Because the block is called asynchronously, check to see whether its task is complete.
+            BOOL completedOrFailed = NO;
+            // If the task isn't complete yet, make sure that the input is actually ready for more media data.
+            while ([assetWriterAudioInput isReadyForMoreMediaData] && !completedOrFailed) {
+                // Get the next audio sample buffer, and append it to the output file.
+                CMSampleBufferRef sampleBuffer = [assetAudioReaderTrackOutput copyNextSampleBuffer];
+                if (sampleBuffer != NULL) {
+                    BOOL success = [assetWriterAudioInput appendSampleBuffer:sampleBuffer];
+//                    if (success) {
+//                        NSLog(@"append audio buffer success");
+//                    } else {
+//                        NSLog(@"append audio buffer failed");
+//                    }
+                    CFRelease(sampleBuffer);
+                    sampleBuffer = NULL;
+                    completedOrFailed = !success;
+                }
+                else {
+                    completedOrFailed = YES;
+                }
+
+
+            }//end of loop
+
+            if (completedOrFailed) {
+                NSLog(@"audio wrint done");
+                // Mark the input as finished, but only if we haven't already done so, and then leave the dispatch group (since the audio work has finished).
+                audioEncodingIsFinished = YES;
+                [assetWriterAudioInput markAsFinished];
+                if(completionBlock){
+                    completionBlock();
+                }
+            }
+        }];
+    } else{
+        NSLog(@" no audio reader is being set, this could happen when no audio tracks being set");
+        if(completionBlock){
+            completionBlock();
+        }
+    }
+
+}
+
+- (void)startAudioRecording {
+    if(assetAudioReader){
+        if(![assetAudioReader startReading]){
+            NSLog(@"asset audio reader start reading failed: %@", assetAudioReader.error);
+        }
+    }
 }
 
 @end
