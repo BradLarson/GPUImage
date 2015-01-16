@@ -101,6 +101,12 @@ extern NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString
 - (void)removeInputsAndOutputs;
 
 /// @name Manage the camera video stream
+- (bool) isAutoFocusSupported;
+- (bool) isAutoExposureSupported;
+
+- (void)setFocus:(CGPoint)p :(CGSize) viewSize;
+
+- (void) setToAutoFocusMode;
 
 /** Start camera capturing
  */
