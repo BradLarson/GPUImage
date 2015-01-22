@@ -47,12 +47,18 @@
         
     [self uploadBytes:bytesToUpload];
     
+    outputFramebuffer = [[GPUImageContext sharedFramebufferCache] fetchFramebufferForSize:uploadedImageSize textureOptions:self.outputTextureOptions onlyTexture:YES];
+    [outputFramebuffer disableReferenceCounting];
+    
     return self;
 }
 
 // ARC forbids explicit message send of 'release'; since iOS 6 even for dispatch_release() calls: stripping it out in that case is required.
 - (void)dealloc;
 {
+    [outputFramebuffer enableReferenceCounting];
+    [outputFramebuffer unlock];
+    
 #if !OS_OBJECT_USE_OBJC
     if (dataUpdateSemaphore != NULL)
     {
@@ -69,15 +75,15 @@
     [GPUImageContext useImageProcessingContext];
 
     // TODO: This probably isn't right, and will need to be corrected
-    outputFramebuffer = [[GPUImageContext sharedFramebufferCache] fetchFramebufferForSize:uploadedImageSize textureOptions:self.outputTextureOptions onlyTexture:YES];
+//    outputFramebuffer = [[GPUImageContext sharedFramebufferCache] fetchFramebufferForSize:uploadedImageSize textureOptions:self.outputTextureOptions onlyTexture:YES];
     
     glBindTexture(GL_TEXTURE_2D, [outputFramebuffer texture]);
-    glTexImage2D(GL_TEXTURE_2D, 0, _pixelFormat==GPUPixelFormatRGB ? GL_RGB : GL_RGBA, (int)uploadedImageSize.width, (int)uploadedImageSize.height, 0, (GLint)_pixelFormat, (GLenum)_pixelType, bytesToUpload);
+    glTexImage2D(GL_TEXTURE_2D, 0, _pixelFormat==GPUPixelFormatBGRA ? GL_RGBA : (GLint)_pixelFormat, (int)uploadedImageSize.width, (int)uploadedImageSize.height, 0, (GLint)_pixelFormat, (GLenum)_pixelType, bytesToUpload);
 }
 
-- (void)updateDataFromBytes:(GLubyte *)bytesToUpload size:(CGSize)imageSize;
+- (void)updateDataFromBytes:(GLubyte *)bytesToUpload;// size:(CGSize)imageSize;
 {
-    uploadedImageSize = imageSize;
+    //uploadedImageSize = imageSize;
 
     [self uploadBytes:bytesToUpload];
 }
@@ -123,7 +129,8 @@
 			NSInteger indexOfObject = [targets indexOfObject:currentTarget];
 			NSInteger textureIndexOfTarget = [[targetTextureIndices objectAtIndex:indexOfObject] integerValue];
             
-			[currentTarget setInputSize:pixelSizeOfImage atIndex:textureIndexOfTarget];
+            [currentTarget setInputSize:pixelSizeOfImage atIndex:textureIndexOfTarget];
+            [currentTarget setInputFramebuffer:outputFramebuffer atIndex:textureIndexOfTarget];
 			[currentTarget newFrameReadyAtTime:frameTime atIndex:textureIndexOfTarget];
 		}
         

@@ -35,7 +35,7 @@ typedef enum {
 @property (readwrite, nonatomic) GPUPixelType   pixelType;
 
 // Image rendering
-- (void)updateDataFromBytes:(GLubyte *)bytesToUpload size:(CGSize)imageSize;
+- (void)updateDataFromBytes:(GLubyte *)bytesToUpload;// size:(CGSize)imageSize;
 - (void)processData;
 - (void)processDataForTimestamp:(CMTime)frameTime;
 - (CGSize)outputImageSize;
