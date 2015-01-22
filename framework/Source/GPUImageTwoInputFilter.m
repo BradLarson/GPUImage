@@ -169,6 +169,14 @@ NSString *const kGPUImageTwoInputTextureVertexShaderString = SHADER_STRING
             hasSetFirstTexture = NO;
         }
     }
+    else if (textureIndex == 1)
+    {
+        if (CGSizeEqualToSize(newSize, CGSizeZero))
+        {
+            hasReceivedSecondFrame = NO;
+            secondFrameTime = kCMTimeInvalid;
+        }
+    }
 }
 
 - (void)setInputRotation:(GPUImageRotationMode)newInputRotation atIndex:(NSInteger)textureIndex;
