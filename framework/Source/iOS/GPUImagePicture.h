@@ -16,6 +16,8 @@
 - (id)initWithCGImage:(CGImageRef)newImageSource;
 - (id)initWithImage:(UIImage *)newImageSource smoothlyScaleOutput:(BOOL)smoothlyScaleOutput;
 - (id)initWithCGImage:(CGImageRef)newImageSource smoothlyScaleOutput:(BOOL)smoothlyScaleOutput;
+- (id)initWithImage:(UIImage *)newImageSource smoothlyScaleOutput:(BOOL)smoothlyScaleOutput linearInterpolation:(BOOL)linearInterpolation;
+- (id)initWithCGImage:(CGImageRef)newImageSource smoothlyScaleOutput:(BOOL)smoothlyScaleOutput linearInterpolation:(BOOL)linearInterpolation;
 
 // Image rendering
 - (void)processImage;

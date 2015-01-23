@@ -8,6 +8,7 @@
 
 @synthesize pixelFormat = _pixelFormat;
 @synthesize pixelType = _pixelType;
+@synthesize linearInterpolation = _linearInterpolation;
 
 #pragma mark -
 #pragma mark Initialization and teardown
@@ -34,6 +35,11 @@
 
 - (id)initWithBytes:(GLubyte *)bytesToUpload size:(CGSize)imageSize pixelFormat:(GPUPixelFormat)pixelFormat type:(GPUPixelType)pixelType;
 {
+    return [self initWithBytes:bytesToUpload size:imageSize pixelFormat:pixelFormat type:pixelType linearInterpolation:YES];
+}
+
+- (id)initWithBytes:(GLubyte *)bytesToUpload size:(CGSize)imageSize pixelFormat:(GPUPixelFormat)pixelFormat type:(GPUPixelType)pixelType linearInterpolation:(BOOL)linearInterpolation;
+{
     if (!(self = [super init]))
     {
 		return nil;
@@ -44,6 +50,7 @@
     uploadedImageSize = imageSize;
 	self.pixelFormat = pixelFormat;
 	self.pixelType = pixelType;
+    self.linearInterpolation = linearInterpolation;
         
     [self uploadBytes:bytesToUpload];
     
@@ -78,6 +85,10 @@
 //    outputFramebuffer = [[GPUImageContext sharedFramebufferCache] fetchFramebufferForSize:uploadedImageSize textureOptions:self.outputTextureOptions onlyTexture:YES];
     
     glBindTexture(GL_TEXTURE_2D, [outputFramebuffer texture]);
+    
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, self.linearInterpolation? GL_LINEAR : GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, self.linearInterpolation? GL_LINEAR : GL_NEAREST);
+    
     glTexImage2D(GL_TEXTURE_2D, 0, _pixelFormat==GPUPixelFormatBGRA ? GL_RGBA : (GLint)_pixelFormat, (int)uploadedImageSize.width, (int)uploadedImageSize.height, 0, (GLint)_pixelFormat, (GLenum)_pixelType, bytesToUpload);
 }
 

@@ -28,11 +28,13 @@ typedef enum {
 - (id)initWithBytes:(GLubyte *)bytesToUpload size:(CGSize)imageSize;
 - (id)initWithBytes:(GLubyte *)bytesToUpload size:(CGSize)imageSize pixelFormat:(GPUPixelFormat)pixelFormat;
 - (id)initWithBytes:(GLubyte *)bytesToUpload size:(CGSize)imageSize pixelFormat:(GPUPixelFormat)pixelFormat type:(GPUPixelType)pixelType;
+- (id)initWithBytes:(GLubyte *)bytesToUpload size:(CGSize)imageSize pixelFormat:(GPUPixelFormat)pixelFormat type:(GPUPixelType)pixelType linearInterpolation:(BOOL)linearInterpolation;
 
 /** Input data pixel format
  */
 @property (readwrite, nonatomic) GPUPixelFormat pixelFormat;
 @property (readwrite, nonatomic) GPUPixelType   pixelType;
+@property (readwrite, nonatomic) BOOL linearInterpolation;
 
 // Image rendering
 - (void)updateDataFromBytes:(GLubyte *)bytesToUpload;// size:(CGSize)imageSize;
