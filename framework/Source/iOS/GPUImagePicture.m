@@ -55,6 +55,7 @@
 
 - (id)initWithCGImage:(CGImageRef)newImageSource smoothlyScaleOutput:(BOOL)smoothlyScaleOutput;
 {
+<<<<<<< 2e5ffeeff56923217685bc3cb32d3658cdd37bd3
     return [self initWithCGImage:newImageSource smoothlyScaleOutput:smoothlyScaleOutput removePremultiplication:NO];
 }
 
@@ -73,7 +74,26 @@
     return [self initWithCGImage:[newImageSource CGImage] smoothlyScaleOutput:smoothlyScaleOutput removePremultiplication:removePremultiplication];
 }
 
+- (id)initWithImage:(UIImage *)newImageSource smoothlyScaleOutput:(BOOL)smoothlyScaleOutput linearInterpolation:(BOOL)linearInterpolation;
+{
+    return [self initWithCGImage:[newImageSource CGImage] smoothlyScaleOutput:smoothlyScaleOutput removePremultiplication:NO linearInterpolation:linearInterpolation];
+}
+
+- (id)initWithCGImage:(CGImageRef)newImageSource smoothlyScaleOutput:(BOOL)smoothlyScaleOutput linearInterpolation:(BOOL)linearInterpolation;
+{
+    return [self initWithCGImage:newImageSource smoothlyScaleOutput:smoothlyScaleOutput removePremultiplication:NO linearInterpolation:linearInterpolation];
+}
+
 - (id)initWithCGImage:(CGImageRef)newImageSource smoothlyScaleOutput:(BOOL)smoothlyScaleOutput removePremultiplication:(BOOL)removePremultiplication;
+{
+    return [self initWithCGImage:newImageSource smoothlyScaleOutput:smoothlyScaleOutput removePremultiplication:removePremultiplication linearInterpolation:true];
+}
+
+- (id)initWithImage:(UIImage *)newImageSource smoothlyScaleOutput:(BOOL)smoothlyScaleOutput removePremultiplication:(BOOL)removePremultiplication linearInterpolation:(BOOL)linearInterpolation;
+{
+    return [self initWithCGImage:[newImageSource CGImage] smoothlyScaleOutput:smoothlyScaleOutput removePremultiplication:removePremultiplication linearInterpolation:linearInterpolation];
+}
+- (id)initWithCGImage:(CGImageRef)newImageSource smoothlyScaleOutput:(BOOL)smoothlyScaleOutput removePremultiplication:(BOOL)removePremultiplication linearInterpolation:(BOOL)linearInterpolation;
 {
     if (!(self = [super init]))
     {
@@ -253,10 +273,15 @@
         [outputFramebuffer disableReferenceCounting];
 
         glBindTexture(GL_TEXTURE_2D, [outputFramebuffer texture]);
+        
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, linearInterpolation? GL_LINEAR : GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, linearInterpolation? GL_LINEAR : GL_NEAREST);
+        
         if (self.shouldSmoothlyScaleOutput)
         {
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         }
+        
         // no need to use self.outputTextureOptions here since pictures need this texture formats and type
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (int)pixelSizeToUseForTexture.width, (int)pixelSizeToUseForTexture.height, 0, format, GL_UNSIGNED_BYTE, imageData);
         
