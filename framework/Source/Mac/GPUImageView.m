@@ -4,18 +4,6 @@
 #import "GPUImageFilter.h"
 #import <AVFoundation/AVFoundation.h>
 
-NSString *const kGPUImageDisplayFragmentShaderString = SHADER_STRING
-(
- varying vec2 textureCoordinate;
- 
- uniform sampler2D inputImageTexture;
- 
- void main()
- {
-     gl_FragColor = vec4(textureCoordinate, 0.0, 1.0);
- }
- );
-
 #pragma mark -
 #pragma mark Private methods and instance variables
 
@@ -93,7 +81,6 @@ NSString *const kGPUImageDisplayFragmentShaderString = SHADER_STRING
     
     runSynchronouslyOnVideoProcessingQueue(^{
         [GPUImageContext useImageProcessingContext];
-//        displayProgram = [[GPUImageContext sharedImageProcessingContext] programForVertexShaderString:kGPUImageVertexShaderString fragmentShaderString:kGPUImageDisplayFragmentShaderString];
         displayProgram = [[GPUImageContext sharedImageProcessingContext] programForVertexShaderString:kGPUImageVertexShaderString fragmentShaderString:kGPUImagePassthroughFragmentShaderString];
 
         if (!displayProgram.initialized)

@@ -23,9 +23,9 @@
 }
 
 @property(readwrite, nonatomic) BOOL initialized;
-@property(readwrite, nonatomic) NSString *vertexShaderLog;
-@property(readwrite, nonatomic) NSString *fragmentShaderLog;
-@property(readwrite, nonatomic) NSString *programLog;
+@property(readwrite, copy, nonatomic) NSString *vertexShaderLog;
+@property(readwrite, copy, nonatomic) NSString *fragmentShaderLog;
+@property(readwrite, copy, nonatomic) NSString *programLog;
 
 - (id)initWithVertexShaderString:(NSString *)vShaderString 
             fragmentShaderString:(NSString *)fShaderString;
