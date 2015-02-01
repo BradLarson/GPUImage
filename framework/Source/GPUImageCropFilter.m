@@ -107,7 +107,6 @@ NSString *const kGPUImageCropFragmentShaderString =  SHADER_STRING
     else if (!CGSizeEqualToSize(inputTextureSize, scaledSize))
     {
         inputTextureSize = scaledSize;
-        [self recreateFilterFBO];
     }
 }
 
@@ -240,8 +239,6 @@ NSString *const kGPUImageCropFragmentShaderString =  SHADER_STRING
 
 - (void)newFrameReadyAtTime:(CMTime)frameTime atIndex:(NSInteger)textureIndex;
 {
-    outputTextureRetainCount = [targets count];
-
     static const GLfloat cropSquareVertices[] = {
         -1.0f, -1.0f,
         1.0f, -1.0f,
@@ -249,7 +246,7 @@ NSString *const kGPUImageCropFragmentShaderString =  SHADER_STRING
         1.0f,  1.0f,
     };
     
-    [self renderToTextureWithVertices:cropSquareVertices textureCoordinates:cropTextureCoordinates sourceTexture:filterSourceTexture];
+    [self renderToTextureWithVertices:cropSquareVertices textureCoordinates:cropTextureCoordinates];
 
     [self informTargetsAboutNewFrameAtTime:frameTime];
 }

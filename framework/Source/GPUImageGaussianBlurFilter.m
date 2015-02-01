@@ -352,22 +352,29 @@
 {
     [super setupFilterForSize:filterFrameSize];
     
-    if (shouldResizeBlurRadiusWithImageSize == YES)
+    if (shouldResizeBlurRadiusWithImageSize)
     {
-        
+        if (self.blurRadiusAsFractionOfImageWidth > 0)
+        {
+            self.blurRadiusInPixels = filterFrameSize.width * self.blurRadiusAsFractionOfImageWidth;
+        }
+        else
+        {
+            self.blurRadiusInPixels = filterFrameSize.height * self.blurRadiusAsFractionOfImageHeight;
+        }
     }
 }
 
 #pragma mark -
 #pragma mark Rendering
 
-- (void)renderToTextureWithVertices:(const GLfloat *)vertices textureCoordinates:(const GLfloat *)textureCoordinates sourceTexture:(GLuint)sourceTexture;
+- (void)renderToTextureWithVertices:(const GLfloat *)vertices textureCoordinates:(const GLfloat *)textureCoordinates;
 {
-    [super renderToTextureWithVertices:vertices textureCoordinates:textureCoordinates sourceTexture:sourceTexture];
+    [super renderToTextureWithVertices:vertices textureCoordinates:textureCoordinates];
     
     for (NSUInteger currentAdditionalBlurPass = 1; currentAdditionalBlurPass < _blurPasses; currentAdditionalBlurPass++)
     {
-        [super renderToTextureWithVertices:vertices textureCoordinates:[[self class] textureCoordinatesForRotation:kGPUImageNoRotation] sourceTexture:secondFilterOutputTexture];
+        [super renderToTextureWithVertices:vertices textureCoordinates:[[self class] textureCoordinatesForRotation:kGPUImageNoRotation]];
     }
 }
 
@@ -463,10 +470,14 @@
     {
         _blurRadiusInPixels = round(newValue); // For now, only do integral sigmas
         
-        // Calculate the number of pixels to sample from by setting a bottom limit for the contribution of the outermost pixel
-        CGFloat minimumWeightToFindEdgeOfSamplingArea = 1.0/256.0;
-        NSUInteger calculatedSampleRadius = floor(sqrt(-2.0 * pow(_blurRadiusInPixels, 2.0) * log(minimumWeightToFindEdgeOfSamplingArea * sqrt(2.0 * M_PI * pow(_blurRadiusInPixels, 2.0))) ));
-        calculatedSampleRadius += calculatedSampleRadius % 2; // There's nothing to gain from handling odd radius sizes, due to the optimizations I use
+        NSUInteger calculatedSampleRadius = 0;
+        if (_blurRadiusInPixels >= 1) // Avoid a divide-by-zero error here
+        {
+            // Calculate the number of pixels to sample from by setting a bottom limit for the contribution of the outermost pixel
+            CGFloat minimumWeightToFindEdgeOfSamplingArea = 1.0/256.0;
+            calculatedSampleRadius = floor(sqrt(-2.0 * pow(_blurRadiusInPixels, 2.0) * log(minimumWeightToFindEdgeOfSamplingArea * sqrt(2.0 * M_PI * pow(_blurRadiusInPixels, 2.0))) ));
+            calculatedSampleRadius += calculatedSampleRadius % 2; // There's nothing to gain from handling odd radius sizes, due to the optimizations I use
+        }
         
 //        NSLog(@"Blur radius: %f, calculated sample radius: %d", _blurRadiusInPixels, calculatedSampleRadius);
 //        
@@ -479,6 +490,24 @@
         [self switchToVertexShader:newGaussianBlurVertexShader fragmentShader:newGaussianBlurFragmentShader];
     }
     shouldResizeBlurRadiusWithImageSize = NO;
+}
+
+- (void)setBlurRadiusAsFractionOfImageWidth:(CGFloat)blurRadiusAsFractionOfImageWidth
+{
+    if (blurRadiusAsFractionOfImageWidth < 0)  return;
+
+    shouldResizeBlurRadiusWithImageSize = _blurRadiusAsFractionOfImageWidth != blurRadiusAsFractionOfImageWidth && blurRadiusAsFractionOfImageWidth > 0;
+    _blurRadiusAsFractionOfImageWidth = blurRadiusAsFractionOfImageWidth;
+    _blurRadiusAsFractionOfImageHeight = 0;
+}
+
+- (void)setBlurRadiusAsFractionOfImageHeight:(CGFloat)blurRadiusAsFractionOfImageHeight
+{
+    if (blurRadiusAsFractionOfImageHeight < 0)  return;
+
+    shouldResizeBlurRadiusWithImageSize = _blurRadiusAsFractionOfImageHeight != blurRadiusAsFractionOfImageHeight && blurRadiusAsFractionOfImageHeight > 0;
+    _blurRadiusAsFractionOfImageHeight = blurRadiusAsFractionOfImageHeight;
+    _blurRadiusAsFractionOfImageWidth = 0;
 }
 
 @end

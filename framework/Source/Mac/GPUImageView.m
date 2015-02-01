@@ -9,8 +9,8 @@
 
 @interface GPUImageView () 
 {
-    GLuint inputTextureForDisplay;
-    
+    GPUImageFramebuffer *inputFramebufferForDisplay;
+
     GLProgram *displayProgram;
     GLint displayPositionAttribute, displayTextureCoordinateAttribute;
     GLint displayInputTextureUniform;
@@ -65,35 +65,14 @@
 	return self;
 }
 
-//- (void) prepareOpenGL
-//{
-//    GLint swapInt = 1;
-//    [[self openGLContext] setValues:&swapInt forParameter:NSOpenGLCPSwapInterval]; // set to vbl sync
-//}
-
 - (void)commonInit;
 {
-    // I believe each of these views needs a separate OpenGL context, unlike on iOS where you're rendering to an FBO in a layer
-//    NSOpenGLPixelFormatAttribute pixelFormatAttributes[] = {
-//        NSOpenGLPFADoubleBuffer,
-//        NSOpenGLPFAAccelerated, 0,
-//        0
-//    };
-//    
-//    NSOpenGLPixelFormat *pixelFormat = [[NSOpenGLPixelFormat alloc] initWithAttributes:pixelFormatAttributes];
-//	if (pixelFormat == nil)
-//	{
-//		NSLog(@"Error: No appropriate pixel format found");
-//	}
-//    // TODO: Take into account the sharegroup
-//    NSOpenGLContext *context = [[NSOpenGLContext alloc] initWithFormat:pixelFormat shareContext:[[GPUImageContext sharedImageProcessingContext] context]];
-//    if (context == nil)
-//    {
-//        NSAssert(NO, @"Problem creating the GPUImageView context");
-//    }
-//    [self setOpenGLContext:context];
     [self setOpenGLContext:[[GPUImageContext sharedImageProcessingContext] context]];
-    
+
+    if ([self respondsToSelector:@selector(setWantsBestResolutionOpenGLSurface:)])
+    {
+        [self  setWantsBestResolutionOpenGLSurface:YES];
+    }
     
     inputRotation = kGPUImageNoRotation;
     self.hidden = NO;
@@ -101,10 +80,9 @@
     self.enabled = YES;
     
     runSynchronouslyOnVideoProcessingQueue(^{
-        [self.openGLContext makeCurrentContext];
+        [GPUImageContext useImageProcessingContext];
         displayProgram = [[GPUImageContext sharedImageProcessingContext] programForVertexShaderString:kGPUImageVertexShaderString fragmentShaderString:kGPUImagePassthroughFragmentShaderString];
 
-//        displayProgram = [[GLProgram alloc] initWithVertexShaderString:kGPUImageVertexShaderString fragmentShaderString:kGPUImagePassthroughFragmentShaderString];
         if (!displayProgram.initialized)
         {
             [displayProgram addAttribute:@"position"];
@@ -129,7 +107,6 @@
         
         [GPUImageContext setActiveShaderProgram:displayProgram];
 
-//        [displayProgram use];
         glEnableVertexAttribArray(displayPositionAttribute);
         glEnableVertexAttribArray(displayTextureCoordinateAttribute);
     
@@ -150,10 +127,14 @@
 - (void)createDisplayFramebuffer;
 {
     // Perhaps I'll use an FBO at some time later, but for now will render directly to the screen
-    _sizeInPixels.width = self.bounds.size.width;
-    _sizeInPixels.height = self.bounds.size.height;
-
-//	NSLog(@"Backing width: %d, height: %d", backingWidth, backingHeight);
+    if ([self respondsToSelector:@selector(convertSizeToBacking:)])
+    {
+        _sizeInPixels = [self convertSizeToBacking:self.bounds.size];
+    }
+    else
+    {
+        _sizeInPixels = self.bounds.size;
+    }
 }
 
 - (void)destroyDisplayFramebuffer;
@@ -176,13 +157,19 @@
 
 - (void)reshape;
 {
-    if ( (_sizeInPixels.width == self.bounds.size.width) && (_sizeInPixels.height == self.bounds.size.height) )
+    CGSize viewSize = self.bounds.size;
+    if ([self respondsToSelector:@selector(convertSizeToBacking:)])
+    {
+        viewSize = [self convertSizeToBacking:self.bounds.size];
+    }
+    
+    if ( (_sizeInPixels.width == viewSize.width) && (_sizeInPixels.height == viewSize.height) )
     {
         return;
     }
     
-    _sizeInPixels.width = self.bounds.size.width;
-    _sizeInPixels.height = self.bounds.size.height;
+    _sizeInPixels = viewSize;
+
     [self recalculateViewGeometry];
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         [self newFrameReadyAtTime:kCMTimeInvalid atIndex:0];
@@ -194,52 +181,48 @@
 
 - (void)recalculateViewGeometry;
 {
-//    runSynchronouslyOnVideoProcessingQueue(^{
-        CGFloat heightScaling, widthScaling;
-        
-        CGSize currentViewSize = self.bounds.size;
-        
-        //    CGFloat imageAspectRatio = inputImageSize.width / inputImageSize.height;
-        //    CGFloat viewAspectRatio = currentViewSize.width / currentViewSize.height;
-        
-        CGRect insetRect = AVMakeRectWithAspectRatioInsideRect(inputImageSize, self.bounds);
-        
-        switch(_fillMode)
-        {
-            case kGPUImageFillModeStretch:
-            {
-                widthScaling = 1.0;
-                heightScaling = 1.0;
-            }; break;
-            case kGPUImageFillModePreserveAspectRatio:
-            {
-                widthScaling = insetRect.size.width / currentViewSize.width;
-                heightScaling = insetRect.size.height / currentViewSize.height;
-            }; break;
-            case kGPUImageFillModePreserveAspectRatioAndFill:
-            {
-                //            CGFloat widthHolder = insetRect.size.width / currentViewSize.width;
-                widthScaling = currentViewSize.height / insetRect.size.height;
-                heightScaling = currentViewSize.width / insetRect.size.width;
-            }; break;
-        }
-        
-        imageVertices[0] = -widthScaling;
-        imageVertices[1] = -heightScaling;
-        imageVertices[2] = widthScaling;
-        imageVertices[3] = -heightScaling;
-        imageVertices[4] = -widthScaling;
-        imageVertices[5] = heightScaling;
-        imageVertices[6] = widthScaling;
-        imageVertices[7] = heightScaling;
-//    });
+    CGFloat heightScaling, widthScaling;
     
-//    static const GLfloat imageVertices[] = {
-//        -1.0f, -1.0f,
-//        1.0f, -1.0f,
-//        -1.0f,  1.0f,
-//        1.0f,  1.0f,
-//    };
+    CGSize currentViewSize = self.sizeInPixels;
+
+    if ((inputImageSize.width < 1.0) || (inputImageSize.height < 1.0))
+    {
+        return;
+    }
+
+    CGRect insetRect = AVMakeRectWithAspectRatioInsideRect(inputImageSize, CGRectMake(0.0,0.0,currentViewSize.width,currentViewSize.height));
+    if ((insetRect.size.width < 1.0) || (insetRect.size.width < 1.0))
+    {
+        insetRect = CGRectMake(0.0,0.0,currentViewSize.width,currentViewSize.height);
+    }
+    
+    switch(_fillMode)
+    {
+        case kGPUImageFillModeStretch:
+        {
+            widthScaling = 1.0;
+            heightScaling = 1.0;
+        }; break;
+        case kGPUImageFillModePreserveAspectRatio:
+        {
+            widthScaling = insetRect.size.width / currentViewSize.width;
+            heightScaling = insetRect.size.height / currentViewSize.height;
+        }; break;
+        case kGPUImageFillModePreserveAspectRatioAndFill:
+        {
+            widthScaling = currentViewSize.height / insetRect.size.height;
+            heightScaling = currentViewSize.width / insetRect.size.width;
+        }; break;
+    }
+    
+    imageVertices[0] = -widthScaling;
+    imageVertices[1] = -heightScaling;
+    imageVertices[2] = widthScaling;
+    imageVertices[3] = -heightScaling;
+    imageVertices[4] = -widthScaling;
+    imageVertices[5] = heightScaling;
+    imageVertices[6] = widthScaling;
+    imageVertices[7] = heightScaling;
 }
 
 - (void)setBackgroundColorRed:(GLfloat)redComponent green:(GLfloat)greenComponent blue:(GLfloat)blueComponent alpha:(GLfloat)alphaComponent;
@@ -301,6 +284,13 @@
         0.0f, 1.0f,
     };
     
+    static const GLfloat rotateRightHorizontalFlipTextureCoordinates[] = {
+        1.0f, 1.0f,
+        1.0f, 0.0f,
+        0.0f, 1.0f,
+        0.0f, 0.0f,
+    };
+    
     static const GLfloat rotate180TextureCoordinates[] = {
         1.0f, 0.0f,
         0.0f, 0.0f,
@@ -316,6 +306,7 @@
         case kGPUImageFlipVertical: return verticalFlipTextureCoordinates;
         case kGPUImageFlipHorizonal: return horizontalFlipTextureCoordinates;
         case kGPUImageRotateRightFlipVertical: return rotateRightVerticalFlipTextureCoordinates;
+        case kGPUImageRotateRightFlipHorizontal: return rotateRightHorizontalFlipTextureCoordinates;
         case kGPUImageRotate180: return rotate180TextureCoordinates;
     }
 }
@@ -326,33 +317,44 @@
 - (void)newFrameReadyAtTime:(CMTime)frameTime atIndex:(NSInteger)textureIndex;
 {
     runSynchronouslyOnVideoProcessingQueue(^{
-//        [[self openGLContext] makeCurrentContext];
         [GPUImageContext setActiveShaderProgram:displayProgram];
         [self setDisplayFramebuffer];
-//        [displayProgram use];
         
-//        glMatrixMode(GL_MODELVIEW);
-//        glLoadIdentity();
-//
-//        glMatrixMode(GL_PROJECTION);
-//        glLoadIdentity();
-
         glClearColor(backgroundColorRed, backgroundColorGreen, backgroundColorBlue, backgroundColorAlpha);
         glClear(GL_COLOR_BUFFER_BIT);
+        
+        // Re-render onscreen, flipped to a normal orientation
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glBindRenderbuffer(GL_RENDERBUFFER, 0);
 
         glActiveTexture(GL_TEXTURE4);
-        glBindTexture(GL_TEXTURE_2D, inputTextureForDisplay);
+        glBindTexture(GL_TEXTURE_2D, [inputFramebufferForDisplay texture]);
         glUniform1i(displayInputTextureUniform, 4);
 
         glVertexAttribPointer(displayPositionAttribute, 2, GL_FLOAT, 0, 0, imageVertices);
         glVertexAttribPointer(displayTextureCoordinateAttribute, 2, GL_FLOAT, 0, 0, [GPUImageView textureCoordinatesForRotation:inputRotation]);
 
-        [self lockFocus];
-        glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-
-        [self presentFramebuffer];
-        glBindTexture(GL_TEXTURE_2D, 0);
-        [self unlockFocus];
+        BOOL canLockFocus = YES;
+        if ([self respondsToSelector:@selector(lockFocusIfCanDraw)])
+        {
+            canLockFocus = [self lockFocusIfCanDraw];
+        }
+        else
+        {
+            [self lockFocus];
+        }
+        
+        if (canLockFocus)
+        {
+            glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+            
+            [self presentFramebuffer];
+            glBindTexture(GL_TEXTURE_2D, 0);
+            [self unlockFocus];
+        }
+        
+        [inputFramebufferForDisplay unlock];
+        inputFramebufferForDisplay = nil;
     });
 }
 
@@ -361,9 +363,10 @@
     return 0;
 }
 
-- (void)setInputTexture:(GLuint)newInputTexture atIndex:(NSInteger)textureIndex;
+- (void)setInputFramebuffer:(GPUImageFramebuffer *)newInputFramebuffer atIndex:(NSInteger)textureIndex;
 {
-    inputTextureForDisplay = newInputTexture;
+    inputFramebufferForDisplay = newInputFramebuffer;
+    [inputFramebufferForDisplay lock];
 }
 
 - (void)setInputRotation:(GPUImageRotationMode)newInputRotation atIndex:(NSInteger)textureIndex;
@@ -373,6 +376,11 @@
 
 - (void)setInputSize:(CGSize)newSize atIndex:(NSInteger)textureIndex;
 {
+    if ((newSize.width < 1.0) || (newSize.height < 1.0))
+    {
+        return;
+    }
+    
     runSynchronouslyOnVideoProcessingQueue(^{
         CGSize rotatedSize = newSize;
         
@@ -392,12 +400,9 @@
 
 - (CGSize)maximumOutputSize;
 {
-    if ([self respondsToSelector:@selector(setContentScaleFactor:)])
+    if ([self respondsToSelector:@selector(convertSizeToBacking:)])
     {
-        CGSize pointSize = self.bounds.size;
-        // TODO: Account for Retina displays
-        return pointSize;
-//        return CGSizeMake(self.contentScaleFactor * pointSize.width, self.contentScaleFactor * pointSize.height);
+        return [self convertSizeToBacking:self.bounds.size];
     }
     else
     {
@@ -412,11 +417,6 @@
 - (BOOL)shouldIgnoreUpdatesToThisTarget;
 {
     return NO;
-}
-
-- (void)setTextureDelegate:(id<GPUImageTextureDelegate>)newTextureDelegate atIndex:(NSInteger)textureIndex;
-{
-    textureDelegate = newTextureDelegate;
 }
 
 - (void)conserveMemoryForNextFrame;

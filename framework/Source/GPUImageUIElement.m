@@ -60,9 +60,11 @@
 
 - (void)update;
 {
-    [GPUImageContext useImageProcessingContext];
-    [self initializeOutputTextureIfNeeded];
-    
+    [self updateWithTimestamp:kCMTimeIndefinite];
+}
+
+- (void)updateUsingCurrentTime;
+{
     if(CMTIME_IS_INVALID(time)) {
         time = CMTimeMakeWithSeconds(0, 600);
         actualTimeOfLastUpdate = [NSDate timeIntervalSinceReferenceDate];
@@ -72,6 +74,13 @@
         time = CMTimeAdd(time, CMTimeMakeWithSeconds(diff, 600));
         actualTimeOfLastUpdate = now;
     }
+
+    [self updateWithTimestamp:time];
+}
+
+- (void)updateWithTimestamp:(CMTime)frameTime;
+{
+    [GPUImageContext useImageProcessingContext];
     
     CGSize layerPixelSize = [self layerSizeInPixels];
     
@@ -89,7 +98,10 @@
     CGContextRelease(imageContext);
     CGColorSpaceRelease(genericRGBColorspace);
     
-    glBindTexture(GL_TEXTURE_2D, outputTexture);
+    // TODO: This may not work
+    outputFramebuffer = [[GPUImageContext sharedFramebufferCache] fetchFramebufferForSize:layerPixelSize textureOptions:self.outputTextureOptions onlyTexture:YES];
+
+    glBindTexture(GL_TEXTURE_2D, [outputFramebuffer texture]);
     // no need to use self.outputTextureOptions here, we always need these texture options
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (int)layerPixelSize.width, (int)layerPixelSize.height, 0, GL_BGRA, GL_UNSIGNED_BYTE, imageData);
     
@@ -103,7 +115,7 @@
             NSInteger textureIndexOfTarget = [[targetTextureIndices objectAtIndex:indexOfObject] integerValue];
             
             [currentTarget setInputSize:layerPixelSize atIndex:textureIndexOfTarget];
-            [currentTarget newFrameReadyAtTime:time atIndex:textureIndexOfTarget];
+            [currentTarget newFrameReadyAtTime:frameTime atIndex:textureIndexOfTarget];
         }
     }    
 }

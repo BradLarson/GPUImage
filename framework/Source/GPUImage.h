@@ -17,6 +17,8 @@
 #import "GPUImageTextureInput.h"
 #import "GPUImageUIElement.h"
 #import "GPUImageBuffer.h"
+#import "GPUImageFramebuffer.h"
+#import "GPUImageFramebufferCache.h"
 
 // Filters
 #import "GPUImageFilter.h"
@@ -89,6 +91,7 @@
 #import "GPUImageMaskFilter.h"
 #import "GPUImageHistogramFilter.h"
 #import "GPUImageHistogramGenerator.h"
+#import "GPUImageHistogramEqualizationFilter.h"
 #import "GPUImagePrewittEdgeDetectionFilter.h"
 #import "GPUImageXYDerivativeFilter.h"
 #import "GPUImageHarrisCornerDetectionFilter.h"

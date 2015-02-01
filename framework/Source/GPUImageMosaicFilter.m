@@ -95,6 +95,7 @@ NSString *const kGPUImageMosaicFragmentShaderString = SHADER_STRING
 @implementation GPUImageMosaicFilter
 
 @synthesize inputTileSize = _inputTileSize, numTiles = _numTiles, displayTileSize = _displayTileSize, colorOn = _colorOn;
+@synthesize tileSet = _tileSet;
 
 - (id)init;
 {

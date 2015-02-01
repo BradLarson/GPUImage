@@ -7,9 +7,9 @@ extern NSString *const kGPUImageColorAveragingVertexShaderString;
     GLint texelWidthUniform, texelHeightUniform;
     
     NSUInteger numberOfStages;
-    NSMutableArray *stageTextures, *stageFramebuffers, *stageSizes;
     
     GLubyte *rawImagePixels;
+    CGSize finalStageSize;
 }
 
 // This block is called on the completion of color averaging for a frame

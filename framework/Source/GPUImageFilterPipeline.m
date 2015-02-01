@@ -48,7 +48,7 @@
     for (NSDictionary *filter in filters) {
         NSString *filterName = [filter objectForKey:@"FilterName"];
         Class theClass = NSClassFromString(filterName);
-        GPUImageFilter *genericFilter = [[theClass alloc] init];
+        GPUImageOutput<GPUImageInput> *genericFilter = [[theClass alloc] init];
         // Set up the properties
         NSDictionary *filterAttributes;
         if ((filterAttributes = [filter objectForKey:@"Attributes"])) {
@@ -148,18 +148,24 @@
     return self;
 }
 
-- (void)addFilter:(GPUImageFilter *)filter atIndex:(NSUInteger)insertIndex {
+- (void)addFilter:(GPUImageOutput<GPUImageInput> *)filter atIndex:(NSUInteger)insertIndex {
     [self.filters insertObject:filter atIndex:insertIndex];
     [self _refreshFilters];
 }
 
-- (void)addFilter:(GPUImageFilter *)filter {
+- (void)addFilter:(GPUImageOutput<GPUImageInput> *)filter {
     [self.filters addObject:filter];
     [self _refreshFilters];
 }
 
-- (void)replaceFilterAtIndex:(NSUInteger)index withFilter:(GPUImageFilter *)filter {
+- (void)replaceFilterAtIndex:(NSUInteger)index withFilter:(GPUImageOutput<GPUImageInput> *)filter {
     [self.filters replaceObjectAtIndex:index withObject:filter];
+    [self _refreshFilters];
+}
+
+- (void) removeFilter:(GPUImageOutput<GPUImageInput> *)filter;
+{
+    [self.filters removeObject:filter];
     [self _refreshFilters];
 }
 
@@ -181,7 +187,7 @@
 - (void)_refreshFilters {
     
     id prevFilter = self.input;
-    GPUImageFilter *theFilter = nil;
+    GPUImageOutput<GPUImageInput> *theFilter = nil;
     
     for (int i = 0; i < [self.filters count]; i++) {
         theFilter = [self.filters objectAtIndex:i];
@@ -198,20 +204,15 @@
 }
 
 - (UIImage *)currentFilteredFrame {
-    return [(GPUImageFilter *)[_filters lastObject] imageFromCurrentlyProcessedOutput];
+    return [(GPUImageOutput<GPUImageInput> *)[_filters lastObject] imageFromCurrentFramebuffer];
 }
 
 - (UIImage *)currentFilteredFrameWithOrientation:(UIImageOrientation)imageOrientation {
-  return [(GPUImageFilter *)[_filters lastObject] imageFromCurrentlyProcessedOutputWithOrientation:imageOrientation];
+  return [(GPUImageOutput<GPUImageInput> *)[_filters lastObject] imageFromCurrentFramebufferWithOrientation:imageOrientation];
 }
 
 - (CGImageRef)newCGImageFromCurrentFilteredFrame {
-    return [(GPUImageFilter *)[_filters lastObject] newCGImageFromCurrentlyProcessedOutput];
+    return [(GPUImageOutput<GPUImageInput> *)[_filters lastObject] newCGImageFromCurrentlyProcessedOutput];
 }
-
-- (CGImageRef)newCGImageFromCurrentFilteredFrameWithOrientation:(UIImageOrientation)imageOrientation {
-    return [(GPUImageFilter *)[_filters lastObject] newCGImageFromCurrentlyProcessedOutputWithOrientation:imageOrientation];
-}
-
 
 @end

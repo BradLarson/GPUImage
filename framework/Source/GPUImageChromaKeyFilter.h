@@ -9,13 +9,13 @@
  
  The default value is 0.3
  */
-@property(readwrite, nonatomic) GLfloat thresholdSensitivity;
+@property(readwrite, nonatomic) CGFloat thresholdSensitivity;
 
 /** The degree of smoothing controls how gradually similar colors are replaced in the image
  
  The default value is 0.1
  */
-@property(readwrite, nonatomic) GLfloat smoothing;
+@property(readwrite, nonatomic) CGFloat smoothing;
 
 /** The color to be replaced is specified using individual red, green, and blue components (normalized to 1.0).
  

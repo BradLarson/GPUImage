@@ -69,7 +69,9 @@
 //	[terminalFilter prepareForImageCapture];
     
     [stillCamera addTarget:filter];
+    
     GPUImageView *filterView = (GPUImageView *)self.view;
+//    [filter addTarget:filterView];
     [filter addTarget:filterView];
 //    [terminalFilter addTarget:filterView];
     
@@ -78,6 +80,11 @@
 //    [stillCamera.inputCamera unlockForConfiguration];
     
     [stillCamera startCameraCapture];
+    
+//    UIImage *inputImage = [UIImage imageNamed:@"Lambeau.jpg"];
+//    memoryPressurePicture1 = [[GPUImagePicture alloc] initWithImage:inputImage];
+//
+//    memoryPressurePicture2 = [[GPUImagePicture alloc] initWithImage:inputImage];
 }
 
 - (void)viewDidUnload
@@ -101,16 +108,13 @@
 {
     [photoCaptureButton setEnabled:NO];
     
-//    [stillCamera capturePhotoAsJPEGProcessedUpToFilter:terminalFilter withCompletionHandler:^(NSData *processedJPEG, NSError *error){
     [stillCamera capturePhotoAsJPEGProcessedUpToFilter:filter withCompletionHandler:^(NSData *processedJPEG, NSError *error){
 
         // Save to assets library
         ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
-//        report_memory(@"After asset library creation");
         
         [library writeImageDataToSavedPhotosAlbum:processedJPEG metadata:stillCamera.currentCaptureMetadata completionBlock:^(NSURL *assetURL, NSError *error2)
          {
-//             report_memory(@"After writing to library");
              if (error2) {
                  NSLog(@"ERROR: the image failed to be written");
              }
@@ -119,7 +123,6 @@
              }
 			 
              runOnMainQueueWithoutDeadlocking(^{
-//                 report_memory(@"Operation completed");
                  [photoCaptureButton setEnabled:YES];
              });
          }];

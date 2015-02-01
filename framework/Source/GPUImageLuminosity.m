@@ -118,11 +118,7 @@ NSString *const kGPUImageLuminosityFragmentShaderString = SHADER_STRING
     
     texelWidthUniform = [filterProgram uniformIndex:@"texelWidth"];
     texelHeightUniform = [filterProgram uniformIndex:@"texelHeight"];
-    
-    stageTextures = [[NSMutableArray alloc] init];
-    stageFramebuffers = [[NSMutableArray alloc] init];
-    stageSizes = [[NSMutableArray alloc] init];
-    
+        
     __unsafe_unretained GPUImageLuminosity *weakSelf = self;
     [self setFrameProcessingCompletionBlock:^(GPUImageOutput *filter, CMTime frameTime) {
         [weakSelf extractLuminosityAtFrameTime:frameTime];
@@ -173,10 +169,12 @@ NSString *const kGPUImageLuminosityFragmentShaderString = SHADER_STRING
 	[secondFilterProgram addAttribute:@"inputTextureCoordinate"];
 }
 
-- (void)renderToTextureWithVertices:(const GLfloat *)vertices textureCoordinates:(const GLfloat *)textureCoordinates sourceTexture:(GLuint)sourceTexture;
+/*
+- (void)renderToTextureWithVertices:(const GLfloat *)vertices textureCoordinates:(const GLfloat *)textureCoordinates;
 {
     if (self.preventRendering)
     {
+        [firstInputFramebuffer unlock];
         return;
     }
     
@@ -196,7 +194,7 @@ NSString *const kGPUImageLuminosityFragmentShaderString = SHADER_STRING
 #endif
     glViewport(0, 0, (int)currentStageSize.width, (int)currentStageSize.height);
 
-    GLuint currentTexture = sourceTexture;
+    GLuint currentTexture = [firstInputFramebuffer texture];
 
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
@@ -282,45 +280,49 @@ NSString *const kGPUImageLuminosityFragmentShaderString = SHADER_STRING
 //            return;
 //        }
     }
+    
+    [firstInputFramebuffer unlock];
 }
+ */
 
 #pragma mark -
 #pragma mark Callbacks
 
 - (void)extractLuminosityAtFrameTime:(CMTime)frameTime;
 {
-    // we need a normal color texture for this filter
-    NSAssert(self.outputTextureOptions.internalFormat == GL_RGBA, @"The output texture format for this filter must be GL_RGBA.");
-    NSAssert(self.outputTextureOptions.type == GL_UNSIGNED_BYTE, @"The type of the output texture of this filter must be GL_UNSIGNED_BYTE.");
-    
-#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
-    CGSize finalStageSize = [[stageSizes lastObject] CGSizeValue];
-#else
-    NSSize finalStageSize = [[stageSizes lastObject] sizeValue];
-#endif
-    NSUInteger totalNumberOfPixels = round(finalStageSize.width * finalStageSize.height);
-    
-    if (rawImagePixels == NULL)
-    {
-        rawImagePixels = (GLubyte *)malloc(totalNumberOfPixels * 4);
-    }
-    
-    glReadPixels(0, 0, (int)finalStageSize.width, (int)finalStageSize.height, GL_RGBA, GL_UNSIGNED_BYTE, rawImagePixels);
-    
-    NSUInteger luminanceTotal = 0;
-    NSUInteger byteIndex = 0;
-    for (NSUInteger currentPixel = 0; currentPixel < totalNumberOfPixels; currentPixel++)
-    {
-        luminanceTotal += rawImagePixels[byteIndex];
-        byteIndex += 4;
-    }
-    
-    CGFloat normalizedLuminosityTotal = (CGFloat)luminanceTotal / (CGFloat)totalNumberOfPixels / 255.0;
-    
-    if (_luminosityProcessingFinishedBlock != NULL)
-    {
-        _luminosityProcessingFinishedBlock(normalizedLuminosityTotal, frameTime);
-    }
+    runSynchronouslyOnVideoProcessingQueue(^{
+
+        // we need a normal color texture for this filter
+        NSAssert(self.outputTextureOptions.internalFormat == GL_RGBA, @"The output texture format for this filter must be GL_RGBA.");
+        NSAssert(self.outputTextureOptions.type == GL_UNSIGNED_BYTE, @"The type of the output texture of this filter must be GL_UNSIGNED_BYTE.");
+        
+        NSUInteger totalNumberOfPixels = round(finalStageSize.width * finalStageSize.height);
+        
+        if (rawImagePixels == NULL)
+        {
+            rawImagePixels = (GLubyte *)malloc(totalNumberOfPixels * 4);
+        }
+        
+        [GPUImageContext useImageProcessingContext];
+        [outputFramebuffer activateFramebuffer];
+
+        glReadPixels(0, 0, (int)finalStageSize.width, (int)finalStageSize.height, GL_RGBA, GL_UNSIGNED_BYTE, rawImagePixels);
+        
+        NSUInteger luminanceTotal = 0;
+        NSUInteger byteIndex = 0;
+        for (NSUInteger currentPixel = 0; currentPixel < totalNumberOfPixels; currentPixel++)
+        {
+            luminanceTotal += rawImagePixels[byteIndex];
+            byteIndex += 4;
+        }
+        
+        CGFloat normalizedLuminosityTotal = (CGFloat)luminanceTotal / (CGFloat)totalNumberOfPixels / 255.0;
+        
+        if (_luminosityProcessingFinishedBlock != NULL)
+        {
+            _luminosityProcessingFinishedBlock(normalizedLuminosityTotal, frameTime);
+        }
+    });
 }
 
 

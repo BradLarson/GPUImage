@@ -1,10 +1,6 @@
-#import <Foundation/Foundation.h>
-#import <OpenGLES/EAGL.h>
-#import <OpenGLES/ES2/gl.h>
-#import <OpenGLES/ES2/glext.h>
-#import <QuartzCore/QuartzCore.h>
-#import <CoreMedia/CoreMedia.h>
 #import "GLProgram.h"
+#import "GPUImageFramebuffer.h"
+#import "GPUImageFramebufferCache.h"
 
 #define GPUImageRotationSwapsWidthAndHeight(rotation) ((rotation) == kGPUImageRotateLeft || (rotation) == kGPUImageRotateRight || (rotation) == kGPUImageRotateRightFlipVertical || (rotation) == kGPUImageRotateRightFlipHorizontal)
 
@@ -15,12 +11,17 @@ typedef enum { kGPUImageNoRotation, kGPUImageRotateLeft, kGPUImageRotateRight, k
 @property(readonly, nonatomic) dispatch_queue_t contextQueue;
 @property(readwrite, retain, nonatomic) GLProgram *currentShaderProgram;
 @property(readonly, retain, nonatomic) EAGLContext *context;
+@property(readonly) CVOpenGLESTextureCacheRef coreVideoTextureCache;
+@property(readonly) GPUImageFramebufferCache *framebufferCache;
 
 + (void *)contextKey;
 + (GPUImageContext *)sharedImageProcessingContext;
 + (dispatch_queue_t)sharedContextQueue;
++ (GPUImageFramebufferCache *)sharedFramebufferCache;
 + (void)useImageProcessingContext;
+- (void)useAsCurrentContext;
 + (void)setActiveShaderProgram:(GLProgram *)shaderProgram;
+- (void)setContextShaderProgram:(GLProgram *)shaderProgram;
 + (GLint)maximumTextureSizeForThisDevice;
 + (GLint)maximumTextureUnitsForThisDevice;
 + (GLint)maximumVaryingVectorsForThisDevice;
@@ -39,12 +40,9 @@ typedef enum { kGPUImageNoRotation, kGPUImageRotateLeft, kGPUImageRotateRight, k
 
 @end
 
-@protocol GPUImageTextureDelegate;
-
 @protocol GPUImageInput <NSObject>
 - (void)newFrameReadyAtTime:(CMTime)frameTime atIndex:(NSInteger)textureIndex;
-- (void)setInputTexture:(GLuint)newInputTexture atIndex:(NSInteger)textureIndex;
-- (void)setTextureDelegate:(id<GPUImageTextureDelegate>)newTextureDelegate atIndex:(NSInteger)textureIndex;
+- (void)setInputFramebuffer:(GPUImageFramebuffer *)newInputFramebuffer atIndex:(NSInteger)textureIndex;
 - (NSInteger)nextAvailableTextureIndex;
 - (void)setInputSize:(CGSize)newSize atIndex:(NSInteger)textureIndex;
 - (void)setInputRotation:(GPUImageRotationMode)newInputRotation atIndex:(NSInteger)textureIndex;
@@ -52,12 +50,6 @@ typedef enum { kGPUImageNoRotation, kGPUImageRotateLeft, kGPUImageRotateRight, k
 - (void)endProcessing;
 - (BOOL)shouldIgnoreUpdatesToThisTarget;
 - (BOOL)enabled;
-- (void)conserveMemoryForNextFrame;
 - (BOOL)wantsMonochromeInput;
 - (void)setCurrentlyReceivingMonochromeInput:(BOOL)newValue;
 @end
-
-@protocol GPUImageTextureDelegate <NSObject>
-- (void)textureNoLongerNeededForTarget:(id<GPUImageInput>)textureTarget;
-@end
-

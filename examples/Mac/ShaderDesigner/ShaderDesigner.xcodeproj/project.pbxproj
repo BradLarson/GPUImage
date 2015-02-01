@@ -1,0 +1,361 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		BCD95D1E1A742B4300BC4F64 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = BCD95D1D1A742B4300BC4F64 /* AppDelegate.m */; };
+		BCD95D201A742B4300BC4F64 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = BCD95D1F1A742B4300BC4F64 /* main.m */; };
+		BCD95D221A742B4300BC4F64 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BCD95D211A742B4300BC4F64 /* Images.xcassets */; };
+		BCD95D251A742B4300BC4F64 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = BCD95D231A742B4300BC4F64 /* MainMenu.xib */; };
+		BCD95D3D1A742CFD00BC4F64 /* ShaderDesignerWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = BCD95D3B1A742CFD00BC4F64 /* ShaderDesignerWindowController.m */; };
+		BCD95D3E1A742CFD00BC4F64 /* ShaderDesignerWindowController.xib in Resources */ = {isa = PBXBuildFile; fileRef = BCD95D3C1A742CFD00BC4F64 /* ShaderDesignerWindowController.xib */; };
+		BCF8E9D21A75D7A0005AE243 /* GPUImage.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = BCD95D451A7442FB00BC4F64 /* GPUImage.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		BCD95D441A7442FB00BC4F64 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BCD95D401A7442FB00BC4F64 /* GPUImageMac.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = BCA3F31C17239B6500E28AEC;
+			remoteInfo = GPUImage;
+		};
+		BCD95D461A74430E00BC4F64 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BCD95D401A7442FB00BC4F64 /* GPUImageMac.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = BCA3F31B17239B6500E28AEC;
+			remoteInfo = GPUImage;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		BCF8E9D11A75D796005AE243 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				BCF8E9D21A75D7A0005AE243 /* GPUImage.framework in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		BCD95D171A742B4300BC4F64 /* ShaderDesigner.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ShaderDesigner.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		BCD95D1B1A742B4300BC4F64 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		BCD95D1C1A742B4300BC4F64 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		BCD95D1D1A742B4300BC4F64 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		BCD95D1F1A742B4300BC4F64 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		BCD95D211A742B4300BC4F64 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		BCD95D241A742B4300BC4F64 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		BCD95D3A1A742CFD00BC4F64 /* ShaderDesignerWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShaderDesignerWindowController.h; sourceTree = "<group>"; };
+		BCD95D3B1A742CFD00BC4F64 /* ShaderDesignerWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ShaderDesignerWindowController.m; sourceTree = "<group>"; };
+		BCD95D3C1A742CFD00BC4F64 /* ShaderDesignerWindowController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ShaderDesignerWindowController.xib; sourceTree = "<group>"; };
+		BCD95D401A7442FB00BC4F64 /* GPUImageMac.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = GPUImageMac.xcodeproj; path = ../../../../framework/GPUImageMac.xcodeproj; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		BCD95D141A742B4300BC4F64 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		BCD95D0E1A742B4300BC4F64 = {
+			isa = PBXGroup;
+			children = (
+				BCD95D191A742B4300BC4F64 /* ShaderDesigner */,
+				BCD95D181A742B4300BC4F64 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		BCD95D181A742B4300BC4F64 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				BCD95D171A742B4300BC4F64 /* ShaderDesigner.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		BCD95D191A742B4300BC4F64 /* ShaderDesigner */ = {
+			isa = PBXGroup;
+			children = (
+				BCD95D1C1A742B4300BC4F64 /* AppDelegate.h */,
+				BCD95D1D1A742B4300BC4F64 /* AppDelegate.m */,
+				BCD95D231A742B4300BC4F64 /* MainMenu.xib */,
+				BCD95D3A1A742CFD00BC4F64 /* ShaderDesignerWindowController.h */,
+				BCD95D3B1A742CFD00BC4F64 /* ShaderDesignerWindowController.m */,
+				BCD95D3C1A742CFD00BC4F64 /* ShaderDesignerWindowController.xib */,
+				BCD95D211A742B4300BC4F64 /* Images.xcassets */,
+				BCD95D401A7442FB00BC4F64 /* GPUImageMac.xcodeproj */,
+				BCD95D1A1A742B4300BC4F64 /* Supporting Files */,
+			);
+			path = ShaderDesigner;
+			sourceTree = "<group>";
+		};
+		BCD95D1A1A742B4300BC4F64 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				BCD95D1B1A742B4300BC4F64 /* Info.plist */,
+				BCD95D1F1A742B4300BC4F64 /* main.m */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		BCD95D411A7442FB00BC4F64 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				BCD95D451A7442FB00BC4F64 /* GPUImage.framework */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		BCD95D161A742B4300BC4F64 /* ShaderDesigner */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BCD95D341A742B4300BC4F64 /* Build configuration list for PBXNativeTarget "ShaderDesigner" */;
+			buildPhases = (
+				BCD95D131A742B4300BC4F64 /* Sources */,
+				BCD95D141A742B4300BC4F64 /* Frameworks */,
+				BCD95D151A742B4300BC4F64 /* Resources */,
+				BCF8E9D11A75D796005AE243 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				BCD95D471A74430E00BC4F64 /* PBXTargetDependency */,
+			);
+			name = ShaderDesigner;
+			productName = ShaderDesigner;
+			productReference = BCD95D171A742B4300BC4F64 /* ShaderDesigner.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		BCD95D0F1A742B4300BC4F64 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0610;
+				ORGANIZATIONNAME = "Sunset Lake Software";
+				TargetAttributes = {
+					BCD95D161A742B4300BC4F64 = {
+						CreatedOnToolsVersion = 6.1.1;
+					};
+				};
+			};
+			buildConfigurationList = BCD95D121A742B4300BC4F64 /* Build configuration list for PBXProject "ShaderDesigner" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = BCD95D0E1A742B4300BC4F64;
+			productRefGroup = BCD95D181A742B4300BC4F64 /* Products */;
+			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = BCD95D411A7442FB00BC4F64 /* Products */;
+					ProjectRef = BCD95D401A7442FB00BC4F64 /* GPUImageMac.xcodeproj */;
+				},
+			);
+			projectRoot = "";
+			targets = (
+				BCD95D161A742B4300BC4F64 /* ShaderDesigner */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		BCD95D451A7442FB00BC4F64 /* GPUImage.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = GPUImage.framework;
+			remoteRef = BCD95D441A7442FB00BC4F64 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
+
+/* Begin PBXResourcesBuildPhase section */
+		BCD95D151A742B4300BC4F64 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BCD95D3E1A742CFD00BC4F64 /* ShaderDesignerWindowController.xib in Resources */,
+				BCD95D221A742B4300BC4F64 /* Images.xcassets in Resources */,
+				BCD95D251A742B4300BC4F64 /* MainMenu.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		BCD95D131A742B4300BC4F64 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BCD95D3D1A742CFD00BC4F64 /* ShaderDesignerWindowController.m in Sources */,
+				BCD95D201A742B4300BC4F64 /* main.m in Sources */,
+				BCD95D1E1A742B4300BC4F64 /* AppDelegate.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		BCD95D471A74430E00BC4F64 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = GPUImage;
+			targetProxy = BCD95D461A74430E00BC4F64 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		BCD95D231A742B4300BC4F64 /* MainMenu.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				BCD95D241A742B4300BC4F64 /* Base */,
+			);
+			name = MainMenu.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		BCD95D321A742B4300BC4F64 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		BCD95D331A742B4300BC4F64 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		BCD95D351A742B4300BC4F64 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = ShaderDesigner/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		BCD95D361A742B4300BC4F64 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = ShaderDesigner/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		BCD95D121A742B4300BC4F64 /* Build configuration list for PBXProject "ShaderDesigner" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BCD95D321A742B4300BC4F64 /* Debug */,
+				BCD95D331A742B4300BC4F64 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		BCD95D341A742B4300BC4F64 /* Build configuration list for PBXNativeTarget "ShaderDesigner" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BCD95D351A742B4300BC4F64 /* Debug */,
+				BCD95D361A742B4300BC4F64 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = BCD95D0F1A742B4300BC4F64 /* Project object */;
+}

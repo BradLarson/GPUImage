@@ -22,16 +22,13 @@ extern NSString *const kGPUImageColorSwizzlingFragmentShaderString;
 	AVAssetWriterInput *assetWriterAudioInput;
 	AVAssetWriterInput *assetWriterVideoInput;
     AVAssetWriterInputPixelBufferAdaptor *assetWriterPixelBufferInput;
-	dispatch_queue_t movieWritingQueue;
     
-    CVOpenGLESTextureCacheRef coreVideoTextureCache;
+    GPUImageContext *_movieWriterContext;
     CVPixelBufferRef renderTarget;
     CVOpenGLESTextureRef renderTexture;
 
     CGSize videoSize;
     GPUImageRotationMode inputRotation;
-    
-    __unsafe_unretained id<GPUImageTextureDelegate> textureDelegate;
 }
 
 @property(readwrite, nonatomic) BOOL hasAudioTrack;
@@ -43,12 +40,14 @@ extern NSString *const kGPUImageColorSwizzlingFragmentShaderString;
 @property(readwrite, nonatomic) BOOL encodingLiveVideo;
 @property(nonatomic, copy) BOOL(^videoInputReadyCallback)(void);
 @property(nonatomic, copy) BOOL(^audioInputReadyCallback)(void);
+@property(nonatomic, copy) void(^audioProcessingCallback)(SInt16 **samplesRef, CMItemCount numSamplesInBuffer);
 @property(nonatomic) BOOL enabled;
 @property(nonatomic, readonly) AVAssetWriter *assetWriter;
 @property(nonatomic, readonly) CMTime duration;
 @property(nonatomic, assign) CGAffineTransform transform;
 @property(nonatomic, copy) NSArray *metaData;
 @property(nonatomic, assign, getter = isPaused) BOOL paused;
+@property(nonatomic, retain) GPUImageContext *movieWriterContext;
 
 // Initialization and teardown
 - (id)initWithMovieURL:(NSURL *)newMovieURL size:(CGSize)newSize;

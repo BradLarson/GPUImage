@@ -200,6 +200,16 @@ NSString *const kGPUImageHistogramAccumulationFragmentShaderString = SHADER_STRI
     return self;
 }
 
+- (id)init;
+{
+    if (!(self = [self initWithHistogramType:kGPUImageHistogramRGB]))
+    {
+        return nil;
+    }
+
+    return self;
+}
+
 - (void)initializeSecondaryAttributes;
 {
     [secondFilterProgram addAttribute:@"position"];
@@ -208,7 +218,7 @@ NSString *const kGPUImageHistogramAccumulationFragmentShaderString = SHADER_STRI
 
 - (void)dealloc;
 {
-    if (vertexSamplingCoordinates != NULL)
+    if (vertexSamplingCoordinates != NULL && ![GPUImageContext supportsFastTextureUpload])
     {
         free(vertexSamplingCoordinates);
     }
@@ -217,11 +227,6 @@ NSString *const kGPUImageHistogramAccumulationFragmentShaderString = SHADER_STRI
 #pragma mark -
 #pragma mark Rendering
 
-- (void)generatePointCoordinates;
-{
-    vertexSamplingCoordinates = calloc(inputTextureSize.width * inputTextureSize.height * 4, sizeof(GLubyte));
-}
-
 - (CGSize)sizeOfFBO;
 {
     return CGSizeMake(256.0, 3.0);
@@ -229,14 +234,7 @@ NSString *const kGPUImageHistogramAccumulationFragmentShaderString = SHADER_STRI
 
 - (void)newFrameReadyAtTime:(CMTime)frameTime atIndex:(NSInteger)textureIndex;
 {
-    outputTextureRetainCount = [targets count];
-
-    if (vertexSamplingCoordinates == NULL)
-    {
-        [self generatePointCoordinates];
-    }
-    
-    [self renderToTextureWithVertices:NULL textureCoordinates:NULL sourceTexture:filterSourceTexture];
+    [self renderToTextureWithVertices:NULL textureCoordinates:NULL];
     
     [self informTargetsAboutNewFrameAtTime:frameTime];
 }
@@ -261,7 +259,7 @@ NSString *const kGPUImageHistogramAccumulationFragmentShaderString = SHADER_STRI
     inputRotation = kGPUImageNoRotation;
 }
 
-- (void)renderToTextureWithVertices:(const GLfloat *)vertices textureCoordinates:(const GLfloat *)textureCoordinates sourceTexture:(GLuint)sourceTexture;
+- (void)renderToTextureWithVertices:(const GLfloat *)vertices textureCoordinates:(const GLfloat *)textureCoordinates;
 {
     // we need a normal color texture for this filter
     NSAssert(self.outputTextureOptions.internalFormat == GL_RGBA, @"The output texture format for this filter must be GL_RGBA.");
@@ -269,15 +267,31 @@ NSString *const kGPUImageHistogramAccumulationFragmentShaderString = SHADER_STRI
     
     if (self.preventRendering)
     {
+        [firstInputFramebuffer unlock];
         return;
     }
     
     [GPUImageContext useImageProcessingContext];
-    
-    glReadPixels(0, 0, inputTextureSize.width, inputTextureSize.height, GL_RGBA, GL_UNSIGNED_BYTE, vertexSamplingCoordinates);
 
-    [self setFilterFBO];
-        
+    if ([GPUImageContext supportsFastTextureUpload])
+    {
+        glFinish();
+        vertexSamplingCoordinates = [firstInputFramebuffer byteBuffer];
+    } else {
+        if (vertexSamplingCoordinates == NULL)
+        {
+            vertexSamplingCoordinates = calloc(inputTextureSize.width * inputTextureSize.height * 4, sizeof(GLubyte));
+        }
+        glReadPixels(0, 0, inputTextureSize.width, inputTextureSize.height, GL_RGBA, GL_UNSIGNED_BYTE, vertexSamplingCoordinates);
+    }
+    
+    outputFramebuffer = [[GPUImageContext sharedFramebufferCache] fetchFramebufferForSize:[self sizeOfFBO] textureOptions:self.outputTextureOptions onlyTexture:NO];
+    [outputFramebuffer activateFramebuffer];
+    if (usingNextFrameForImageCapture)
+    {
+        [outputFramebuffer lock];
+    }
+    
     [GPUImageContext setActiveShaderProgram:filterProgram];
     
     glClearColor(0.0, 0.0, 0.0, 1.0);
@@ -304,6 +318,12 @@ NSString *const kGPUImageHistogramAccumulationFragmentShaderString = SHADER_STRI
     }
     
     glDisable(GL_BLEND);
+    [firstInputFramebuffer unlock];
+
+    if (usingNextFrameForImageCapture)
+    {
+        dispatch_semaphore_signal(imageCaptureSemaphore);
+    }
 }
 
 #pragma mark -

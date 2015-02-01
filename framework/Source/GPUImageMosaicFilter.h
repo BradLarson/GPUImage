@@ -17,11 +17,6 @@
 @property(readwrite, nonatomic) float numTiles;
 @property(readwrite, nonatomic) CGSize displayTileSize;
 @property(readwrite, nonatomic) BOOL colorOn;
-
-- (void)setNumTiles:(float)numTiles;
-- (void)setDisplayTileSize:(CGSize)displayTileSize;
-- (void)setInputTileSize:(CGSize)inputTileSize;
-- (void)setTileSet:(NSString *)tileSet;
-- (void)setColorOn:(BOOL)yes;
+@property(readwrite, nonatomic, copy) NSString *tileSet;
 
 @end

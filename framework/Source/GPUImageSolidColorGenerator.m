@@ -46,10 +46,28 @@ NSString *const kGPUSolidColorFragmentShaderString = SHADER_STRING
     colorUniform = [filterProgram uniformIndex:@"color"];
     useExistingAlphaUniform = [filterProgram uniformIndex:@"useExistingAlpha"];
     
-	self.color = (GPUVector4){0.0f, 0.0f, 0.5f, 1.0f};
+	_color = (GPUVector4){0.0f, 0.0f, 0.5f, 1.0f};
     self.useExistingAlpha = NO;
     
     return self;
+}
+
+- (void)renderToTextureWithVertices:(const GLfloat *)vertices textureCoordinates:(const GLfloat *)textureCoordinates;
+{
+    if (self.preventRendering)
+    {
+        return;
+    }
+    
+    runSynchronouslyOnVideoProcessingQueue(^{
+        [GPUImageContext setActiveShaderProgram:filterProgram];
+        
+        outputFramebuffer = [[GPUImageContext sharedFramebufferCache] fetchFramebufferForSize:[self sizeOfFBO] textureOptions:self.outputTextureOptions onlyTexture:NO];
+        [outputFramebuffer activateFramebuffer];
+        
+        glClearColor(_color.one, _color.two, _color.three, _color.four);
+        glClear(GL_COLOR_BUFFER_BIT);
+    });
 }
 
 
@@ -82,14 +100,17 @@ NSString *const kGPUSolidColorFragmentShaderString = SHADER_STRING
 	[self setColorRed:newValue.one green:newValue.two blue:newValue.three alpha:newValue.four];
 }
 
-- (void)setColorRed:(GLfloat)redComponent green:(GLfloat)greenComponent blue:(GLfloat)blueComponent alpha:(GLfloat)alphaComponent;
+- (void)setColorRed:(CGFloat)redComponent green:(CGFloat)greenComponent blue:(CGFloat)blueComponent alpha:(CGFloat)alphaComponent;
 {
-    _color.one = redComponent;
-    _color.two = greenComponent;
-    _color.three = blueComponent;
-    _color.four = alphaComponent;
+    _color.one = (GLfloat)redComponent;
+    _color.two = (GLfloat)greenComponent;
+    _color.three = (GLfloat)blueComponent;
+    _color.four = (GLfloat)alphaComponent;
     
-    [self setVec4:_color forUniform:colorUniform program:filterProgram];
+//    [self setVec4:_color forUniform:colorUniform program:filterProgram];
+    runAsynchronouslyOnVideoProcessingQueue(^{
+        [self newFrameReadyAtTime:kCMTimeIndefinite atIndex:0];
+    });
 }
 
 - (void)setUseExistingAlpha:(BOOL)useExistingAlpha;

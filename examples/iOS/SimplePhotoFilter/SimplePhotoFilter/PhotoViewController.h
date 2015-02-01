@@ -7,6 +7,8 @@
     GPUImageOutput<GPUImageInput> *filter, *secondFilter, *terminalFilter;
     UISlider *filterSettingsSlider;
     UIButton *photoCaptureButton;
+    
+    GPUImagePicture *memoryPressurePicture1, *memoryPressurePicture2;
 }
 
 - (IBAction)updateSliderValue:(id)sender;

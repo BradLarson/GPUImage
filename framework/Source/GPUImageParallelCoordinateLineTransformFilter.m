@@ -25,8 +25,8 @@ NSString *const kGPUImageHoughAccumulationFragmentShaderString = SHADER_STRING
 // NOTE: See below for where I'm tacking on the required extension as a prefix
 NSString *const kGPUImageHoughAccumulationFBOReadFragmentShaderString = SHADER_STRING
 (
-// const lowp float scalingFactor = 0.004;
- const lowp float scalingFactor = 0.1;
+ const lowp float scalingFactor = 0.004;
+// const lowp float scalingFactor = 0.1;
 
  void main()
  {
@@ -127,19 +127,17 @@ NSString *const kGPUImageHoughAccumulationFBOReadFragmentShaderString = SHADER_S
 
 - (void)newFrameReadyAtTime:(CMTime)frameTime atIndex:(NSInteger)textureIndex;
 {
-    outputTextureRetainCount = [targets count];
-
     if (lineCoordinates == NULL)
     {
         [self generateLineCoordinates];
     }
     
-    [self renderToTextureWithVertices:NULL textureCoordinates:NULL sourceTexture:filterSourceTexture];
+    [self renderToTextureWithVertices:NULL textureCoordinates:NULL];
     
     [self informTargetsAboutNewFrameAtTime:frameTime];
 }
 
-- (void)renderToTextureWithVertices:(const GLfloat *)vertices textureCoordinates:(const GLfloat *)textureCoordinates sourceTexture:(GLuint)sourceTexture;
+- (void)renderToTextureWithVertices:(const GLfloat *)vertices textureCoordinates:(const GLfloat *)textureCoordinates;
 {
     // we need a normal color texture for this filter
     NSAssert(self.outputTextureOptions.internalFormat == GL_RGBA, @"The output texture format for this filter must be GL_RGBA.");
@@ -147,13 +145,16 @@ NSString *const kGPUImageHoughAccumulationFBOReadFragmentShaderString = SHADER_S
     
     if (self.preventRendering)
     {
+        [firstInputFramebuffer unlock];
         return;
     }
     
-    [GPUImageContext useImageProcessingContext];
-    
     // Grab the edge points from the previous frame and create the parallel coordinate lines for them
     // This would be a great place to have a working histogram pyramid implementation
+    
+    [GPUImageContext useImageProcessingContext];
+    [firstInputFramebuffer activateFramebuffer];
+
     glFinish();
     glReadPixels(0, 0, inputTextureSize.width, inputTextureSize.height, GL_RGBA, GL_UNSIGNED_BYTE, rawImagePixels);
     
@@ -222,10 +223,17 @@ NSString *const kGPUImageHoughAccumulationFBOReadFragmentShaderString = SHADER_S
 //    CFAbsoluteTime currentFrameTime = (CFAbsoluteTimeGetCurrent() - startTime);
 //    NSLog(@"Line generation processing time : %f ms", 1000.0 * currentFrameTime);
 
-    [self setFilterFBO];
-    
+    outputFramebuffer = [[GPUImageContext sharedFramebufferCache] fetchFramebufferForSize:[self sizeOfFBO] textureOptions:self.outputTextureOptions onlyTexture:NO];
+    [outputFramebuffer activateFramebuffer];
+
+    if (usingNextFrameForImageCapture)
+    {
+        [outputFramebuffer lock];
+    }
+
     [GPUImageContext setActiveShaderProgram:filterProgram];
-    
+    [self setUniformsForProgramAtIndex:0];
+
     glClearColor(0.0, 0.0, 0.0, 1.0);
     glClear(GL_COLOR_BUFFER_BIT);
     
@@ -237,15 +245,21 @@ NSString *const kGPUImageHoughAccumulationFBOReadFragmentShaderString = SHADER_S
     }
     else
     {
-        glLineWidth(1);
     }
-    
+
+    glLineWidth(1);
+
 	glVertexAttribPointer(filterPositionAttribute, 2, GL_FLOAT, 0, 0, lineCoordinates);
     glDrawArrays(GL_LINES, 0, (linePairsToRender * 4));
     
     if (![GPUImageContext deviceSupportsFramebufferReads])
     {
         glDisable(GL_BLEND);
+    }
+    [firstInputFramebuffer unlock];
+    if (usingNextFrameForImageCapture)
+    {
+        dispatch_semaphore_signal(imageCaptureSemaphore);
     }
 }
 
