@@ -151,36 +151,28 @@
     movieWriter.encodingLiveVideo = NO;
 }
 
-- (void)loadAsset:(dispatch_group_t)readyGroup {
-    NSAssert(self.url || self.asset, @"Url or asset should be passed for initial");
-    NSAssert(readyGroup, @"should pass a ready group to tell when i'm ready");
-
-    dispatch_group_enter(readyGroup);
-
-    /*
+- (void)startProcessing
+{
     if( self.playerItem ) {
         [self processPlayerItem];
         return;
     }
-    */
-    if(self.url == nil && self.asset != nil)
+    if(self.url == nil)
     {
-        //directly inited from outside
-        dispatch_group_leave(readyGroup);
-        return;
+      [self processAsset];
+      return;
     }
-
-
+    
     if (_shouldRepeat) keepLooping = YES;
-
+    
     previousFrameTime = kCMTimeZero;
     previousActualFrameTime = CFAbsoluteTimeGetCurrent();
-
+  
     NSDictionary *inputOptions = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES] forKey:AVURLAssetPreferPreciseDurationAndTimingKey];
     AVURLAsset *inputAsset = [[AVURLAsset alloc] initWithURL:self.url options:inputOptions];
-
+    
     GPUImageMovie __block *blockSelf = self;
-
+    
     [inputAsset loadValuesAsynchronouslyForKeys:[NSArray arrayWithObject:@"tracks"] completionHandler: ^{
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             NSError *error = nil;
@@ -189,27 +181,11 @@
             {
                 return;
             }
-            NSLog(@"GPUImageMovie %@ loaded successfully", blockSelf.url.lastPathComponent);
             blockSelf.asset = inputAsset;
-            dispatch_group_leave(readyGroup);
+            [blockSelf processAsset];
+            blockSelf = nil;
         });
     }];
-
-}
-
-- (void)startProcessing
-{
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        if( self.playerItem ) {
-            [self processPlayerItem];
-            return;
-        }
-
-        //NSAssert(self.asset, @"asset should be inited before use");
-
-        [self processAsset];
-    });
-
 }
 
 - (AVAssetReader*)createAssetReader
@@ -781,6 +757,5 @@
 - (BOOL)videoEncodingIsFinished {
     return videoEncodingIsFinished;
 }
-
 
 @end
