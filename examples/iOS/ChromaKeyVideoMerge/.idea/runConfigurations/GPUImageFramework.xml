@@ -1,0 +1,9 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="GPUImageFramework" type="AppleRunConfiguration" factoryName="Application" WORKING_DIR="" PASS_PARENT_ENVS="FALSE" PROJECT_NAME="GPUImage" TARGET_NAME="GPUImageFramework" CONFIG_NAME="Debug" SCHEME_NAME="GPUImageFramework" RUN_TARGET_PROJECT_NAME="ChromaKeyVideoMerge" RUN_TARGET_NAME="ChromaKeyVideoMerge" MAKE_ACTIVE="TRUE" WAIT_FOR="FALSE">
+    <envs />
+    <EXTENSION ID="org.jetbrains.appcode.reveal.RevealRunConfigurationExtension">
+      <REVEAL_SETTINGS autoInject="false" autoInstall="true" askToEnableAutoInstall="true" />
+    </EXTENSION>
+    <method />
+  </configuration>
+</component>
