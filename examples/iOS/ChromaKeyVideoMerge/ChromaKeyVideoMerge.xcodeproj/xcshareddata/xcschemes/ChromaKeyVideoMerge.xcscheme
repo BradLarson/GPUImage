@@ -13,10 +13,10 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "BC552B361558C6F4001F3FFA"
-               BuildableName = "Documentation"
-               BlueprintName = "Documentation"
-               ReferencedContainer = "container:GPUImage.xcodeproj">
+               BlueprintIdentifier = "BCB5DDC914E86899000AF3C2"
+               BuildableName = "ChromaKeyVideoMerge.app"
+               BlueprintName = "ChromaKeyVideoMerge"
+               ReferencedContainer = "container:ChromaKeyVideoMerge.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -28,15 +28,6 @@
       buildConfiguration = "Debug">
       <Testables>
       </Testables>
-      <MacroExpansion>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "BCB5DDC914E86899000AF3C2"
-            BuildableName = "ChromaKeyVideoMerge.app"
-            BlueprintName = "ChromaKeyVideoMerge"
-            ReferencedContainer = "container:../examples/iOS/ChromaKeyVideoMerge/ChromaKeyVideoMerge.xcodeproj">
-         </BuildableReference>
-      </MacroExpansion>
    </TestAction>
    <LaunchAction
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
@@ -53,7 +44,7 @@
             BlueprintIdentifier = "BCB5DDC914E86899000AF3C2"
             BuildableName = "ChromaKeyVideoMerge.app"
             BlueprintName = "ChromaKeyVideoMerge"
-            ReferencedContainer = "container:../examples/iOS/ChromaKeyVideoMerge/ChromaKeyVideoMerge.xcodeproj">
+            ReferencedContainer = "container:ChromaKeyVideoMerge.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
