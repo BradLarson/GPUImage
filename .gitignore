@@ -22,4 +22,6 @@ xcuserdata
 
 # Documentation
 documentation/*
+framework/.idea/
 
+examples/iOS/ChromaKeyVideoMerge/.idea/
