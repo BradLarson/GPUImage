@@ -43,9 +43,6 @@
 @property (readonly, nonatomic) BOOL audioEncodingIsFinished;
 @property (readonly, nonatomic) BOOL videoEncodingIsFinished;
 
-@property (nonatomic) BOOL pauseVideoRead;
-@property(nonatomic, copy) void (^onProcessMovieFrameDone)(GPUImageMovie *, CMTime);
-
 /// @name Initialization and teardown
 - (id)initWithAsset:(AVAsset *)asset;
 - (id)initWithPlayerItem:(AVPlayerItem *)playerItem;
