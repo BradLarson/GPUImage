@@ -95,8 +95,10 @@
 - (void)updateDataFromBytes:(GLubyte *)bytesToUpload;// size:(CGSize)imageSize;
 {
     //uploadedImageSize = imageSize;
-
-    [self uploadBytes:bytesToUpload];
+    
+    runSynchronouslyOnVideoProcessingQueue(^{
+        [self uploadBytes:bytesToUpload];
+    });
 }
 
 - (void)processData;
