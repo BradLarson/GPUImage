@@ -6,13 +6,8 @@
 #import "GLProgram.h"
 // START:typedefs
 #pragma mark Function Pointer Definitions
-typedef void (*GLInfoFunction)(GLuint program, 
-                               GLenum pname, 
-                               GLint* params);
-typedef void (*GLLogFunction) (GLuint program, 
-                               GLsizei bufsize, 
-                               GLsizei* length, 
-                               GLchar* infolog);
+typedef void (*GLInfoFunction)(GLuint program, GLenum pname, GLint* params);
+typedef void (*GLLogFunction) (GLuint program, GLsizei bufsize, GLsizei* length, GLchar* infolog);
 // END:typedefs
 #pragma mark -
 #pragma mark Private Extension Method Declaration
