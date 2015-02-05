@@ -9,7 +9,7 @@ class FilterDisplayViewController: UIViewController, UISplitViewControllerDelega
     let videoCamera: GPUImageVideoCamera
     var blendImage: GPUImagePicture?
 
-    required init(coder aDecoder: NSCoder!)
+    required init(coder aDecoder: NSCoder)
     {
         videoCamera = GPUImageVideoCamera(sessionPreset: AVCaptureSessionPreset640x480, cameraPosition: .Back)
         videoCamera.outputImageOrientation = .Portrait;
