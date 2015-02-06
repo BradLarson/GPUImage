@@ -172,29 +172,36 @@ NSString *const kGPUImageThreeInputTextureVertexShaderString = SHADER_STRING
 {
     // when newSize is equal to CGSizeZero its essentially making that texture null, so that source
     //   should be considered invalid. Set the hasRecieved_Frame to NO.
-    if (textureIndex == 0)
-    {
+//    if (textureIndex == 0)
+//    {
+//        [super setInputSize:newSize atIndex:textureIndex];
+//        
+//        if (CGSizeEqualToSize(newSize, CGSizeZero))
+//        {
+//            hasSetFirstTexture = NO;
+//            hasReceivedFirstFrame = NO;
+//        }
+//    }
+//    else if (textureIndex == 1)
+//    {
+//        if (CGSizeEqualToSize(newSize, CGSizeZero))
+//        {
+//            hasSetSecondTexture = NO;
+//            hasReceivedSecondFrame = NO;
+//        }
+//    }
+//    else {
+//        if (CGSizeEqualToSize(newSize, CGSizeZero))
+//        {
+//            hasReceivedThirdFrame = NO;
+//        }
+//    }
+    
+    if(textureIndex >= 2) {
+        hasReceivedThirdFrame = NO;
+        thirdFrameTime = kCMTimeInvalid;
+    } else {
         [super setInputSize:newSize atIndex:textureIndex];
-        
-        if (CGSizeEqualToSize(newSize, CGSizeZero))
-        {
-            hasSetFirstTexture = NO;
-            hasReceivedFirstFrame = NO;
-        }
-    }
-    else if (textureIndex == 1)
-    {
-        if (CGSizeEqualToSize(newSize, CGSizeZero))
-        {
-            hasSetSecondTexture = NO;
-            hasReceivedSecondFrame = NO;
-        }
-    }
-    else {
-        if (CGSizeEqualToSize(newSize, CGSizeZero))
-        {
-            hasReceivedThirdFrame = NO;
-        }
     }
 }
 
@@ -265,6 +272,15 @@ NSString *const kGPUImageThreeInputTextureVertexShaderString = SHADER_STRING
         thirdFrameTime = frameTime;
     }
     
+    if(!CMTIME_IS_INDEFINITE(frameTime)) {
+        if(CMTIME_IS_INDEFINITE(firstFrameTime))
+            hasReceivedFirstFrame = YES;
+        if(CMTIME_IS_INDEFINITE(secondFrameTime))
+            hasReceivedSecondFrame = YES;
+        if(CMTIME_IS_INDEFINITE(thirdFrameTime))
+            hasReceivedThirdFrame = YES;
+    }
+    
     // || (hasReceivedFirstFrame && secondFrameCheckDisabled) || (hasReceivedSecondFrame && firstFrameCheckDisabled)
     if ((hasReceivedFirstFrame || firstFrameCheckDisabled) && (secondFrameCheckDisabled || hasReceivedSecondFrame) && (thirdFrameCheckDisabled || hasReceivedThirdFrame))
     {
@@ -280,11 +296,11 @@ NSString *const kGPUImageThreeInputTextureVertexShaderString = SHADER_STRING
         [self informTargetsAboutNewFrameAtTime:frameTime];
 
         // if times are indefinite then frames are still valid.
-        if(!CMTIME_IS_INDEFINITE(firstFrameTime))
+//        if(!CMTIME_IS_INDEFINITE(firstFrameTime))
             hasReceivedFirstFrame = NO;
-        if(!CMTIME_IS_INDEFINITE(secondFrameTime))
+//        if(!CMTIME_IS_INDEFINITE(secondFrameTime))
             hasReceivedSecondFrame = NO;
-        if(!CMTIME_IS_INDEFINITE(thirdFrameTime))
+//        if(!CMTIME_IS_INDEFINITE(thirdFrameTime))
             hasReceivedThirdFrame = NO;
     }
 }
