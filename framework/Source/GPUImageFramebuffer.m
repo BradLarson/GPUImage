@@ -4,6 +4,7 @@
 @interface GPUImageFramebuffer()
 {
     GLuint framebuffer;
+    GLuint __padding[7];
 #if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
     CVPixelBufferRef renderTarget;
     CVOpenGLESTextureRef renderTexture;
