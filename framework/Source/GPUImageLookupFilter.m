@@ -49,7 +49,7 @@ NSString *const kGPUImageLookupFragmentShaderString = SHADER_STRING
  uniform sampler2D inputImageTexture;
  uniform sampler2D inputImageTexture2; // lookup texture
  
- uniform lowp float intensity;
+ uniform float intensity;
  
  void main()
  {
