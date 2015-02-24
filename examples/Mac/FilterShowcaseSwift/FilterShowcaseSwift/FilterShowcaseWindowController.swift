@@ -57,9 +57,8 @@ class FilterShowcaseWindowController: NSWindowController {
                 self.blendImage.addTarget((currentFilterOperation!.filter as! GPUImageInput))
                 currentFilterOperation!.filter.addTarget(filterView!)
                 self.blendImage.processImage()
-            case let .Custom(setupFunction):
-                let setupFunction2 = setupFunction
-                let inputToFunction:(GPUImageOutput, GPUImageOutput?) = setupFunction2(camera:videoCamera!, outputView:filterView!) // Type inference falls down, for now needs this hard cast
+            case let .Custom(filterSetupFunction:setupFunction):
+                let inputToFunction:(GPUImageOutput, GPUImageOutput?) = setupFunction(camera:videoCamera!, outputView:filterView!) // Type inference falls down, for now needs this hard cast
                 currentFilterOperation!.configureCustomFilter(inputToFunction)
         }
         

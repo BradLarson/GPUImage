@@ -40,10 +40,8 @@ class FilterDisplayViewController: UIViewController, UISplitViewControllerDelega
                     self.blendImage?.addTarget((currentFilterConfiguration.filter as! GPUImageInput))
                     self.blendImage?.processImage()
                     currentFilterConfiguration.filter.addTarget(view)
-                case let .Custom(setupFunction):
-                    let setupFunction2 = setupFunction
-//                    let setupFunction = currentFilterConfiguration.customFilterSetupFunction!
-                    let inputToFunction:(GPUImageOutput, GPUImageOutput?) = setupFunction2(camera:videoCamera, outputView:view) // Type inference falls down, for now needs this hard cast
+                case let .Custom(filterSetupFunction:setupFunction):
+                    let inputToFunction:(GPUImageOutput, GPUImageOutput?) = setupFunction(camera:videoCamera, outputView:view) // Type inference falls down, for now needs this hard cast
                     currentFilterConfiguration.configureCustomFilter(inputToFunction)
                 }
                 
