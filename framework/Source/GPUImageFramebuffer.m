@@ -156,8 +156,11 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size);
                 NSAssert(NO, @"Error at CVPixelBufferCreate %d", err);
             }
             
+            NSDictionary *pixelBufferAttributes = [NSDictionary dictionaryWithObjectsAndKeys:
+                                                   [NSDictionary dictionary], (id)kCVPixelBufferIOSurfacePropertiesKey,
+                                                   nil]; // CONRAD - used to be NULL
             err = CVOpenGLESTextureCacheCreateTextureFromImage (kCFAllocatorDefault, coreVideoTextureCache, renderTarget,
-                                                                NULL, // texture attributes
+                                                                (__bridge CFDictionaryRef)(pixelBufferAttributes), // texture attributes
                                                                 GL_TEXTURE_2D,
                                                                 _textureOptions.internalFormat, // opengl format
                                                                 (int)_size.width,
