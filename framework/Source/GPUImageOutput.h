@@ -59,6 +59,10 @@ void reportAvailableMemoryForGPUImage(NSString *tag);
 @property(nonatomic) BOOL enabled;
 @property(readwrite, nonatomic) GPUTextureOptions outputTextureOptions;
 
+/// Objective c versions of run (a)synchronouslyOnVideoProcessingQueue
++(void)RunSynchronouslyOnVideoProcessingQueue:(void (^)())block;
++(void)RunAsynchronouslyOnVideoProcessingQueue:(void (^)())block;
+
 /// @name Managing targets
 - (void)setInputFramebufferForTarget:(id<GPUImageInput>)target atIndex:(NSInteger)inputTextureIndex;
 - (GPUImageFramebuffer *)framebufferForOutput;
