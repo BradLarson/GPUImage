@@ -126,6 +126,14 @@ void reportAvailableMemoryForGPUImage(NSString *tag)
 @synthesize enabled = _enabled;
 @synthesize outputTextureOptions = _outputTextureOptions;
 
+/// Objective c versions of run (a)synchronouslyOnVideoProcessingQueue
++(void)RunSynchronouslyOnVideoProcessingQueue:(void (^)())block {
+    runSynchronouslyOnVideoProcessingQueue(block);
+}
++(void)RunAsynchronouslyOnVideoProcessingQueue:(void (^)())block {
+    runAsynchronouslyOnVideoProcessingQueue(block);
+}
+
 #pragma mark -
 #pragma mark Initialization and teardown
 
