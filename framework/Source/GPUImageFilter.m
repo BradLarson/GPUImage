@@ -391,57 +391,74 @@ NSString *const kGPUImagePassthroughFragmentShaderString = SHADER_STRING
 
 - (void)setInteger:(GLint)newInteger forUniformName:(NSString *)uniformName;
 {
-    GLint uniformIndex = [filterProgram uniformIndex:uniformName];
-    [self setInteger:newInteger forUniform:uniformIndex program:filterProgram];
+    runSynchronouslyOnVideoProcessingQueue(^{
+        GLint uniformIndex = [filterProgram uniformIndex:uniformName];
+        [self setInteger:newInteger forUniform:uniformIndex program:filterProgram];
+    });
 }
 
 - (void)setFloat:(GLfloat)newFloat forUniformName:(NSString *)uniformName;
 {
-    GLint uniformIndex = [filterProgram uniformIndex:uniformName];
-    [self setFloat:newFloat forUniform:uniformIndex program:filterProgram];
+    runSynchronouslyOnVideoProcessingQueue(^{
+        GLint uniformIndex = [filterProgram uniformIndex:uniformName];
+        [self setFloat:newFloat forUniform:uniformIndex program:filterProgram];
+    });
 }
 
 - (void)setSize:(CGSize)newSize forUniformName:(NSString *)uniformName;
 {
-    GLint uniformIndex = [filterProgram uniformIndex:uniformName];
-    [self setSize:newSize forUniform:uniformIndex program:filterProgram];
+    runSynchronouslyOnVideoProcessingQueue(^{
+        GLint uniformIndex = [filterProgram uniformIndex:uniformName];
+        [self setSize:newSize forUniform:uniformIndex program:filterProgram];
+    });
 }
 
 - (void)setPoint:(CGPoint)newPoint forUniformName:(NSString *)uniformName;
 {
-    GLint uniformIndex = [filterProgram uniformIndex:uniformName];
-    [self setPoint:newPoint forUniform:uniformIndex program:filterProgram];
+    runSynchronouslyOnVideoProcessingQueue(^{
+        GLint uniformIndex = [filterProgram uniformIndex:uniformName];
+        [self setPoint:newPoint forUniform:uniformIndex program:filterProgram];
+    });
 }
 
 - (void)setFloatVec3:(GPUVector3)newVec3 forUniformName:(NSString *)uniformName;
 {
-    GLint uniformIndex = [filterProgram uniformIndex:uniformName];
-    [self setVec3:newVec3 forUniform:uniformIndex program:filterProgram];
+    runSynchronouslyOnVideoProcessingQueue(^{
+        GLint uniformIndex = [filterProgram uniformIndex:uniformName];
+        [self setVec3:newVec3 forUniform:uniformIndex program:filterProgram];
+    });
 }
 
 - (void)setFloatVec4:(GPUVector4)newVec4 forUniform:(NSString *)uniformName;
 {
-    GLint uniformIndex = [filterProgram uniformIndex:uniformName];
-    [self setVec4:newVec4 forUniform:uniformIndex program:filterProgram];
+    runSynchronouslyOnVideoProcessingQueue(^{
+        GLint uniformIndex = [filterProgram uniformIndex:uniformName];
+        [self setVec4:newVec4 forUniform:uniformIndex program:filterProgram];
+    });
 }
 
 - (void)setFloatArray:(GLfloat *)array length:(GLsizei)count forUniform:(NSString*)uniformName
 {
-    GLint uniformIndex = [filterProgram uniformIndex:uniformName];
-    
-    [self setFloatArray:array length:count forUniform:uniformIndex program:filterProgram];
+    runSynchronouslyOnVideoProcessingQueue(^{
+        GLint uniformIndex = [filterProgram uniformIndex:uniformName];
+        [self setFloatArray:array length:count forUniform:uniformIndex program:filterProgram];
+    });
 }
 
-- (void)setMatrix3f:(GPUMatrix3x3)matrix forUniformName:(NSString *)uniformName {
-    GLint uniformIndex = [filterProgram uniformIndex:uniformName];
-    
-    [self setMatrix3f:matrix forUniform:uniformIndex program:filterProgram];
+- (void)setMatrix3f:(GPUMatrix3x3)matrix forUniformName:(NSString *)uniformName
+{
+    runSynchronouslyOnVideoProcessingQueue(^{
+        GLint uniformIndex = [filterProgram uniformIndex:uniformName];
+        [self setMatrix3f:matrix forUniform:uniformIndex program:filterProgram];
+    });
 }
 
-- (void)setMatrix4f:(GPUMatrix4x4)matrix forUniformName:(NSString *)uniformName {
-    GLint uniformIndex = [filterProgram uniformIndex:uniformName];
-    
-    [self setMatrix4f:matrix forUniform:uniformIndex program:filterProgram];
+- (void)setMatrix4f:(GPUMatrix4x4)matrix forUniformName:(NSString *)uniformName
+{
+    runSynchronouslyOnVideoProcessingQueue(^{
+        GLint uniformIndex = [filterProgram uniformIndex:uniformName];
+        [self setMatrix4f:matrix forUniform:uniformIndex program:filterProgram];
+    });
 }
 
 - (void)setMatrix3f:(GPUMatrix3x3)matrix forUniform:(GLint)uniform program:(GLProgram *)shaderProgram;
