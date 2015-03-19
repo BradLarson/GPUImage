@@ -6,13 +6,8 @@
 #import "GLProgram.h"
 // START:typedefs
 #pragma mark Function Pointer Definitions
-typedef void (*GLInfoFunction)(GLuint program, 
-                               GLenum pname, 
-                               GLint* params);
-typedef void (*GLLogFunction) (GLuint program, 
-                               GLsizei bufsize, 
-                               GLsizei* length, 
-                               GLchar* infolog);
+typedef void (*GLInfoFunction)(GLuint program, GLenum pname, GLint* params);
+typedef void (*GLLogFunction) (GLuint program, GLsizei bufsize, GLsizei* length, GLchar* infolog);
 // END:typedefs
 #pragma mark -
 #pragma mark Private Extension Method Declaration
@@ -22,9 +17,6 @@ typedef void (*GLLogFunction) (GLuint program,
 - (BOOL)compileShader:(GLuint *)shader 
                  type:(GLenum)type 
                string:(NSString *)shaderString;
-- (NSString *)logForOpenGLObject:(GLuint)object 
-                    infoCallback:(GLInfoFunction)infoFunc 
-                         logFunc:(GLLogFunction)logFunc;
 @end
 // END:extension
 #pragma mark -
@@ -48,13 +40,17 @@ typedef void (*GLLogFunction) (GLuint program,
         if (![self compileShader:&vertShader 
                             type:GL_VERTEX_SHADER 
                           string:vShaderString])
+        {
             NSLog(@"Failed to compile vertex shader");
+        }
         
         // Create and compile fragment shader
         if (![self compileShader:&fragShader 
                             type:GL_FRAGMENT_SHADER 
                           string:fShaderString])
+        {
             NSLog(@"Failed to compile fragment shader");
+        }
         
         glAttachShader(program, vertShader);
         glAttachShader(program, fragShader);
@@ -124,7 +120,15 @@ typedef void (*GLLogFunction) (GLuint program,
 		{
 			GLchar *log = (GLchar *)malloc(logLength);
 			glGetShaderInfoLog(*shader, logLength, &logLength, log);
-			NSLog(@"Shader compile log:\n%s", log);
+            if (shader == &vertShader)
+            {
+                self.vertexShaderLog = [NSString stringWithFormat:@"%s", log];
+            }
+            else
+            {
+                self.fragmentShaderLog = [NSString stringWithFormat:@"%s", log];
+            }
+
 			free(log);
 		}
 	}	
@@ -198,47 +202,6 @@ typedef void (*GLLogFunction) (GLuint program,
 }
 // END:use
 #pragma mark -
-// START:privatelog
-- (NSString *)logForOpenGLObject:(GLuint)object 
-                    infoCallback:(GLInfoFunction)infoFunc 
-                         logFunc:(GLLogFunction)logFunc
-{
-    GLint logLength = 0, charsWritten = 0;
-    
-    infoFunc(object, GL_INFO_LOG_LENGTH, &logLength);    
-    if (logLength < 1)
-        return nil;
-    
-    char *logBytes = malloc(logLength);
-    logFunc(object, logLength, &charsWritten, logBytes);
-    NSString *log = [[NSString alloc] initWithBytes:logBytes 
-                                              length:logLength 
-                                            encoding:NSUTF8StringEncoding];
-    free(logBytes);
-    return log;
-}
-// END:privatelog
-// START:log
-- (NSString *)vertexShaderLog
-{
-    return [self logForOpenGLObject:vertShader 
-                       infoCallback:(GLInfoFunction)&glGetProgramiv 
-                            logFunc:(GLLogFunction)&glGetProgramInfoLog];
-    
-}
-- (NSString *)fragmentShaderLog
-{
-    return [self logForOpenGLObject:fragShader 
-                       infoCallback:(GLInfoFunction)&glGetProgramiv 
-                            logFunc:(GLLogFunction)&glGetProgramInfoLog];
-}
-- (NSString *)programLog
-{
-    return [self logForOpenGLObject:program 
-                       infoCallback:(GLInfoFunction)&glGetProgramiv 
-                            logFunc:(GLLogFunction)&glGetProgramInfoLog];
-}
-// END:log
 
 - (void)validate;
 {
@@ -250,7 +213,7 @@ typedef void (*GLLogFunction) (GLuint program,
 	{
 		GLchar *log = (GLchar *)malloc(logLength);
 		glGetProgramInfoLog(program, logLength, &logLength, log);
-		NSLog(@"Program validate log:\n%s", log);
+        self.programLog = [NSString stringWithFormat:@"%s", log];
 		free(log);
 	}	
 }

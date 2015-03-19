@@ -31,9 +31,9 @@ NSString *const kGPUImageNonMaximumSuppressionFragmentShaderString = SHADER_STRI
      
      // Use a tiebreaker for pixels to the left and immediately above this one
      lowp float multiplier = 1.0 - step(centerColor.r, topColor);
-     multiplier = multiplier * 1.0 - step(centerColor.r, topLeftColor);
-     multiplier = multiplier * 1.0 - step(centerColor.r, leftColor);
-     multiplier = multiplier * 1.0 - step(centerColor.r, bottomLeftColor);
+     multiplier = multiplier * (1.0 - step(centerColor.r, topLeftColor));
+     multiplier = multiplier * (1.0 - step(centerColor.r, leftColor));
+     multiplier = multiplier * (1.0 - step(centerColor.r, bottomLeftColor));
      
      lowp float maxValue = max(centerColor.r, bottomColor);
      maxValue = max(maxValue, bottomRightColor);
@@ -74,9 +74,9 @@ NSString *const kGPUImageNonMaximumSuppressionFragmentShaderString = SHADER_STRI
      
      // Use a tiebreaker for pixels to the left and immediately above this one
      float multiplier = 1.0 - step(centerColor.r, topColor);
-     multiplier = multiplier * 1.0 - step(centerColor.r, topLeftColor);
-     multiplier = multiplier * 1.0 - step(centerColor.r, leftColor);
-     multiplier = multiplier * 1.0 - step(centerColor.r, bottomLeftColor);
+     multiplier = multiplier * (1.0 - step(centerColor.r, topLeftColor));
+     multiplier = multiplier * (1.0 - step(centerColor.r, leftColor));
+     multiplier = multiplier * (1.0 - step(centerColor.r, bottomLeftColor));
      
      float maxValue = max(centerColor.r, bottomColor);
      maxValue = max(maxValue, bottomRightColor);

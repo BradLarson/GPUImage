@@ -23,6 +23,9 @@
 }
 
 @property(readwrite, nonatomic) BOOL initialized;
+@property(readwrite, copy, nonatomic) NSString *vertexShaderLog;
+@property(readwrite, copy, nonatomic) NSString *fragmentShaderLog;
+@property(readwrite, copy, nonatomic) NSString *programLog;
 
 - (id)initWithVertexShaderString:(NSString *)vShaderString 
             fragmentShaderString:(NSString *)fShaderString;
@@ -35,8 +38,5 @@
 - (GLuint)uniformIndex:(NSString *)uniformName;
 - (BOOL)link;
 - (void)use;
-- (NSString *)vertexShaderLog;
-- (NSString *)fragmentShaderLog;
-- (NSString *)programLog;
 - (void)validate;
 @end

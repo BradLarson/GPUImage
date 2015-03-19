@@ -73,6 +73,11 @@
     [_terminalFilter removeAllTargets];
 }
 
+- (NSArray *)targets;
+{
+    return [_terminalFilter targets];
+}
+
 - (void)setFrameProcessingCompletionBlock:(void (^)(GPUImageOutput *, CMTime))frameProcessingCompletionBlock;
 {
     [_terminalFilter setFrameProcessingCompletionBlock:frameProcessingCompletionBlock];

@@ -352,9 +352,16 @@
 {
     [super setupFilterForSize:filterFrameSize];
     
-    if (shouldResizeBlurRadiusWithImageSize == YES)
+    if (shouldResizeBlurRadiusWithImageSize)
     {
-        
+        if (self.blurRadiusAsFractionOfImageWidth > 0)
+        {
+            self.blurRadiusInPixels = filterFrameSize.width * self.blurRadiusAsFractionOfImageWidth;
+        }
+        else
+        {
+            self.blurRadiusInPixels = filterFrameSize.height * self.blurRadiusAsFractionOfImageHeight;
+        }
     }
 }
 
@@ -483,6 +490,24 @@
         [self switchToVertexShader:newGaussianBlurVertexShader fragmentShader:newGaussianBlurFragmentShader];
     }
     shouldResizeBlurRadiusWithImageSize = NO;
+}
+
+- (void)setBlurRadiusAsFractionOfImageWidth:(CGFloat)blurRadiusAsFractionOfImageWidth
+{
+    if (blurRadiusAsFractionOfImageWidth < 0)  return;
+
+    shouldResizeBlurRadiusWithImageSize = _blurRadiusAsFractionOfImageWidth != blurRadiusAsFractionOfImageWidth && blurRadiusAsFractionOfImageWidth > 0;
+    _blurRadiusAsFractionOfImageWidth = blurRadiusAsFractionOfImageWidth;
+    _blurRadiusAsFractionOfImageHeight = 0;
+}
+
+- (void)setBlurRadiusAsFractionOfImageHeight:(CGFloat)blurRadiusAsFractionOfImageHeight
+{
+    if (blurRadiusAsFractionOfImageHeight < 0)  return;
+
+    shouldResizeBlurRadiusWithImageSize = _blurRadiusAsFractionOfImageHeight != blurRadiusAsFractionOfImageHeight && blurRadiusAsFractionOfImageHeight > 0;
+    _blurRadiusAsFractionOfImageHeight = blurRadiusAsFractionOfImageHeight;
+    _blurRadiusAsFractionOfImageWidth = 0;
 }
 
 @end

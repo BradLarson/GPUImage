@@ -20,49 +20,27 @@
 		return nil;
     }
     
-#ifdef DEBUGLINEDETECTION
-    _intermediateImages = [[NSMutableArray alloc] init];
-#endif
-    
     // First pass: do edge detection and threshold that to just have white pixels for edges
 //    if ([GPUImageContext deviceSupportsFramebufferReads])
 //    if ([GPUImageContext deviceSupportsFramebufferReads])
 //    {
-        thresholdEdgeDetectionFilter = [[GPUImageThresholdEdgeDetectionFilter alloc] init];
+//        thresholdEdgeDetectionFilter = [[GPUImageThresholdEdgeDetectionFilter alloc] init];
 //        thresholdEdgeDetectionFilter = [[GPUImageSobelEdgeDetectionFilter alloc] init];
-        [(GPUImageThresholdEdgeDetectionFilter *)thresholdEdgeDetectionFilter setThreshold:0.4];
+//        [(GPUImageThresholdEdgeDetectionFilter *)thresholdEdgeDetectionFilter setThreshold:0.07];
 //        [(GPUImageThresholdEdgeDetectionFilter *)thresholdEdgeDetectionFilter setEdgeStrength:0.25];
-        [(GPUImageThresholdEdgeDetectionFilter *)thresholdEdgeDetectionFilter setEdgeStrength:1.0];
+//        [(GPUImageThresholdEdgeDetectionFilter *)thresholdEdgeDetectionFilter setEdgeStrength:1.0];
 //        thresholdEdgeDetectionFilter = [[GPUImageCannyEdgeDetectionFilter alloc] init];
 //    }
 //    else
 //    {
-//        thresholdEdgeDetectionFilter = [[GPUImageCannyEdgeDetectionFilter alloc] init];
+        thresholdEdgeDetectionFilter = [[GPUImageCannyEdgeDetectionFilter alloc] init];
 //    }
     [self addFilter:thresholdEdgeDetectionFilter];
     
-#ifdef DEBUGLINEDETECTION
-    __unsafe_unretained NSMutableArray *weakIntermediateImages = _intermediateImages;
-    __unsafe_unretained GPUImageOutput<GPUImageInput> *weakFilter = thresholdEdgeDetectionFilter;
-    [thresholdEdgeDetectionFilter setFrameProcessingCompletionBlock:^(GPUImageOutput *filter, CMTime frameTime){
-        [weakIntermediateImages removeAllObjects];
-        UIImage *intermediateImage = [weakFilter imageFromCurrentlyProcessedOutput];
-        [weakIntermediateImages addObject:intermediateImage];
-    }];
-#endif
-
     // Second pass: extract the white points and draw representative lines in parallel coordinate space
     parallelCoordinateLineTransformFilter = [[GPUImageParallelCoordinateLineTransformFilter alloc] init];
     [self addFilter:parallelCoordinateLineTransformFilter];
     
-#ifdef DEBUGLINEDETECTION
-    weakFilter = parallelCoordinateLineTransformFilter;
-    [parallelCoordinateLineTransformFilter setFrameProcessingCompletionBlock:^(GPUImageOutput *filter, CMTime frameTime){
-        UIImage *intermediateImage = [weakFilter imageFromCurrentlyProcessedOutput];
-        [weakIntermediateImages addObject:intermediateImage];
-    }];
-#endif
-
     // Third pass: apply non-maximum suppression
     if ([GPUImageContext deviceSupportsFramebufferReads])
     {
@@ -76,12 +54,27 @@
     
     __unsafe_unretained GPUImageHoughTransformLineDetector *weakSelf = self;
 #ifdef DEBUGLINEDETECTION
-    weakFilter = nonMaximumSuppressionFilter;
-    [nonMaximumSuppressionFilter setFrameProcessingCompletionBlock:^(GPUImageOutput *filter, CMTime frameTime){
+    _intermediateImages = [[NSMutableArray alloc] init];
+    __unsafe_unretained NSMutableArray *weakIntermediateImages = _intermediateImages;
 
-        UIImage *intermediateImage = [weakFilter imageFromCurrentlyProcessedOutput];
+//    __unsafe_unretained GPUImageOutput<GPUImageInput> *weakEdgeDetectionFilter = thresholdEdgeDetectionFilter;
+//    [thresholdEdgeDetectionFilter setFrameProcessingCompletionBlock:^(GPUImageOutput *filter, CMTime frameTime){
+//        [weakIntermediateImages removeAllObjects];
+//        UIImage *intermediateImage = [weakEdgeDetectionFilter imageFromCurrentFramebuffer];
+//        [weakIntermediateImages addObject:intermediateImage];
+//    }];
+//
+//    __unsafe_unretained GPUImageOutput<GPUImageInput> *weakParallelCoordinateLineTransformFilter = parallelCoordinateLineTransformFilter;
+//    [parallelCoordinateLineTransformFilter setFrameProcessingCompletionBlock:^(GPUImageOutput *filter, CMTime frameTime){
+//        UIImage *intermediateImage = [weakParallelCoordinateLineTransformFilter imageFromCurrentFramebuffer];
+//        [weakIntermediateImages addObject:intermediateImage];
+//    }];
+
+    __unsafe_unretained GPUImageOutput<GPUImageInput> *weakNonMaximumSuppressionFilter = nonMaximumSuppressionFilter;
+    [nonMaximumSuppressionFilter setFrameProcessingCompletionBlock:^(GPUImageOutput *filter, CMTime frameTime){
+        UIImage *intermediateImage = [weakNonMaximumSuppressionFilter imageFromCurrentFramebuffer];
         [weakIntermediateImages addObject:intermediateImage];
-        
+
         [weakSelf extractLineParametersFromImageAtFrameTime:frameTime];
     }];
 #else
@@ -98,7 +91,7 @@
     self.terminalFilter = nonMaximumSuppressionFilter;
     
 //    self.edgeThreshold = 0.95;
-    self.lineDetectionThreshold = 0.8;
+    self.lineDetectionThreshold = 0.12;
     
     return self;
 }
@@ -137,15 +130,21 @@
     
     unsigned int currentByte = 0;
     unsigned int cornerStorageIndex = 0;
+    unsigned long lineStrengthCounter = 0;
     while (currentByte < imageByteSize)
     {
         GLubyte colorByte = rawImagePixels[currentByte];
+//        NSLog(@"(%d,%d): [%d,%d,%d,%d]", xCoordinate, yCoordinate, rawImagePixels[currentByte], rawImagePixels[currentByte+1], rawImagePixels[currentByte+2], rawImagePixels[currentByte+3]);
+//        NSLog(@"[%d,%d,%d,%d]", rawImagePixels[currentByte], rawImagePixels[currentByte+1], rawImagePixels[currentByte+2], rawImagePixels[currentByte+3]);
         
         if (colorByte > 0)
         {
             unsigned int xCoordinate = currentByte % imageWidth;
             unsigned int yCoordinate = currentByte / imageWidth;
             
+            lineStrengthCounter += colorByte;
+//            NSLog(@"(%d,%d): [%d,%d,%d,%d]", xCoordinate, yCoordinate, rawImagePixels[currentByte], rawImagePixels[currentByte+1], rawImagePixels[currentByte+2], rawImagePixels[currentByte+3]);
+          
             CGFloat normalizedXCoordinate = -1.0 + 2.0 * (CGFloat)(xCoordinate / 4) / imageSize.width;
             CGFloat normalizedYCoordinate = -1.0 + 2.0 * (CGFloat)(yCoordinate) / imageSize.height;
             
@@ -192,7 +191,7 @@
     
 //    CFAbsoluteTime currentFrameTime = (CFAbsoluteTimeGetCurrent() - startTime);
 //    NSLog(@"Processing time : %f ms", 1000.0 * currentFrameTime);
-    
+
     if (linesDetectedBlock != NULL)
     {
         linesDetectedBlock(linesArray, numberOfLines, frameTime);
@@ -208,17 +207,15 @@
 #pragma mark -
 #pragma mark Accessors
 
-/*
-- (void)setEdgeThreshold:(CGFloat)newValue;
-{
-    thresholdEdgeDetectionFilter.threshold = newValue;
-}
-
-- (CGFloat)edgeThreshold;
-{
-    return thresholdEdgeDetectionFilter.threshold;
-}
- */
+//- (void)setEdgeThreshold:(CGFloat)newValue;
+//{
+//    [(GPUImageCannyEdgeDetectionFilter *)thresholdEdgeDetectionFilter setThreshold:newValue];
+//}
+//
+//- (CGFloat)edgeThreshold;
+//{
+//    return [(GPUImageCannyEdgeDetectionFilter *)thresholdEdgeDetectionFilter threshold];
+//}
 
 - (void)setLineDetectionThreshold:(CGFloat)newValue;
 {
@@ -229,5 +226,16 @@
 {
     return nonMaximumSuppressionFilter.threshold;
 }
+
+#ifdef DEBUGLINEDETECTION
+- (void)newFrameReadyAtTime:(CMTime)frameTime atIndex:(NSInteger)textureIndex;
+{
+//    [thresholdEdgeDetectionFilter useNextFrameForImageCapture];
+//    [parallelCoordinateLineTransformFilter useNextFrameForImageCapture];
+    [nonMaximumSuppressionFilter useNextFrameForImageCapture];
+    
+    [super newFrameReadyAtTime:frameTime atIndex:textureIndex];
+}
+#endif
 
 @end
