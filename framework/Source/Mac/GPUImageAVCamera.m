@@ -302,7 +302,8 @@ NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = SHAD
     [self removeInputsAndOutputs];
     
 // ARC forbids explicit message send of 'release'; since iOS 6 even for dispatch_release() calls: stripping it out in that case is required.
-#if ( (__IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_6_0) || (!defined(__IPHONE_6_0)) )
+//#if ( (__IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_6_0) || (!defined(__IPHONE_6_0)) )
+#if __MAC_OS_X_VERSION_MAX_ALLOWED <= __MAC_10_7
     if (cameraProcessingQueue != NULL)
     {
         dispatch_release(cameraProcessingQueue);
