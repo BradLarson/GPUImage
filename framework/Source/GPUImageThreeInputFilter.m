@@ -317,7 +317,8 @@ NSString *const kGPUImageThreeInputTextureVertexShaderString = SHADER_STRING
         
         [self renderToTextureWithVertices:imageVertices textureCoordinates:[[self class] textureCoordinatesForRotation:inputRotation]];
         
-        [self informTargetsAboutNewFrameAtTime:frameTime];
+        CMTime passOnFrameTime = (!CMTIME_IS_INDEFINITE(firstFrameTime)) ? firstFrameTime : (!CMTIME_IS_INDEFINITE(secondFrameTime)) ? secondFrameTime : thirdFrameTime;
+        [self informTargetsAboutNewFrameAtTime:passOnFrameTime];
 
         hasReceivedFirstFrame = NO;
         hasReceivedSecondFrame = NO;
