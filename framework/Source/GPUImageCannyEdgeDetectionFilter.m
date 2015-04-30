@@ -31,7 +31,7 @@
     [self addFilter:blurFilter];
     
     // Third pass: run the Sobel edge detection, with calculated gradient directions, on this blurred image
-    edgeDetectionFilter = [[GPUimageDirectionalSobelEdgeDetectionFilter alloc] init];
+    edgeDetectionFilter = [[GPUImageDirectionalSobelEdgeDetectionFilter alloc] init];
     [self addFilter:edgeDetectionFilter];
     
     // Fourth pass: apply non-maximum suppression    
