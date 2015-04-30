@@ -155,6 +155,7 @@
 #import "GPUImageZoomBlurFilter.h"
 #import "GPUImageLaplacianFilter.h"
 #import "GPUImageiOSBlurFilter.h"
+#import "GPUImageiOSImageEffect.h"
 #import "GPUImageLuminanceRangeFilter.h"
 #import "GPUImageDirectionalNonMaximumSuppressionFilter.h"
 #import "GPUImageDirectionalSobelEdgeDetectionFilter.h"
