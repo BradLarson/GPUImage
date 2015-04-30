@@ -89,7 +89,13 @@ NSString *const kGPUImageThreeInputTextureVertexShaderString = SHADER_STRING
     }
     
     [GPUImageContext setActiveShaderProgram:filterProgram];
-    outputFramebuffer = [[GPUImageContext sharedFramebufferCache] fetchFramebufferForSize:[self sizeOfFBO] textureOptions:self.outputTextureOptions onlyTexture:NO];
+    CGSize sizeOfFBO = [self sizeOfFBO];
+    if (sizeOfFBO.width > 0 && sizeOfFBO.height > 0) {
+        outputFramebuffer = [[GPUImageContext sharedFramebufferCache] fetchFramebufferForSize:sizeOfFBO textureOptions:self.outputTextureOptions onlyTexture:NO];
+    } else {
+        // skipping render as frame buffer size is zero, which will cause an error in CVPixelBufferCreate
+        return;
+    }
     [outputFramebuffer activateFramebuffer];
     if (usingNextFrameForImageCapture)
     {
