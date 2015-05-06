@@ -1,6 +1,6 @@
-#import "GPUimageDirectionalSobelEdgeDetectionFilter.h"
+#import "GPUImageDirectionalSobelEdgeDetectionFilter.h"
 
-@implementation GPUimageDirectionalSobelEdgeDetectionFilter
+@implementation GPUImageDirectionalSobelEdgeDetectionFilter
 
 #if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
 NSString *const kGPUImageDirectionalSobelEdgeDetectionFragmentShaderString = SHADER_STRING
