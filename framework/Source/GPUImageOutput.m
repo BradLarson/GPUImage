@@ -19,7 +19,10 @@ void runSynchronouslyOnVideoProcessingQueue(void (^block)(void))
 {
     dispatch_queue_t videoProcessingQueue = [GPUImageContext sharedContextQueue];
 #if !OS_OBJECT_USE_OBJC
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     if (dispatch_get_current_queue() == videoProcessingQueue)
+#pragma clang diagnostic pop
 #else
 	if (dispatch_get_specific([GPUImageContext contextKey]))
 #endif
@@ -36,7 +39,10 @@ void runAsynchronouslyOnVideoProcessingQueue(void (^block)(void))
     dispatch_queue_t videoProcessingQueue = [GPUImageContext sharedContextQueue];
     
 #if !OS_OBJECT_USE_OBJC
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     if (dispatch_get_current_queue() == videoProcessingQueue)
+#pragma clang diagnostic pop
 #else
     if (dispatch_get_specific([GPUImageContext contextKey]))
 #endif
@@ -52,7 +58,10 @@ void runSynchronouslyOnContextQueue(GPUImageContext *context, void (^block)(void
 {
     dispatch_queue_t videoProcessingQueue = [context contextQueue];
 #if !OS_OBJECT_USE_OBJC
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     if (dispatch_get_current_queue() == videoProcessingQueue)
+#pragma clang diagnostic pop
 #else
         if (dispatch_get_specific([GPUImageContext contextKey]))
 #endif
@@ -69,7 +78,10 @@ void runAsynchronouslyOnContextQueue(GPUImageContext *context, void (^block)(voi
     dispatch_queue_t videoProcessingQueue = [context contextQueue];
     
 #if !OS_OBJECT_USE_OBJC
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     if (dispatch_get_current_queue() == videoProcessingQueue)
+#pragma clang diagnostic pop
 #else
         if (dispatch_get_specific([GPUImageContext contextKey]))
 #endif
@@ -392,6 +404,24 @@ void reportAvailableMemoryForGPUImage(NSString *tag)
     if( ! _audioEncodingTarget.hasAudioTrack )
     {
         _audioEncodingTarget.hasAudioTrack = YES;
+    }
+}
+
+-(void)setOutputTextureOptions:(GPUTextureOptions)outputTextureOptions
+{
+    _outputTextureOptions = outputTextureOptions;
+    
+    if( outputFramebuffer.texture )
+    {
+        glBindTexture(GL_TEXTURE_2D,  outputFramebuffer.texture);
+        //_outputTextureOptions.format
+        //_outputTextureOptions.internalFormat
+        //_outputTextureOptions.magFilter
+        //_outputTextureOptions.minFilter
+        //_outputTextureOptions.type
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, _outputTextureOptions.wrapS);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, _outputTextureOptions.wrapT);
+        glBindTexture(GL_TEXTURE_2D, 0);
     }
 }
 

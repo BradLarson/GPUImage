@@ -18,7 +18,7 @@
  */
 @property (readwrite, nonatomic) CGFloat blurRadiusInPixels;
 
-/** Setting these properties will allow the blur radius to scale with the size of the image
+/** Setting these properties will allow the blur radius to scale with the size of the image. These properties are mutually exclusive; setting either will set the other to 0.
  */
 @property (readwrite, nonatomic) CGFloat blurRadiusAsFractionOfImageWidth;
 @property (readwrite, nonatomic) CGFloat blurRadiusAsFractionOfImageHeight;

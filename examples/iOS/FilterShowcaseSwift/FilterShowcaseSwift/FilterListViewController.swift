@@ -11,7 +11,7 @@ class FilterListViewController: UITableViewController {
         if segue.identifier == "showDetail" {
             if let indexPath = self.tableView.indexPathForSelectedRow() {
                 let filterInList = filterOperations[indexPath.row]
-                (segue.destinationViewController as FilterDisplayViewController).filterOperation = filterInList
+                (segue.destinationViewController as! FilterDisplayViewController).filterOperation = filterInList
             }
         }
     }
@@ -27,7 +27,7 @@ class FilterListViewController: UITableViewController {
     }
 
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("Cell", forIndexPath: indexPath) as UITableViewCell
+        let cell = tableView.dequeueReusableCellWithIdentifier("Cell", forIndexPath: indexPath) as! UITableViewCell
 
         let filterInList:FilterOperationInterface = filterOperations[indexPath.row]
         cell.textLabel?.text = filterInList.listName
