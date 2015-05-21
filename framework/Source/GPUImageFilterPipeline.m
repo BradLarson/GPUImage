@@ -184,6 +184,16 @@
     [self _refreshFilters];
 }
 
+- (void)setInput:(GPUImageOutput *)input {
+  _input = input;
+  [self _refreshFilters];
+}
+
+- (void)setOutput:(id<GPUImageInput>)output {
+  _output = output;
+  [self _refreshFilters];
+}
+
 - (void)_refreshFilters {
     
     id prevFilter = self.input;
