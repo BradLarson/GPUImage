@@ -39,6 +39,7 @@
 @synthesize playAtActualSpeed = _playAtActualSpeed;
 @synthesize delegate = _delegate;
 @synthesize shouldRepeat = _shouldRepeat;
+@synthesize shouldUseDisplayLinkTiming = _shouldUseDisplayLinkTiming;
 
 #pragma mark -
 #pragma mark Initialization and teardown
@@ -151,8 +152,11 @@
     movieWriter.encodingLiveVideo = NO;
 }
 
-- (void)startProcessing
+- (void)startProcessingWithDisplayLinkTiming:(BOOL)useDisplayLink
 {
+    
+    self.shouldUseDisplayLinkTiming = useDisplayLink;
+    
     if( self.playerItem ) {
         [self processPlayerItem];
         return;
@@ -284,7 +288,7 @@
             if (keepLooping) {
                 reader = nil;
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    [self startProcessing];
+                    [self startProcessingWithDisplayLinkTiming:self.shouldUseDisplayLinkTiming];
                 });
             } else {
                 [weakSelf endProcessing];
@@ -297,10 +301,13 @@
 - (void)processPlayerItem
 {
     runSynchronouslyOnVideoProcessingQueue(^{
-        displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(displayLinkCallback:)];
-        [displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];
-        [displayLink setPaused:YES];
-
+        
+        if (self.shouldUseDisplayLinkTiming) {
+            displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(displayLinkCallback:)];
+            [displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];
+            [displayLink setPaused:YES];
+        }
+        
         dispatch_queue_t videoProcessingQueue = [GPUImageContext sharedContextQueue];
         NSMutableDictionary *pixBuffAttributes = [NSMutableDictionary dictionary];
         if ([GPUImageContext supportsFastTextureUpload]) {
@@ -325,25 +332,42 @@
 
 - (void)displayLinkCallback:(CADisplayLink *)sender
 {
-	/*
-	 The callback gets called once every Vsync.
-	 Using the display link's timestamp and duration we can compute the next time the screen will be refreshed, and copy the pixel buffer for that time
-	 This pixel buffer can then be processed and later rendered on screen.
-	 */
-	// Calculate the nextVsync time which is when the screen will be refreshed next.
-	CFTimeInterval nextVSync = ([sender timestamp] + [sender duration]);
-
-	CMTime outputItemTime = [playerItemOutput itemTimeForHostTime:nextVSync];
-
-	if ([playerItemOutput hasNewPixelBufferForItemTime:outputItemTime]) {
+    /*
+     The callback gets called once every Vsync.
+     Using the display link's timestamp and duration we can compute the next time the screen will be refreshed, and copy the pixel buffer for that time
+     This pixel buffer can then be processed and later rendered on screen.
+     */
+    // Calculate the nextVsync time which is when the screen will be refreshed next.
+    CFTimeInterval nextVSync = ([sender timestamp] + [sender duration]);
+    
+    CMTime outputItemTime = [playerItemOutput itemTimeForHostTime:nextVSync];
+    
+    if ([playerItemOutput hasNewPixelBufferForItemTime:outputItemTime]) {
         __unsafe_unretained GPUImageMovie *weakSelf = self;
-		CVPixelBufferRef pixelBuffer = [playerItemOutput copyPixelBufferForItemTime:outputItemTime itemTimeForDisplay:NULL];
+        CVPixelBufferRef pixelBuffer = [playerItemOutput copyPixelBufferForItemTime:outputItemTime itemTimeForDisplay:NULL];
         if( pixelBuffer )
             runSynchronouslyOnVideoProcessingQueue(^{
                 [weakSelf processMovieFrame:pixelBuffer withSampleTime:outputItemTime];
                 CFRelease(pixelBuffer);
             });
-	}
+    }
+}
+
+- (void)outputFrameAtTime:(CMTime)time
+{
+    
+//    time.value = 3137549975;
+//    time.timescale = 1000000000;
+    
+//    if ([playerItemOutput hasNewPixelBufferForItemTime:time]) {
+        __unsafe_unretained GPUImageMovie *weakSelf = self;
+        CVPixelBufferRef pixelBuffer = [playerItemOutput copyPixelBufferForItemTime:time itemTimeForDisplay:NULL];
+        if( pixelBuffer )
+            runSynchronouslyOnVideoProcessingQueue(^{
+                [weakSelf processMovieFrame:pixelBuffer withSampleTime:time];
+                CFRelease(pixelBuffer);
+            });
+//    }
 }
 
 - (BOOL)readNextVideoFrameFromOutput:(AVAssetReaderOutput *)readerVideoTrackOutput;

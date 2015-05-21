@@ -439,10 +439,21 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
 #endif
 }
 
+- (void) setTexture:(GLuint)texture {
+    _texture = texture;
+}
+
 - (GLuint)texture;
 {
 //    NSLog(@"Accessing texture: %d from FB: %@", _texture, self);
     return _texture;
+}
+
+-(id) copyWithZone: (NSZone *) zone
+{
+    GPUImageFramebuffer *frameBuffer = [[GPUImageFramebuffer allocWithZone:zone] initWithSize:self.size textureOptions:self.textureOptions onlyTexture:YES];
+    frameBuffer.texture = self.texture;
+    return frameBuffer;
 }
 
 @end

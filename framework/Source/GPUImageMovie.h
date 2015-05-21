@@ -42,6 +42,7 @@
 @property (readonly, nonatomic) AVAssetReader *assetReader;
 @property (readonly, nonatomic) BOOL audioEncodingIsFinished;
 @property (readonly, nonatomic) BOOL videoEncodingIsFinished;
+@property (readwrite, nonatomic) BOOL shouldUseDisplayLinkTiming;
 
 /// @name Initialization and teardown
 - (id)initWithAsset:(AVAsset *)asset;
@@ -53,9 +54,10 @@
 - (void)enableSynchronizedEncodingUsingMovieWriter:(GPUImageMovieWriter *)movieWriter;
 - (BOOL)readNextVideoFrameFromOutput:(AVAssetReaderOutput *)readerVideoTrackOutput;
 - (BOOL)readNextAudioSampleFromOutput:(AVAssetReaderOutput *)readerAudioTrackOutput;
-- (void)startProcessing;
+- (void)startProcessingWithDisplayLinkTiming:(BOOL)useDisplayLink;
 - (void)endProcessing;
 - (void)cancelProcessing;
 - (void)processMovieFrame:(CMSampleBufferRef)movieSampleBuffer; 
+- (void)outputFrameAtTime:(CMTime)time;
 
 @end

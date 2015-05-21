@@ -2,6 +2,8 @@
 
 extern NSString *const kGPUImageThreeInputTextureVertexShaderString;
 
+@class GPUImageMovie;
+
 @interface GPUImageThreeInputFilter : GPUImageTwoInputFilter
 {
     GPUImageFramebuffer *thirdInputFramebuffer;
@@ -14,8 +16,16 @@ extern NSString *const kGPUImageThreeInputTextureVertexShaderString;
     
     BOOL hasSetSecondTexture, hasReceivedThirdFrame, thirdFrameWasVideo;
     BOOL thirdFrameCheckDisabled;
+    
+    NSInteger numberOfFrameOne;
+    NSInteger numberOfFrameTwo;
+    NSInteger numberOfFrameThree;
+        
+    GPUImageMovie *thirdImageMovie;
+    
 }
 
+- (void) setThirdImageMovie:(GPUImageMovie *)imageMovie;
 - (void)disableThirdFrameCheck;
 
 @end

@@ -1,5 +1,5 @@
 #import "GPUImageThreeInputFilter.h"
-
+#import "GPUImageMovie.h"
 
 NSString *const kGPUImageThreeInputTextureVertexShaderString = SHADER_STRING
 (
@@ -101,26 +101,26 @@ NSString *const kGPUImageThreeInputTextureVertexShaderString = SHADER_STRING
     {
         [outputFramebuffer lock];
     }
-
+    
     [self setUniformsForProgramAtIndex:0];
     
     glClearColor(backgroundColorRed, backgroundColorGreen, backgroundColorBlue, backgroundColorAlpha);
     glClear(GL_COLOR_BUFFER_BIT);
     
-	glActiveTexture(GL_TEXTURE2);
-	glBindTexture(GL_TEXTURE_2D, [firstInputFramebuffer texture]);
-	glUniform1i(filterInputTextureUniform, 2);
+    glActiveTexture(GL_TEXTURE2);
+    glBindTexture(GL_TEXTURE_2D, [firstInputFramebuffer texture]);
+    glUniform1i(filterInputTextureUniform, 2);
     
     glActiveTexture(GL_TEXTURE3);
     glBindTexture(GL_TEXTURE_2D, [secondInputFramebuffer texture]);
     glUniform1i(filterInputTextureUniform2, 3);
-
+    
     glActiveTexture(GL_TEXTURE4);
     glBindTexture(GL_TEXTURE_2D, [thirdInputFramebuffer texture]);
     glUniform1i(filterInputTextureUniform3, 4);
-
+    
     glVertexAttribPointer(filterPositionAttribute, 2, GL_FLOAT, 0, 0, vertices);
-	glVertexAttribPointer(filterTextureCoordinateAttribute, 2, GL_FLOAT, 0, 0, textureCoordinates);
+    glVertexAttribPointer(filterTextureCoordinateAttribute, 2, GL_FLOAT, 0, 0, textureCoordinates);
     glVertexAttribPointer(filterSecondTextureCoordinateAttribute, 2, GL_FLOAT, 0, 0, [[self class] textureCoordinatesForRotation:inputRotation2]);
     glVertexAttribPointer(filterThirdTextureCoordinateAttribute, 2, GL_FLOAT, 0, 0, [[self class] textureCoordinatesForRotation:inputRotation3]);
     
@@ -237,8 +237,17 @@ NSString *const kGPUImageThreeInputTextureVertexShaderString = SHADER_STRING
     return rotatedSize;
 }
 
+- (void) setThirdImageMovie:(GPUImageMovie *)imageMovie {
+    thirdImageMovie = imageMovie;
+}
+
 - (void)newFrameReadyAtTime:(CMTime)frameTime atIndex:(NSInteger)textureIndex;
 {
+    
+    if (textureIndex == 1) {
+        [thirdImageMovie outputFrameAtTime:frameTime];
+    }
+    
     // You can set up infinite update loops, so this helps to short circuit them
     if (hasReceivedFirstFrame && hasReceivedSecondFrame && hasReceivedThirdFrame)
     {
@@ -280,7 +289,7 @@ NSString *const kGPUImageThreeInputTextureVertexShaderString = SHADER_STRING
         {
             hasReceivedThirdFrame = YES;
         }
-
+        
         if (!CMTIME_IS_INDEFINITE(frameTime))
         {
             if CMTIME_IS_INDEFINITE(firstFrameTime)
@@ -325,11 +334,12 @@ NSString *const kGPUImageThreeInputTextureVertexShaderString = SHADER_STRING
         
         CMTime passOnFrameTime = (!CMTIME_IS_INDEFINITE(firstFrameTime)) ? firstFrameTime : (!CMTIME_IS_INDEFINITE(secondFrameTime)) ? secondFrameTime : thirdFrameTime;
         [self informTargetsAboutNewFrameAtTime:passOnFrameTime];
-
+        
         hasReceivedFirstFrame = NO;
         hasReceivedSecondFrame = NO;
         hasReceivedThirdFrame = NO;
     }
+    
 }
 
 @end
