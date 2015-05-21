@@ -14,6 +14,14 @@
 
 #pragma mark Config file init
 
+- (instancetype)init {
+  self = [super init];
+  if (self) {
+    self.filters = [NSMutableArray array];
+  }
+  return self;
+}
+
 - (id)initWithConfiguration:(NSDictionary *)configuration input:(GPUImageOutput *)input output:(id <GPUImageInput>)output {
     self = [super init];
     if (self) {
