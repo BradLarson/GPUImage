@@ -2,6 +2,7 @@
 #import "GPUImageMovieWriter.h"
 #import "GPUImageFilter.h"
 #import "GPUImageVideoCamera.h"
+#import "GPUImageThreeInputFilter.h"
 
 @interface GPUImageMovie () <AVPlayerItemOutputPullDelegate>
 {
@@ -334,7 +335,19 @@
 	CFTimeInterval nextVSync = ([sender timestamp] + [sender duration]);
 
 	CMTime outputItemTime = [playerItemOutput itemTimeForHostTime:nextVSync];
-
+    CMTime trackDuration = self.playerItem.duration;
+    if (outputItemTime.value == trackDuration.value) {
+        // The video has finished
+        for (id<GPUImageInput> currentTarget in targets)
+        {
+            NSInteger indexOfObject = [targets indexOfObject:currentTarget];
+            NSInteger targetTextureIndex = [[targetTextureIndices objectAtIndex:indexOfObject] integerValue];
+            if ([currentTarget respondsToSelector:@selector(setInputCompleted:atIndex:)]) {
+                [(GPUImageThreeInputFilter *)currentTarget setInputCompleted:YES atIndex:targetTextureIndex];
+            }
+        }
+    }
+    
 	if ([playerItemOutput hasNewPixelBufferForItemTime:outputItemTime]) {
         __unsafe_unretained GPUImageMovie *weakSelf = self;
 		CVPixelBufferRef pixelBuffer = [playerItemOutput copyPixelBufferForItemTime:outputItemTime itemTimeForDisplay:NULL];

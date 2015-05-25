@@ -14,8 +14,13 @@ extern NSString *const kGPUImageThreeInputTextureVertexShaderString;
     
     BOOL hasSetSecondTexture, hasReceivedThirdFrame, thirdFrameWasVideo;
     BOOL thirdFrameCheckDisabled;
+    
+    BOOL secondTextureCompleted;
+    BOOL thirdTextureCompleted;
+    
 }
 
+- (void) setInputCompleted:(BOOL)completed atIndex:(NSInteger)textureIndex;
 - (void)disableThirdFrameCheck;
 
 @end
