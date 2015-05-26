@@ -279,8 +279,12 @@ void GPUImageCreateResizedSampleBuffer(CVPixelBufferRef cameraFrame, CGSize fina
         block([NSError errorWithDomain:AVFoundationErrorDomain code:AVErrorMaximumStillImageCaptureRequestsExceeded userInfo:nil]);
         return;
     }
+    if(![photoOutput connections].firstObject){
+        block([NSError errorWithDomain:AVFoundationErrorDomain code:AVErrorSessionNotRunning userInfo:nil]);
+        return;
+    }
 
-    [photoOutput captureStillImageAsynchronouslyFromConnection:[[photoOutput connections] objectAtIndex:0] completionHandler:^(CMSampleBufferRef imageSampleBuffer, NSError *error) {
+    [photoOutput captureStillImageAsynchronouslyFromConnection:[photoOutput connections].firstObject completionHandler:^(CMSampleBufferRef imageSampleBuffer, NSError *error) {
         if(imageSampleBuffer == NULL){
             block(error);
             return;
