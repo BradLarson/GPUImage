@@ -333,17 +333,29 @@
 
 - (void)displayLinkCallback:(CADisplayLink *)sender
 {
-    /*
-     The callback gets called once every Vsync.
-     Using the display link's timestamp and duration we can compute the next time the screen will be refreshed, and copy the pixel buffer for that time
-     This pixel buffer can then be processed and later rendered on screen.
-     */
-    // Calculate the nextVsync time which is when the screen will be refreshed next.
-    CFTimeInterval nextVSync = ([sender timestamp] + [sender duration]);
+	/*
+	 The callback gets called once every Vsync.
+	 Using the display link's timestamp and duration we can compute the next time the screen will be refreshed, and copy the pixel buffer for that time
+	 This pixel buffer can then be processed and later rendered on screen.
+	 */
+	// Calculate the nextVsync time which is when the screen will be refreshed next.
+	CFTimeInterval nextVSync = ([sender timestamp] + [sender duration]);
+
+	CMTime outputItemTime = [playerItemOutput itemTimeForHostTime:nextVSync];
+    CMTime trackDuration = self.playerItem.duration;
+    if (outputItemTime.value == trackDuration.value) {
+        // The video has finished
+        for (id<GPUImageInput> currentTarget in targets)
+        {
+            NSInteger indexOfObject = [targets indexOfObject:currentTarget];
+            NSInteger targetTextureIndex = [[targetTextureIndices objectAtIndex:indexOfObject] integerValue];
+            if ([currentTarget respondsToSelector:@selector(setInputCompleted:atIndex:)]) {
+                [(GPUImageThreeInputFilter *)currentTarget setInputCompleted:YES atIndex:targetTextureIndex];
+            }
+        }
+    }
     
-    CMTime outputItemTime = [playerItemOutput itemTimeForHostTime:nextVSync];
-    
-    if ([playerItemOutput hasNewPixelBufferForItemTime:outputItemTime]) {
+	if ([playerItemOutput hasNewPixelBufferForItemTime:outputItemTime]) {
         __unsafe_unretained GPUImageMovie *weakSelf = self;
         CVPixelBufferRef pixelBuffer = [playerItemOutput copyPixelBufferForItemTime:outputItemTime itemTimeForDisplay:NULL];
         if( pixelBuffer )
