@@ -2,6 +2,7 @@
 #import "GPUImageMovieWriter.h"
 #import "GPUImageFilter.h"
 #import "GPUImageVideoCamera.h"
+#import "GPUImageThreeInputFilter.h"
 
 @interface GPUImageMovie () <AVPlayerItemOutputPullDelegate>
 {

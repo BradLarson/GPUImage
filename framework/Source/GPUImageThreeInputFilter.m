@@ -51,6 +51,9 @@ NSString *const kGPUImageThreeInputTextureVertexShaderString = SHADER_STRING
     thirdFrameWasVideo = NO;
     thirdFrameCheckDisabled = NO;
     
+    secondTextureCompleted = NO;
+    thirdTextureCompleted = NO;
+    
     thirdFrameTime = kCMTimeInvalid;
     
     runSynchronouslyOnVideoProcessingQueue(^{
@@ -126,8 +129,12 @@ NSString *const kGPUImageThreeInputTextureVertexShaderString = SHADER_STRING
     
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
     [firstInputFramebuffer unlock];
-    [secondInputFramebuffer unlock];
-    [thirdInputFramebuffer unlock];
+    if (!secondTextureCompleted) {
+        [secondInputFramebuffer unlock];
+    }
+    if (!thirdTextureCompleted) {
+        [thirdInputFramebuffer unlock];
+    }
     if (usingNextFrameForImageCapture)
     {
         dispatch_semaphore_signal(imageCaptureSemaphore);
@@ -172,6 +179,18 @@ NSString *const kGPUImageThreeInputTextureVertexShaderString = SHADER_STRING
         thirdInputFramebuffer = newInputFramebuffer;
         [thirdInputFramebuffer lock];
     }
+}
+
+- (void) setInputCompleted:(BOOL)completed atIndex:(NSInteger)textureIndex {
+    
+    if (textureIndex == 1) {
+        secondTextureCompleted = completed;
+    }
+    
+    if (textureIndex == 2) {
+        thirdTextureCompleted = completed;
+    }
+    
 }
 
 - (void)setInputSize:(CGSize)newSize atIndex:(NSInteger)textureIndex;
@@ -255,6 +274,14 @@ NSString *const kGPUImageThreeInputTextureVertexShaderString = SHADER_STRING
     }
     
     BOOL updatedMovieFrameOppositeStillImage = NO;
+    
+    if (secondTextureCompleted) {
+        secondFrameCheckDisabled = YES;
+    }
+    
+    if (thirdTextureCompleted) {
+        thirdFrameCheckDisabled = YES;
+    }
     
     if (textureIndex == 0)
     {
