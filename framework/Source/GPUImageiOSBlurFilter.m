@@ -1,7 +1,8 @@
 #import "GPUImageiOSBlurFilter.h"
 #import "GPUImageSaturationFilter.h"
 #import "GPUImageGaussianBlurFilter.h"
-#import "GPUImageLuminanceRangeFilter.h"
+#import "GPUImageSolidColorGenerator.h"
+#import "GPUImageAlphaBlendFilter.h"
 
 @implementation GPUImageiOSBlurFilter
 
@@ -16,34 +17,38 @@
 {
     if (!(self = [super init]))
     {
-		return nil;
+        return nil;
     }
-    
+
     // First pass: downsample and desaturate
     saturationFilter = [[GPUImageSaturationFilter alloc] init];
     [self addFilter:saturationFilter];
-    
+
     // Second pass: apply a strong Gaussian blur
     blurFilter = [[GPUImageGaussianBlurFilter alloc] init];
     [self addFilter:blurFilter];
-    
-    // Third pass: upsample and adjust luminance range
-    luminanceRangeFilter = [[GPUImageLuminanceRangeFilter alloc] init];
-    [self addFilter:luminanceRangeFilter];
-        
+
+    colorGenerator = [[GPUImageSolidColorGenerator alloc] init];
+    [self addFilter:colorGenerator];
+
+    blendFilter = [[GPUImageAlphaBlendFilter alloc] init];
+    [self addFilter:blendFilter];
+
     [saturationFilter addTarget:blurFilter];
-    [blurFilter addTarget:luminanceRangeFilter];
-    
+    [blurFilter addTarget:blendFilter];
+    [colorGenerator addTarget:blendFilter];
+
     self.initialFilters = [NSArray arrayWithObject:saturationFilter];
-    self.terminalFilter = luminanceRangeFilter;
-    
+    self.terminalFilter = blendFilter;
+
     self.blurRadiusInPixels = 12.0;
-    self.saturation = 0.8;
+    self.saturation = 1.8;
     self.downsampling = 4.0;
-    self.rangeReductionFactor = 0.6;
+    self.effectType = GPUImageiOSBlurFilterTypeLight;
 
     return self;
 }
+
 
 - (void)setInputSize:(CGSize)newSize atIndex:(NSInteger)textureIndex;
 {
@@ -52,14 +57,34 @@
         CGSize rotatedSize = [saturationFilter rotatedSize:newSize forIndex:textureIndex];
 
         [saturationFilter forceProcessingAtSize:CGSizeMake(rotatedSize.width / _downsampling, rotatedSize.height / _downsampling)];
-        [luminanceRangeFilter forceProcessingAtSize:rotatedSize];
+        [colorGenerator forceProcessingAtSize:rotatedSize];
+        [blendFilter forceProcessingAtSize:rotatedSize];
     }
-    
+
     [super setInputSize:newSize atIndex:textureIndex];
 }
 
 #pragma mark -
 #pragma mark Accessors
+
+- (void)setEffectType:(GPUImageiOSBlurFilterType)effectType
+{
+    _effectType = effectType;
+    switch (effectType) {
+        case GPUImageiOSBlurFilterTypeLight:
+            [colorGenerator setColorRed:1 green:1 blue:1 alpha:1];
+            blendFilter.mix = 0.3;
+            break;
+        case GPUImageiOSBlurFilterTypeExtraLight:
+            [colorGenerator setColorRed:0.97 green:0.97 blue:0.97 alpha:1];
+            blendFilter.mix = 0.82;
+            break;
+        case GPUImageiOSBlurFilterTypeDark:
+            [colorGenerator setColorRed:0.11 green:0.11 blue:0.11 alpha:1];
+            blendFilter.mix = 0.73;
+            break;
+    }
+}
 
 // From Apple's UIImage+ImageEffects category:
 
@@ -99,16 +124,6 @@
 - (void)setDownsampling:(CGFloat)newValue;
 {
     _downsampling = newValue;
-}
-
-- (void)setRangeReductionFactor:(CGFloat)rangeReductionFactor
-{
-    luminanceRangeFilter.rangeReductionFactor = rangeReductionFactor;
-}
-
-- (CGFloat)rangeReductionFactor
-{
-    return luminanceRangeFilter.rangeReductionFactor;
 }
 
 @end

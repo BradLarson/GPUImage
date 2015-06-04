@@ -2,13 +2,21 @@
 
 @class GPUImageSaturationFilter;
 @class GPUImageGaussianBlurFilter;
-@class GPUImageLuminanceRangeFilter;
+@class GPUImageSolidColorGenerator;
+@class GPUImageAlphaBlendFilter;
+
+typedef enum {
+    GPUImageiOSBlurFilterTypeLight,
+    GPUImageiOSBlurFilterTypeExtraLight,
+    GPUImageiOSBlurFilterTypeDark
+} GPUImageiOSBlurFilterType;
 
 @interface GPUImageiOSBlurFilter : GPUImageFilterGroup
 {
     GPUImageSaturationFilter *saturationFilter;
     GPUImageGaussianBlurFilter *blurFilter;
-    GPUImageLuminanceRangeFilter *luminanceRangeFilter;
+    GPUImageSolidColorGenerator *colorGenerator;
+    GPUImageAlphaBlendFilter *blendFilter;
 }
 
 /** A radius in pixels to use for the blur, with a default of 12.0. This adjusts the sigma variable in the Gaussian distribution function.
@@ -23,9 +31,6 @@
  */
 @property (readwrite, nonatomic) CGFloat downsampling;
 
-
-/** The degree to reduce the luminance range, from 0.0 to 1.0. Default is 0.6.
- */
-@property (readwrite, nonatomic) CGFloat rangeReductionFactor;
+@property (readwrite, nonatomic) GPUImageiOSBlurFilterType effectType;
 
 @end
