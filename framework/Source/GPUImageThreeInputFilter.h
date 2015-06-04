@@ -22,10 +22,13 @@ extern NSString *const kGPUImageThreeInputTextureVertexShaderString;
     NSInteger numberOfFrameThree;
         
     GPUImageMovie *thirdImageMovie;
+    BOOL secondTextureCompleted;
+    BOOL thirdTextureCompleted;
     
 }
 
 - (void) setThirdImageMovie:(GPUImageMovie *)imageMovie;
+- (void) setInputCompleted:(BOOL)completed atIndex:(NSInteger)textureIndex;
 - (void)disableThirdFrameCheck;
 
 @end
