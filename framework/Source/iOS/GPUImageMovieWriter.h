@@ -58,9 +58,12 @@ extern NSString *const kGPUImageColorSwizzlingFragmentShaderString;
 // Movie recording
 - (void)startRecording;
 - (void)startRecordingInOrientation:(CGAffineTransform)orientationTransform;
+- (void)startRecordindWithCompletionHandler:(void(^)(BOOL didStart, NSError *error))completionHandler;
+
 - (void)finishRecording;
-- (void)finishRecordingWithCompletionHandler:(void (^)(void))handler;
+- (void)finishRecordingWithCompletionHandler:(void (^)(BOOL completed, NSError *error))handler;
 - (void)cancelRecording;
+
 - (void)processAudioBuffer:(CMSampleBufferRef)audioBuffer;
 - (void)enableSynchronizationCallbacks;
 

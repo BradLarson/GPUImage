@@ -266,23 +266,32 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 
 - (void)startRecording;
 {
-    alreadyFinishedRecording = NO;
-    startTime = kCMTimeInvalid;
-    runSynchronouslyOnContextQueue(_movieWriterContext, ^{
-        if (audioInputReadyCallback == NULL)
-        {
-            [assetWriter startWriting];
-        }
-    });
-    isRecording = YES;
-	//    [assetWriter startSessionAtSourceTime:kCMTimeZero];
+    [self startRecordindWithCompletionHandler:NULL];
 }
 
 - (void)startRecordingInOrientation:(CGAffineTransform)orientationTransform;
 {
-	assetWriterVideoInput.transform = orientationTransform;
+    assetWriterVideoInput.transform = orientationTransform;
+    [self startRecordindWithCompletionHandler:NULL];
+}
 
-	[self startRecording];
+- (void)startRecordindWithCompletionHandler:(void(^)(BOOL didStart, NSError *error))completionHandler
+{
+    alreadyFinishedRecording = NO;
+    startTime = kCMTimeInvalid;
+    __block BOOL didStart = NO;
+    __block NSError *error = nil;
+    runSynchronouslyOnContextQueue(_movieWriterContext, ^{
+        if (audioInputReadyCallback == NULL)
+        {
+            didStart = ([assetWriter startWriting] && assetWriter.status != AVAssetWriterStatusFailed);
+            error = assetWriter.error;
+        }
+    });
+    completionHandler(didStart, error);
+    isRecording = didStart;
+
+    //    [assetWriter startSessionAtSourceTime:kCMTimeZero];
 }
 
 - (void)cancelRecording;
@@ -315,15 +324,18 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
     [self finishRecordingWithCompletionHandler:NULL];
 }
 
-- (void)finishRecordingWithCompletionHandler:(void (^)(void))handler;
+- (void)finishRecordingWithCompletionHandler:(void (^)(BOOL completed, NSError *error))handler;
 {
     runSynchronouslyOnContextQueue(_movieWriterContext, ^{
         isRecording = NO;
         
         if (assetWriter.status == AVAssetWriterStatusCompleted || assetWriter.status == AVAssetWriterStatusCancelled || assetWriter.status == AVAssetWriterStatusUnknown)
         {
-            if (handler)
-                runAsynchronouslyOnContextQueue(_movieWriterContext, handler);
+            if (handler) {
+                runAsynchronouslyOnContextQueue(_movieWriterContext, ^{
+                    handler(assetWriter.status == AVAssetWriterStatusCompleted, assetWriter.error);
+                });
+            }
             return;
         }
         if( assetWriter.status == AVAssetWriterStatusWriting && ! videoEncodingIsFinished )
@@ -338,23 +350,31 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
         }
 #if (!defined(__IPHONE_6_0) || (__IPHONE_OS_VERSION_MAX_ALLOWED < __IPHONE_6_0))
         // Not iOS 6 SDK
-        [assetWriter finishWriting];
-        if (handler)
-            runAsynchronouslyOnContextQueue(_movieWriterContext,handler);
+        BOOL finishedWriting = [assetWriter finishWriting];
+        if (handler) {
+            runAsynchronouslyOnContextQueue(_movieWriterContext, ^{
+                handler((finishedWriting && (assetWriter.status == AVAssetWriterStatusCompleted)), assetWriter.error);
+            });
+        }
 #else
         // iOS 6 SDK
         if ([assetWriter respondsToSelector:@selector(finishWritingWithCompletionHandler:)]) {
             // Running iOS 6
-            [assetWriter finishWritingWithCompletionHandler:(handler ?: ^{ })];
+            [assetWriter finishWritingWithCompletionHandler:^{
+                handler(assetWriter.status == AVAssetWriterStatusCompleted, assetWriter.error);
+            }];
         }
         else {
             // Not running iOS 6
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
-            [assetWriter finishWriting];
+            BOOL finishedWriting = [assetWriter finishWriting];
 #pragma clang diagnostic pop
-            if (handler)
-                runAsynchronouslyOnContextQueue(_movieWriterContext, handler);
+            if (handler) {
+                runAsynchronouslyOnContextQueue(_movieWriterContext, ^{
+                    handler((finishedWriting && (assetWriter.status == AVAssetWriterStatusCompleted)), assetWriter.error);
+                });
+            }
         }
 #endif
     });
