@@ -277,6 +277,9 @@ NSString *const kGPUImageThreeInputTextureVertexShaderString = SHADER_STRING
     
     if (secondTextureCompleted) {
         secondFrameCheckDisabled = YES;
+        if (!thirdTextureCompleted && textureIndex == 0) {
+            [thirdImageMovie outputFrameAtTime:frameTime];
+        }
     }
     
     if (thirdTextureCompleted) {
