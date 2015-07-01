@@ -1,4 +1,4 @@
-#import <GPUImage/GLProgram.h>
+#import <Cocoa/Cocoa.h>
 
 // Base classes
 #import <GPUImage/GLProgram.h>
@@ -8,6 +8,8 @@
 #import <GPUImage/GPUImageOutput.h>
 #import <GPUImage/GPUImageAVCamera.h>
 #import <GPUImage/GPUImagePicture.h>
+#import <GPUImage/GPUImageRawDataInput.h>
+#import <GPUImage/GPUImageRawDataOutput.h>
 
 // Filters
 #import <GPUImage/GPUImageFilter.h>
@@ -41,7 +43,7 @@
 #import <GPUImage/GPUImageGaussianSelectiveBlurFilter.h>
 #import <GPUImage/GPUImageBilateralFilter.h>
 #import <GPUImage/GPUImageBoxBlurFilter.h>
-#import <GPUImage/GPUImageFastBlurFilter.h>
+#import <GPUImage/GPUImageSingleComponentGaussianBlurFilter.h>
 #import <GPUImage/GPUImageMedianFilter.h>
 #import <GPUImage/GPUImageMotionBlurFilter.h>
 #import <GPUImage/GPUImageZoomBlurFilter.h>
@@ -102,13 +104,54 @@
 #import <GPUImage/GPUImagePolkaDotFilter.h>
 #import <GPUImage/GPUImageCrosshatchFilter.h>
 #import <GPUImage/GPUImageXYDerivativeFilter.h>
-#import <GPUImage/GPUImageSingleComponentFastBlurFilter.h>
 #import <GPUImage/GPUImageDirectionalNonMaximumSuppressionFilter.h>
 #import <GPUImage/GPUImageDirectionalSobelEdgeDetectionFilter.h>
-#import <GPUImage/GPUImageSingleComponentFastBlurFilter.h>
 #import <GPUImage/GPUImageCannyEdgeDetectionFilter.h>
 #import <GPUImage/GPUImagePrewittEdgeDetectionFilter.h>
 #import <GPUImage/GPUImageThresholdEdgeDetectionFilter.h>
+#import <GPUImage/GPUImageHarrisCornerDetectionFilter.h>
+#import <GPUImage/GPUImageNobleCornerDetectionFilter.h>
+#import <GPUImage/GPUImageShiTomasiFeatureDetectionFilter.h>
+#import <GPUImage/GPUImageThresholdedNonMaximumSuppressionFilter.h>
+#import <GPUImage/GPUImageColorPackingFilter.h>
+#import <GPUImage/GPUImageHoughTransformLineDetector.h>
+#import <GPUImage/GPUImageParallelCoordinateLineTransformFilter.h>
+#import <GPUImage/GPUImageCrosshairGenerator.h>
+#import <GPUImage/GPUImageLineGenerator.h>
+#import <GPUImage/GPUImageBuffer.h>
+#import <GPUImage/GPUImageLowPassFilter.h>
+#import <GPUImage/GPUImageHighPassFilter.h>
+#import <GPUImage/GPUImageMotionDetector.h>
+#import <GPUImage/GPUImageThresholdSketchFilter.h>
+#import <GPUImage/GPUImageSmoothToonFilter.h>
+#import <GPUImage/GPUImageTiltShiftFilter.h>
+#import <GPUImage/GPUImageCGAColorspaceFilter.h>
+#import <GPUImage/GPUImagePosterizeFilter.h>
+#import <GPUImage/GPUImageKuwaharaRadius3Filter.h>
+#import <GPUImage/GPUImageChromaKeyFilter.h>
+#import <GPUImage/GPUImageVignetteFilter.h>
+#import <GPUImage/GPUImageBulgeDistortionFilter.h>
+#import <GPUImage/GPUImagePinchDistortionFilter.h>
+#import <GPUImage/GPUImageStretchDistortionFilter.h>
+#import <GPUImage/GPUImageClosingFilter.h>
+#import <GPUImage/GPUImageRGBClosingFilter.h>
+#import <GPUImage/GPUImageDilationFilter.h>
+#import <GPUImage/GPUImageRGBDilationFilter.h>
+#import <GPUImage/GPUImageErosionFilter.h>
+#import <GPUImage/GPUImageRGBErosionFilter.h>
+#import <GPUImage/GPUImageOpeningFilter.h>
+#import <GPUImage/GPUImageRGBOpeningFilter.h>
+#import <GPUImage/GPUImageSphereRefractionFilter.h>
+#import <GPUImage/GPUImageGlassSphereFilter.h>
+#import <GPUImage/GPUImageSwirlFilter.h>
+#import <GPUImage/GPUImageJFAVoronoiFilter.h>
+#import <GPUImage/GPUImageVoronoiConsumerFilter.h>
+#import <GPUImage/GPUImageLocalBinaryPatternFilter.h>
+#import <GPUImage/GPUImageMosaicFilter.h>
+#import <GPUImage/GPUImagePerlinNoiseFilter.h>
+#import <GPUImage/GPUImageWeakPixelInclusionFilter.h>
+#import <GPUImage/GPUImageNonMaximumSuppressionFilter.h>
+#import <GPUImage/GPUImageSourceOverBlendFilter.h>
 
 // Outputs
 #import <GPUImage/GPUImageView.h>

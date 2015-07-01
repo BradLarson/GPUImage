@@ -32,7 +32,7 @@
     [lookupImageSource1 processImage];
 
     GPUImageGaussianBlurFilter *gaussianBlur = [[GPUImageGaussianBlurFilter alloc] init];
-    gaussianBlur.blurSize = 9.7;
+    gaussianBlur.blurRadiusInPixels = 10.0;
     [lookupFilter1 addTarget:gaussianBlur];
     [self addFilter:gaussianBlur];
     
@@ -54,12 +54,6 @@
     self.terminalFilter = lookupFilter2;
     
     return self;
-}
-
--(void)prepareForImageCapture {
-    [lookupImageSource1 processImage];
-    [lookupImageSource2 processImage];
-    [super prepareForImageCapture];
 }
 
 #pragma mark -

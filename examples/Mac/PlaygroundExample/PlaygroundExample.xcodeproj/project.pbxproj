@@ -1,0 +1,307 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		BCF23F621995710B00877133 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCF23F611995710B00877133 /* main.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		BCA7F565199571B200830968 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BCF23F681995712E00877133 /* GPUImageMac.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = BCA3F31B17239B6500E28AEC;
+			remoteInfo = GPUImage;
+		};
+		BCF23F6C1995712E00877133 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BCF23F681995712E00877133 /* GPUImageMac.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = BCA3F31C17239B6500E28AEC;
+			remoteInfo = GPUImage;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		BCF23F5C1995710B00877133 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		BC191C78199A6C94000C9A4A /* ChairTest.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ChairTest.png; path = GPUImagePlayground.playground/Resources/ChairTest.png; sourceTree = "<group>"; };
+		BCC31A581999BD2600DFA879 /* CustomFilter.fsh */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; name = CustomFilter.fsh; path = GPUImagePlayground.playground/Resources/CustomFilter.fsh; sourceTree = "<group>"; };
+		BCF23F5E1995710B00877133 /* PlaygroundExample */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = PlaygroundExample; sourceTree = BUILT_PRODUCTS_DIR; };
+		BCF23F611995710B00877133 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		BCF23F681995712E00877133 /* GPUImageMac.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = GPUImageMac.xcodeproj; path = ../../../framework/GPUImageMac.xcodeproj; sourceTree = "<group>"; };
+		BCF23F6E1995716700877133 /* GPUImagePlayground.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; name = GPUImagePlayground.playground; path = PlaygroundExample/GPUImagePlayground.playground; sourceTree = SOURCE_ROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		BCF23F5B1995710B00877133 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		BC191C79199A6C9B000C9A4A /* Playground Resources */ = {
+			isa = PBXGroup;
+			children = (
+				BCC31A581999BD2600DFA879 /* CustomFilter.fsh */,
+				BC191C78199A6C94000C9A4A /* ChairTest.png */,
+			);
+			name = "Playground Resources";
+			sourceTree = "<group>";
+		};
+		BCF23F551995710B00877133 = {
+			isa = PBXGroup;
+			children = (
+				BCF23F601995710B00877133 /* PlaygroundExample */,
+				BCF23F681995712E00877133 /* GPUImageMac.xcodeproj */,
+				BCF23F5F1995710B00877133 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		BCF23F5F1995710B00877133 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				BCF23F5E1995710B00877133 /* PlaygroundExample */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		BCF23F601995710B00877133 /* PlaygroundExample */ = {
+			isa = PBXGroup;
+			children = (
+				BCF23F6E1995716700877133 /* GPUImagePlayground.playground */,
+				BC191C79199A6C9B000C9A4A /* Playground Resources */,
+				BCF23F611995710B00877133 /* main.swift */,
+			);
+			path = PlaygroundExample;
+			sourceTree = "<group>";
+		};
+		BCF23F691995712E00877133 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				BCF23F6D1995712E00877133 /* GPUImage.framework */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		BCF23F5D1995710B00877133 /* PlaygroundExample */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BCF23F651995710B00877133 /* Build configuration list for PBXNativeTarget "PlaygroundExample" */;
+			buildPhases = (
+				BCF23F5A1995710B00877133 /* Sources */,
+				BCF23F5B1995710B00877133 /* Frameworks */,
+				BCF23F5C1995710B00877133 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				BCA7F566199571B200830968 /* PBXTargetDependency */,
+			);
+			name = PlaygroundExample;
+			productName = PlaygroundExample;
+			productReference = BCF23F5E1995710B00877133 /* PlaygroundExample */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		BCF23F561995710B00877133 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0600;
+				ORGANIZATIONNAME = "Sunset Lake Software";
+				TargetAttributes = {
+					BCF23F5D1995710B00877133 = {
+						CreatedOnToolsVersion = 6.0;
+					};
+				};
+			};
+			buildConfigurationList = BCF23F591995710B00877133 /* Build configuration list for PBXProject "PlaygroundExample" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = BCF23F551995710B00877133;
+			productRefGroup = BCF23F5F1995710B00877133 /* Products */;
+			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = BCF23F691995712E00877133 /* Products */;
+					ProjectRef = BCF23F681995712E00877133 /* GPUImageMac.xcodeproj */;
+				},
+			);
+			projectRoot = "";
+			targets = (
+				BCF23F5D1995710B00877133 /* PlaygroundExample */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		BCF23F6D1995712E00877133 /* GPUImage.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = GPUImage.framework;
+			remoteRef = BCF23F6C1995712E00877133 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
+
+/* Begin PBXSourcesBuildPhase section */
+		BCF23F5A1995710B00877133 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BCF23F621995710B00877133 /* main.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		BCA7F566199571B200830968 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = GPUImage;
+			targetProxy = BCA7F565199571B200830968 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		BCF23F631995710B00877133 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		BCF23F641995710B00877133 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		BCF23F661995710B00877133 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		BCF23F671995710B00877133 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		BCF23F591995710B00877133 /* Build configuration list for PBXProject "PlaygroundExample" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BCF23F631995710B00877133 /* Debug */,
+				BCF23F641995710B00877133 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		BCF23F651995710B00877133 /* Build configuration list for PBXNativeTarget "PlaygroundExample" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BCF23F661995710B00877133 /* Debug */,
+				BCF23F671995710B00877133 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = BCF23F561995710B00877133 /* Project object */;
+}

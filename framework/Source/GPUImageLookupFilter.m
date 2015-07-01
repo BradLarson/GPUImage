@@ -9,17 +9,19 @@ NSString *const kGPUImageLookupFragmentShaderString = SHADER_STRING
  uniform sampler2D inputImageTexture;
  uniform sampler2D inputImageTexture2; // lookup texture
  
+ uniform lowp float intensity;
+
  void main()
  {
-     lowp vec4 textureColor = texture2D(inputImageTexture, textureCoordinate);
+     highp vec4 textureColor = texture2D(inputImageTexture, textureCoordinate);
      
-     mediump float blueColor = textureColor.b * 63.0;
+     highp float blueColor = textureColor.b * 63.0;
      
-     mediump vec2 quad1;
+     highp vec2 quad1;
      quad1.y = floor(floor(blueColor) / 8.0);
      quad1.x = floor(blueColor) - (quad1.y * 8.0);
      
-     mediump vec2 quad2;
+     highp vec2 quad2;
      quad2.y = floor(ceil(blueColor) / 8.0);
      quad2.x = ceil(blueColor) - (quad2.y * 8.0);
      
@@ -35,7 +37,7 @@ NSString *const kGPUImageLookupFragmentShaderString = SHADER_STRING
      lowp vec4 newColor2 = texture2D(inputImageTexture2, texPos2);
      
      lowp vec4 newColor = mix(newColor1, newColor2, fract(blueColor));
-     gl_FragColor = vec4(newColor.rgb, textureColor.w);
+     gl_FragColor = mix(textureColor, vec4(newColor.rgb, textureColor.w), intensity);
  }
 );
 #else
@@ -46,6 +48,8 @@ NSString *const kGPUImageLookupFragmentShaderString = SHADER_STRING
  
  uniform sampler2D inputImageTexture;
  uniform sampler2D inputImageTexture2; // lookup texture
+ 
+ uniform float intensity;
  
  void main()
  {
@@ -73,21 +77,39 @@ NSString *const kGPUImageLookupFragmentShaderString = SHADER_STRING
      vec4 newColor2 = texture2D(inputImageTexture2, texPos2);
      
      vec4 newColor = mix(newColor1, newColor2, fract(blueColor));
-     gl_FragColor = vec4(newColor.rgb, textureColor.w);
+     gl_FragColor = mix(textureColor, vec4(newColor.rgb, textureColor.w), intensity);
  }
 );
 #endif
 
 @implementation GPUImageLookupFilter
 
+@synthesize intensity = _intensity;
+
+#pragma mark -
+#pragma mark Initialization and teardown
+
 - (id)init;
 {
+    intensityUniform = [filterProgram uniformIndex:@"intensity"];
+    self.intensity = 1.0f;
+    
     if (!(self = [super initWithFragmentShaderFromString:kGPUImageLookupFragmentShaderString]))
     {
 		return nil;
     }
     
     return self;
+}
+
+#pragma mark -
+#pragma mark Accessors
+
+- (void)setIntensity:(CGFloat)intensity
+{
+    _intensity = intensity;
+    
+    [self setFloat:_intensity forUniform:intensityUniform program:filterProgram];
 }
 
 @end

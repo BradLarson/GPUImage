@@ -1,9 +1,10 @@
 #import "GPUImageOutput.h"
 #import "GPUImageFilter.h"
 
-@interface GPUImageFilterGroup : GPUImageOutput <GPUImageInput, GPUImageTextureDelegate>
+@interface GPUImageFilterGroup : GPUImageOutput <GPUImageInput>
 {
     NSMutableArray *filters;
+    BOOL isEndProcessing;
 }
 
 @property(readwrite, nonatomic, strong) GPUImageOutput<GPUImageInput> *terminalFilter;

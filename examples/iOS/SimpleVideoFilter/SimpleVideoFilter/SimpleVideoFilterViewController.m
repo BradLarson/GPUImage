@@ -31,7 +31,7 @@
     videoCamera.horizontallyMirrorRearFacingCamera = NO;
 
     filter = [[GPUImageSepiaFilter alloc] init];
-    
+  
 //    filter = [[GPUImageTiltShiftFilter alloc] init];
 //    [(GPUImageTiltShiftFilter *)filter setTopFocusLevel:0.65];
 //    [(GPUImageTiltShiftFilter *)filter setBottomFocusLevel:0.85];
@@ -39,12 +39,12 @@
 //    [(GPUImageTiltShiftFilter *)filter setFocusFallOffRate:0.2];
     
 //    filter = [[GPUImageSketchFilter alloc] init];
+//    filter = [[GPUImageColorInvertFilter alloc] init];
 //    filter = [[GPUImageSmoothToonFilter alloc] init];
 //    GPUImageRotationFilter *rotationFilter = [[GPUImageRotationFilter alloc] initWithRotation:kGPUImageRotateRightFlipVertical];
     
     [videoCamera addTarget:filter];
     GPUImageView *filterView = (GPUImageView *)self.view;
-    [filter addTarget:filterView];
 //    filterView.fillMode = kGPUImageFillModeStretch;
 //    filterView.fillMode = kGPUImageFillModePreserveAspectRatioAndFill;
     
@@ -54,10 +54,12 @@
     unlink([pathToMovie UTF8String]); // If a file already exists, AVAssetWriter won't let you record new frames, so delete the old movie
     NSURL *movieURL = [NSURL fileURLWithPath:pathToMovie];
     movieWriter = [[GPUImageMovieWriter alloc] initWithMovieURL:movieURL size:CGSizeMake(480.0, 640.0)];
+    movieWriter.encodingLiveVideo = YES;
 //    movieWriter = [[GPUImageMovieWriter alloc] initWithMovieURL:movieURL size:CGSizeMake(640.0, 480.0)];
 //    movieWriter = [[GPUImageMovieWriter alloc] initWithMovieURL:movieURL size:CGSizeMake(720.0, 1280.0)];
 //    movieWriter = [[GPUImageMovieWriter alloc] initWithMovieURL:movieURL size:CGSizeMake(1080.0, 1920.0)];
     [filter addTarget:movieWriter];
+    [filter addTarget:filterView];
     
     [videoCamera startCameraCapture];
     
