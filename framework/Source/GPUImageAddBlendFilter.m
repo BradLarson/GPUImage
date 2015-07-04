@@ -9,10 +9,13 @@ NSString *const kGPUImageAddBlendFragmentShaderString = SHADER_STRING
  uniform sampler2D inputImageTexture;
  uniform sampler2D inputImageTexture2;
  
+  uniform lowp float mixturePercent;
+ 
  void main()
  {
 	 lowp vec4 base = texture2D(inputImageTexture, textureCoordinate);
 	 lowp vec4 overlay = texture2D(inputImageTexture2, textureCoordinate2);
+     overlay.a *= mixturePercent;
 	 
    mediump float r;
    if (overlay.r * base.a + base.r * overlay.a >= overlay.a * base.a) {
@@ -20,7 +23,7 @@ NSString *const kGPUImageAddBlendFragmentShaderString = SHADER_STRING
    } else {
      r = overlay.r + base.r;
    }
-
+     
    mediump float g;
    if (overlay.g * base.a + base.g * overlay.a >= overlay.a * base.a) {
      g = overlay.a * base.a + overlay.g * (1.0 - base.a) + base.g * (1.0 - overlay.a);
@@ -49,10 +52,13 @@ NSString *const kGPUImageAddBlendFragmentShaderString = SHADER_STRING
  uniform sampler2D inputImageTexture;
  uniform sampler2D inputImageTexture2;
  
+  uniform float mixturePercent;
+ 
  void main()
  {
 	 vec4 base = texture2D(inputImageTexture, textureCoordinate);
 	 vec4 overlay = texture2D(inputImageTexture2, textureCoordinate2);
+     overlay.a *= mixturePercent;
 	 
      float r;
      if (overlay.r * base.a + base.r * overlay.a >= overlay.a * base.a) {
@@ -86,6 +92,8 @@ NSString *const kGPUImageAddBlendFragmentShaderString = SHADER_STRING
 
 @implementation GPUImageAddBlendFilter
 
+@synthesize mix = _mix;
+
 - (id)init;
 {
     if (!(self = [super initWithFragmentShaderFromString:kGPUImageAddBlendFragmentShaderString]))
@@ -93,8 +101,22 @@ NSString *const kGPUImageAddBlendFragmentShaderString = SHADER_STRING
 		return nil;
     }
     
+    mixUniform = [filterProgram uniformIndex:@"mixturePercent"];
+    self.mix = 1.0;
+    
     return self;
 }
 
+#pragma mark -
+#pragma mark Accessors
+
+- (void)setMix:(CGFloat)newValue;
+{
+    _mix = newValue;
+    
+    [self setFloat:_mix forUniform:mixUniform program:filterProgram];
+}
+
 @end
+
 
