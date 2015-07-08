@@ -267,6 +267,12 @@ NSString *const kGPUImageThreeInputTextureVertexShaderString = SHADER_STRING
         [thirdImageMovie outputFrameAtTime:frameTime];
     }
     
+    
+    if (textureIndex == 0 && hasReceivedFirstFrame) {
+        secondTextureCompleted = YES;
+        thirdTextureCompleted = YES;
+    }
+    
     // You can set up infinite update loops, so this helps to short circuit them
     if (hasReceivedFirstFrame && hasReceivedSecondFrame && hasReceivedThirdFrame)
     {
