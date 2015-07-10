@@ -184,8 +184,8 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
         }
     }
     
-    // Set this to make sure that a functional movie is produced, even if the recording is cut off mid-stream. Only the last second should be lost in that case.
-    assetWriter.movieFragmentInterval = CMTimeMakeWithSeconds(1.0, 1000);
+    // Set this to make sure that a functional movie is produced, even if the recording is cut off mid-stream. Only the last .01 second should be lost in that case.
+    assetWriter.movieFragmentInterval = CMTimeMakeWithSeconds(0.01, 1000);
     
     // use default output settings if none specified
     if (outputSettings == nil) 
@@ -199,11 +199,7 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
     // custom output settings specified
     else 
     {
-		NSString *videoCodec = [outputSettings objectForKey:AVVideoCodecKey];
-		NSNumber *width = [outputSettings objectForKey:AVVideoWidthKey];
-		NSNumber *height = [outputSettings objectForKey:AVVideoHeightKey];
-		
-		NSAssert(videoCodec && width && height, @"OutputSettings is missing required parameters.");
+		NSAssert([outputSettings objectForKey:AVVideoCodecKey] && [outputSettings objectForKey:AVVideoWidthKey] && [outputSettings objectForKey:AVVideoHeightKey], @"OutputSettings is missing required parameters.");
         
         if( [outputSettings objectForKey:@"EncodingLiveVideo"] ) {
             NSMutableDictionary *tmp = [outputSettings mutableCopy];
@@ -579,7 +575,7 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
     }
     
 	
-	GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+	GLenum status __attribute__((unused)) = glCheckFramebufferStatus(GL_FRAMEBUFFER);
     
     NSAssert(status == GL_FRAMEBUFFER_COMPLETE, @"Incomplete filter FBO: %d", status);
 }

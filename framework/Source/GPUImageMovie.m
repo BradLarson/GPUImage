@@ -2,6 +2,7 @@
 #import "GPUImageMovieWriter.h"
 #import "GPUImageFilter.h"
 #import "GPUImageVideoCamera.h"
+#import "GPUImageThreeInputFilter.h"
 
 @interface GPUImageMovie () <AVPlayerItemOutputPullDelegate>
 {
@@ -39,6 +40,7 @@
 @synthesize playAtActualSpeed = _playAtActualSpeed;
 @synthesize delegate = _delegate;
 @synthesize shouldRepeat = _shouldRepeat;
+@synthesize shouldUseDisplayLinkTiming = _shouldUseDisplayLinkTiming;
 
 #pragma mark -
 #pragma mark Initialization and teardown
@@ -140,6 +142,8 @@
     //    [displayLink invalidate]; // remove from all run loops
     //    displayLink = nil;
     //}
+    
+    [playerItemOutput setDelegate:nil queue:nil];
 }
 
 #pragma mark -
@@ -151,8 +155,11 @@
     movieWriter.encodingLiveVideo = NO;
 }
 
-- (void)startProcessing
+- (void)startProcessingWithDisplayLinkTiming:(BOOL)useDisplayLink
 {
+    
+    self.shouldUseDisplayLinkTiming = useDisplayLink;
+    
     if( self.playerItem ) {
         [self processPlayerItem];
         return;
@@ -284,7 +291,7 @@
             if (keepLooping) {
                 reader = nil;
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    [self startProcessing];
+                    [self startProcessingWithDisplayLinkTiming:self.shouldUseDisplayLinkTiming];
                 });
             } else {
                 [weakSelf endProcessing];
@@ -297,10 +304,13 @@
 - (void)processPlayerItem
 {
     runSynchronouslyOnVideoProcessingQueue(^{
-        displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(displayLinkCallback:)];
-        [displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];
-        [displayLink setPaused:YES];
-
+        
+        if (self.shouldUseDisplayLinkTiming) {
+            displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(displayLinkCallback:)];
+            [displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];
+            [displayLink setPaused:YES];
+        }
+        
         dispatch_queue_t videoProcessingQueue = [GPUImageContext sharedContextQueue];
         NSMutableDictionary *pixBuffAttributes = [NSMutableDictionary dictionary];
         if ([GPUImageContext supportsFastTextureUpload]) {
@@ -334,16 +344,45 @@
 	CFTimeInterval nextVSync = ([sender timestamp] + [sender duration]);
 
 	CMTime outputItemTime = [playerItemOutput itemTimeForHostTime:nextVSync];
-
+    CMTime trackDuration = self.playerItem.duration;
+    if (outputItemTime.value == trackDuration.value) {
+        // The video has finished
+        for (id<GPUImageInput> currentTarget in targets)
+        {
+            NSInteger indexOfObject = [targets indexOfObject:currentTarget];
+            NSInteger targetTextureIndex = [[targetTextureIndices objectAtIndex:indexOfObject] integerValue];
+            if ([currentTarget respondsToSelector:@selector(setInputCompleted:atIndex:)]) {
+                [(GPUImageThreeInputFilter *)currentTarget setInputCompleted:YES atIndex:targetTextureIndex];
+            }
+        }
+    }
+    
 	if ([playerItemOutput hasNewPixelBufferForItemTime:outputItemTime]) {
         __unsafe_unretained GPUImageMovie *weakSelf = self;
-		CVPixelBufferRef pixelBuffer = [playerItemOutput copyPixelBufferForItemTime:outputItemTime itemTimeForDisplay:NULL];
+        CVPixelBufferRef pixelBuffer = [playerItemOutput copyPixelBufferForItemTime:outputItemTime itemTimeForDisplay:NULL];
         if( pixelBuffer )
             runSynchronouslyOnVideoProcessingQueue(^{
                 [weakSelf processMovieFrame:pixelBuffer withSampleTime:outputItemTime];
                 CFRelease(pixelBuffer);
             });
-	}
+    }
+}
+
+- (void)outputFrameAtTime:(CMTime)time
+{
+    
+//    time.value = 3137549975;
+//    time.timescale = 1000000000;
+    
+//    if ([playerItemOutput hasNewPixelBufferForItemTime:time]) {
+        __unsafe_unretained GPUImageMovie *weakSelf = self;
+        CVPixelBufferRef pixelBuffer = [playerItemOutput copyPixelBufferForItemTime:time itemTimeForDisplay:NULL];
+        if( pixelBuffer )
+            runSynchronouslyOnVideoProcessingQueue(^{
+                [weakSelf processMovieFrame:pixelBuffer withSampleTime:time];
+                CFRelease(pixelBuffer);
+            });
+//    }
 }
 
 - (BOOL)readNextVideoFrameFromOutput:(AVAssetReaderOutput *)readerVideoTrackOutput;
