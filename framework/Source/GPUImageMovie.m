@@ -142,6 +142,8 @@
     //    [displayLink invalidate]; // remove from all run loops
     //    displayLink = nil;
     //}
+    
+    [playerItemOutput setDelegate:nil queue:nil];
 }
 
 #pragma mark -
