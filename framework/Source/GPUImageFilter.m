@@ -205,7 +205,9 @@ NSString *const kGPUImagePassthroughFragmentShaderString = SHADER_STRING
 - (CGSize)sizeOfFBO;
 {
     CGSize outputSize = [self maximumOutputSize];
-    if ( (CGSizeEqualToSize(outputSize, CGSizeZero)) || (inputTextureSize.width < outputSize.width) )
+    
+    // this second check breaks when we have more than one input, or if we want to upsample.
+    if ( (CGSizeEqualToSize(outputSize, CGSizeZero)) /*|| (inputTextureSize.width < outputSize.width)*/ )
     {
         return inputTextureSize;
     }
@@ -291,7 +293,7 @@ NSString *const kGPUImagePassthroughFragmentShaderString = SHADER_STRING
 
 - (void)renderToTextureWithVertices:(const GLfloat *)vertices textureCoordinates:(const GLfloat *)textureCoordinates;
 {
-    if (self.preventRendering)
+     if (self.preventRendering)
     {
         [firstInputFramebuffer unlock];
         return;
@@ -301,11 +303,12 @@ NSString *const kGPUImagePassthroughFragmentShaderString = SHADER_STRING
 
     outputFramebuffer = [[GPUImageContext sharedFramebufferCache] fetchFramebufferForSize:[self sizeOfFBO] textureOptions:self.outputTextureOptions onlyTexture:NO];
     [outputFramebuffer activateFramebuffer];
+    
     if (usingNextFrameForImageCapture)
     {
         [outputFramebuffer lock];
     }
-
+  
     [self setUniformsForProgramAtIndex:0];
     
     glClearColor(backgroundColorRed, backgroundColorGreen, backgroundColorBlue, backgroundColorAlpha);
@@ -313,7 +316,7 @@ NSString *const kGPUImagePassthroughFragmentShaderString = SHADER_STRING
 
 	glActiveTexture(GL_TEXTURE2);
 	glBindTexture(GL_TEXTURE_2D, [firstInputFramebuffer texture]);
-	
+  	
 	glUniform1i(filterInputTextureUniform, 2);	
 
     glVertexAttribPointer(filterPositionAttribute, 2, GL_FLOAT, 0, 0, vertices);
@@ -710,11 +713,16 @@ NSString *const kGPUImagePassthroughFragmentShaderString = SHADER_STRING
 
 - (CGSize)maximumOutputSize;
 {
-    // I'm temporarily disabling adjustments for smaller output sizes until I figure out how to make this work better
+   if (overrideInputSize == YES && !(CGSizeEqualToSize(forcedMaximumSize,CGSizeZero)))
+        return forcedMaximumSize;
+    
     return CGSizeZero;
 
-    /*
-    if (CGSizeEqualToSize(cachedMaximumOutputSize, CGSizeZero))
+    
+    // we need the ability to have different input sizes produce different output sizes.  The code below assumes that you want
+    // the output size constant down the whole chain, which isn't necessarily true.
+    
+    /*if (CGSizeEqualToSize(cachedMaximumOutputSize, CGSizeZero))
     {
         for (id<GPUImageInput> currentTarget in targets)
         {
@@ -725,8 +733,8 @@ NSString *const kGPUImagePassthroughFragmentShaderString = SHADER_STRING
         }
     }
     
-    return cachedMaximumOutputSize;
-     */
+    return cachedMaximumOutputSize; */
+     
 }
 
 - (void)endProcessing 
@@ -747,7 +755,11 @@ NSString *const kGPUImagePassthroughFragmentShaderString = SHADER_STRING
     return NO;
 }
 
+
+
 #pragma mark -
 #pragma mark Accessors
+
+
 
 @end

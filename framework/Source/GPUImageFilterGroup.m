@@ -147,26 +147,7 @@
     }
 }
 
-- (CGSize)maximumOutputSize;
-{
-    // I'm temporarily disabling adjustments for smaller output sizes until I figure out how to make this work better
-    return CGSizeZero;
 
-    /*
-    if (CGSizeEqualToSize(cachedMaximumOutputSize, CGSizeZero))
-    {
-        for (id<GPUImageInput> currentTarget in _initialFilters)
-        {
-            if ([currentTarget maximumOutputSize].width > cachedMaximumOutputSize.width)
-            {
-                cachedMaximumOutputSize = [currentTarget maximumOutputSize];
-            }
-        }
-    }
-    
-    return cachedMaximumOutputSize;
-     */
-}
 
 - (void)endProcessing;
 {
