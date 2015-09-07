@@ -4,12 +4,17 @@
 #import "GPUImageContext.h"
 #import "GPUImageOutput.h"
 
-extern const GLfloat kColorConversion601[];
-extern const GLfloat kColorConversion601FullRange[];
-extern const GLfloat kColorConversion709[];
+extern GLfloat *kColorConversion601;
+extern GLfloat *kColorConversion601FullRange;
+extern GLfloat *kColorConversion709;
 extern NSString *const kGPUImageYUVVideoRangeConversionForRGFragmentShaderString;
 extern NSString *const kGPUImageYUVFullRangeConversionForLAFragmentShaderString;
 extern NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString;
+
+//Optionally override the YUV to RGB matrices
+void setColorConversion601( GLfloat conversionMatrix[9] );
+void setColorConversion601FullRange( GLfloat conversionMatrix[9] );
+void setColorConversion709( GLfloat conversionMatrix[9] );
 
 
 //Delegate Protocal for Face Detection.
