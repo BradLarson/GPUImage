@@ -294,6 +294,10 @@ There are currently 125 built-in filters, divided into the following categories:
 - **GPUImageHueFilter**: Adjusts the hue of an image
   - *hue*: The hue angle, in degrees. 90 degrees by default
 
+- **GPUImageWhiteBalanceFilter**: Adjusts the white balance of an image.
+  - *temperature*: The temperature to adjust the image by, in ºK. A value of 4000 is very cool and 7000 very warm. The default value is 5000. Note that the scale between 4000 and 5000 is nearly as visually significant as that between 5000 and 7000.
+  - *tint*: The tint to adjust the image by. A value of -200 is *very* green and 200 is *very* pink. The default value is 0.  
+
 - **GPUImageToneCurveFilter**: Adjusts the colors of an image based on spline curves for each color channel.
   - *redControlPoints*:
   - *greenControlPoints*:
