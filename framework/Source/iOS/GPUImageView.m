@@ -141,6 +141,8 @@
             [self createDisplayFramebuffer];
             [self recalculateViewGeometry];
         });
+    } else if (!CGSizeEqualToSize(self.bounds.size, CGSizeZero)) {
+        [self recalculateViewGeometry];
     }
 }
 
