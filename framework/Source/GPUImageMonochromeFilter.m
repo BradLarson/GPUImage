@@ -15,13 +15,13 @@ NSString *const kGPUMonochromeFragmentShaderString = SHADER_STRING
  
  void main()
  {
-	//desat, then apply overlay blend
+	// Desat, then apply overlay blend
 	lowp vec4 textureColor = texture2D(inputImageTexture, textureCoordinate);
 	float luminance = dot(textureColor.rgb, luminanceWeighting);
 	
 	lowp vec4 desat = vec4(vec3(luminance), 1.0);
 	
-	//overlay
+	// Overlay
 	lowp vec4 outputColor = vec4(
                                  (desat.r < 0.5 ? (2.0 * desat.r * filterColor.r) : (1.0 - 2.0 * (1.0 - desat.r) * (1.0 - filterColor.r))),
                                  (desat.g < 0.5 ? (2.0 * desat.g * filterColor.g) : (1.0 - 2.0 * (1.0 - desat.g) * (1.0 - filterColor.g))),
@@ -29,7 +29,7 @@ NSString *const kGPUMonochromeFragmentShaderString = SHADER_STRING
                                  1.0
                                  );
 	
-	//which is better, or are they equal?
+	// Which is better, or are they equal?
 	gl_FragColor = vec4( mix(textureColor.rgb, outputColor.rgb, intensity), textureColor.a);
  }
 );
@@ -46,13 +46,13 @@ NSString *const kGPUMonochromeFragmentShaderString = SHADER_STRING
  
  void main()
  {
-     //desat, then apply overlay blend
+     // Desat, then apply overlay blend
      vec4 textureColor = texture2D(inputImageTexture, textureCoordinate);
      float luminance = dot(textureColor.rgb, luminanceWeighting);
      
      vec4 desat = vec4(vec3(luminance), 1.0);
      
-     //overlay
+     // Overlay
      vec4 outputColor = vec4(
                                   (desat.r < 0.5 ? (2.0 * desat.r * filterColor.r) : (1.0 - 2.0 * (1.0 - desat.r) * (1.0 - filterColor.r))),
                                   (desat.g < 0.5 ? (2.0 * desat.g * filterColor.g) : (1.0 - 2.0 * (1.0 - desat.g) * (1.0 - filterColor.g))),
@@ -60,7 +60,7 @@ NSString *const kGPUMonochromeFragmentShaderString = SHADER_STRING
                                   1.0
                                   );
      
-     //which is better, or are they equal?
+     // Which is better, or are they equal?
      gl_FragColor = vec4( mix(textureColor.rgb, outputColor.rgb, intensity), textureColor.a);
  }
 );
@@ -83,7 +83,7 @@ NSString *const kGPUMonochromeFragmentShaderString = SHADER_STRING
     
     self.intensity = 1.0;
 	self.color = (GPUVector4){0.6f, 0.45f, 0.3f, 1.f};
-	//self.color = [CIColor colorWithRed:0.6 green:0.45 blue:0.3 alpha:1.];
+ //   self.color = [CIColor colorWithRed:0.6 green:0.45 blue:0.3 alpha:1.];
     return self;
 }
 

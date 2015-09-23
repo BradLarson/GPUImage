@@ -12,7 +12,7 @@ NSString *const kGPUImageHazeFragmentShaderString = SHADER_STRING
  
  void main()
  {
-	//todo reconsider precision modifiers	 
+	//TODO: reconsider precision modifiers	 
 	 highp vec4 color = vec4(1.0);//todo reimplement as a parameter
 	 
 	 highp float  d = textureCoordinate.y * slope  +  hazeDistance;
@@ -36,8 +36,8 @@ NSString *const kGPUImageHazeFragmentShaderString = SHADER_STRING
  
  void main()
  {
-     //todo reconsider precision modifiers
-	 vec4 color = vec4(1.0);//todo reimplement as a parameter
+     //TODO: reconsider precision modifiers
+	 vec4 color = vec4(1.0);//TODO: reimplement as a parameter
 	 
 	 float  d = textureCoordinate.y * slope  +  hazeDistance;
 	 

@@ -18,12 +18,12 @@ void main()
 {
 	lowp vec4 source = texture2D(inputImageTexture, textureCoordinate);
 	
-	mediump vec3 yiq = RGBtoYIQ * source.rgb; //adjusting tint
+	mediump vec3 yiq = RGBtoYIQ * source.rgb; // adjusting tint
 	yiq.b = clamp(yiq.b + tint*0.5226*0.1, -0.5226, 0.5226);
 	lowp vec3 rgb = YIQtoRGB * yiq;
 
 	lowp vec3 processed = vec3(
-		(rgb.r < 0.5 ? (2.0 * rgb.r * warmFilter.r) : (1.0 - 2.0 * (1.0 - rgb.r) * (1.0 - warmFilter.r))), //adjusting temperature
+		(rgb.r < 0.5 ? (2.0 * rgb.r * warmFilter.r) : (1.0 - 2.0 * (1.0 - rgb.r) * (1.0 - warmFilter.r))), // adjusting temperature
 		(rgb.g < 0.5 ? (2.0 * rgb.g * warmFilter.g) : (1.0 - 2.0 * (1.0 - rgb.g) * (1.0 - warmFilter.g))), 
 		(rgb.b < 0.5 ? (2.0 * rgb.b * warmFilter.b) : (1.0 - 2.0 * (1.0 - rgb.b) * (1.0 - warmFilter.b))));
 
@@ -48,12 +48,12 @@ NSString *const kGPUImageWhiteBalanceFragmentShaderString = SHADER_STRING
 {
 	vec4 source = texture2D(inputImageTexture, textureCoordinate);
 	
-	vec3 yiq = RGBtoYIQ * source.rgb; //adjusting tint
+	vec3 yiq = RGBtoYIQ * source.rgb; // adjusting tint
 	yiq.b = clamp(yiq.b + tint*0.5226*0.1, -0.5226, 0.5226);
 	vec3 rgb = YIQtoRGB * yiq;
     
 	vec3 processed = vec3(
-                               (rgb.r < 0.5 ? (2.0 * rgb.r * warmFilter.r) : (1.0 - 2.0 * (1.0 - rgb.r) * (1.0 - warmFilter.r))), //adjusting temperature
+                               (rgb.r < 0.5 ? (2.0 * rgb.r * warmFilter.r) : (1.0 - 2.0 * (1.0 - rgb.r) * (1.0 - warmFilter.r))), // adjusting temperature
                                (rgb.g < 0.5 ? (2.0 * rgb.g * warmFilter.g) : (1.0 - 2.0 * (1.0 - rgb.g) * (1.0 - warmFilter.g))),
                                (rgb.b < 0.5 ? (2.0 * rgb.b * warmFilter.b) : (1.0 - 2.0 * (1.0 - rgb.b) * (1.0 - warmFilter.b))));
     
