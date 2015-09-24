@@ -306,7 +306,7 @@ There are currently 125 built-in filters, divided into the following categories:
 
 - **GPUImageHighlightShadowFilter**: Adjusts the shadows and highlights of an image
   - *shadows*: Increase to lighten shadows, from 0.0 to 1.0, with 0.0 as the default.
-  - *highlights*: Decrease to darken highlights, from 0.0 to 1.0, with 1.0 as the default.
+  - *highlights*: Decrease to darken highlights, from 1.0 to 0.0, with 1.0 as the default.
 
 - **GPUImageLookupFilter**: Uses an RGB color lookup image to remap the colors in an image. First, use your favourite photo editing application to apply a filter to lookup.png from GPUImage/framework/Resources. For this to work properly each pixel color must not depend on other pixels (e.g. blur will not work). If you need a more complex filter you can create as many lookup tables as required. Once ready, use your new lookup.png file as a second input for GPUImageLookupFilter.
 
@@ -670,7 +670,7 @@ There are currently 125 built-in filters, divided into the following categories:
   - *vignetteCenter*: The center for the vignette in tex coords (CGPoint), with a default of 0.5, 0.5
   - *vignetteColor*: The color to use for the vignette (GPUVector3), with a default of black
   - *vignetteStart*: The normalized distance from the center where the vignette effect starts, with a default of 0.5
-  - *vignetteEnd*: The normalized distance from the center where the vignette effect ends, with a of 0.75
+  - *vignetteEnd*: The normalized distance from the center where the vignette effect ends, with a default of 0.75
 
 - **GPUImageKuwaharaFilter**: Kuwahara image abstraction, drawn from the work of Kyprianidis, et. al. in their publication "Anisotropic Kuwahara Filtering on the GPU" within the GPU Pro collection. This produces an oil-painting-like image, but it is extremely computationally expensive, so it can take seconds to render a frame on an iPad 2. This might be best used for still images.
   - *radius*: In integer specifying the number of pixels out from the center pixel to test when applying the filter, with a default of 4. A higher value creates a more abstracted image, but at the cost of much greater processing time.

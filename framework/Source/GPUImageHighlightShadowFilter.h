@@ -12,7 +12,7 @@
 @property(readwrite, nonatomic) CGFloat shadows;
 
 /**
- * 0 - 1, decrease to darken highlights.
+ * 1 - 0, decrease to darken highlights.
  * @default 1
  */
 @property(readwrite, nonatomic) CGFloat highlights;
