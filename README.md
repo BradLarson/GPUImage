@@ -667,8 +667,10 @@ There are currently 125 built-in filters, divided into the following categories:
   - *refractiveIndex*: The index of refraction for the sphere, with a default of 0.71
 
 - **GPUImageVignetteFilter**: Performs a vignetting effect, fading out the image at the edges
-  - *x*:
-  - *y*: The directional intensity of the vignetting, with a default of x = 0.75, y = 0.5
+  - *vignetteCenter*: The center for the vignette in tex coords (CGPoint), with a default of 0.5, 0.5
+  - *vignetteColor*: The color to use for the vignette (GPUVector3), with a default of black
+  - *vignetteStart*: The normalized distance from the center where the vignette effect starts, with a default of 0.5
+  - *vignetteEnd*: The normalized distance from the center where the vignette effect ends, with a of 0.75
 
 - **GPUImageKuwaharaFilter**: Kuwahara image abstraction, drawn from the work of Kyprianidis, et. al. in their publication "Anisotropic Kuwahara Filtering on the GPU" within the GPU Pro collection. This produces an oil-painting-like image, but it is extremely computationally expensive, so it can take seconds to render a frame on an iPad 2. This might be best used for still images.
   - *radius*: In integer specifying the number of pixels out from the center pixel to test when applying the filter, with a default of 4. A higher value creates a more abstracted image, but at the cost of much greater processing time.
