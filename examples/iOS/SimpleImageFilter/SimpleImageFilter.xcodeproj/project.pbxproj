@@ -375,6 +375,7 @@
 		BCB5E80A14E605A900701302 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ENABLE_BITCODE = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "SimpleImageFilter/SimpleImageFilter-Prefix.pch";
 				INFOPLIST_FILE = "SimpleImageFilter/SimpleImageFilter-Info.plist";
@@ -386,6 +387,7 @@
 		BCB5E80B14E605A900701302 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ENABLE_BITCODE = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "SimpleImageFilter/SimpleImageFilter-Prefix.pch";
 				INFOPLIST_FILE = "SimpleImageFilter/SimpleImageFilter-Info.plist";
