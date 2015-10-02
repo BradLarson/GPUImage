@@ -199,9 +199,12 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
     // custom output settings specified
     else 
     {
-		NSString *videoCodec = [outputSettings objectForKey:AVVideoCodecKey];
-		NSNumber *width = [outputSettings objectForKey:AVVideoWidthKey];
-		NSNumber *height = [outputSettings objectForKey:AVVideoHeightKey];
+		NSString *videoCodec;
+		videoCodec = [outputSettings objectForKey:AVVideoCodecKey];
+		NSNumber *width;
+		width = [outputSettings objectForKey:AVVideoWidthKey];
+		NSNumber *height;
+		height = [outputSettings objectForKey:AVVideoHeightKey];
 		
 		NSAssert(videoCodec && width && height, @"OutputSettings is missing required parameters.");
         
@@ -579,7 +582,8 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
     }
     
 	
-	GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+	GLenum status;
+	status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
     
     NSAssert(status == GL_FRAMEBUFFER_COMPLETE, @"Incomplete filter FBO: %d", status);
 }
