@@ -336,16 +336,25 @@
 	CFTimeInterval nextVSync = ([sender timestamp] + [sender duration]);
 
 	CMTime outputItemTime = [playerItemOutput itemTimeForHostTime:nextVSync];
-
-	if ([playerItemOutput hasNewPixelBufferForItemTime:outputItemTime]) {
+    
+    void (^processFrame)() = ^void() {
         __unsafe_unretained GPUImageMovie *weakSelf = self;
-		CVPixelBufferRef pixelBuffer = [playerItemOutput copyPixelBufferForItemTime:outputItemTime itemTimeForDisplay:NULL];
+        CVPixelBufferRef pixelBuffer = [playerItemOutput copyPixelBufferForItemTime:outputItemTime itemTimeForDisplay:NULL];
         if( pixelBuffer )
             runSynchronouslyOnVideoProcessingQueue(^{
                 [weakSelf processMovieFrame:pixelBuffer withSampleTime:outputItemTime];
                 CFRelease(pixelBuffer);
             });
+    };
+    
+    if (self.checkForNewPixelBufferDisabled) {
+        processFrame();
 	}
+    else {
+        if ([playerItemOutput hasNewPixelBufferForItemTime:outputItemTime]) {
+            processFrame();
+        }
+    }
 }
 
 - (BOOL)readNextVideoFrameFromOutput:(AVAssetReaderOutput *)readerVideoTrackOutput;
