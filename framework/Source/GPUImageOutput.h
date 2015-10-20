@@ -42,7 +42,6 @@ void reportAvailableMemoryForGPUImage(NSString *tag);
     GPUImageFramebuffer *outputFramebuffer;
     
     NSMutableArray *targets, *targetTextureIndices;
-    
     CGSize inputTextureSize, cachedMaximumOutputSize, forcedMaximumSize;
     
     BOOL overrideInputSize;
@@ -69,6 +68,8 @@ void reportAvailableMemoryForGPUImage(NSString *tag);
  */
 - (NSArray*)targets;
 
+- (void)enumerateTargetsUsingBlock:(void (^)(id<GPUImageInput> target, NSInteger idx, BOOL *stop))block;
+
 /** Adds a target to receive notifications when new frames are available.
  
  The target will be asked for its next available texture.
@@ -86,6 +87,27 @@ void reportAvailableMemoryForGPUImage(NSString *tag);
  @param newTarget Target to be added
  */
 - (void)addTarget:(id<GPUImageInput>)newTarget atTextureLocation:(NSInteger)textureLocation;
+
+/** Adds a target to receive notifications when new frames are available, but does not hold a reference to it.
+ 
+ The target will be asked for its next available texture.
+ 
+ See [GPUImageInput newFrameReadyAtTime:]
+ 
+ @param newTarget Target to be added
+ */
+- (void)addWeakTarget:(id<GPUImageInput>)newTarget;
+- (void)addTarget:(id<GPUImageInput>)newTarget holdWeakly:(BOOL)holdWeakly;
+
+/** Adds a target to receive notifications when new frames are available, but does not hold a reference to it.
+ 
+ See [GPUImageInput newFrameReadyAtTime:]
+ 
+ @param newTarget Target to be added
+ */
+- (void)addWeakTarget:(id<GPUImageInput>)newTarget atTextureLocation:(NSInteger)textureLocation;
+- (void)addTarget:(id<GPUImageInput>)newTarget atTextureLocation:(NSInteger)textureLocation holdWeakly:(BOOL)holdWeakly;
+
 
 /** Removes a target. The target will no longer receive notifications when new frames are available.
  

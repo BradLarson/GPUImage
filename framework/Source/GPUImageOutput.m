@@ -2,6 +2,7 @@
 #import "GPUImageMovieWriter.h"
 #import "GPUImagePicture.h"
 #import <mach/mach.h>
+#import "NSArray+GPUImageWeakLinkedNSValueItems.h"
 
 void runOnMainQueueWithoutDeadlocking(void (^block)(void))
 {
@@ -179,34 +180,49 @@ void reportAvailableMemoryForGPUImage(NSString *tag)
 
 - (void)notifyTargetsAboutNewOutputTexture;
 {
-    for (id<GPUImageInput> currentTarget in targets)
-    {
-        NSInteger indexOfObject = [targets indexOfObject:currentTarget];
-        NSInteger textureIndex = [[targetTextureIndices objectAtIndex:indexOfObject] integerValue];
-        
-        [self setInputFramebufferForTarget:currentTarget atIndex:textureIndex];
-    }
+    [self enumerateTargetsUsingBlock:^(id<GPUImageInput> target, NSInteger idx, BOOL *stop) {
+        NSInteger textureIndex = [[targetTextureIndices objectAtIndex:idx] integerValue];
+        [self setInputFramebufferForTarget:target atIndex:textureIndex];
+    }];
 }
+
 
 - (NSArray*)targets;
 {
 	return [NSArray arrayWithArray:targets];
 }
 
+- (void)enumerateTargetsUsingBlock:(void (^)(id<GPUImageInput> target, NSInteger idx, BOOL *stop))block;
+{
+    NSParameterAssert(block);
+    [targets enumerateMixedWeakObjectsUsingBlock:^(id obj, NSInteger idx, BOOL *stop) {
+        block((id<GPUImageInput>)obj, idx, stop);
+    }];
+}
+
 - (void)addTarget:(id<GPUImageInput>)newTarget;
 {
-    NSInteger nextAvailableTextureIndex = [newTarget nextAvailableTextureIndex];
-    [self addTarget:newTarget atTextureLocation:nextAvailableTextureIndex];
+    [self addTarget:newTarget holdWeakly:NO];
+}
+- (void)addTarget:(id<GPUImageInput>)newTarget atTextureLocation:(NSInteger)textureLocation;
+{
+    [self addTarget:newTarget atTextureLocation:textureLocation holdWeakly:NO];
+}
+
+- (void)addTarget:(id<GPUImageInput>)newTarget holdWeakly:(BOOL)holdWeakly;
+{
+    const NSInteger nextAvailableTextureIndex = [newTarget nextAvailableTextureIndex];
+    [self addTarget:newTarget atTextureLocation:nextAvailableTextureIndex holdWeakly:holdWeakly];
     
     if ([newTarget shouldIgnoreUpdatesToThisTarget])
     {
         _targetToIgnoreForUpdates = newTarget;
     }
 }
-
-- (void)addTarget:(id<GPUImageInput>)newTarget atTextureLocation:(NSInteger)textureLocation;
+- (void)addTarget:(id<GPUImageInput>)newTarget atTextureLocation:(NSInteger)textureLocation holdWeakly:(BOOL)holdWeakly;
 {
-    if([targets containsObject:newTarget])
+    id newTargetReference = (holdWeakly ? (id)[NSValue valueWithNonretainedObject:newTarget] : (id)newTarget);
+    if([targets containsObject:newTargetReference])
     {
         return;
     }
@@ -214,12 +230,23 @@ void reportAvailableMemoryForGPUImage(NSString *tag)
     cachedMaximumOutputSize = CGSizeZero;
     runSynchronouslyOnVideoProcessingQueue(^{
         [self setInputFramebufferForTarget:newTarget atIndex:textureLocation];
-        [targets addObject:newTarget];
+        [targets addObject:newTargetReference];
         [targetTextureIndices addObject:[NSNumber numberWithInteger:textureLocation]];
         
         allTargetsWantMonochromeData = allTargetsWantMonochromeData && [newTarget wantsMonochromeInput];
     });
 }
+
+- (void)addWeakTarget:(id<GPUImageInput>)newTarget;
+{
+    [self addTarget:newTarget holdWeakly:YES];
+}
+
+- (void)addWeakTarget:(id<GPUImageInput>)newTarget atTextureLocation:(NSInteger)textureLocation;
+{
+    [self addTarget:newTarget atTextureLocation:textureLocation holdWeakly:YES];
+}
+
 
 - (void)removeTarget:(id<GPUImageInput>)targetToRemove;
 {
@@ -252,14 +279,11 @@ void reportAvailableMemoryForGPUImage(NSString *tag)
 {
     cachedMaximumOutputSize = CGSizeZero;
     runSynchronouslyOnVideoProcessingQueue(^{
-        for (id<GPUImageInput> targetToRemove in targets)
-        {
-            NSInteger indexOfObject = [targets indexOfObject:targetToRemove];
-            NSInteger textureIndexOfTarget = [[targetTextureIndices objectAtIndex:indexOfObject] integerValue];
-            
-            [targetToRemove setInputSize:CGSizeZero atIndex:textureIndexOfTarget];
-            [targetToRemove setInputRotation:kGPUImageNoRotation atIndex:textureIndexOfTarget];
-        }
+        [self enumerateTargetsUsingBlock:^(id<GPUImageInput> target, NSInteger idx, BOOL *stop) {
+            const NSInteger textureIndexOfTarget = [[targetTextureIndices objectAtIndex:idx] integerValue];
+            [target setInputSize:CGSizeZero atIndex:textureIndexOfTarget];
+            [target setInputRotation:kGPUImageNoRotation atIndex:textureIndexOfTarget];
+        }];
         [targets removeAllObjects];
         [targetTextureIndices removeAllObjects];
         
