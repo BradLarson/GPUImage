@@ -254,16 +254,17 @@
         return NO;
     }
     
-    runAsynchronouslyOnVideoProcessingQueue(^{
-        [self enumerateTargetsUsingBlock:^(id<GPUImageInput> currentTarget, NSInteger idx, BOOL *stop) {
-            NSInteger textureIndexOfTarget = [[targetTextureIndices objectAtIndex:idx] integerValue];
+    runAsynchronouslyOnVideoProcessingQueue(^{        
+        for (id<GPUImageInput> currentTarget in targets)
+        {
+            NSInteger indexOfObject = [targets indexOfObject:currentTarget];
+            NSInteger textureIndexOfTarget = [[targetTextureIndices objectAtIndex:indexOfObject] integerValue];
             
             [currentTarget setCurrentlyReceivingMonochromeInput:NO];
             [currentTarget setInputSize:pixelSizeOfImage atIndex:textureIndexOfTarget];
             [currentTarget setInputFramebuffer:outputFramebuffer atIndex:textureIndexOfTarget];
             [currentTarget newFrameReadyAtTime:kCMTimeIndefinite atIndex:textureIndexOfTarget];
-
-        }];
+        }
         
         dispatch_semaphore_signal(imageUpdateSemaphore);
         
