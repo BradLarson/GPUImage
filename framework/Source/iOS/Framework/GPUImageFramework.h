@@ -12,14 +12,18 @@ FOUNDATION_EXPORT const unsigned char GPUImageFrameworkVersionString[];
 #import <GPUImage/GPUImageContext.h>
 #import <GPUImage/GPUImageOutput.h>
 #import <GPUImage/GPUImageView.h>
+#if !TARGET_OS_TV
 #import <GPUImage/GPUImageVideoCamera.h>
 #import <GPUImage/GPUImageStillCamera.h>
 #import <GPUImage/GPUImageMovie.h>
+#endif
 #import <GPUImage/GPUImagePicture.h>
 #import <GPUImage/GPUImageRawDataInput.h>
 #import <GPUImage/GPUImageRawDataOutput.h>
 #import <GPUImage/GPUImageMovieWriter.h>
+#if !TARGET_OS_TV
 #import <GPUImage/GPUImageFilterPipeline.h>
+#endif
 #import <GPUImage/GPUImageTextureOutput.h>
 #import <GPUImage/GPUImageFilterGroup.h>
 #import <GPUImage/GPUImageTextureInput.h>
@@ -169,4 +173,6 @@ FOUNDATION_EXPORT const unsigned char GPUImageFrameworkVersionString[];
 #import <GPUImage/GPUImageThreeInputFilter.h>
 #import <GPUImage/GPUImageWeakPixelInclusionFilter.h>
 #import <GPUImage/GPUImageFASTCornerDetectionFilter.h>
+#if !TARGET_OS_TV
 #import <GPUImage/GPUImageMovieComposition.h>
+#endif
