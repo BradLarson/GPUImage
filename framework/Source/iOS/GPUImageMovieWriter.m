@@ -861,7 +861,7 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
             {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
-                preferredHardwareSampleRate = [[AVAudioSession sharedInstance] currentHardwareSampleRate];
+                preferredHardwareSampleRate = [[AVAudioSession sharedInstance] sampleRate];
 #pragma clang diagnostic pop
             }
             

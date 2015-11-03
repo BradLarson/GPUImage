@@ -25,4 +25,13 @@ Pod::Spec.new do |s|
                         'framework/Source/GPUImageStillCamera.*',
                         'framework/Source/GPUImageUIElement.*'
   s.osx.xcconfig = { 'GCC_WARN_ABOUT_RETURN_TYPE' => 'YES' }
+  
+  s.tvos.deployment_target = '9.0'
+  s.tvos.exclude_files = 'framework/Source/Mac',
+                         'framework/Source/GPUImageFilterPipeline.*',
+                         'framework/Source/GPUImageMovie.*',
+                         'framework/Source/GPUImageMovieComposition.*',
+                         'framework/Source/GPUImageVideoCamera.*',
+                         'framework/Source/GPUImageStillCamera.*'
+  s.tvos.frameworks   = ['OpenGLES', 'CoreMedia', 'QuartzCore', 'AVFoundation']
 end

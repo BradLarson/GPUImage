@@ -316,7 +316,13 @@ void reportAvailableMemoryForGPUImage(NSString *tag)
 
 #if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
 
-- (UIImage *)imageFromCurrentFramebuffer;
+#if TARGET_OS_TV
+- (UIImage *)imageFromCurrentFramebuffer
+{
+    return [self imageFromCurrentFramebufferWithOrientation:UIImageOrientationUp];
+}
+#else
+- (UIImage *)imageFromCurrentFramebuffer
 {
 	UIDeviceOrientation deviceOrientation = [[UIDevice currentDevice] orientation];
     UIImageOrientation imageOrientation = UIImageOrientationLeft;
@@ -341,6 +347,7 @@ void reportAvailableMemoryForGPUImage(NSString *tag)
     
     return [self imageFromCurrentFramebufferWithOrientation:imageOrientation];
 }
+#endif
 
 - (UIImage *)imageFromCurrentFramebufferWithOrientation:(UIImageOrientation)imageOrientation;
 {
