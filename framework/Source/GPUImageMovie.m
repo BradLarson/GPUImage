@@ -587,10 +587,13 @@
             
             [outputFramebuffer unlock];
 
-            for (id<GPUImageInput> currentTarget in targets)
+            // FORK we copy these so we can concurrently modify the actual targets array
+            NSArray* targetsCopy = [targets copy];
+            NSArray* indices = [targetTextureIndices copy];
+            for (id<GPUImageInput> currentTarget in targetsCopy)
             {
-                NSInteger indexOfObject = [targets indexOfObject:currentTarget];
-                NSInteger targetTextureIndex = [[targetTextureIndices objectAtIndex:indexOfObject] integerValue];
+                NSInteger indexOfObject = [targetsCopy indexOfObject:currentTarget];
+                NSInteger targetTextureIndex = [[indices objectAtIndex:indexOfObject] integerValue];
                 [currentTarget newFrameReadyAtTime:currentSampleTime atIndex:targetTextureIndex];
             }
 

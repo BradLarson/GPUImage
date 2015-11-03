@@ -336,6 +336,7 @@ NSString *const kGPUImagePassthroughFragmentShaderString = SHADER_STRING
         self.frameProcessingCompletionBlock(self, frameTime);
     }
     
+    
     // Get all targets the framebuffer so they can grab a lock on it
     for (id<GPUImageInput> currentTarget in targets)
     {
@@ -361,13 +362,16 @@ NSString *const kGPUImagePassthroughFragmentShaderString = SHADER_STRING
         [self removeOutputFramebuffer];
     }    
     
+    // FORK Iterate over a copy since the contents can change in the callbacks. Easier than dealing with threading.
+    NSArray* targetsCopy = [targets copy];
+    NSArray* indices = [targetTextureIndices copy];
     // Trigger processing last, so that our unlock comes first in serial execution, avoiding the need for a callback
-    for (id<GPUImageInput> currentTarget in targets)
+    for (id<GPUImageInput> currentTarget in targetsCopy)
     {
         if (currentTarget != self.targetToIgnoreForUpdates)
         {
-            NSInteger indexOfObject = [targets indexOfObject:currentTarget];
-            NSInteger textureIndex = [[targetTextureIndices objectAtIndex:indexOfObject] integerValue];
+            NSInteger indexOfObject = [targetsCopy indexOfObject:currentTarget];
+            NSInteger textureIndex = [[indices objectAtIndex:indexOfObject] integerValue];
             [currentTarget newFrameReadyAtTime:frameTime atIndex:textureIndex];
         }
     }
