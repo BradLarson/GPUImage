@@ -1,7 +1,12 @@
 #import "GPUImageMovie.h"
 #import "GPUImageMovieWriter.h"
 #import "GPUImageFilter.h"
+
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
 #import "GPUImageVideoCamera.h"
+#else
+#warning Missing import for OSX
+#endif
 
 @interface GPUImageMovie () <AVPlayerItemOutputPullDelegate>
 {
@@ -9,7 +14,11 @@
     GPUImageMovieWriter *synchronizedMovieWriter;
     AVAssetReader *reader;
     AVPlayerItemVideoOutput *playerItemOutput;
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
     CADisplayLink *displayLink;
+#else
+    CVDisplayLinkRef displayLink;
+#endif
     CMTime previousFrameTime, processingFrameTime;
     CFAbsoluteTime previousActualFrameTime;
     BOOL keepLooping;
@@ -96,9 +105,13 @@
         runSynchronouslyOnVideoProcessingQueue(^{
             [GPUImageContext useImageProcessingContext];
 
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
             _preferredConversion = kColorConversion709;
             isFullYUVRange       = YES;
             yuvConversionProgram = [[GPUImageContext sharedImageProcessingContext] programForVertexShaderString:kGPUImageVertexShaderString fragmentShaderString:kGPUImageYUVFullRangeConversionForLAFragmentShaderString];
+#else
+#warning Color conversions are undefined on OSX
+#endif
 
             if (!yuvConversionProgram.initialized)
             {
@@ -216,7 +229,11 @@
 
     if (shouldRecordAudioTrack)
     {
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
         [self.audioEncodingTarget setShouldInvalidateAudioSampleWhenDone:YES];
+#else
+#warning Missing OSX implementation
+#endif
         
         // This might need to be extended to handle movies with more than one audio track
         AVAssetTrack* audioTrack = [audioTracks objectAtIndex:0];
@@ -256,6 +273,7 @@
 
     if (synchronizedMovieWriter != nil)
     {
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
         [synchronizedMovieWriter setVideoInputReadyCallback:^{
             return [weakSelf readNextVideoFrameFromOutput:readerVideoTrackOutput];
         }];
@@ -263,8 +281,13 @@
         [synchronizedMovieWriter setAudioInputReadyCallback:^{
             return [weakSelf readNextAudioSampleFromOutput:readerAudioTrackOutput];
         }];
+        
+#else
+#warning Missing OSX implementation
+#endif
 
         [synchronizedMovieWriter enableSynchronizationCallbacks];
+
     }
     else
     {
@@ -299,9 +322,15 @@
 - (void)processPlayerItem
 {
     runSynchronouslyOnVideoProcessingQueue(^{
+        
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
         displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(displayLinkCallback:)];
         [displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];
         [displayLink setPaused:YES];
+#else
+#warning Missing OSX implementation
+        // Suggested implementation: use CVDisplayLink http://stackoverflow.com/questions/14158743/alternative-of-cadisplaylink-for-mac-os-x
+#endif
 
         dispatch_queue_t videoProcessingQueue = [GPUImageContext sharedContextQueue];
         NSMutableDictionary *pixBuffAttributes = [NSMutableDictionary dictionary];
@@ -321,10 +350,17 @@
 
 - (void)outputMediaDataWillChange:(AVPlayerItemOutput *)sender
 {
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
 	// Restart display link.
 	[displayLink setPaused:NO];
+#else
+#warning Missing OSX implementation
+    // Probably here will be something like this
+    //CVDisplayLinkStop(displayLink);
+#endif
 }
 
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
 - (void)displayLinkCallback:(CADisplayLink *)sender
 {
 	/*
@@ -347,6 +383,9 @@
             });
 	}
 }
+#else
+#warning Missing OSX implementation
+#endif
 
 - (BOOL)readNextVideoFrameFromOutput:(AVAssetReaderOutput *)readerVideoTrackOutput;
 {
@@ -470,6 +509,7 @@
     int bufferHeight = (int) CVPixelBufferGetHeight(movieFrame);
     int bufferWidth = (int) CVPixelBufferGetWidth(movieFrame);
 
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
     CFTypeRef colorAttachments = CVBufferGetAttachment(movieFrame, kCVImageBufferYCbCrMatrixKey, NULL);
     if (colorAttachments != NULL)
     {
@@ -501,6 +541,9 @@
         }
 
     }
+#else
+#warning Color conversions are undefined on OSX
+#endif
     
     CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
 
@@ -509,8 +552,14 @@
     
     if ([GPUImageContext supportsFastTextureUpload])
     {
+        
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
         CVOpenGLESTextureRef luminanceTextureRef = NULL;
         CVOpenGLESTextureRef chrominanceTextureRef = NULL;
+#else
+        CVOpenGLTextureRef luminanceTextureRef = NULL;
+        CVOpenGLTextureRef chrominanceTextureRef = NULL;
+#endif
 
         //        if (captureAsYUV && [GPUImageContext deviceSupportsRedTextures])
         if (CVPixelBufferGetPlaneCount(movieFrame) > 0) // Check for YUV planar inputs to do RGB conversion
@@ -527,18 +576,30 @@
             glActiveTexture(GL_TEXTURE4);
             if ([GPUImageContext deviceSupportsRedTextures])
             {
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
                 err = CVOpenGLESTextureCacheCreateTextureFromImage(kCFAllocatorDefault, [[GPUImageContext sharedImageProcessingContext] coreVideoTextureCache], movieFrame, NULL, GL_TEXTURE_2D, GL_LUMINANCE, bufferWidth, bufferHeight, GL_LUMINANCE, GL_UNSIGNED_BYTE, 0, &luminanceTextureRef);
+#else
+#warning Missing OSX implementation
+#endif
             }
             else
             {
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
                 err = CVOpenGLESTextureCacheCreateTextureFromImage(kCFAllocatorDefault, [[GPUImageContext sharedImageProcessingContext] coreVideoTextureCache], movieFrame, NULL, GL_TEXTURE_2D, GL_LUMINANCE, bufferWidth, bufferHeight, GL_LUMINANCE, GL_UNSIGNED_BYTE, 0, &luminanceTextureRef);
+#else
+#warning Missing OSX implementation
+#endif
             }
             if (err)
             {
                 NSLog(@"Error at CVOpenGLESTextureCacheCreateTextureFromImage %d", err);
             }
 
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
             luminanceTexture = CVOpenGLESTextureGetName(luminanceTextureRef);
+#else
+            luminanceTexture = CVOpenGLTextureGetName(luminanceTextureRef);
+#endif
             glBindTexture(GL_TEXTURE_2D, luminanceTexture);
             glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
             glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
@@ -547,18 +608,30 @@
             glActiveTexture(GL_TEXTURE5);
             if ([GPUImageContext deviceSupportsRedTextures])
             {
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
                 err = CVOpenGLESTextureCacheCreateTextureFromImage(kCFAllocatorDefault, [[GPUImageContext sharedImageProcessingContext] coreVideoTextureCache], movieFrame, NULL, GL_TEXTURE_2D, GL_LUMINANCE_ALPHA, bufferWidth/2, bufferHeight/2, GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE, 1, &chrominanceTextureRef);
+#else
+#warning Missing OSX implementation
+#endif
             }
             else
             {
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
                 err = CVOpenGLESTextureCacheCreateTextureFromImage(kCFAllocatorDefault, [[GPUImageContext sharedImageProcessingContext] coreVideoTextureCache], movieFrame, NULL, GL_TEXTURE_2D, GL_LUMINANCE_ALPHA, bufferWidth/2, bufferHeight/2, GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE, 1, &chrominanceTextureRef);
+#else
+#warning Missing OSX implementation
+#endif
             }
             if (err)
             {
                 NSLog(@"Error at CVOpenGLESTextureCacheCreateTextureFromImage %d", err);
             }
 
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
             chrominanceTexture = CVOpenGLESTextureGetName(chrominanceTextureRef);
+#else
+            chrominanceTexture = CVOpenGLTextureGetName(chrominanceTextureRef);
+#endif
             glBindTexture(GL_TEXTURE_2D, chrominanceTexture);
             glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
             glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
@@ -676,7 +749,11 @@
 - (void)endProcessing;
 {
     keepLooping = NO;
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
     [displayLink setPaused:YES];
+#else
+#warning Missing OSX implementation
+#endif
 
     for (id<GPUImageInput> currentTarget in targets)
     {
@@ -685,14 +762,22 @@
     
     if (synchronizedMovieWriter != nil)
     {
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
         [synchronizedMovieWriter setVideoInputReadyCallback:^{return NO;}];
         [synchronizedMovieWriter setAudioInputReadyCallback:^{return NO;}];
+#else
+#warning Missing OSX implementation
+#endif
     }
     
     if (self.playerItem && (displayLink != nil))
     {
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
         [displayLink invalidate]; // remove from all run loops
         displayLink = nil;
+#else
+#warning Missing OSX implementation
+#endif
     }
 
     if ([self.delegate respondsToSelector:@selector(didCompletePlayingMovie)]) {
