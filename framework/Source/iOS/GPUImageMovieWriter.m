@@ -199,9 +199,9 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
     // custom output settings specified
     else 
     {
-		NSString *videoCodec = [outputSettings objectForKey:AVVideoCodecKey];
-		NSNumber *width = [outputSettings objectForKey:AVVideoWidthKey];
-		NSNumber *height = [outputSettings objectForKey:AVVideoHeightKey];
+		NSString * __attribute__((__unused__)) videoCodec = [outputSettings objectForKey:AVVideoCodecKey];
+		NSNumber * __attribute__((__unused__)) width = [outputSettings objectForKey:AVVideoWidthKey];
+		NSNumber * __attribute__((__unused__)) height = [outputSettings objectForKey:AVVideoHeightKey];
 		
 		NSAssert(videoCodec && width && height, @"OutputSettings is missing required parameters.");
         
@@ -579,7 +579,7 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
     }
     
 	
-	GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+	GLenum __attribute__((__unused__)) status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
     
     NSAssert(status == GL_FRAMEBUFFER_COMPLETE, @"Incomplete filter FBO: %d", status);
 }
@@ -861,7 +861,7 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
             {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
-                preferredHardwareSampleRate = [[AVAudioSession sharedInstance] currentHardwareSampleRate];
+                preferredHardwareSampleRate = [[AVAudioSession sharedInstance] sampleRate];
 #pragma clang diagnostic pop
             }
             

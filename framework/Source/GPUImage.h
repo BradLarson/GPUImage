@@ -4,14 +4,18 @@
 #import "GPUImageContext.h"
 #import "GPUImageOutput.h"
 #import "GPUImageView.h"
+#if !TARGET_OS_TV
 #import "GPUImageVideoCamera.h"
 #import "GPUImageStillCamera.h"
 #import "GPUImageMovie.h"
+#endif
 #import "GPUImagePicture.h"
 #import "GPUImageRawDataInput.h"
 #import "GPUImageRawDataOutput.h"
 #import "GPUImageMovieWriter.h"
+#if !TARGET_OS_TV
 #import "GPUImageFilterPipeline.h"
+#endif
 #import "GPUImageTextureOutput.h"
 #import "GPUImageFilterGroup.h"
 #import "GPUImageTextureInput.h"
