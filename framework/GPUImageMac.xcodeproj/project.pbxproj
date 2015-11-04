@@ -7,9 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		574B5D861BE9346800F4EC5A /* GPUImageMovie.h in Headers */ = {isa = PBXBuildFile; fileRef = 574B5D841BE9346800F4EC5A /* GPUImageMovie.h */; settings = {ASSET_TAGS = (); }; };
+		574B5D861BE9346800F4EC5A /* GPUImageMovie.h in Headers */ = {isa = PBXBuildFile; fileRef = 574B5D841BE9346800F4EC5A /* GPUImageMovie.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		574B5D871BE9346800F4EC5A /* GPUImageMovie.m in Sources */ = {isa = PBXBuildFile; fileRef = 574B5D851BE9346800F4EC5A /* GPUImageMovie.m */; settings = {ASSET_TAGS = (); }; };
-		574B5D911BEA3E7900F4EC5A /* GPUImageColorConversion.h in Headers */ = {isa = PBXBuildFile; fileRef = 574B5D8F1BEA3E7900F4EC5A /* GPUImageColorConversion.h */; settings = {ASSET_TAGS = (); }; };
+		574B5D911BEA3E7900F4EC5A /* GPUImageColorConversion.h in Headers */ = {isa = PBXBuildFile; fileRef = 574B5D8F1BEA3E7900F4EC5A /* GPUImageColorConversion.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		574B5D921BEA3E7900F4EC5A /* GPUImageColorConversion.m in Sources */ = {isa = PBXBuildFile; fileRef = 574B5D901BEA3E7900F4EC5A /* GPUImageColorConversion.m */; settings = {ASSET_TAGS = (); }; };
 		A4741D5A19A92098005EE1A4 /* GPUImageHistogramEqualizationFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = A4741D5819A92098005EE1A4 /* GPUImageHistogramEqualizationFilter.h */; };
 		A4741D5B19A92098005EE1A4 /* GPUImageHistogramEqualizationFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = A4741D5919A92098005EE1A4 /* GPUImageHistogramEqualizationFilter.m */; };
@@ -1106,7 +1106,6 @@
 				BCF867AD172778D500912E34 /* GPUImageContrastFilter.h in Headers */,
 				BCF867AF172778D500912E34 /* GPUImageExposureFilter.h in Headers */,
 				BCF867B1172778D500912E34 /* GPUImageHueFilter.h in Headers */,
-				574B5D911BEA3E7900F4EC5A /* GPUImageColorConversion.h in Headers */,
 				BCF867B3172778D500912E34 /* GPUImageSaturationFilter.h in Headers */,
 				A4741D5A19A92098005EE1A4 /* GPUImageHistogramEqualizationFilter.h in Headers */,
 				BCF867B5172778D500912E34 /* GPUImageWhiteBalanceFilter.h in Headers */,
@@ -1118,7 +1117,6 @@
 				BCF867CF172789B200912E34 /* GPUImageSketchFilter.h in Headers */,
 				BCF867D417278A5600912E34 /* GPUImageSobelEdgeDetectionFilter.h in Headers */,
 				BCF867D817278A7A00912E34 /* GPUImageToonFilter.h in Headers */,
-				574B5D861BE9346800F4EC5A /* GPUImageMovie.h in Headers */,
 				BCF867DC17278C5A00912E34 /* GPUImageTwoPassFilter.h in Headers */,
 				BCF867E017278D1900912E34 /* GPUImageGrayscaleFilter.h in Headers */,
 				BCF867E41727903D00912E34 /* GPUImageKuwaharaFilter.h in Headers */,
@@ -1243,7 +1241,9 @@
 				BCA20BC717471C4B0097C84A /* GPUImagePerlinNoiseFilter.h in Headers */,
 				BC8A583218124ABD00E6B507 /* GPUImageSingleComponentGaussianBlurFilter.h in Headers */,
 				BCD8EB8C18D6AFC5005ED83C /* GPUImageFramebuffer.h in Headers */,
+				574B5D911BEA3E7900F4EC5A /* GPUImageColorConversion.h in Headers */,
 				BCA20BC917471C4B0097C84A /* GPUImageVoronoiConsumerFilter.h in Headers */,
+				574B5D861BE9346800F4EC5A /* GPUImageMovie.h in Headers */,
 				BCD8EB8E18D6AFC5005ED83C /* GPUImageFramebufferCache.h in Headers */,
 				BC96A4F1176563C300F215A2 /* GPUImageNonMaximumSuppressionFilter.h in Headers */,
 			);
