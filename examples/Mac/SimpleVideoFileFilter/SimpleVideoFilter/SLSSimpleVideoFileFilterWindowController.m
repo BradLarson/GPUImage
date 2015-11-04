@@ -1,6 +1,23 @@
 #import "SLSSimpleVideoFileFilterWindowController.h"
+#import <GPUImage/GPUImage.h>
 
 @interface SLSSimpleVideoFileFilterWindowController ()
+{
+    GPUImageMovie *movieFile;
+    GPUImageOutput<GPUImageInput> *filter;
+    GPUImageMovieWriter *movieWriter;
+    NSTimer * timer;
+}
+
+@property (weak) IBOutlet GPUImageView *videoView;
+@property (weak) IBOutlet NSTextField *progressLabel;
+
+@property (weak) IBOutlet NSView *containerView;
+@property (weak) IBOutlet NSButton *urlButton;
+@property (weak) IBOutlet NSButton *avPlayerItemButton;
+
+@property (nonatomic, strong) AVPlayerItem *playerItem;
+@property (nonatomic, strong) AVPlayer *player;
 
 @end
 
@@ -10,9 +27,34 @@
 - (void)windowDidLoad {
     [super windowDidLoad];
 
+    self.containerView.hidden = YES;
+
+}
+
+- (IBAction)gpuImageMovieWithURLButtonAction:(id)sender {
+    [self runProcessingWithAVPlayerItem:NO];
+    [self showProcessingUI];
+}
+
+- (IBAction)gpuImageMovieWithAvplayeritemButtonAction:(id)sender {
+    [self runProcessingWithAVPlayerItem:YES];
+    [self showProcessingUI];
+}
+
+- (void)showProcessingUI {
+    self.containerView.hidden = NO;
+    self.urlButton.hidden = YES;
+    self.avPlayerItemButton.hidden = YES;
+}
+
+- (void)runProcessingWithAVPlayerItem:(BOOL)withAVPlayerItem {
     NSURL *sampleURL = [[NSBundle mainBundle] URLForResource:@"sample_iPod" withExtension:@"m4v"];
     
-    movieFile = [[GPUImageMovie alloc] initWithURL:sampleURL];
+    self.playerItem = [[AVPlayerItem alloc] initWithURL:sampleURL];
+    self.player = [AVPlayer playerWithPlayerItem:self.playerItem];
+    
+    //movieFile = [[GPUImageMovie alloc] initWithURL:sampleURL];
+    movieFile = [[GPUImageMovie alloc] initWithPlayerItem:self.playerItem];
     movieFile.runBenchmark = YES;
     movieFile.playAtActualSpeed = NO;
     filter = [[GPUImagePixellateFilter alloc] init];
@@ -55,8 +97,8 @@
             self.progressLabel.stringValue = @"100%";
         });
     }];
-
-
+    
+    [self.player play];
 }
 
 - (void)retrievingProgress
