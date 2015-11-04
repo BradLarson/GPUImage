@@ -1,12 +1,8 @@
 #import "GPUImageMovie.h"
 #import "GPUImageMovieWriter.h"
 #import "GPUImageFilter.h"
+#import "GPUImageColorConversion.h"
 
-#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
-#import "GPUImageVideoCamera.h"
-#else
-#warning Missing import for OSX
-#endif
 
 @interface GPUImageMovie () <AVPlayerItemOutputPullDelegate>
 {
@@ -105,13 +101,9 @@
         runSynchronouslyOnVideoProcessingQueue(^{
             [GPUImageContext useImageProcessingContext];
 
-#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
             _preferredConversion = kColorConversion709;
             isFullYUVRange       = YES;
             yuvConversionProgram = [[GPUImageContext sharedImageProcessingContext] programForVertexShaderString:kGPUImageVertexShaderString fragmentShaderString:kGPUImageYUVFullRangeConversionForLAFragmentShaderString];
-#else
-#warning Color conversions are undefined on OSX
-#endif
 
             if (!yuvConversionProgram.initialized)
             {
@@ -509,7 +501,6 @@
     int bufferHeight = (int) CVPixelBufferGetHeight(movieFrame);
     int bufferWidth = (int) CVPixelBufferGetWidth(movieFrame);
 
-#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
     CFTypeRef colorAttachments = CVBufferGetAttachment(movieFrame, kCVImageBufferYCbCrMatrixKey, NULL);
     if (colorAttachments != NULL)
     {
@@ -541,9 +532,6 @@
         }
 
     }
-#else
-#warning Color conversions are undefined on OSX
-#endif
     
     CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
 
@@ -579,7 +567,7 @@
 #if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
                 err = CVOpenGLESTextureCacheCreateTextureFromImage(kCFAllocatorDefault, [[GPUImageContext sharedImageProcessingContext] coreVideoTextureCache], movieFrame, NULL, GL_TEXTURE_2D, GL_LUMINANCE, bufferWidth, bufferHeight, GL_LUMINANCE, GL_UNSIGNED_BYTE, 0, &luminanceTextureRef);
 #else
-#warning Missing OSX implementation
+                err = CVOpenGLTextureCacheCreateTextureFromImage(kCFAllocatorDefault, [[GPUImageContext sharedImageProcessingContext] coreVideoTextureCache], movieFrame, NULL, &luminanceTextureRef);
 #endif
             }
             else
@@ -587,7 +575,7 @@
 #if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
                 err = CVOpenGLESTextureCacheCreateTextureFromImage(kCFAllocatorDefault, [[GPUImageContext sharedImageProcessingContext] coreVideoTextureCache], movieFrame, NULL, GL_TEXTURE_2D, GL_LUMINANCE, bufferWidth, bufferHeight, GL_LUMINANCE, GL_UNSIGNED_BYTE, 0, &luminanceTextureRef);
 #else
-#warning Missing OSX implementation
+                err = CVOpenGLTextureCacheCreateTextureFromImage(kCFAllocatorDefault, [[GPUImageContext sharedImageProcessingContext] coreVideoTextureCache], movieFrame, NULL, &luminanceTextureRef);
 #endif
             }
             if (err)
@@ -611,7 +599,7 @@
 #if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
                 err = CVOpenGLESTextureCacheCreateTextureFromImage(kCFAllocatorDefault, [[GPUImageContext sharedImageProcessingContext] coreVideoTextureCache], movieFrame, NULL, GL_TEXTURE_2D, GL_LUMINANCE_ALPHA, bufferWidth/2, bufferHeight/2, GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE, 1, &chrominanceTextureRef);
 #else
-#warning Missing OSX implementation
+                err = CVOpenGLTextureCacheCreateTextureFromImage(kCFAllocatorDefault, [[GPUImageContext sharedImageProcessingContext] coreVideoTextureCache], movieFrame, NULL, &chrominanceTextureRef);
 #endif
             }
             else
@@ -619,7 +607,7 @@
 #if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
                 err = CVOpenGLESTextureCacheCreateTextureFromImage(kCFAllocatorDefault, [[GPUImageContext sharedImageProcessingContext] coreVideoTextureCache], movieFrame, NULL, GL_TEXTURE_2D, GL_LUMINANCE_ALPHA, bufferWidth/2, bufferHeight/2, GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE, 1, &chrominanceTextureRef);
 #else
-#warning Missing OSX implementation
+                err = CVOpenGLTextureCacheCreateTextureFromImage(kCFAllocatorDefault, [[GPUImageContext sharedImageProcessingContext] coreVideoTextureCache], movieFrame, NULL, &chrominanceTextureRef);
 #endif
             }
             if (err)
