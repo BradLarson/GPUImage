@@ -3,13 +3,7 @@
 #import <CoreMedia/CoreMedia.h>
 #import "GPUImageContext.h"
 #import "GPUImageOutput.h"
-
-extern GLfloat *kColorConversion601;
-extern GLfloat *kColorConversion601FullRange;
-extern GLfloat *kColorConversion709;
-extern NSString *const kGPUImageYUVVideoRangeConversionForRGFragmentShaderString;
-extern NSString *const kGPUImageYUVFullRangeConversionForLAFragmentShaderString;
-extern NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString;
+#import "GPUImageColorConversion.h"
 
 //Optionally override the YUV to RGB matrices
 void setColorConversion601( GLfloat conversionMatrix[9] );
