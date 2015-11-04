@@ -265,19 +265,20 @@
 
     if (synchronizedMovieWriter != nil)
     {
-#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
         [synchronizedMovieWriter setVideoInputReadyCallback:^{
-            return [weakSelf readNextVideoFrameFromOutput:readerVideoTrackOutput];
+            BOOL success = [weakSelf readNextVideoFrameFromOutput:readerVideoTrackOutput];
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+            return success;
+#endif
         }];
 
         [synchronizedMovieWriter setAudioInputReadyCallback:^{
-            return [weakSelf readNextAudioSampleFromOutput:readerAudioTrackOutput];
+            BOOL success = [weakSelf readNextAudioSampleFromOutput:readerAudioTrackOutput];
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+            return success;
+#endif
         }];
         
-#else
-#warning Missing OSX implementation
-#endif
-
         [synchronizedMovieWriter enableSynchronizationCallbacks];
 
     }
@@ -320,8 +321,17 @@
         [displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];
         [displayLink setPaused:YES];
 #else
-#warning Missing OSX implementation
         // Suggested implementation: use CVDisplayLink http://stackoverflow.com/questions/14158743/alternative-of-cadisplaylink-for-mac-os-x
+        CGDirectDisplayID   displayID = CGMainDisplayID();
+        CVReturn            error = kCVReturnSuccess;
+        error = CVDisplayLinkCreateWithCGDisplay(displayID, &displayLink);
+        if (error)
+        {
+            NSLog(@"DisplayLink created with error:%d", error);
+            displayLink = NULL;
+        }
+        CVDisplayLinkSetOutputCallback(displayLink, renderCallback, (__bridge void *)self);
+        CVDisplayLinkStop(displayLink);
 #endif
 
         dispatch_queue_t videoProcessingQueue = [GPUImageContext sharedContextQueue];
@@ -346,9 +356,7 @@
 	// Restart display link.
 	[displayLink setPaused:NO];
 #else
-#warning Missing OSX implementation
-    // Probably here will be something like this
-    //CVDisplayLinkStop(displayLink);
+    CVDisplayLinkStart(displayLink);
 #endif
 }
 
@@ -365,19 +373,44 @@
 
 	CMTime outputItemTime = [playerItemOutput itemTimeForHostTime:nextVSync];
 
-	if ([playerItemOutput hasNewPixelBufferForItemTime:outputItemTime]) {
+    [self processPixelBufferAtTime:outputItemTime];
+
+}
+#else
+static CVReturn renderCallback(CVDisplayLinkRef displayLink,
+                               const CVTimeStamp *inNow,
+                               const CVTimeStamp *inOutputTime,
+                               CVOptionFlags flagsIn,
+                               CVOptionFlags *flagsOut,
+                               void *displayLinkContext)
+{
+    // Sample code taken from here https://developer.apple.com/library/mac/samplecode/AVGreenScreenPlayer/Listings/AVGreenScreenPlayer_GSPlayerView_m.html
+    
+    GPUImageMovie *self = (__bridge GPUImageMovie *)displayLinkContext;
+    AVPlayerItemVideoOutput *playerItemOutput = self->playerItemOutput;
+    
+    
+    // The displayLink calls back at every vsync (screen refresh)
+    // Compute itemTime for the next vsync
+    CMTime outputItemTime = [playerItemOutput itemTimeForCVTimeStamp:*inOutputTime];
+    
+    [self processPixelBufferAtTime:outputItemTime];
+    
+    return kCVReturnSuccess;
+}
+#endif
+
+- (void)processPixelBufferAtTime:(CMTime)outputItemTime {
+    if ([playerItemOutput hasNewPixelBufferForItemTime:outputItemTime]) {
         __unsafe_unretained GPUImageMovie *weakSelf = self;
-		CVPixelBufferRef pixelBuffer = [playerItemOutput copyPixelBufferForItemTime:outputItemTime itemTimeForDisplay:NULL];
+        CVPixelBufferRef pixelBuffer = [playerItemOutput copyPixelBufferForItemTime:outputItemTime itemTimeForDisplay:NULL];
         if( pixelBuffer )
             runSynchronouslyOnVideoProcessingQueue(^{
                 [weakSelf processMovieFrame:pixelBuffer withSampleTime:outputItemTime];
                 CFRelease(pixelBuffer);
             });
-	}
+    }
 }
-#else
-#warning Missing OSX implementation
-#endif
 
 - (BOOL)readNextVideoFrameFromOutput:(AVAssetReaderOutput *)readerVideoTrackOutput;
 {
@@ -740,7 +773,7 @@
 #if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
     [displayLink setPaused:YES];
 #else
-#warning Missing OSX implementation
+    CVDisplayLinkStop(displayLink);
 #endif
 
     for (id<GPUImageInput> currentTarget in targets)
@@ -754,7 +787,9 @@
         [synchronizedMovieWriter setVideoInputReadyCallback:^{return NO;}];
         [synchronizedMovieWriter setAudioInputReadyCallback:^{return NO;}];
 #else
-#warning Missing OSX implementation
+        // I'm not sure about this, meybe setting a nil will be more appropriate then an empty block
+        [synchronizedMovieWriter setVideoInputReadyCallback:^{}];
+        [synchronizedMovieWriter setAudioInputReadyCallback:^{}];
 #endif
     }
     
@@ -764,7 +799,8 @@
         [displayLink invalidate]; // remove from all run loops
         displayLink = nil;
 #else
-#warning Missing OSX implementation
+        CVDisplayLinkStop(displayLink);
+        displayLink = NULL;
 #endif
     }
 
