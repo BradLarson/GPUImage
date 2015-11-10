@@ -2,13 +2,13 @@
 
 <div style="float: right"><img src="http://sunsetlakesoftware.com/sites/default/files/GPUImageLogo.png" /></div>
 
-<a href="https://zenodo.org/record/10416#.U5YGaF773Md"><img src="https://zenodo.org/badge/doi/10.5281/zenodo.10416.png" /></a>
+<a href="https://zenodo.org/record/10416#.U5YGaF773Md"><img src="https://zenodo.org/badge/doi/10.5281/zenodo.10416.svg" /></a>
 
 Brad Larson
 
 http://www.sunsetlakesoftware.com
 
-[@bradlarson](http://twitter.com/bradlarson)
+[@bradlarson](https://twitter.com/bradlarson)
 
 contact@sunsetlakesoftware.com
 
@@ -96,7 +96,7 @@ You then need to add a new Copy Files build phase, set the Destination to Framew
 
 ### Documentation ###
 
-Documentation is generated from header comments using appledoc. To build the documentation, switch to the "Documentation" scheme in Xcode. You should ensure that "APPLEDOC_PATH" (a User-Defined build setting) points to an appledoc binary, available on <a href="https://github.com/tomaz/appledoc">Github</a> or through <a href="https://github.com/mxcl/homebrew">Homebrew</a>. It will also build and install a .docset file, which you can view with your favorite documentation tool.
+Documentation is generated from header comments using appledoc. To build the documentation, switch to the "Documentation" scheme in Xcode. You should ensure that "APPLEDOC_PATH" (a User-Defined build setting) points to an appledoc binary, available on <a href="https://github.com/tomaz/appledoc">Github</a> or through <a href="https://github.com/Homebrew/homebrew">Homebrew</a>. It will also build and install a .docset file, which you can view with your favorite documentation tool.
 
 ## Performing common tasks ##
 
