@@ -294,6 +294,9 @@ There are currently 125 built-in filters, divided into the following categories:
 - **GPUImageHueFilter**: Adjusts the hue of an image
   - *hue*: The hue angle, in degrees. 90 degrees by default
 
+- **GPUImageVibranceFilter**: Adjusts the vibrance of an image
+  - *vibrance*: The vibrance adjustment to apply, using 0.0 as the default, and a suggested min/max of around -1.2 and 1.2, respectively.
+
 - **GPUImageWhiteBalanceFilter**: Adjusts the white balance of an image.
   - *temperature*: The temperature to adjust the image by, in ºK. A value of 4000 is very cool and 7000 very warm. The default value is 5000. Note that the scale between 4000 and 5000 is nearly as visually significant as that between 5000 and 7000.
   - *tint*: The tint to adjust the image by. A value of -200 is *very* green and 200 is *very* pink. The default value is 0.  
@@ -308,6 +311,12 @@ There are currently 125 built-in filters, divided into the following categories:
   - *shadows*: Increase to lighten shadows, from 0.0 to 1.0, with 0.0 as the default.
   - *highlights*: Decrease to darken highlights, from 1.0 to 0.0, with 1.0 as the default.
 
+- **GPUImageHighlightShadowTintFilter**: Allows you to tint the shadows and highlights of an image independently using a color and intensity
+  - *shadowTintColor*: Shadow tint RGB color (GPUVector4). Default: `{1.0f, 0.0f, 0.0f, 1.0f}` (red).
+  - *highlightTintColor*: Highlight tint RGB color (GPUVector4). Default: `{0.0f, 0.0f, 1.0f, 1.0f}` (blue).
+  - *shadowTintIntensity*: Shadow tint intensity, from 0.0 to 1.0. Default: 0.0
+  - *highlightTintIntensity*: Highlight tint intensity, from 0.0 to 1.0, with 0.0 as the default.
+
 - **GPUImageLookupFilter**: Uses an RGB color lookup image to remap the colors in an image. First, use your favourite photo editing application to apply a filter to lookup.png from GPUImage/framework/Resources. For this to work properly each pixel color must not depend on other pixels (e.g. blur will not work). If you need a more complex filter you can create as many lookup tables as required. Once ready, use your new lookup.png file as a second input for GPUImageLookupFilter.
 
 - **GPUImageAmatorkaFilter**: A photo filter based on a Photoshop action by Amatorka: http://amatorka.deviantart.com/art/Amatorka-Action-2-121069631 . If you want to use this effect you have to add lookup_amatorka.png from the GPUImage Resources folder to your application bundle.
@@ -316,6 +325,14 @@ There are currently 125 built-in filters, divided into the following categories:
 
 - **GPUImageSoftEleganceFilter**: Another lookup-based color remapping filter. If you want to use this effect you have to add lookup_soft_elegance_1.png and lookup_soft_elegance_2.png from the GPUImage Resources folder to your application bundle.
 
+- **GPUImageSkinToneFilter**: A skin-tone adjustment filter that affects a unique range of light skin-tone colors and adjusts the pink/green or pink/orange range accordingly. Default values are targetted at fair caucasian skin, but can be adjusted as required.
+  - *skinToneAdjust*: Amount to adjust skin tone. Default: 0.0, suggested min/max: -0.3 and 0.3 respectively.
+  - *skinHue*: Skin hue to be detected. Default: 0.05 (fair caucasian to reddish skin).
+  - *skinHueThreshold*: Amount of variance in skin hue. Default: 40.0.
+  - *maxHueShift*: Maximum amount of hue shifting allowed. Default: 0.25.
+  - *maxSaturationShift* = Maximum amount of saturation to be shifted (when using orange). Default: 0.4.
+  - *upperSkinToneColor* = `GPUImageSkinToneUpperColorGreen` or `GPUImageSkinToneUpperColorOrange`
+    
 - **GPUImageColorInvertFilter**: Inverts the colors of an image
 
 - **GPUImageGrayscaleFilter**: Converts an image to grayscale (a slightly faster implementation of the saturation filter, without the ability to vary the color contribution)
