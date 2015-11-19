@@ -9,7 +9,7 @@ class FilterDisplayViewController: UIViewController, UISplitViewControllerDelega
     let videoCamera: GPUImageVideoCamera
     var blendImage: GPUImagePicture?
 
-    required init(coder aDecoder: NSCoder!)
+    required init(coder aDecoder: NSCoder)
     {
         videoCamera = GPUImageVideoCamera(sessionPreset: AVCaptureSessionPreset640x480, cameraPosition: .Back)
         videoCamera.outputImageOrientation = .Portrait;
@@ -31,17 +31,16 @@ class FilterDisplayViewController: UIViewController, UISplitViewControllerDelega
             if let view = self.filterView {
                 switch currentFilterConfiguration.filterOperationType {
                 case .SingleInput:
-                    videoCamera.addTarget((currentFilterConfiguration.filter as GPUImageInput))
+                    videoCamera.addTarget((currentFilterConfiguration.filter as! GPUImageInput))
                     currentFilterConfiguration.filter.addTarget(view)
                 case .Blend:
-                    videoCamera.addTarget((currentFilterConfiguration.filter as GPUImageInput))
+                    videoCamera.addTarget((currentFilterConfiguration.filter as! GPUImageInput))
                     let inputImage = UIImage(named:"WID-small.jpg")
                     self.blendImage = GPUImagePicture(image: inputImage)
-                    self.blendImage?.addTarget((currentFilterConfiguration.filter as GPUImageInput))
+                    self.blendImage?.addTarget((currentFilterConfiguration.filter as! GPUImageInput))
                     self.blendImage?.processImage()
                     currentFilterConfiguration.filter.addTarget(view)
-                case .Custom:
-                    let setupFunction = currentFilterConfiguration.customFilterSetupFunction!
+                case let .Custom(filterSetupFunction:setupFunction):
                     let inputToFunction:(GPUImageOutput, GPUImageOutput?) = setupFunction(camera:videoCamera, outputView:view) // Type inference falls down, for now needs this hard cast
                     currentFilterConfiguration.configureCustomFilter(inputToFunction)
                 }

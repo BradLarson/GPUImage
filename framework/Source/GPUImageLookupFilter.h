@@ -1,6 +1,9 @@
 #import "GPUImageTwoInputFilter.h"
 
 @interface GPUImageLookupFilter : GPUImageTwoInputFilter
+{
+    GLint intensityUniform;
+}
 
 // How To Use:
 // 1) Use your favourite photo editing application to apply a filter to lookup.png from GPUImage/framework/Resources.
@@ -24,5 +27,8 @@
 //        }
 //    }
 //}
+
+// Opacity/intensity of lookup filter ranges from 0.0 to 1.0, with 1.0 as the normal setting
+@property(readwrite, nonatomic) CGFloat intensity;
 
 @end
