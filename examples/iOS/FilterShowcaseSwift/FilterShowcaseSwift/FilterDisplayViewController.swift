@@ -14,7 +14,7 @@ class FilterDisplayViewController: UIViewController, UISplitViewControllerDelega
         videoCamera = GPUImageVideoCamera(sessionPreset: AVCaptureSessionPreset640x480, cameraPosition: .Back)
         videoCamera.outputImageOrientation = .Portrait;
 
-        super.init(coder: aDecoder)
+        super.init(coder: aDecoder)!
     }
     
     var filterOperation: FilterOperationInterface? {
@@ -69,7 +69,7 @@ class FilterDisplayViewController: UIViewController, UISplitViewControllerDelega
     @IBAction func updateSliderValue() {
         if let currentFilterConfiguration = self.filterOperation {
             switch (currentFilterConfiguration.sliderConfiguration) {
-            case let .Enabled(minimumValue, maximumValue, initialValue):
+            case .Enabled(_, _, _):
                 currentFilterConfiguration.updateBasedOnSliderValue(CGFloat(self.filterSlider!.value)) // If the UISlider isn't wired up, I want this to throw a runtime exception
             case .Disabled:
                 break
