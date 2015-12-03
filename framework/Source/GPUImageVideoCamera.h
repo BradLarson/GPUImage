@@ -43,6 +43,9 @@ void setColorConversion709( GLfloat conversionMatrix[9] );
     __unsafe_unretained id<GPUImageVideoCameraDelegate> _delegate;
 }
 
+/// Whether or not the underlying AVCaptureSession is running
+@property(readonly, nonatomic) BOOL isRunning;
+
 /// The AVCaptureSession used to capture from the camera
 @property(readonly, retain, nonatomic) AVCaptureSession *captureSession;
 

@@ -330,6 +330,11 @@ void setColorConversion709( GLfloat conversionMatrix[9] )
 #pragma mark -
 #pragma mark Manage the camera video stream
 
+- (BOOL)isRunning;
+{
+    return [_captureSession isRunning];
+}
+
 - (void)startCameraCapture;
 {
     if (![_captureSession isRunning])
