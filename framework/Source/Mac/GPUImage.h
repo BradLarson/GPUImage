@@ -154,6 +154,8 @@
 #import <GPUImage/GPUImageWeakPixelInclusionFilter.h>
 #import <GPUImage/GPUImageNonMaximumSuppressionFilter.h>
 #import <GPUImage/GPUImageSourceOverBlendFilter.h>
+#import <GPUImage/GPUImageColourFASTFeatureDetector.h>
+#import <GPUImage/GPUImageColourFASTSamplingOperation.h>
 
 // Outputs
 #import <GPUImage/GPUImageView.h>

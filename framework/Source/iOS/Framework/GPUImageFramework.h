@@ -170,3 +170,5 @@ FOUNDATION_EXPORT const unsigned char GPUImageFrameworkVersionString[];
 #import <GPUImage/GPUImageWeakPixelInclusionFilter.h>
 #import <GPUImage/GPUImageFASTCornerDetectionFilter.h>
 #import <GPUImage/GPUImageMovieComposition.h>
+#import <GPUImage/GPUImageColourFASTFeatureDetector.h>
+#import <GPUImage/GPUImageColourFASTSamplingOperation.h>

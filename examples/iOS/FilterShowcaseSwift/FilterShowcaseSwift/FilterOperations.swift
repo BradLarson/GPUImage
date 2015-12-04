@@ -578,6 +578,13 @@ let filterOperations: Array<FilterOperationInterface> = [
             return (filter, nil)
         })
     ),
+    FilterOperation <GPUImageColourFASTFeatureDetector>(
+        listName:"ColourFAST feature detector",
+        titleName:"ColourFAST Feature Detector",
+        sliderConfiguration:.Disabled,
+        sliderUpdateCallback:nil,
+        filterOperationType:.SingleInput
+    ),
     FilterOperation <GPUImageBuffer>(
         listName:"Buffer",
         titleName:"Buffer",
