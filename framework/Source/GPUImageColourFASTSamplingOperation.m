@@ -130,10 +130,9 @@ NSString *const kGPUImageColourFASTSamplingFragmentShaderString = SHADER_STRING
      float avgY = dot(absoluteDifference, dirY) / componentLength;
      float angle = atan(avgY, avgX);
      
-     vec3 normalizedColorComparison = (colorComparison + 1.0) * 0.5;
+     vec3 normalizedColorComparison = ((colorComparison * 3.0) + 1.0) * 0.5;
      
      gl_FragColor = vec4(normalizedColorComparison, (angle+PI)/PITwo);
-//     gl_FragColor = vec4(normalizedColorComparison, 1.0);
  }
 );
 #endif
