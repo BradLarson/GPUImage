@@ -1016,6 +1016,17 @@ let filterOperations: Array<FilterOperationInterface> = [
         },
         filterOperationType:.SingleInput
     ),
+    FilterOperation <GPUImageColorLocalBinaryPatternFilter>(
+        listName:"Local binary pattern (color)",
+        titleName:"Local Binary Pattern (color)",
+        sliderConfiguration:.Enabled(minimumValue:1.0, maximumValue:5.0, initialValue:1.0),
+        sliderUpdateCallback: {(filter, sliderValue) in
+            let filterSize = filter.outputFrameSize()
+            filter.texelWidth = (sliderValue / filterSize.width)
+            filter.texelHeight = (sliderValue / filterSize.height)
+        },
+        filterOperationType:.SingleInput
+    ),
     FilterOperation <GPUImageDissolveBlendFilter>(
         listName:"Dissolve blend",
         titleName:"Dissolve Blend",

@@ -325,6 +325,8 @@
 		BCF8689E1728862100912E34 /* GPUImageOpacityFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = BCF8689C1728861F00912E34 /* GPUImageOpacityFilter.m */; };
 		BCF868A11728866400912E34 /* GPUImageAlphaBlendFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = BCF8689F1728865500912E34 /* GPUImageAlphaBlendFilter.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BCF868A21728866400912E34 /* GPUImageAlphaBlendFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = BCF868A01728865D00912E34 /* GPUImageAlphaBlendFilter.m */; };
+		BCFC5F611C18BDBA00C7F43B /* GPUImageColorLocalBinaryPatternFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = BCFC5F5F1C18BDBA00C7F43B /* GPUImageColorLocalBinaryPatternFilter.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		BCFC5F621C18BDBA00C7F43B /* GPUImageColorLocalBinaryPatternFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = BCFC5F601C18BDBA00C7F43B /* GPUImageColorLocalBinaryPatternFilter.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -652,6 +654,8 @@
 		BCF8689C1728861F00912E34 /* GPUImageOpacityFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GPUImageOpacityFilter.m; path = Source/GPUImageOpacityFilter.m; sourceTree = SOURCE_ROOT; };
 		BCF8689F1728865500912E34 /* GPUImageAlphaBlendFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GPUImageAlphaBlendFilter.h; path = Source/GPUImageAlphaBlendFilter.h; sourceTree = SOURCE_ROOT; };
 		BCF868A01728865D00912E34 /* GPUImageAlphaBlendFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GPUImageAlphaBlendFilter.m; path = Source/GPUImageAlphaBlendFilter.m; sourceTree = SOURCE_ROOT; };
+		BCFC5F5F1C18BDBA00C7F43B /* GPUImageColorLocalBinaryPatternFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GPUImageColorLocalBinaryPatternFilter.h; path = Source/GPUImageColorLocalBinaryPatternFilter.h; sourceTree = SOURCE_ROOT; };
+		BCFC5F601C18BDBA00C7F43B /* GPUImageColorLocalBinaryPatternFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GPUImageColorLocalBinaryPatternFilter.m; path = Source/GPUImageColorLocalBinaryPatternFilter.m; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1029,6 +1033,8 @@
 				BC6C55451730BDCF00EB222D /* GPUImageLanczosResamplingFilter.m */,
 				BCA20BB917471C3D0097C84A /* GPUImageLocalBinaryPatternFilter.h */,
 				BCA20BBA17471C3F0097C84A /* GPUImageLocalBinaryPatternFilter.m */,
+				BCFC5F5F1C18BDBA00C7F43B /* GPUImageColorLocalBinaryPatternFilter.h */,
+				BCFC5F601C18BDBA00C7F43B /* GPUImageColorLocalBinaryPatternFilter.m */,
 				BC4DFD011C10D2FD0095A016 /* GPUImageColourFASTFeatureDetector.h */,
 				BC4DFD021C10D2FD0095A016 /* GPUImageColourFASTFeatureDetector.m */,
 				BC4DFD051C10D4860095A016 /* GPUImageColourFASTSamplingOperation.h */,
@@ -1108,6 +1114,7 @@
 				A87E5E12177648F3007FD5B1 /* GPUImageRawDataOutput.h in Headers */,
 				BCF40F1217247D68005AE36A /* GPUImageContext.h in Headers */,
 				BCF40F1617247FD8005AE36A /* GLProgram.h in Headers */,
+				BCFC5F611C18BDBA00C7F43B /* GPUImageColorLocalBinaryPatternFilter.h in Headers */,
 				BCF40F1B1724829B005AE36A /* GPUImageOutput.h in Headers */,
 				BCF40F2017248322005AE36A /* GPUImageFilter.h in Headers */,
 				BCF40F2517248836005AE36A /* GPUImageView.h in Headers */,
@@ -1431,6 +1438,7 @@
 				BCE817BF173608690071D084 /* GPUImageThresholdEdgeDetectionFilter.m in Sources */,
 				BCE817C31736092A0071D084 /* GPUImageXYDerivativeFilter.m in Sources */,
 				BCE817CD17360BFD0071D084 /* GPUImageDirectionalNonMaximumSuppressionFilter.m in Sources */,
+				BCFC5F621C18BDBA00C7F43B /* GPUImageColorLocalBinaryPatternFilter.m in Sources */,
 				BCE817CF17360BFD0071D084 /* GPUImageDirectionalSobelEdgeDetectionFilter.m in Sources */,
 				BCE817D317360C6A0071D084 /* GPUImageWeakPixelInclusionFilter.m in Sources */,
 				BCE2EF8917459D5B00C0628C /* GPUImageHarrisCornerDetectionFilter.m in Sources */,

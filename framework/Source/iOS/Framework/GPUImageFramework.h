@@ -137,6 +137,7 @@ FOUNDATION_EXPORT const unsigned char GPUImageFrameworkVersionString[];
 #import <GPUImage/GPUImageDivideBlendFilter.h>
 #import <GPUImage/GPUImagePolkaDotFilter.h>
 #import <GPUImage/GPUImageLocalBinaryPatternFilter.h>
+#import <GPUImage/GPUImageColorLocalBinaryPatternFilter.h>
 #import <GPUImage/GPUImageLanczosResamplingFilter.h>
 #import <GPUImage/GPUImageAverageColor.h>
 #import <GPUImage/GPUImageSolidColorGenerator.h>

@@ -130,6 +130,7 @@
 #import "GPUImageDivideBlendFilter.h"
 #import "GPUImagePolkaDotFilter.h"
 #import "GPUImageLocalBinaryPatternFilter.h"
+#import "GPUImageColorLocalBinaryPatternFilter.h"
 #import "GPUImageLanczosResamplingFilter.h"
 #import "GPUImageAverageColor.h"
 #import "GPUImageSolidColorGenerator.h"

@@ -71,7 +71,7 @@ NSString *const kGPUImageColourFASTSamplingFragmentShaderString = SHADER_STRING
      vec3 pointGColor = texture2D(inputImageTexture, pointGTextureCoordinate).rgb;
      vec3 pointHColor = texture2D(inputImageTexture, pointHTextureCoordinate).rgb;
 
-     vec3 colorComparison = (pointAColor + pointBColor + pointCColor + pointDColor + pointEColor + pointFColor + pointGColor + pointHColor) * 0.125 - centerColor;
+     vec3 colorComparison = ((pointAColor + pointBColor + pointCColor + pointDColor + pointEColor + pointFColor + pointGColor + pointHColor) * 0.125) - centerColor;
 
      // Direction calculation drawn from Appendix B of Seth Hall's Ph.D. thesis
      
@@ -118,7 +118,7 @@ NSString *const kGPUImageColourFASTSamplingFragmentShaderString = SHADER_STRING
      vec3 pointGColor = texture2D(inputImageTexture, pointGTextureCoordinate).rgb;
      vec3 pointHColor = texture2D(inputImageTexture, pointHTextureCoordinate).rgb;
      
-     vec3 colorComparison = (pointAColor + pointBColor + pointCColor + pointDColor + pointEColor + pointFColor + pointGColor + pointHColor) * 0.125 - centerColor;
+     vec3 colorComparison = ((pointAColor + pointBColor + pointCColor + pointDColor + pointEColor + pointFColor + pointGColor + pointHColor) * 0.125) - centerColor;
      
      // Direction calculation drawn from Appendix B of Seth Hall's Ph.D. thesis
      
@@ -130,7 +130,7 @@ NSString *const kGPUImageColourFASTSamplingFragmentShaderString = SHADER_STRING
      float avgY = dot(absoluteDifference, dirY) / componentLength;
      float angle = atan(avgY, avgX);
      
-     vec3 normalizedColorComparison = ((colorComparison * 3.0) + 1.0) * 0.5;
+     vec3 normalizedColorComparison = (colorComparison + 1.0) * 0.5;
      
      gl_FragColor = vec4(normalizedColorComparison, (angle+PI)/PITwo);
  }
