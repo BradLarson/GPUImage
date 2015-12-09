@@ -91,6 +91,7 @@
 #import <GPUImage/GPUImageLaplacianFilter.h>
 #import <GPUImage/GPUImageLanczosResamplingFilter.h>
 #import <GPUImage/GPUImageThreeInputFilter.h>
+#import <GPUImage/GPUImageFourInputFilter.h>
 #import <GPUImage/GPUImageColorInvertFilter.h>
 #import <GPUImage/GPUImageHistogramFilter.h>
 #import <GPUImage/GPUImageHistogramGenerator.h>

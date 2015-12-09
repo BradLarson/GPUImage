@@ -168,6 +168,7 @@ FOUNDATION_EXPORT const unsigned char GPUImageFrameworkVersionString[];
 #import <GPUImage/GPUImageDirectionalSobelEdgeDetectionFilter.h>
 #import <GPUImage/GPUImageSingleComponentGaussianBlurFilter.h>
 #import <GPUImage/GPUImageThreeInputFilter.h>
+#import <GPUImage/GPUImageFourInputFilter.h>
 #import <GPUImage/GPUImageWeakPixelInclusionFilter.h>
 #import <GPUImage/GPUImageFASTCornerDetectionFilter.h>
 #import <GPUImage/GPUImageMovieComposition.h>

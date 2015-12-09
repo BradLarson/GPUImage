@@ -161,6 +161,7 @@
 #import "GPUImageDirectionalSobelEdgeDetectionFilter.h"
 #import "GPUImageSingleComponentGaussianBlurFilter.h"
 #import "GPUImageThreeInputFilter.h"
+#import "GPUImageFourInputFilter.h"
 #import "GPUImageWeakPixelInclusionFilter.h"
 #import "GPUImageColorConversion.h"
 #import "GPUImageColourFASTFeatureDetector.h"
