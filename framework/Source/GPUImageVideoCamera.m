@@ -455,7 +455,7 @@ NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = SHAD
 {
     NSError *error;
     AVCaptureDeviceInput *newVideoInput;
-    AVCaptureDevicePosition currentCameraPosition = self.cameraPosition;
+    AVCaptureDevicePosition currentCameraPosition = [[videoInput device] position];
     
     if (currentCameraPosition == AVCaptureDevicePositionBack)
     {
@@ -468,13 +468,13 @@ NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = SHAD
     
     AVCaptureDevice *backFacingCamera = nil;
     NSArray *devices = [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];
-	for (AVCaptureDevice *device in devices) 
-	{
-		if ([device position] == currentCameraPosition)
-		{
-			backFacingCamera = device;
-		}
-	}
+    for (AVCaptureDevice *device in devices)
+    {
+        if ([device position] == currentCameraPosition)
+        {
+            backFacingCamera = device;
+        }
+    }
     newVideoInput = [[AVCaptureDeviceInput alloc] initWithDevice:backFacingCamera error:&error];
     
     if (newVideoInput != nil)
@@ -498,6 +498,26 @@ NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = SHAD
     
     _inputCamera = backFacingCamera;
     [self setOutputImageOrientation:_outputImageOrientation];
+}
+
+- (void)configSessionPreset:(AVCaptureDevicePosition)currentPosition {
+    if (currentPosition == AVCaptureDevicePositionBack) {
+        if ([UIScreen mainScreen].bounds.size.height <= 480) {
+            if ([self.captureSession canSetSessionPreset:AVCaptureSessionPreset1280x720]) {
+                [self setCaptureSessionPreset:AVCaptureSessionPreset1280x720];
+            } else if ([self.captureSession canSetSessionPreset:AVCaptureSessionPreset1920x1080]) {
+                [self setCaptureSessionPreset:AVCaptureSessionPreset1920x1080];
+            }
+        } else {
+            if ([self.captureSession canSetSessionPreset:AVCaptureSessionPreset1920x1080]) {
+                [self setCaptureSessionPreset:AVCaptureSessionPreset1920x1080];
+            } else {
+                [self setCaptureSessionPreset: AVCaptureSessionPresetHigh];
+            }
+        }
+    } else {
+        [self setCaptureSessionPreset:AVCaptureSessionPresetPhoto];
+    }
 }
 
 - (AVCaptureDevicePosition)cameraPosition 
@@ -1144,27 +1164,6 @@ NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = SHAD
 {
     _horizontallyMirrorRearFacingCamera = newValue;
     [self updateOrientationSendToTargets];
-}
-
-#pragma mark - private method
-- (void)configSessionPreset:(AVCaptureDevicePosition)currentPosition {
-    
-    if (currentPosition == AVCaptureDevicePositionBack) {
-        if ([UIScreen mainScreen].bounds.size.width <= 320) {
-            if ([self.captureSession canSetSessionPreset:AVCaptureSessionPreset1280x720]) {
-                [self setCaptureSessionPreset:AVCaptureSessionPreset1280x720];
-            } else
-                [self setCaptureSessionPreset:AVCaptureSessionPreset1920x1080];
-        } else {
-            if ([self.captureSession canSetSessionPreset:AVCaptureSessionPreset1920x1080]) {
-                [self setCaptureSessionPreset:AVCaptureSessionPreset1920x1080];
-            } else {
-                [self setCaptureSessionPreset: AVCaptureSessionPresetHigh];
-            }
-        }
-    } else {
-        [self setCaptureSessionPreset:AVCaptureSessionPresetPhoto];
-    }
 }
 
 @end
