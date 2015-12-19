@@ -3,13 +3,7 @@
 #import <CoreMedia/CoreMedia.h>
 #import "GPUImageContext.h"
 #import "GPUImageOutput.h"
-
-extern GLfloat *kColorConversion601;
-extern GLfloat *kColorConversion601FullRange;
-extern GLfloat *kColorConversion709;
-extern NSString *const kGPUImageYUVVideoRangeConversionForRGFragmentShaderString;
-extern NSString *const kGPUImageYUVFullRangeConversionForLAFragmentShaderString;
-extern NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString;
+#import "GPUImageColorConversion.h"
 
 //Optionally override the YUV to RGB matrices
 void setColorConversion601( GLfloat conversionMatrix[9] );
@@ -48,6 +42,9 @@ void setColorConversion709( GLfloat conversionMatrix[9] );
 
     __unsafe_unretained id<GPUImageVideoCameraDelegate> _delegate;
 }
+
+/// Whether or not the underlying AVCaptureSession is running
+@property(readonly, nonatomic) BOOL isRunning;
 
 /// The AVCaptureSession used to capture from the camera
 @property(readonly, retain, nonatomic) AVCaptureSession *captureSession;

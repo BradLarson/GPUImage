@@ -130,6 +130,7 @@
 #import "GPUImageDivideBlendFilter.h"
 #import "GPUImagePolkaDotFilter.h"
 #import "GPUImageLocalBinaryPatternFilter.h"
+#import "GPUImageColorLocalBinaryPatternFilter.h"
 #import "GPUImageLanczosResamplingFilter.h"
 #import "GPUImageAverageColor.h"
 #import "GPUImageSolidColorGenerator.h"
@@ -160,5 +161,9 @@
 #import "GPUImageDirectionalSobelEdgeDetectionFilter.h"
 #import "GPUImageSingleComponentGaussianBlurFilter.h"
 #import "GPUImageThreeInputFilter.h"
+#import "GPUImageFourInputFilter.h"
 #import "GPUImageWeakPixelInclusionFilter.h"
+#import "GPUImageColorConversion.h"
+#import "GPUImageColourFASTFeatureDetector.h"
+#import "GPUImageColourFASTSamplingOperation.h"
 
