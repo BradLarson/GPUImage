@@ -588,7 +588,7 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 	[self setHasAudioTrack:newValue audioSettings:nil];
 }
 
-- (void)setHasAudioTrack:(BOOL)newValue audioSettings:(NSDictionary *)audioOutputSettings;
+- (void)setHasAudioTrack:(BOOL)newValue audioSettings:(NSDictionary *)audioOutputSettings sourceFormatHint:(CMFormatDescriptionRef)sourceFormatHint
 {
     _hasAudioTrack = newValue;
     
@@ -630,7 +630,11 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
                                    nil];*/
         }
         
-        assetWriterAudioInput = [AVAssetWriterInput assetWriterInputWithMediaType:AVMediaTypeAudio outputSettings:audioOutputSettings];
+        if ([AVAssetWriterInput respondsToSelector:@selector(assetWriterInputWithMediaType:outputSettings:sourceFormatHint:)]) {
+            assetWriterAudioInput = [AVAssetWriterInput assetWriterInputWithMediaType:AVMediaTypeAudio outputSettings:audioOutputSettings sourceFormatHint:sourceFormatHint];
+        } else {
+            assetWriterAudioInput = [AVAssetWriterInput assetWriterInputWithMediaType:AVMediaTypeAudio outputSettings:audioOutputSettings];
+        }
         [assetWriter addInput:assetWriterAudioInput];
         assetWriterAudioInput.expectsMediaDataInRealTime = _encodingLiveVideo;
     }
@@ -640,5 +644,8 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
     }
 }
 
+- (void)setHasAudioTrack:(BOOL)hasAudioTrack audioSettings:(NSDictionary *)audioOutputSettings {
+    [self setHasAudioTrack:hasAudioTrack audioSettings:audioOutputSettings sourceFormatHint:NULL];
+}
 
 @end
