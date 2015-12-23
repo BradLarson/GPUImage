@@ -18,7 +18,7 @@ Pod::Spec.new do |s|
   
   s.osx.deployment_target = '10.6'
   s.osx.exclude_files = 'framework/Source/iOS',
-                        'framework/Source/GPUImageFilterPipeline.*',
+#                        'framework/Source/GPUImageFilterPipeline.*',
 #                        'framework/Source/GPUImageMovie.*',
                         'framework/Source/GPUImageMovieComposition.*',
                         'framework/Source/GPUImageVideoCamera.*',
