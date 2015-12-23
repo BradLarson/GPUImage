@@ -85,7 +85,11 @@
                                 CGFloat x = [[string substringWithRange:[parse rangeAtIndex:2]] floatValue];
                                 CGFloat y = [[string substringWithRange:[parse rangeAtIndex:3]] floatValue];
                                 CGPoint value = CGPointMake(x, y);
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
                                 [parsedArray addObject:[NSValue valueWithCGPoint:value]];
+#else
+                                [parsedArray addObject:[NSValue valueWithPoint:value]];
+#endif
                             } else if ([modifier isEqualToString:@"NSString"]) {
                                 // NSString modifier, one string argument
                                 stringValue = [[string substringWithRange:[parse rangeAtIndex:2]] copy];
