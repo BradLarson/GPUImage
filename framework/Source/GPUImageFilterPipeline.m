@@ -203,6 +203,7 @@
     }
 }
 
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
 - (UIImage *)currentFilteredFrame {
     return [(GPUImageOutput<GPUImageInput> *)[_filters lastObject] imageFromCurrentFramebuffer];
 }
@@ -214,5 +215,6 @@
 - (CGImageRef)newCGImageFromCurrentFilteredFrame {
     return [(GPUImageOutput<GPUImageInput> *)[_filters lastObject] newCGImageFromCurrentlyProcessedOutput];
 }
+#endif
 
 @end
