@@ -28,7 +28,10 @@
     const GLfloat *_preferredConversion;
     
     BOOL isFullYUVRange;
-
+    
+    CVPixelBufferRef _latestPixelBuffer;
+    CMTime _latestTime;
+    
     int imageBufferWidth, imageBufferHeight;
 }
 
@@ -147,6 +150,10 @@
     //    [displayLink invalidate]; // remove from all run loops
     //    displayLink = nil;
     //}
+    
+    if (_latestPixelBuffer) {
+        CFRelease(_latestPixelBuffer);
+    }
 }
 
 #pragma mark -
@@ -404,11 +411,22 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
     if ([playerItemOutput hasNewPixelBufferForItemTime:outputItemTime]) {
         __unsafe_unretained GPUImageMovie *weakSelf = self;
         CVPixelBufferRef pixelBuffer = [playerItemOutput copyPixelBufferForItemTime:outputItemTime itemTimeForDisplay:NULL];
-        if( pixelBuffer )
+        
+        _latestPixelBuffer = CVPixelBufferRetain(pixelBuffer);
+        _latestTime = outputItemTime;
+        
+        if (pixelBuffer)
             runSynchronouslyOnVideoProcessingQueue(^{
                 [weakSelf processMovieFrame:pixelBuffer withSampleTime:outputItemTime];
                 CFRelease(pixelBuffer);
             });
+    } else {
+        if (_latestPixelBuffer) {
+            __unsafe_unretained GPUImageMovie *weakSelf = self;
+            runSynchronouslyOnVideoProcessingQueue(^{
+                [weakSelf processMovieFrame:_latestPixelBuffer withSampleTime:_latestTime];
+            });
+        }
     }
 }
 
