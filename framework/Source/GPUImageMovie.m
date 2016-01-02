@@ -424,7 +424,8 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
         if (_latestPixelBuffer) {
             __unsafe_unretained GPUImageMovie *weakSelf = self;
             runSynchronouslyOnVideoProcessingQueue(^{
-                [weakSelf processMovieFrame:_latestPixelBuffer withSampleTime:_latestTime];
+                [weakSelf processMovieFrame:weakSelf->_latestPixelBuffer withSampleTime:_latestTime];
+                CFRelease(weakSelf->_latestPixelBuffer); weakSelf->_latestPixelBuffer = NULL;
             });
         }
     }
