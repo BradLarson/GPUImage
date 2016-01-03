@@ -412,20 +412,24 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
         __unsafe_unretained GPUImageMovie *weakSelf = self;
         CVPixelBufferRef pixelBuffer = [playerItemOutput copyPixelBufferForItemTime:outputItemTime itemTimeForDisplay:NULL];
         
-        _latestPixelBuffer = CVPixelBufferRetain(pixelBuffer);
-        _latestTime = outputItemTime;
-        
-        if (pixelBuffer)
+        if (pixelBuffer) {
+            if (_latestPixelBuffer) {
+                CFRelease(_latestPixelBuffer); _latestPixelBuffer = NULL;
+            }
+            _latestPixelBuffer = CVPixelBufferRetain(pixelBuffer);
+            _latestTime = outputItemTime;
+            
             runSynchronouslyOnVideoProcessingQueue(^{
                 [weakSelf processMovieFrame:pixelBuffer withSampleTime:outputItemTime];
                 CFRelease(pixelBuffer);
             });
-    } else {
-        if (_latestPixelBuffer) {
+        }
+    }
+    else {
+        if (self.paused && _latestPixelBuffer) {
             __unsafe_unretained GPUImageMovie *weakSelf = self;
             runSynchronouslyOnVideoProcessingQueue(^{
                 [weakSelf processMovieFrame:weakSelf->_latestPixelBuffer withSampleTime:_latestTime];
-                CFRelease(weakSelf->_latestPixelBuffer); weakSelf->_latestPixelBuffer = NULL;
             });
         }
     }

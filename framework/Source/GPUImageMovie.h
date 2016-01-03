@@ -18,6 +18,8 @@
 @property (readwrite, retain) AVPlayerItem *playerItem;
 @property(readwrite, retain) NSURL *url;
 
+@property (assign) BOOL paused;
+
 /** This enables the benchmarking mode, which logs out instantaneous and average frame times to the console
  */
 @property(readwrite, nonatomic) BOOL runBenchmark;
