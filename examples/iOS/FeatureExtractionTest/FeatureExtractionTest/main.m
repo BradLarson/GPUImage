@@ -8,3 +8,4 @@ int main(int argc, char *argv[])
         return UIApplicationMain(argc, argv, nil, NSStringFromClass([FeatureExtractionAppDelegate class]));
     }
 }
+//bruceyou 2016.01.11
