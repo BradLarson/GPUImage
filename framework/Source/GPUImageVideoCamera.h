@@ -3,13 +3,12 @@
 #import <CoreMedia/CoreMedia.h>
 #import "GPUImageContext.h"
 #import "GPUImageOutput.h"
+#import "GPUImageColorConversion.h"
 
-extern const GLfloat kColorConversion601[];
-extern const GLfloat kColorConversion601FullRange[];
-extern const GLfloat kColorConversion709[];
-extern NSString *const kGPUImageYUVVideoRangeConversionForRGFragmentShaderString;
-extern NSString *const kGPUImageYUVFullRangeConversionForLAFragmentShaderString;
-extern NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString;
+//Optionally override the YUV to RGB matrices
+void setColorConversion601( GLfloat conversionMatrix[9] );
+void setColorConversion601FullRange( GLfloat conversionMatrix[9] );
+void setColorConversion709( GLfloat conversionMatrix[9] );
 
 
 //Delegate Protocal for Face Detection.
@@ -43,6 +42,9 @@ extern NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString
 
     __unsafe_unretained id<GPUImageVideoCameraDelegate> _delegate;
 }
+
+/// Whether or not the underlying AVCaptureSession is running
+@property(readonly, nonatomic) BOOL isRunning;
 
 /// The AVCaptureSession used to capture from the camera
 @property(readonly, retain, nonatomic) AVCaptureSession *captureSession;

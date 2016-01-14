@@ -137,6 +137,7 @@ FOUNDATION_EXPORT const unsigned char GPUImageFrameworkVersionString[];
 #import <GPUImage/GPUImageDivideBlendFilter.h>
 #import <GPUImage/GPUImagePolkaDotFilter.h>
 #import <GPUImage/GPUImageLocalBinaryPatternFilter.h>
+#import <GPUImage/GPUImageColorLocalBinaryPatternFilter.h>
 #import <GPUImage/GPUImageLanczosResamplingFilter.h>
 #import <GPUImage/GPUImageAverageColor.h>
 #import <GPUImage/GPUImageSolidColorGenerator.h>
@@ -163,3 +164,13 @@ FOUNDATION_EXPORT const unsigned char GPUImageFrameworkVersionString[];
 #import <GPUImage/GPUImageLaplacianFilter.h>
 #import <GPUImage/GPUImageiOSBlurFilter.h>
 #import <GPUImage/GPUImageLuminanceRangeFilter.h>
+#import <GPUImage/GPUImageDirectionalNonMaximumSuppressionFilter.h>
+#import <GPUImage/GPUImageDirectionalSobelEdgeDetectionFilter.h>
+#import <GPUImage/GPUImageSingleComponentGaussianBlurFilter.h>
+#import <GPUImage/GPUImageThreeInputFilter.h>
+#import <GPUImage/GPUImageFourInputFilter.h>
+#import <GPUImage/GPUImageWeakPixelInclusionFilter.h>
+#import <GPUImage/GPUImageFASTCornerDetectionFilter.h>
+#import <GPUImage/GPUImageMovieComposition.h>
+#import <GPUImage/GPUImageColourFASTFeatureDetector.h>
+#import <GPUImage/GPUImageColourFASTSamplingOperation.h>

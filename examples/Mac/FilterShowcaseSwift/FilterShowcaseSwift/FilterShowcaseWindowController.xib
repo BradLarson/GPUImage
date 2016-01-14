@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="6206.9" systemVersion="14A343f" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="7515.2" systemVersion="14C109" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="6206.9"/>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="7515.2"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="FilterShowcaseWindowController" customModule="FilterShowcaseSwift" customModuleProvider="target">
             <connections>
-                <outlet property="filterSlider" destination="HWq-wN-ZI8" id="922-8I-8bl"/>
+                <outlet property="filterSlider" destination="HWq-wN-ZI8" id="NzT-tE-bYb"/>
                 <outlet property="filterView" destination="GNd-qF-oN7" id="P83-vu-rTT"/>
                 <outlet property="window" destination="F0z-JX-Cv5" id="gIp-Ho-8D9"/>
             </connections>
@@ -25,7 +26,7 @@
                 <subviews>
                     <scrollView fixedFrame="YES" autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iqs-T1-2Js">
                         <rect key="frame" x="20" y="20" width="166" height="513"/>
-                        <clipView key="contentView" ambiguous="YES" misplaced="YES" id="6tE-YN-yIE">
+                        <clipView key="contentView" misplaced="YES" id="6tE-YN-yIE">
                             <rect key="frame" x="1" y="17" width="164" height="495"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
@@ -33,7 +34,7 @@
                                     <rect key="frame" x="0.0" y="0.0" width="163" height="19"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <size key="intercellSpacing" width="3" height="2"/>
-                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                     <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                     <tableColumns>
                                         <tableColumn editable="NO" width="159.62109375" minWidth="40" maxWidth="1000" id="kDN-y5-Dkd">
@@ -76,14 +77,13 @@
                     </openGLView>
                     <slider verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="HWq-wN-ZI8">
                         <rect key="frame" x="192" y="18" width="644" height="21"/>
-                        <sliderCell key="cell" continuous="YES" state="on" alignment="left" maxValue="100" doubleValue="50" tickMarkPosition="above" sliderType="linear" id="eCP-Ee-swu">
-                            <connections>
-                                <binding destination="-2" name="value" keyPath="currentSliderValue" previousBinding="FRC-jc-Gii" id="2XB-CD-K06"/>
-                                <binding destination="-2" name="enabled" keyPath="enableSlider" id="Hy7-QT-aYD"/>
-                                <binding destination="-2" name="maxValue" keyPath="maximumSliderValue" id="DXq-Mq-xJp"/>
-                                <binding destination="-2" name="minValue" keyPath="minimumSliderValue" previousBinding="DXq-Mq-xJp" id="FRC-jc-Gii"/>
-                            </connections>
-                        </sliderCell>
+                        <sliderCell key="cell" continuous="YES" state="on" alignment="left" maxValue="100" doubleValue="50" tickMarkPosition="above" sliderType="linear" id="eCP-Ee-swu"/>
+                        <connections>
+                            <binding destination="-2" name="enabled" keyPath="enableSlider" id="6X6-05-o2Q"/>
+                            <binding destination="-2" name="maxValue" keyPath="maximumSliderValue" id="WGE-g7-csM"/>
+                            <binding destination="-2" name="minValue" keyPath="minimumSliderValue" previousBinding="WGE-g7-csM" id="PEz-QC-RAW"/>
+                            <binding destination="-2" name="value" keyPath="currentSliderValue" previousBinding="PEz-QC-RAW" id="1pO-f8-5cT"/>
+                        </connections>
                     </slider>
                 </subviews>
             </view>

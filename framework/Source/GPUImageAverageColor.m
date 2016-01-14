@@ -131,12 +131,6 @@ NSString *const kGPUImageColorAveragingFragmentShaderString = SHADER_STRING
     for (NSUInteger currentReduction = 0; currentReduction < reductionsToHitSideLimit; currentReduction++)
     {
         CGSize currentStageSize = CGSizeMake(floor(inputTextureSize.width / pow(4.0, currentReduction + 1.0)), floor(inputTextureSize.height / pow(4.0, currentReduction + 1.0)));
-        if ( (currentStageSize.height < 2.0) || (currentStageSize.width < 2.0) )
-        {
-            // A really small last stage seems to cause significant errors in the average, so I abort and leave the rest to the CPU at this point
-            break;
-            //                currentStageSize.height = 2.0; // TODO: Rotate the image to account for this case, which causes FBO construction to fail
-        }
 
         [outputFramebuffer unlock];
         outputFramebuffer = [[GPUImageContext sharedFramebufferCache] fetchFramebufferForSize:currentStageSize textureOptions:self.outputTextureOptions onlyTexture:NO];
@@ -150,8 +144,8 @@ NSString *const kGPUImageColorAveragingFragmentShaderString = SHADER_STRING
         
         glUniform1i(filterInputTextureUniform, 2);
         
-        glUniform1f(texelWidthUniform, 0.5 / currentStageSize.width);
-        glUniform1f(texelHeightUniform, 0.5 / currentStageSize.height);
+        glUniform1f(texelWidthUniform, 0.25 / currentStageSize.width);
+        glUniform1f(texelHeightUniform, 0.25 / currentStageSize.height);
         
         glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
