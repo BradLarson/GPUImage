@@ -8,6 +8,7 @@ NSString *const kGPUImageVignetteFragmentShaderString = SHADER_STRING
  
  uniform lowp vec2 vignetteCenter;
  uniform lowp vec3 vignetteColor;
+ uniform lowp float vignetteAlpha;
  uniform highp float vignetteStart;
  uniform highp float vignetteEnd;
  
@@ -16,7 +17,7 @@ NSString *const kGPUImageVignetteFragmentShaderString = SHADER_STRING
      lowp vec4 sourceImageColor = texture2D(inputImageTexture, textureCoordinate);
      lowp float d = distance(textureCoordinate, vec2(vignetteCenter.x, vignetteCenter.y));
      lowp float percent = smoothstep(vignetteStart, vignetteEnd, d);
-     gl_FragColor = vec4(mix(sourceImageColor.rgb, vignetteColor, percent), sourceImageColor.a);
+     gl_FragColor = vec4(mix(sourceImageColor.rgb, vignetteColor, vignetteAlpha * percent), sourceImageColor.a);
  }
 );
 #else
@@ -27,6 +28,7 @@ NSString *const kGPUImageVignetteFragmentShaderString = SHADER_STRING
  
  uniform vec2 vignetteCenter;
  uniform vec3 vignetteColor;
+ uniform float vignetteAlpha;
  uniform float vignetteStart;
  uniform float vignetteEnd;
  
@@ -35,7 +37,7 @@ NSString *const kGPUImageVignetteFragmentShaderString = SHADER_STRING
      vec4 sourceImageColor = texture2D(inputImageTexture, textureCoordinate);
      float d = distance(textureCoordinate, vec2(vignetteCenter.x, vignetteCenter.y));
      float percent = smoothstep(vignetteStart, vignetteEnd, d);
-     gl_FragColor = vec4(mix(sourceImageColor.rgb, vignetteColor, percent), sourceImageColor.a);
+     gl_FragColor = vec4(mix(sourceImageColor.rgb, vignetteColor, vignetteAlpha * percent), sourceImageColor.a);
  }
 );
 #endif
@@ -44,6 +46,7 @@ NSString *const kGPUImageVignetteFragmentShaderString = SHADER_STRING
 
 @synthesize vignetteCenter = _vignetteCenter;
 @synthesize vignetteColor = _vignetteColor;
+@synthesize vignetteAlpha =_vignetteAlpha;
 @synthesize vignetteStart =_vignetteStart;
 @synthesize vignetteEnd = _vignetteEnd;
 
@@ -59,11 +62,13 @@ NSString *const kGPUImageVignetteFragmentShaderString = SHADER_STRING
     
     vignetteCenterUniform = [filterProgram uniformIndex:@"vignetteCenter"];
     vignetteColorUniform = [filterProgram uniformIndex:@"vignetteColor"];
+    vignetteAlphaUniform = [filterProgram uniformIndex:@"vignetteAlpha"];
     vignetteStartUniform = [filterProgram uniformIndex:@"vignetteStart"];
     vignetteEndUniform = [filterProgram uniformIndex:@"vignetteEnd"];
     
     self.vignetteCenter = (CGPoint){ 0.5f, 0.5f };
     self.vignetteColor = (GPUVector3){ 0.0f, 0.0f, 0.0f };
+    self.vignetteAlpha = 1.0;
     self.vignetteStart = 0.3;
     self.vignetteEnd = 0.75;
     
@@ -85,6 +90,13 @@ NSString *const kGPUImageVignetteFragmentShaderString = SHADER_STRING
     _vignetteColor = newValue;
     
     [self setVec3:newValue forUniform:vignetteColorUniform program:filterProgram];
+}
+
+- (void)setVignetteAlpha:(CGFloat)newValue;
+{
+    _vignetteAlpha = newValue;
+    
+    [self setFloat:_vignetteAlpha forUniform:vignetteAlphaUniform program:filterProgram];
 }
 
 - (void)setVignetteStart:(CGFloat)newValue;
