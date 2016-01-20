@@ -15,6 +15,8 @@
 
 // Filters
 #import <GPUImage/GPUImageFilter.h>
+#import <GPUImage/GPUImageGradientFilter.h>
+#import <GPUImage/GPUImageSolidColorFilter.h>
 #import <GPUImage/GPUImageTwoPassFilter.h>
 #import <GPUImage/GPUImage3x3TextureSamplingFilter.h>
 #import <GPUImage/GPUImageContrastFilter.h>
