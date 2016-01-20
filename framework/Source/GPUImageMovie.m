@@ -30,6 +30,7 @@
     BOOL isFullYUVRange;
 
     int imageBufferWidth, imageBufferHeight;
+    int loopCount;
 }
 
 - (void)processAsset;
@@ -59,6 +60,7 @@
 
     self.url = url;
     self.asset = nil;
+    loopCount = 0;
 
     return self;
 }
@@ -74,6 +76,7 @@
 
     self.url = nil;
     self.asset = asset;
+    loopCount = 0;
 
     return self;
 }
@@ -90,6 +93,7 @@
     self.url = nil;
     self.asset = nil;
     self.playerItem = playerItem;
+    loopCount = 0;
 
     return self;
 }
@@ -301,6 +305,7 @@
 
             if (keepLooping) {
                 reader = nil;
+                loopCount ++;
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [self startProcessing];
                 });
@@ -505,6 +510,7 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
 //    CMTimeSubtract
     
     CMTime currentSampleTime = CMSampleBufferGetOutputPresentationTimeStamp(movieSampleBuffer);
+    currentSampleTime = CMTimeMakeWithSeconds( CMTimeGetSeconds(currentSampleTime) + (CMTimeGetSeconds(self.asset.duration) * loopCount), currentSampleTime.timescale);
     CVImageBufferRef movieFrame = CMSampleBufferGetImageBuffer(movieSampleBuffer);
 
     processingFrameTime = currentSampleTime;
