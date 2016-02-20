@@ -12,6 +12,7 @@
 #import <GPUImage/GPUImagePicture.h>
 #import <GPUImage/GPUImageRawDataInput.h>
 #import <GPUImage/GPUImageRawDataOutput.h>
+#import <GPUImage/GPUImageTextureInput.h>
 
 // Filters
 #import <GPUImage/GPUImageFilter.h>
@@ -162,3 +163,4 @@
 // Outputs
 #import <GPUImage/GPUImageView.h>
 #import <GPUImage/GPUImageMovieWriter.h>
+#import <GPUImage/GPUImageTextureOutput.h>
