@@ -29,6 +29,7 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size);
 @synthesize textureOptions = _textureOptions;
 @synthesize texture = _texture;
 @synthesize missingFramebuffer = _missingFramebuffer;
+@synthesize shouldCaptureOpaqueImage = _shouldCaptureOpaqueImage;
 
 #pragma mark -
 #pragma mark Initialization and teardown
@@ -352,13 +353,15 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
         if ([GPUImageContext supportsFastTextureUpload])
         {
 #if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
-            cgImageFromBytes = CGImageCreate((int)_size.width, (int)_size.height, 8, 32, CVPixelBufferGetBytesPerRow(renderTarget), defaultRGBColorSpace, kCGBitmapByteOrder32Little | kCGImageAlphaPremultipliedFirst, dataProvider, NULL, NO, kCGRenderingIntentDefault);
+            CGImageAlphaInfo alphaInfo = (_shouldCaptureOpaqueImage) ? kCGImageAlphaNoneSkipFirst : kCGImageAlphaPremultipliedFirst;
+            cgImageFromBytes = CGImageCreate((int)_size.width, (int)_size.height, 8, 32, CVPixelBufferGetBytesPerRow(renderTarget), defaultRGBColorSpace, kCGBitmapByteOrder32Little | alphaInfo, dataProvider, NULL, NO, kCGRenderingIntentDefault);
 #else
 #endif
         }
         else
         {
-            cgImageFromBytes = CGImageCreate((int)_size.width, (int)_size.height, 8, 32, 4 * (int)_size.width, defaultRGBColorSpace, kCGBitmapByteOrderDefault | kCGImageAlphaLast, dataProvider, NULL, NO, kCGRenderingIntentDefault);
+            CGImageAlphaInfo alphaInfo = (_shouldCaptureOpaqueImage) ? kCGImageAlphaNoneSkipLast : kCGImageAlphaLast;
+            cgImageFromBytes = CGImageCreate((int)_size.width, (int)_size.height, 8, 32, 4 * (int)_size.width, defaultRGBColorSpace, kCGBitmapByteOrderDefault | alphaInfo, dataProvider, NULL, NO, kCGRenderingIntentDefault);
         }
         
         // Capture image with current device orientation
