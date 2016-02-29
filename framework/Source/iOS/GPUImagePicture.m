@@ -55,6 +55,26 @@
 
 - (id)initWithCGImage:(CGImageRef)newImageSource smoothlyScaleOutput:(BOOL)smoothlyScaleOutput;
 {
+    return [self initWithCGImage:newImageSource smoothlyScaleOutput:smoothlyScaleOutput removePremultiplication:NO];
+}
+
+- (id)initWithImage:(UIImage *)newImageSource removePremultiplication:(BOOL)removePremultiplication;
+{
+    return [self initWithCGImage:[newImageSource CGImage] smoothlyScaleOutput:NO removePremultiplication:removePremultiplication];
+}
+
+- (id)initWithCGImage:(CGImageRef)newImageSource removePremultiplication:(BOOL)removePremultiplication;
+{
+    return [self initWithCGImage:newImageSource smoothlyScaleOutput:NO removePremultiplication:removePremultiplication];
+}
+
+- (id)initWithImage:(UIImage *)newImageSource smoothlyScaleOutput:(BOOL)smoothlyScaleOutput removePremultiplication:(BOOL)removePremultiplication;
+{
+    return [self initWithCGImage:[newImageSource CGImage] smoothlyScaleOutput:smoothlyScaleOutput removePremultiplication:removePremultiplication];
+}
+
+- (id)initWithCGImage:(CGImageRef)newImageSource smoothlyScaleOutput:(BOOL)smoothlyScaleOutput removePremultiplication:(BOOL)removePremultiplication;
+{
     if (!(self = [super init]))
     {
 		return nil;
@@ -101,7 +121,10 @@
     GLubyte *imageData = NULL;
     CFDataRef dataFromImageDataProvider = NULL;
     GLenum format = GL_BGRA;
-    
+    BOOL isLitteEndian = YES;
+    BOOL alphaFirst = NO;
+    BOOL premultiplied = NO;
+	
     if (!shouldRedrawUsingCoreGraphics) {
         /* Check that the memory layout is compatible with GL, as we cannot use glPixelStore to
          * tell GL about the memory layout with GLES.
@@ -127,6 +150,7 @@
                         shouldRedrawUsingCoreGraphics = YES;
                     }
                 } else if (byteOrderInfo == kCGBitmapByteOrderDefault || byteOrderInfo == kCGBitmapByteOrder32Big) {
+					isLitteEndian = NO;
                     /* Big endian, for alpha-last we can use this bitmap directly in GL */
                     CGImageAlphaInfo alphaInfo = bitmapInfo & kCGBitmapAlphaInfoMask;
                     if (alphaInfo != kCGImageAlphaPremultipliedLast && alphaInfo != kCGImageAlphaLast &&
@@ -134,7 +158,9 @@
                         shouldRedrawUsingCoreGraphics = YES;
                     } else {
                         /* Can access directly using GL_RGBA pixel format */
-                        format = GL_RGBA;
+						premultiplied = alphaInfo == kCGImageAlphaPremultipliedLast || alphaInfo == kCGImageAlphaPremultipliedLast;
+						alphaFirst = alphaInfo == kCGImageAlphaFirst || alphaInfo == kCGImageAlphaPremultipliedFirst;
+						format = GL_RGBA;
                     }
                 }
             }
@@ -155,6 +181,9 @@
         CGContextDrawImage(imageContext, CGRectMake(0.0, 0.0, pixelSizeToUseForTexture.width, pixelSizeToUseForTexture.height), newImageSource);
         CGContextRelease(imageContext);
         CGColorSpaceRelease(genericRGBColorspace);
+		isLitteEndian = YES;
+		alphaFirst = YES;
+		premultiplied = YES;
     }
     else
     {
@@ -162,7 +191,45 @@
         dataFromImageDataProvider = CGDataProviderCopyData(CGImageGetDataProvider(newImageSource));
         imageData = (GLubyte *)CFDataGetBytePtr(dataFromImageDataProvider);
     }
-    
+	
+	if (removePremultiplication && premultiplied) {
+		NSUInteger	totalNumberOfPixels = round(pixelSizeToUseForTexture.width * pixelSizeToUseForTexture.height);
+		uint32_t	*pixelP = (uint32_t *)imageData;
+		uint32_t	pixel;
+		CGFloat		srcR, srcG, srcB, srcA;
+
+		for (NSUInteger idx=0; idx<totalNumberOfPixels; idx++, pixelP++) {
+			pixel = isLitteEndian ? CFSwapInt32LittleToHost(*pixelP) : CFSwapInt32BigToHost(*pixelP);
+
+			if (alphaFirst) {
+				srcA = (CGFloat)((pixel & 0xff000000) >> 24) / 255.0f;
+			}
+			else {
+				srcA = (CGFloat)(pixel & 0x000000ff) / 255.0f;
+				pixel >>= 8;
+			}
+
+			srcR = (CGFloat)((pixel & 0x00ff0000) >> 16) / 255.0f;
+			srcG = (CGFloat)((pixel & 0x0000ff00) >> 8) / 255.0f;
+			srcB = (CGFloat)(pixel & 0x000000ff) / 255.0f;
+			
+			srcR /= srcA; srcG /= srcA; srcB /= srcA;
+			
+			pixel = (uint32_t)(srcR * 255.0) << 16;
+			pixel |= (uint32_t)(srcG * 255.0) << 8;
+			pixel |= (uint32_t)(srcB * 255.0);
+
+			if (alphaFirst) {
+				pixel |= (uint32_t)(srcA * 255.0) << 24;
+			}
+			else {
+				pixel <<= 8;
+				pixel |= (uint32_t)(srcA * 255.0);
+			}
+			*pixelP = isLitteEndian ? CFSwapInt32HostToLittle(pixel) : CFSwapInt32HostToBig(pixel);
+		}
+	}
+	
     //    elapsedTime = (CFAbsoluteTimeGetCurrent() - startTime) * 1000.0;
     //    NSLog(@"Core Graphics drawing time: %f", elapsedTime);
     

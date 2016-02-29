@@ -1,0 +1,495 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		79C26E221A5EDD1C0054857C /* SLSSimpleVideoFilterWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 79C26E211A5EDD1C0054857C /* SLSSimpleVideoFilterWindowController.m */; };
+		79C26E2E1A5F02B70054857C /* SLSSimpleVideoFilterWindowController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 79C26E2D1A5F02B70054857C /* SLSSimpleVideoFilterWindowController.xib */; };
+		79E8A5FB1A5ED6A700E6A226 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 79E8A5FA1A5ED6A700E6A226 /* AppDelegate.m */; };
+		79E8A5FD1A5ED6A700E6A226 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 79E8A5FC1A5ED6A700E6A226 /* main.m */; };
+		79E8A5FF1A5ED6A700E6A226 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 79E8A5FE1A5ED6A700E6A226 /* Images.xcassets */; };
+		79E8A6021A5ED6A700E6A226 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 79E8A6001A5ED6A700E6A226 /* MainMenu.xib */; };
+		79E8A60E1A5ED6A700E6A226 /* SimpleVideoFilterTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 79E8A60D1A5ED6A700E6A226 /* SimpleVideoFilterTests.m */; };
+		BCF8E9E51A75DE67005AE243 /* GPUImage.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = BCF8E9E21A75DE3F005AE243 /* GPUImage.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		79E8A6081A5ED6A700E6A226 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 79E8A5EC1A5ED6A700E6A226 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 79E8A5F31A5ED6A700E6A226;
+			remoteInfo = SimpleVideoFilter;
+		};
+		BCF8E9E11A75DE3F005AE243 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BCF8E9DD1A75DE3F005AE243 /* GPUImageMac.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = BCA3F31C17239B6500E28AEC;
+			remoteInfo = GPUImage;
+		};
+		BCF8E9E31A75DE5B005AE243 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BCF8E9DD1A75DE3F005AE243 /* GPUImageMac.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = BCA3F31B17239B6500E28AEC;
+			remoteInfo = GPUImage;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		79C26E251A5EE5210054857C /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				BCF8E9E51A75DE67005AE243 /* GPUImage.framework in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		79C26E201A5EDD1C0054857C /* SLSSimpleVideoFilterWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLSSimpleVideoFilterWindowController.h; sourceTree = "<group>"; };
+		79C26E211A5EDD1C0054857C /* SLSSimpleVideoFilterWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLSSimpleVideoFilterWindowController.m; sourceTree = "<group>"; };
+		79C26E2D1A5F02B70054857C /* SLSSimpleVideoFilterWindowController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SLSSimpleVideoFilterWindowController.xib; sourceTree = "<group>"; };
+		79E8A5F41A5ED6A700E6A226 /* SimpleVideoFilter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SimpleVideoFilter.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		79E8A5F81A5ED6A700E6A226 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		79E8A5F91A5ED6A700E6A226 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		79E8A5FA1A5ED6A700E6A226 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		79E8A5FC1A5ED6A700E6A226 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		79E8A5FE1A5ED6A700E6A226 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		79E8A6011A5ED6A700E6A226 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		79E8A6071A5ED6A700E6A226 /* SimpleVideoFilterTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SimpleVideoFilterTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		79E8A60C1A5ED6A700E6A226 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		79E8A60D1A5ED6A700E6A226 /* SimpleVideoFilterTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SimpleVideoFilterTests.m; sourceTree = "<group>"; };
+		BCF8E9DD1A75DE3F005AE243 /* GPUImageMac.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = GPUImageMac.xcodeproj; path = ../../../../framework/GPUImageMac.xcodeproj; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		79E8A5F11A5ED6A700E6A226 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		79E8A6041A5ED6A700E6A226 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		79E8A5EB1A5ED6A700E6A226 = {
+			isa = PBXGroup;
+			children = (
+				79E8A5F61A5ED6A700E6A226 /* SimpleVideoFilter */,
+				79E8A61D1A5ED97400E6A226 /* Frameworks */,
+				79E8A60A1A5ED6A700E6A226 /* SimpleVideoFilterTests */,
+				79E8A5F51A5ED6A700E6A226 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		79E8A5F51A5ED6A700E6A226 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				79E8A5F41A5ED6A700E6A226 /* SimpleVideoFilter.app */,
+				79E8A6071A5ED6A700E6A226 /* SimpleVideoFilterTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		79E8A5F61A5ED6A700E6A226 /* SimpleVideoFilter */ = {
+			isa = PBXGroup;
+			children = (
+				79E8A5F91A5ED6A700E6A226 /* AppDelegate.h */,
+				79E8A5FA1A5ED6A700E6A226 /* AppDelegate.m */,
+				79C26E201A5EDD1C0054857C /* SLSSimpleVideoFilterWindowController.h */,
+				79C26E211A5EDD1C0054857C /* SLSSimpleVideoFilterWindowController.m */,
+				79C26E2D1A5F02B70054857C /* SLSSimpleVideoFilterWindowController.xib */,
+				79E8A5FE1A5ED6A700E6A226 /* Images.xcassets */,
+				79E8A6001A5ED6A700E6A226 /* MainMenu.xib */,
+				79E8A5F71A5ED6A700E6A226 /* Supporting Files */,
+			);
+			path = SimpleVideoFilter;
+			sourceTree = "<group>";
+		};
+		79E8A5F71A5ED6A700E6A226 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				79E8A5F81A5ED6A700E6A226 /* Info.plist */,
+				79E8A5FC1A5ED6A700E6A226 /* main.m */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		79E8A60A1A5ED6A700E6A226 /* SimpleVideoFilterTests */ = {
+			isa = PBXGroup;
+			children = (
+				79E8A60D1A5ED6A700E6A226 /* SimpleVideoFilterTests.m */,
+				79E8A60B1A5ED6A700E6A226 /* Supporting Files */,
+			);
+			path = SimpleVideoFilterTests;
+			sourceTree = "<group>";
+		};
+		79E8A60B1A5ED6A700E6A226 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				79E8A60C1A5ED6A700E6A226 /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		79E8A61D1A5ED97400E6A226 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				BCF8E9DD1A75DE3F005AE243 /* GPUImageMac.xcodeproj */,
+			);
+			name = Frameworks;
+			path = SimpleVideoFilterTests;
+			sourceTree = "<group>";
+		};
+		BCF8E9DE1A75DE3F005AE243 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				BCF8E9E21A75DE3F005AE243 /* GPUImage.framework */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		79E8A5F31A5ED6A700E6A226 /* SimpleVideoFilter */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 79E8A6111A5ED6A700E6A226 /* Build configuration list for PBXNativeTarget "SimpleVideoFilter" */;
+			buildPhases = (
+				79E8A5F01A5ED6A700E6A226 /* Sources */,
+				79E8A5F11A5ED6A700E6A226 /* Frameworks */,
+				79E8A5F21A5ED6A700E6A226 /* Resources */,
+				79C26E251A5EE5210054857C /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				BCF8E9E41A75DE5B005AE243 /* PBXTargetDependency */,
+			);
+			name = SimpleVideoFilter;
+			productName = SimpleVideoFilter;
+			productReference = 79E8A5F41A5ED6A700E6A226 /* SimpleVideoFilter.app */;
+			productType = "com.apple.product-type.application";
+		};
+		79E8A6061A5ED6A700E6A226 /* SimpleVideoFilterTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 79E8A6141A5ED6A700E6A226 /* Build configuration list for PBXNativeTarget "SimpleVideoFilterTests" */;
+			buildPhases = (
+				79E8A6031A5ED6A700E6A226 /* Sources */,
+				79E8A6041A5ED6A700E6A226 /* Frameworks */,
+				79E8A6051A5ED6A700E6A226 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				79E8A6091A5ED6A700E6A226 /* PBXTargetDependency */,
+			);
+			name = SimpleVideoFilterTests;
+			productName = SimpleVideoFilterTests;
+			productReference = 79E8A6071A5ED6A700E6A226 /* SimpleVideoFilterTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		79E8A5EC1A5ED6A700E6A226 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0610;
+				ORGANIZATIONNAME = "Red Queen Coder, LLC";
+				TargetAttributes = {
+					79E8A5F31A5ED6A700E6A226 = {
+						CreatedOnToolsVersion = 6.1.1;
+					};
+					79E8A6061A5ED6A700E6A226 = {
+						CreatedOnToolsVersion = 6.1.1;
+						TestTargetID = 79E8A5F31A5ED6A700E6A226;
+					};
+				};
+			};
+			buildConfigurationList = 79E8A5EF1A5ED6A700E6A226 /* Build configuration list for PBXProject "SimpleVideoFilter" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 79E8A5EB1A5ED6A700E6A226;
+			productRefGroup = 79E8A5F51A5ED6A700E6A226 /* Products */;
+			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = BCF8E9DE1A75DE3F005AE243 /* Products */;
+					ProjectRef = BCF8E9DD1A75DE3F005AE243 /* GPUImageMac.xcodeproj */;
+				},
+			);
+			projectRoot = "";
+			targets = (
+				79E8A5F31A5ED6A700E6A226 /* SimpleVideoFilter */,
+				79E8A6061A5ED6A700E6A226 /* SimpleVideoFilterTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		BCF8E9E21A75DE3F005AE243 /* GPUImage.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = GPUImage.framework;
+			remoteRef = BCF8E9E11A75DE3F005AE243 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
+
+/* Begin PBXResourcesBuildPhase section */
+		79E8A5F21A5ED6A700E6A226 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				79E8A5FF1A5ED6A700E6A226 /* Images.xcassets in Resources */,
+				79C26E2E1A5F02B70054857C /* SLSSimpleVideoFilterWindowController.xib in Resources */,
+				79E8A6021A5ED6A700E6A226 /* MainMenu.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		79E8A6051A5ED6A700E6A226 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		79E8A5F01A5ED6A700E6A226 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				79E8A5FD1A5ED6A700E6A226 /* main.m in Sources */,
+				79E8A5FB1A5ED6A700E6A226 /* AppDelegate.m in Sources */,
+				79C26E221A5EDD1C0054857C /* SLSSimpleVideoFilterWindowController.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		79E8A6031A5ED6A700E6A226 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				79E8A60E1A5ED6A700E6A226 /* SimpleVideoFilterTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		79E8A6091A5ED6A700E6A226 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 79E8A5F31A5ED6A700E6A226 /* SimpleVideoFilter */;
+			targetProxy = 79E8A6081A5ED6A700E6A226 /* PBXContainerItemProxy */;
+		};
+		BCF8E9E41A75DE5B005AE243 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = GPUImage;
+			targetProxy = BCF8E9E31A75DE5B005AE243 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		79E8A6001A5ED6A700E6A226 /* MainMenu.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				79E8A6011A5ED6A700E6A226 /* Base */,
+			);
+			name = MainMenu.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		79E8A60F1A5ED6A700E6A226 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		79E8A6101A5ED6A700E6A226 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		79E8A6121A5ED6A700E6A226 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = SimpleVideoFilter/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		79E8A6131A5ED6A700E6A226 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = SimpleVideoFilter/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		79E8A6151A5ED6A700E6A226 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+					"$(inherited)",
+				);
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = SimpleVideoFilterTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SimpleVideoFilter.app/Contents/MacOS/SimpleVideoFilter";
+			};
+			name = Debug;
+		};
+		79E8A6161A5ED6A700E6A226 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = SimpleVideoFilterTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SimpleVideoFilter.app/Contents/MacOS/SimpleVideoFilter";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		79E8A5EF1A5ED6A700E6A226 /* Build configuration list for PBXProject "SimpleVideoFilter" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				79E8A60F1A5ED6A700E6A226 /* Debug */,
+				79E8A6101A5ED6A700E6A226 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		79E8A6111A5ED6A700E6A226 /* Build configuration list for PBXNativeTarget "SimpleVideoFilter" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				79E8A6121A5ED6A700E6A226 /* Debug */,
+				79E8A6131A5ED6A700E6A226 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		79E8A6141A5ED6A700E6A226 /* Build configuration list for PBXNativeTarget "SimpleVideoFilterTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				79E8A6151A5ED6A700E6A226 /* Debug */,
+				79E8A6161A5ED6A700E6A226 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 79E8A5EC1A5ED6A700E6A226 /* Project object */;
+}

@@ -13,7 +13,7 @@ class ViewController: UIViewController {
         videoCamera!.outputImageOrientation = .Portrait;
         filter = GPUImagePixellateFilter()
         videoCamera?.addTarget(filter)
-        filter?.addTarget(self.view as GPUImageView)
+        filter?.addTarget(self.view as! GPUImageView)
         videoCamera?.startCameraCapture()
     }
 }

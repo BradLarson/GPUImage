@@ -49,6 +49,14 @@
 	[super viewWillDisappear:animated];
 }
 
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    
+    // Note: I needed to start camera capture after the view went on the screen, when a partially transition of navigation view controller stopped capturing via viewWilDisappear.
+    [videoCamera startCameraCapture];
+}
+
 - (void)viewDidUnload
 {
     [super viewDidUnload];
@@ -862,6 +870,7 @@
         {
             self.title = @"Voronoi";
             self.filterSettingsSlider.hidden = YES;
+            needsSecondImage = YES;
             
             GPUImageJFAVoronoiFilter *jfa = [[GPUImageJFAVoronoiFilter alloc] init];
             [jfa setSizeInPixels:CGSizeMake(1024.0, 1024.0)];
