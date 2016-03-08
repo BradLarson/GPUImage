@@ -445,4 +445,15 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
     return _texture;
 }
 
+- (CVPixelBufferRef)renderTarget {
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+    [self lockForReading];
+    CVPixelBufferRef pb = renderTarget;
+    [self unlockAfterReading];
+    return pb;
+#else
+    return NULL; // TODO: do more with this on the non-texture-cache side
+#endif
+}
+
 @end
