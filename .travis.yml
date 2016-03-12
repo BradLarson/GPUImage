@@ -2,6 +2,7 @@
 language: objective-c
 
 before_install:
+    - brew upgrade ruby
     - gem install cocoapods --pre --quiet
     - pod --version
     - pod setup --silent
