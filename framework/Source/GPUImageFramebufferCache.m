@@ -50,7 +50,7 @@
     framebufferCache = [[NSMutableDictionary alloc] init];
     framebufferTypeCounts = [[NSMutableDictionary alloc] init];
     activeImageCaptureList = [[NSMutableArray alloc] init];
-    framebufferCacheQueue = dispatch_queue_create("com.sunsetlakesoftware.GPUImage.framebufferCacheQueue", NULL);
+    framebufferCacheQueue = dispatch_queue_create("com.sunsetlakesoftware.GPUImage.framebufferCacheQueue", GPUImageDefaultQueueAttribute());
     
     return self;
 }
