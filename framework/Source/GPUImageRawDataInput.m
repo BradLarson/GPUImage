@@ -8,6 +8,7 @@
 
 @synthesize pixelFormat = _pixelFormat;
 @synthesize pixelType = _pixelType;
+@synthesize linearInterpolation = _linearInterpolation;
 
 #pragma mark -
 #pragma mark Initialization and teardown
@@ -34,6 +35,11 @@
 
 - (id)initWithBytes:(GLubyte *)bytesToUpload size:(CGSize)imageSize pixelFormat:(GPUPixelFormat)pixelFormat type:(GPUPixelType)pixelType;
 {
+    return [self initWithBytes:bytesToUpload size:imageSize pixelFormat:pixelFormat type:pixelType linearInterpolation:YES];
+}
+
+- (id)initWithBytes:(GLubyte *)bytesToUpload size:(CGSize)imageSize pixelFormat:(GPUPixelFormat)pixelFormat type:(GPUPixelType)pixelType linearInterpolation:(BOOL)linearInterpolation;
+{
     if (!(self = [super init]))
     {
 		return nil;
@@ -44,8 +50,12 @@
     uploadedImageSize = imageSize;
 	self.pixelFormat = pixelFormat;
 	self.pixelType = pixelType;
+    self.linearInterpolation = linearInterpolation;
         
     [self uploadBytes:bytesToUpload];
+    
+    outputFramebuffer = [[GPUImageContext sharedFramebufferCache] fetchFramebufferForSize:uploadedImageSize textureOptions:self.outputTextureOptions onlyTexture:YES];
+    [outputFramebuffer disableReferenceCounting];
     
     return self;
 }
@@ -53,6 +63,9 @@
 // ARC forbids explicit message send of 'release'; since iOS 6 even for dispatch_release() calls: stripping it out in that case is required.
 - (void)dealloc;
 {
+    [outputFramebuffer enableReferenceCounting];
+    [outputFramebuffer unlock];
+    
 #if !OS_OBJECT_USE_OBJC
     if (dataUpdateSemaphore != NULL)
     {
@@ -69,17 +82,23 @@
     [GPUImageContext useImageProcessingContext];
 
     // TODO: This probably isn't right, and will need to be corrected
-    outputFramebuffer = [[GPUImageContext sharedFramebufferCache] fetchFramebufferForSize:uploadedImageSize textureOptions:self.outputTextureOptions onlyTexture:YES];
+//    outputFramebuffer = [[GPUImageContext sharedFramebufferCache] fetchFramebufferForSize:uploadedImageSize textureOptions:self.outputTextureOptions onlyTexture:YES];
     
     glBindTexture(GL_TEXTURE_2D, [outputFramebuffer texture]);
-    glTexImage2D(GL_TEXTURE_2D, 0, _pixelFormat==GPUPixelFormatRGB ? GL_RGB : GL_RGBA, (int)uploadedImageSize.width, (int)uploadedImageSize.height, 0, (GLint)_pixelFormat, (GLenum)_pixelType, bytesToUpload);
+    
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, self.linearInterpolation? GL_LINEAR : GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, self.linearInterpolation? GL_LINEAR : GL_NEAREST);
+    
+    glTexImage2D(GL_TEXTURE_2D, 0, _pixelFormat==GPUPixelFormatBGRA ? GL_RGBA : (GLint)_pixelFormat, (int)uploadedImageSize.width, (int)uploadedImageSize.height, 0, (GLint)_pixelFormat, (GLenum)_pixelType, bytesToUpload);
 }
 
-- (void)updateDataFromBytes:(GLubyte *)bytesToUpload size:(CGSize)imageSize;
+- (void)updateDataFromBytes:(GLubyte *)bytesToUpload;// size:(CGSize)imageSize;
 {
-    uploadedImageSize = imageSize;
-
-    [self uploadBytes:bytesToUpload];
+    //uploadedImageSize = imageSize;
+    
+    runSynchronouslyOnVideoProcessingQueue(^{
+        [self uploadBytes:bytesToUpload];
+    });
 }
 
 - (void)processData;
@@ -123,7 +142,8 @@
 			NSInteger indexOfObject = [targets indexOfObject:currentTarget];
 			NSInteger textureIndexOfTarget = [[targetTextureIndices objectAtIndex:indexOfObject] integerValue];
             
-			[currentTarget setInputSize:pixelSizeOfImage atIndex:textureIndexOfTarget];
+            [currentTarget setInputSize:pixelSizeOfImage atIndex:textureIndexOfTarget];
+            [currentTarget setInputFramebuffer:outputFramebuffer atIndex:textureIndexOfTarget];
 			[currentTarget newFrameReadyAtTime:frameTime atIndex:textureIndexOfTarget];
 		}
         

@@ -255,7 +255,7 @@ NSString *const kGPUImageLuminanceHistogramEqualizationFragmentShaderString = SH
         }
         
         _colorMapping = colorMapping;
-        [_rawDataInputFilter updateDataFromBytes:_colorMapping size:CGSizeMake(256.0, 1.0)];
+        [_rawDataInputFilter updateDataFromBytes:_colorMapping];// size:CGSizeMake(256.0, 1.0)];
         [_rawDataInputFilter processData];
     }];
     [histogramFilter addTarget:rawDataOutputFilter];
