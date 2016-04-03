@@ -26,6 +26,7 @@
 		BCB5DDFF14E87783000AF3C2 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCB5DDFE14E87783000AF3C2 /* QuartzCore.framework */; };
 		BCB5DE0114E87789000AF3C2 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCB5DE0014E87789000AF3C2 /* OpenGLES.framework */; };
 		BCF867511725AB5300912E34 /* libGPUImage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BCF8674C1725AB2100912E34 /* libGPUImage.a */; };
+		D30ACF271BAFE43F00E9759C /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D30ACF261BAFE43F00E9759C /* AssetsLibrary.framework */; };
 		E5066F611855AC78008C7682 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E5066F601855AC78008C7682 /* Default-568h@2x.png */; };
 /* End PBXBuildFile section */
 
@@ -78,6 +79,7 @@
 		BCB5DDFB14E876ED000AF3C2 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
 		BCB5DDFE14E87783000AF3C2 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		BCB5DE0014E87789000AF3C2 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
+		D30ACF261BAFE43F00E9759C /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = System/Library/Frameworks/AssetsLibrary.framework; sourceTree = SDKROOT; };
 		E5066F601855AC78008C7682 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -86,6 +88,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D30ACF271BAFE43F00E9759C /* AssetsLibrary.framework in Frameworks */,
 				BCF867511725AB5300912E34 /* libGPUImage.a in Frameworks */,
 				BCB5DE0114E87789000AF3C2 /* OpenGLES.framework in Frameworks */,
 				BCB5DDFF14E87783000AF3C2 /* QuartzCore.framework in Frameworks */,
@@ -122,6 +125,7 @@
 		BCB5DDCD14E86899000AF3C2 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				D30ACF261BAFE43F00E9759C /* AssetsLibrary.framework */,
 				BCB5DDEA14E8756A000AF3C2 /* GPUImage.xcodeproj */,
 				BCB5DE0014E87789000AF3C2 /* OpenGLES.framework */,
 				BCB5DDFE14E87783000AF3C2 /* QuartzCore.framework */,
@@ -202,6 +206,11 @@
 			attributes = {
 				LastUpgradeCheck = 0500;
 				ORGANIZATIONNAME = "Cell Phone";
+				TargetAttributes = {
+					BCB5DDC914E86899000AF3C2 = {
+						DevelopmentTeam = V2DTUY5PQ8;
+					};
+				};
 			};
 			buildConfigurationList = BCB5DDC414E86899000AF3C2 /* Build configuration list for PBXProject "SimpleVideoFilter" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -323,7 +332,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = "../../../framework/**";
-				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
 					"-ObjC",
@@ -356,7 +365,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = "../../../framework/**";
-				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				OTHER_LDFLAGS = (
 					"-ObjC",
@@ -371,9 +380,11 @@
 		BCB5DDE314E86899000AF3C2 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "SimpleVideoFilter/SimpleVideoFilter-Prefix.pch";
 				INFOPLIST_FILE = "SimpleVideoFilter/SimpleVideoFilter-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -382,9 +393,11 @@
 		BCB5DDE414E86899000AF3C2 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "SimpleVideoFilter/SimpleVideoFilter-Prefix.pch";
 				INFOPLIST_FILE = "SimpleVideoFilter/SimpleVideoFilter-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};

@@ -2,7 +2,6 @@
 language: objective-c
 
 before_install:
-    - gem install cocoapods --pre --quiet
     - pod --version
     - pod setup --silent
     - pod repo update --silent

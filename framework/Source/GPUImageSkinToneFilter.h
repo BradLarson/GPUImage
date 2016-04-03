@@ -10,7 +10,7 @@
 
 typedef NS_ENUM(NSUInteger, GPUImageSkinToneUpperColor) {
     GPUImageSkinToneUpperColorGreen,
-     
+    GPUImageSkinToneUpperColorOrange
 };
 
 extern NSString *const kGPUImageSkinToneFragmentShaderString;

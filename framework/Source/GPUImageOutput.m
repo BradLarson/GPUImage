@@ -3,6 +3,17 @@
 #import "GPUImagePicture.h"
 #import <mach/mach.h>
 
+dispatch_queue_attr_t GPUImageDefaultQueueAttribute(void)
+{
+#if TARGET_OS_IPHONE
+    if ([[[UIDevice currentDevice] systemVersion] compare:@"9.0" options:NSNumericSearch] != NSOrderedAscending)
+    {
+        return dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL, QOS_CLASS_DEFAULT, 0);
+    }
+#endif
+    return nil;
+}
+
 void runOnMainQueueWithoutDeadlocking(void (^block)(void))
 {
 	if ([NSThread isMainThread])
