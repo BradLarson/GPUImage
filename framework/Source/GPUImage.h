@@ -72,6 +72,7 @@
 #import "GPUImagePosterizeFilter.h"
 #import "GPUImageBoxBlurFilter.h"
 #import "GPUImageAdaptiveThresholdFilter.h"
+#import "GPUImageSolarizeFilter.h"
 #import "GPUImageUnsharpMaskFilter.h"
 #import "GPUImageBulgeDistortionFilter.h"
 #import "GPUImagePinchDistortionFilter.h"
