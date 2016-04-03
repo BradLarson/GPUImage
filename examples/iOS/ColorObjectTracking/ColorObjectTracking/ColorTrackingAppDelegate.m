@@ -10,8 +10,7 @@
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.backgroundColor = [UIColor whiteColor];
     
-    colorTrackingViewController = [[ColorTrackingViewController alloc] initWithNibName:nil bundle:nil];
-    [self.window addSubview:colorTrackingViewController.view];
+    self.window.rootViewController = [[ColorTrackingViewController alloc] initWithNibName:nil bundle:nil];
     
     [self.window makeKeyAndVisible];
     return YES;
