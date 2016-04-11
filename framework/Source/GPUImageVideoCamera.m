@@ -34,10 +34,9 @@ void setColorConversion709( GLfloat conversionMatrix[9] )
     GLint yuvConversionMatrixUniform;
     const GLfloat *_preferredConversion;
     
-    BOOL isFullYUVRange;
-    
     int imageBufferWidth, imageBufferHeight;
     
+    BOOL isFullYUVRange;
     BOOL addedAudioInputsDueToEncodingTarget;
     BOOL _applicationIsActive;
 }
@@ -139,7 +138,6 @@ void setColorConversion709( GLfloat conversionMatrix[9] )
 	videoOutput = [[AVCaptureVideoDataOutput alloc] init];
 	[videoOutput setAlwaysDiscardsLateVideoFrames:NO];
     
-//    if (captureAsYUV && [GPUImageContext deviceSupportsRedTextures])
     if (captureAsYUV && [GPUImageContext supportsFastTextureUpload])
     {
         BOOL supportsFullYUVRange = NO;
