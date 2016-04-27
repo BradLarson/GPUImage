@@ -67,7 +67,7 @@ NSString *const kGPUImageVibranceFragmentShaderString = SHADER_STRING
 #pragma mark -
 #pragma mark Accessors
 
-- (void)setVibrance:(GLfloat)vibrance;
+- (void)setVibrance:(CGFloat)vibrance;
 {
     _vibrance = vibrance;
     
