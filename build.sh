@@ -2,7 +2,7 @@
 
 set -e
 
-IOSSDK_VER="9.0"
+IOSSDK_VER=$(xcrun --sdk iphoneos --show-sdk-version)
 
 # xcodebuild -showsdks
 
