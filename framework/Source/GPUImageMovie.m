@@ -695,6 +695,14 @@
         [currentTarget endProcessing];
     }
     
+    // dgm: added this - otherwise we were getting crashes when the playerItemOutput
+    // was processing already scheduled work after it had supposedly been stopped.
+    if (playerItemOutput && self.playerItem) {
+        [self.playerItem removeOutput:playerItemOutput];
+    }
+    [playerItemOutput setDelegate:nil queue:nil];
+    playerItemOutput = nil;
+    
     if (synchronizedMovieWriter != nil)
     {
         [synchronizedMovieWriter setVideoInputReadyCallback:^{return NO;}];
