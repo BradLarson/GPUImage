@@ -64,4 +64,8 @@ extern NSString *const kGPUImageColorSwizzlingFragmentShaderString;
 - (void)processAudioBuffer:(CMSampleBufferRef)audioBuffer;
 - (void)enableSynchronizationCallbacks;
 
+// dgm - ability to fall back to old behavior in case our movie writing modification
+// ends up causing problems in the wild
++ (void) useSynchronizedSetInputFramebuffer: (BOOL) bSync;
+
 @end

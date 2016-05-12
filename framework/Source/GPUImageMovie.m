@@ -134,6 +134,8 @@
 
 - (void)dealloc
 {
+    [playerItemOutput setDelegate:nil queue:nil];
+    
     // Moved into endProcessing
     //if (self.playerItem && (displayLink != nil))
     //{
@@ -250,7 +252,7 @@
         return;
     }
 
-    __unsafe_unretained GPUImageMovie *weakSelf = self;
+    __weak GPUImageMovie *weakSelf = self;
 
     if (synchronizedMovieWriter != nil)
     {
@@ -334,16 +336,25 @@
 	CFTimeInterval nextVSync = ([sender timestamp] + [sender duration]);
 
 	CMTime outputItemTime = [playerItemOutput itemTimeForHostTime:nextVSync];
-
-	if ([playerItemOutput hasNewPixelBufferForItemTime:outputItemTime]) {
-        __unsafe_unretained GPUImageMovie *weakSelf = self;
-		CVPixelBufferRef pixelBuffer = [playerItemOutput copyPixelBufferForItemTime:outputItemTime itemTimeForDisplay:NULL];
+    
+    void (^processFrame)() = ^void() {
+        __weak GPUImageMovie *weakSelf = self;
+        CVPixelBufferRef pixelBuffer = [playerItemOutput copyPixelBufferForItemTime:outputItemTime itemTimeForDisplay:NULL];
         if( pixelBuffer )
             runSynchronouslyOnVideoProcessingQueue(^{
                 [weakSelf processMovieFrame:pixelBuffer withSampleTime:outputItemTime];
                 CFRelease(pixelBuffer);
             });
+    };
+    
+    if (self.checkForNewPixelBufferDisabled) {
+        processFrame();
 	}
+    else {
+        if ([playerItemOutput hasNewPixelBufferForItemTime:outputItemTime]) {
+            processFrame();
+        }
+    }
 }
 
 - (BOOL)readNextVideoFrameFromOutput:(AVAssetReaderOutput *)readerVideoTrackOutput;
@@ -373,7 +384,7 @@
                 previousActualFrameTime = CFAbsoluteTimeGetCurrent();
             }
 
-            __unsafe_unretained GPUImageMovie *weakSelf = self;
+            __weak GPUImageMovie *weakSelf = self;
             runSynchronouslyOnVideoProcessingQueue(^{
                 [weakSelf processMovieFrame:sampleBufferRef];
                 CMSampleBufferInvalidate(sampleBufferRef);
@@ -576,10 +587,13 @@
             
             [outputFramebuffer unlock];
 
-            for (id<GPUImageInput> currentTarget in targets)
+            // FORK we copy these so we can concurrently modify the actual targets array
+            NSArray* targetsCopy = [targets copy];
+            NSArray* indices = [targetTextureIndices copy];
+            for (id<GPUImageInput> currentTarget in targetsCopy)
             {
-                NSInteger indexOfObject = [targets indexOfObject:currentTarget];
-                NSInteger targetTextureIndex = [[targetTextureIndices objectAtIndex:indexOfObject] integerValue];
+                NSInteger indexOfObject = [targetsCopy indexOfObject:currentTarget];
+                NSInteger targetTextureIndex = [[indices objectAtIndex:indexOfObject] integerValue];
                 [currentTarget newFrameReadyAtTime:currentSampleTime atIndex:targetTextureIndex];
             }
 
@@ -680,6 +694,14 @@
     {
         [currentTarget endProcessing];
     }
+    
+    // dgm: added this - otherwise we were getting crashes when the playerItemOutput
+    // was processing already scheduled work after it had supposedly been stopped.
+    if (playerItemOutput && self.playerItem) {
+        [self.playerItem removeOutput:playerItemOutput];
+    }
+    [playerItemOutput setDelegate:nil queue:nil];
+    playerItemOutput = nil;
     
     if (synchronizedMovieWriter != nil)
     {

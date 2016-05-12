@@ -16,6 +16,7 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
  }
 );
 
+static BOOL synchronizedSetInputFramebuffer = YES;
 
 @interface GPUImageMovieWriter ()
 {
@@ -65,6 +66,12 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 
 #pragma mark -
 #pragma mark Initialization and teardown
+
+// dgm - ability to fall back to old behavior in case our movie writing modification
+// ends up causing problems in the wild
++ (void) useSynchronizedSetInputFramebuffer: (BOOL) bSync {
+    synchronizedSetInputFramebuffer = bSync;
+}
 
 - (id)initWithMovieURL:(NSURL *)newMovieURL size:(CGSize)newSize;
 {
@@ -776,9 +783,19 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 - (void)setInputFramebuffer:(GPUImageFramebuffer *)newInputFramebuffer atIndex:(NSInteger)textureIndex;
 {
     [newInputFramebuffer lock];
-//    runSynchronouslyOnContextQueue(_movieWriterContext, ^{
+    
+    // dgm - only using a conditional here so that we can fall back to old behavior if the new
+    // synchronized version causes problems in the wild.  Adding runSynchronouslyOnContextQueue allows
+    // us to export videos as fast as possible without chuggy performance, which was happening without this fix
+    
+    if ( synchronizedSetInputFramebuffer ) {
+        runSynchronouslyOnContextQueue(_movieWriterContext, ^{
+            firstInputFramebuffer = newInputFramebuffer;
+        });
+    }
+    else {
         firstInputFramebuffer = newInputFramebuffer;
-//    });
+    }
 }
 
 - (void)setInputRotation:(GPUImageRotationMode)newInputRotation atIndex:(NSInteger)textureIndex;
