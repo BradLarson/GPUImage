@@ -34,11 +34,11 @@ void setColorConversion709( GLfloat conversionMatrix[9] )
     GLint yuvConversionMatrixUniform;
     const GLfloat *_preferredConversion;
     
-    BOOL isFullYUVRange;
-    
     int imageBufferWidth, imageBufferHeight;
     
+    BOOL isFullYUVRange;
     BOOL addedAudioInputsDueToEncodingTarget;
+    BOOL _applicationIsActive;
 }
 
 - (void)updateOrientationSendToTargets;
@@ -76,6 +76,22 @@ void setColorConversion709( GLfloat conversionMatrix[9] )
     {
 		return nil;
     }
+    
+    // Add listener for application state
+    BOOL applicationIsActive = [UIApplication sharedApplication].applicationState == UIApplicationStateActive;
+    runSynchronouslyOnVideoProcessingQueue(^{
+        _applicationIsActive = applicationIsActive;
+    });
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(applicationDidBecomeActive:)
+                                                 name:UIApplicationDidBecomeActiveNotification
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(applicationWillResignActive:)
+                                                 name:UIApplicationWillResignActiveNotification
+                                               object:nil];
+
     
     cameraProcessingQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH,0);
 	audioProcessingQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW,0);
@@ -122,7 +138,6 @@ void setColorConversion709( GLfloat conversionMatrix[9] )
 	videoOutput = [[AVCaptureVideoDataOutput alloc] init];
 	[videoOutput setAlwaysDiscardsLateVideoFrames:NO];
     
-//    if (captureAsYUV && [GPUImageContext deviceSupportsRedTextures])
     if (captureAsYUV && [GPUImageContext supportsFastTextureUpload])
     {
         BOOL supportsFullYUVRange = NO;
@@ -252,6 +267,23 @@ void setColorConversion709( GLfloat conversionMatrix[9] )
     }
 #endif
 }
+
+
+- (void)applicationDidBecomeActive:(NSNotification *)notification {
+    runSynchronouslyOnVideoProcessingQueue(^{
+        _applicationIsActive = YES;
+    });
+}
+
+- (void)applicationWillResignActive:(NSNotification *)notification {
+    runSynchronouslyOnVideoProcessingQueue(^{
+        _applicationIsActive = NO;
+        [GPUImageContext useImageProcessingContext];
+        glFinish();
+    });
+}
+
+
 
 - (BOOL)addAudioInputsAndOutputs
 {
