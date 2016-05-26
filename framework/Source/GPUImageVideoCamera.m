@@ -329,6 +329,57 @@ void setColorConversion709( GLfloat conversionMatrix[9] )
 
 #pragma mark -
 #pragma mark Manage the camera video stream
+- (bool) isAutoFocusSupported
+{
+    return [_inputCamera isFocusPointOfInterestSupported] ;
+}
+
+- (bool) isAutoExposureSupported
+{
+    return [_inputCamera isExposurePointOfInterestSupported];
+}
+- (void) setToAutoFocusMode
+{
+    NSError* error = nil;
+    if ([_inputCamera lockForConfiguration:&error] == NO) {
+        NSLog(@"%s|[ERROR] %@", __PRETTY_FUNCTION__, error);
+    }
+    
+    if ([_inputCamera isFocusPointOfInterestSupported])
+    {
+        _inputCamera.focusPointOfInterest = CGPointMake(.5f, .5f);
+        _inputCamera.focusMode = AVCaptureFocusModeContinuousAutoFocus;
+    }
+    [_inputCamera unlockForConfiguration];
+}
+
+/*!
+ * set focus and exposure point
+ */
+- (void)setFocus:(CGPoint)p : (CGSize) viewSize
+{
+    CGPoint pointOfInterest = CGPointMake(p.y / viewSize.height, 1.0 - p.x / viewSize.width);
+    
+    NSError* error = nil;
+    if ([_inputCamera lockForConfiguration:&error] == NO) {
+        NSLog(@"%s|[ERROR] %@", __PRETTY_FUNCTION__, error);
+    }
+    
+    if ([_inputCamera isFocusPointOfInterestSupported] &&
+        [_inputCamera isFocusModeSupported:AVCaptureFocusModeAutoFocus]) {
+        _inputCamera.focusPointOfInterest = pointOfInterest;
+        _inputCamera.focusMode = AVCaptureFocusModeAutoFocus;
+    }
+    
+    if ([_inputCamera isExposurePointOfInterestSupported] &&
+        [_inputCamera isExposureModeSupported:AVCaptureExposureModeContinuousAutoExposure]){
+        _inputCamera.exposurePointOfInterest = pointOfInterest;
+        _inputCamera.exposureMode = AVCaptureExposureModeContinuousAutoExposure;
+    }
+    
+    [_inputCamera unlockForConfiguration];
+}
+
 
 - (BOOL)isRunning;
 {
