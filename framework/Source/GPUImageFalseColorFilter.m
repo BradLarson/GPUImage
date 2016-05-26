@@ -19,9 +19,9 @@ NSString *const kGPUFalseColorFragmentShaderString = SHADER_STRING
      lowp vec4 textureColor = texture2D(inputImageTexture, textureCoordinate);
      float luminance = dot(textureColor.rgb, luminanceWeighting);
      
-     gl_FragColor = vec4( mix(firstColor.rgb, secondColor.rgb, luminance), textureColor.a);
+     gl_FragColor = vec4( mix(textureColor.rgb, mix(firstColor.rgb, secondColor.rgb, luminance), intensity), textureColor.a);
  }
-);
+ );
 #else
 NSString *const kGPUFalseColorFragmentShaderString = SHADER_STRING
 (
@@ -39,9 +39,9 @@ NSString *const kGPUFalseColorFragmentShaderString = SHADER_STRING
      vec4 textureColor = texture2D(inputImageTexture, textureCoordinate);
      float luminance = dot(textureColor.rgb, luminanceWeighting);
      
-     gl_FragColor = vec4( mix(firstColor.rgb, secondColor.rgb, luminance), textureColor.a);
+     gl_FragColor = vec4( mix(textureColor.rgb, mix(firstColor.rgb, secondColor.rgb, luminance), intensity), textureColor.a);
  }
-);
+ );
 #endif
 
 
@@ -49,19 +49,22 @@ NSString *const kGPUFalseColorFragmentShaderString = SHADER_STRING
 
 @synthesize secondColor = _secondColor;
 @synthesize firstColor = _firstColor;
+@synthesize intensity = _intensity;
 
 - (id)init;
 {
     if (!(self = [super initWithFragmentShaderFromString:kGPUFalseColorFragmentShaderString]))
     {
-		return nil;
+        return nil;
     }
     
     firstColorUniform = [filterProgram uniformIndex:@"firstColor"];
     secondColorUniform = [filterProgram uniformIndex:@"secondColor"];
+    intensityUniform = [filterProgram uniformIndex:@"intensity"];
     
-	self.firstColor = (GPUVector4){0.0f, 0.0f, 0.5f, 1.0f};
-	self.secondColor = (GPUVector4){1.0f, 0.0f, 0.0f, 1.0f};
+    self.intensity = 1.0;
+    self.firstColor = (GPUVector4){0.0f, 0.0f, 0.5f, 1.0f};
+    self.secondColor = (GPUVector4){1.0f, 0.0f, 0.0f, 1.0f};
     
     return self;
 }
@@ -72,16 +75,16 @@ NSString *const kGPUFalseColorFragmentShaderString = SHADER_STRING
 
 - (void)setFirstColor:(GPUVector4)newValue;
 {
-	_firstColor = newValue;
-	
-	[self setFirstColorRed:_firstColor.one green:_firstColor.two blue:_firstColor.three];
+    _firstColor = newValue;
+    
+    [self setFirstColorRed:_firstColor.one green:_firstColor.two blue:_firstColor.three];
 }
 
 - (void)setSecondColor:(GPUVector4)newValue;
 {
-	_secondColor = newValue;
-	
-	[self setSecondColorRed:_secondColor.one green:_secondColor.two blue:_secondColor.three];
+    _secondColor = newValue;
+    
+    [self setSecondColorRed:_secondColor.one green:_secondColor.two blue:_secondColor.three];
 }
 
 - (void)setFirstColorRed:(GLfloat)redComponent green:(GLfloat)greenComponent blue:(GLfloat)blueComponent;
@@ -96,6 +99,14 @@ NSString *const kGPUFalseColorFragmentShaderString = SHADER_STRING
     GPUVector3 secondColor = {redComponent, greenComponent, blueComponent};
     
     [self setVec3:secondColor forUniform:secondColorUniform program:filterProgram];
+}
+
+- (void)setIntensity:(CGFloat)newValue;
+{
+    _intensity = newValue;
+    
+    [self setFloat:_intensity forUniform:intensityUniform program:filterProgram];
+    
 }
 
 @end
