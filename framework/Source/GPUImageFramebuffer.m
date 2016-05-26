@@ -439,6 +439,15 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
 #endif
 }
 
+- (CVPixelBufferRef )pixelBuffer;
+{
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+    return renderTarget;
+#else
+    return NULL; // TODO: do more with this on the non-texture-cache side
+#endif
+}
+
 - (GLuint)texture;
 {
 //    NSLog(@"Accessing texture: %d from FB: %@", _texture, self);
