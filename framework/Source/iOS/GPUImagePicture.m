@@ -142,9 +142,13 @@
                 shouldRedrawUsingCoreGraphics = YES;
             } else {
                 CGBitmapInfo byteOrderInfo = bitmapInfo & kCGBitmapByteOrderMask;
+                CGImageAlphaInfo alphaInfo = bitmapInfo & kCGBitmapAlphaInfoMask;
+
+                premultiplied = alphaInfo == kCGImageAlphaPremultipliedFirst || alphaInfo == kCGImageAlphaPremultipliedLast;
+                alphaFirst = alphaInfo == kCGImageAlphaFirst || alphaInfo == kCGImageAlphaPremultipliedFirst;
+
                 if (byteOrderInfo == kCGBitmapByteOrder32Little) {
                     /* Little endian, for alpha-first we can use this bitmap directly in GL */
-                    CGImageAlphaInfo alphaInfo = bitmapInfo & kCGBitmapAlphaInfoMask;
                     if (alphaInfo != kCGImageAlphaPremultipliedFirst && alphaInfo != kCGImageAlphaFirst &&
                         alphaInfo != kCGImageAlphaNoneSkipFirst) {
                         shouldRedrawUsingCoreGraphics = YES;
@@ -152,20 +156,19 @@
                 } else if (byteOrderInfo == kCGBitmapByteOrderDefault || byteOrderInfo == kCGBitmapByteOrder32Big) {
 					isLitteEndian = NO;
                     /* Big endian, for alpha-last we can use this bitmap directly in GL */
-                    CGImageAlphaInfo alphaInfo = bitmapInfo & kCGBitmapAlphaInfoMask;
                     if (alphaInfo != kCGImageAlphaPremultipliedLast && alphaInfo != kCGImageAlphaLast &&
                         alphaInfo != kCGImageAlphaNoneSkipLast) {
                         shouldRedrawUsingCoreGraphics = YES;
                     } else {
                         /* Can access directly using GL_RGBA pixel format */
-						premultiplied = alphaInfo == kCGImageAlphaPremultipliedLast || alphaInfo == kCGImageAlphaPremultipliedLast;
-						alphaFirst = alphaInfo == kCGImageAlphaFirst || alphaInfo == kCGImageAlphaPremultipliedFirst;
 						format = GL_RGBA;
                     }
                 }
             }
         }
     }
+    if(removePremultiplication && premultiplied)
+        shouldRedrawUsingCoreGraphics = YES;
     
     //    CFAbsoluteTime elapsedTime, startTime = CFAbsoluteTimeGetCurrent();
     
