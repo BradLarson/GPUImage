@@ -31,7 +31,7 @@
     [customFilter addTarget:rawDataOutput];
     
     __unsafe_unretained GPUImageRawDataOutput * weakOutput = rawDataOutput;
-    [rawDataOutput setNewFrameAvailableBlock:^{
+    [rawDataOutput setNewFrameAvailableBlock:^(CMTime frameTime) {
         [weakOutput lockFramebufferForReading];
         GLubyte *outputBytes = [weakOutput rawBytesForImage];
         NSInteger bytesPerRow = [weakOutput bytesPerRowInOutput];

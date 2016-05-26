@@ -221,7 +221,7 @@ NSString *const kGPUImageLuminanceHistogramEqualizationFragmentShaderString = SH
     
     __unsafe_unretained GPUImageRawDataOutput *_rawDataOutputFilter = rawDataOutputFilter;
     __unsafe_unretained GPUImageRawDataInput *_rawDataInputFilter = rawDataInputFilter;
-    [rawDataOutputFilter setNewFrameAvailableBlock:^{
+    [rawDataOutputFilter setNewFrameAvailableBlock:^(CMTime frameTime){
         
         unsigned int histogramBins[3][256];
         
