@@ -6,22 +6,23 @@
 // The default type for input bytes is GPUPixelTypeUByte, unless specified with pixelType:
 
 typedef enum {
-	GPUPixelFormatBGRA = GL_BGRA,
-	GPUPixelFormatRGBA = GL_RGBA,
-	GPUPixelFormatRGB = GL_RGB,
+    GPUPixelFormatBGRA = GL_BGRA,
+    GPUPixelFormatRGBA = GL_RGBA,
+    GPUPixelFormatRGB = GL_RGB,
     GPUPixelFormatLuminance = GL_LUMINANCE
 } GPUPixelFormat;
 
 typedef enum {
-	GPUPixelTypeUByte = GL_UNSIGNED_BYTE,
-	GPUPixelTypeFloat = GL_FLOAT
+    GPUPixelTypeUByte = GL_UNSIGNED_BYTE,
+    GPUPixelTypeFloat = GL_FLOAT
 } GPUPixelType;
 
 @interface GPUImageRawDataInput : GPUImageOutput
 {
     CGSize uploadedImageSize;
-	
-	dispatch_semaphore_t dataUpdateSemaphore;
+    BOOL hasProcessedData;
+
+    dispatch_semaphore_t dataUpdateSemaphore;
 }
 
 // Initialization and teardown
