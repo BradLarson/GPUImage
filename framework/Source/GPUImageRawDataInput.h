@@ -14,7 +14,8 @@ typedef enum {
 
 typedef enum {
 	GPUPixelTypeUByte = GL_UNSIGNED_BYTE,
-	GPUPixelTypeFloat = GL_FLOAT
+	GPUPixelTypeFloat = GL_FLOAT,
+    GPUPixelTypeHalfFloat = GL_HALF_FLOAT_OES
 } GPUPixelType;
 
 @interface GPUImageRawDataInput : GPUImageOutput
