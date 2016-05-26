@@ -146,7 +146,7 @@ This will give you a live, filtered feed of the still camera's preview video. No
 
 Once you want to capture a photo, you use a callback block like the following:
 
-	[stillCamera capturePhotoProcessedUpToFilter:filter withCompletionHandler:^(UIImage *processedImage, NSError *error){
+	[stillCamera capturePhotoAsImageProcessedUpToFilter:filter withCompletionHandler:^(UIImage *processedImage, NSError *error){
 	    NSData *dataForJPEGFile = UIImageJPEGRepresentation(processedImage, 0.8);
     
 	    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
