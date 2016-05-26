@@ -39,6 +39,9 @@ void setColorConversion709( GLfloat conversionMatrix[9] )
     int imageBufferWidth, imageBufferHeight;
     
     BOOL addedAudioInputsDueToEncodingTarget;
+    
+    BOOL _pauseRequested;
+    CMSampleBufferRef _pausedFrame;
 }
 
 - (void)updateOrientationSendToTargets;
@@ -354,12 +357,20 @@ void setColorConversion709( GLfloat conversionMatrix[9] )
 
 - (void)pauseCameraCapture;
 {
-    capturePaused = YES;
+    if (!capturePaused) {
+        capturePaused = YES;
+        _pauseRequested = YES;
+    }
 }
 
 - (void)resumeCameraCapture;
 {
     capturePaused = NO;
+    _pauseRequested = NO;
+    
+    if (_pausedFrame) {
+        CFRelease(_pausedFrame);
+    }
 }
 
 - (void)rotateCamera
@@ -608,10 +619,6 @@ void setColorConversion709( GLfloat conversionMatrix[9] )
 
 - (void)processVideoSampleBuffer:(CMSampleBufferRef)sampleBuffer;
 {
-    if (capturePaused)
-    {
-        return;
-    }
     
     CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
     CVImageBufferRef cameraFrame = CMSampleBufferGetImageBuffer(sampleBuffer);
@@ -887,15 +894,27 @@ void setColorConversion709( GLfloat conversionMatrix[9] )
         
         CFRetain(sampleBuffer);
         runAsynchronouslyOnVideoProcessingQueue(^{
+            
+            if (_pauseRequested) {
+                _pausedFrame = sampleBuffer;
+                _pauseRequested = NO;
+                
+                
+                CFRetain(_pausedFrame);
+            }
+            
+            CMSampleBufferRef actualSampleBuffer = capturePaused ? _pausedFrame : sampleBuffer;
+            
             //Feature Detection Hook.
             if (self.delegate)
             {
-                [self.delegate willOutputSampleBuffer:sampleBuffer];
+                [self.delegate willOutputSampleBuffer:actualSampleBuffer];
             }
             
-            [self processVideoSampleBuffer:sampleBuffer];
-            
+            [self processVideoSampleBuffer:actualSampleBuffer];
+           
             CFRelease(sampleBuffer);
+            
             dispatch_semaphore_signal(frameRenderingSemaphore);
         });
     }
