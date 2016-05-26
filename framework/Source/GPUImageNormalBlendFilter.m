@@ -15,6 +15,10 @@
  For some reason Photoshop behaves 
  D = C1 + C2 * C2a * (1 - C1a)
  */
+/*
+ Rewritten following the premultiplied alpha formula from http://en.wikipedia.org/wiki/Alpha_compositing as our inputs
+ use premultiplied alpha. Karl von Randow 20/1/2014.
+ */
 #if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
 NSString *const kGPUImageNormalBlendFragmentShaderString = SHADER_STRING
 (
@@ -29,22 +33,7 @@ NSString *const kGPUImageNormalBlendFragmentShaderString = SHADER_STRING
      lowp vec4 c2 = texture2D(inputImageTexture, textureCoordinate);
 	 lowp vec4 c1 = texture2D(inputImageTexture2, textureCoordinate2);
      
-     lowp vec4 outputColor;
-     
-//     outputColor.r = c1.r + c2.r * c2.a * (1.0 - c1.a);
-//     outputColor.g = c1.g + c2.g * c2.a * (1.0 - c1.a);
-//     outputColor.b = c1.b + c2.b * c2.a * (1.0 - c1.a);
-//     outputColor.a = c1.a + c2.a * (1.0 - c1.a);
-     
-     lowp float a = c1.a + c2.a * (1.0 - c1.a);
-     lowp float alphaDivisor = a + step(a, 0.0); // Protect against a divide-by-zero blacking out things in the output
-
-     outputColor.r = (c1.r * c1.a + c2.r * c2.a * (1.0 - c1.a))/alphaDivisor;
-     outputColor.g = (c1.g * c1.a + c2.g * c2.a * (1.0 - c1.a))/alphaDivisor;
-     outputColor.b = (c1.b * c1.a + c2.b * c2.a * (1.0 - c1.a))/alphaDivisor;
-     outputColor.a = a;
-
-     gl_FragColor = outputColor;
+     gl_FragColor = c1 + c2 * (1.0 - c1.a);
  }
 );
 #else
@@ -61,22 +50,7 @@ NSString *const kGPUImageNormalBlendFragmentShaderString = SHADER_STRING
      vec4 c2 = texture2D(inputImageTexture, textureCoordinate);
 	 vec4 c1 = texture2D(inputImageTexture2, textureCoordinate2);
      
-     vec4 outputColor;
-     
-     //     outputColor.r = c1.r + c2.r * c2.a * (1.0 - c1.a);
-     //     outputColor.g = c1.g + c2.g * c2.a * (1.0 - c1.a);
-     //     outputColor.b = c1.b + c2.b * c2.a * (1.0 - c1.a);
-     //     outputColor.a = c1.a + c2.a * (1.0 - c1.a);
-     
-     float a = c1.a + c2.a * (1.0 - c1.a);
-     float alphaDivisor = a + step(a, 0.0); // Protect against a divide-by-zero blacking out things in the output
-
-     outputColor.r = (c1.r * c1.a + c2.r * c2.a * (1.0 - c1.a))/alphaDivisor;
-     outputColor.g = (c1.g * c1.a + c2.g * c2.a * (1.0 - c1.a))/alphaDivisor;
-     outputColor.b = (c1.b * c1.a + c2.b * c2.a * (1.0 - c1.a))/alphaDivisor;
-     outputColor.a = a;
-     
-     gl_FragColor = outputColor;
+     gl_FragColor = c1 + c2 * (1.0 - c1.a);
  }
 );
 #endif
