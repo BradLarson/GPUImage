@@ -56,4 +56,6 @@ typedef struct GPUTextureOptions {
 - (GLubyte *)byteBuffer;
 - (CVPixelBufferRef)pixelBuffer;
 
+- (CVPixelBufferRef)renderTarget;
+
 @end
