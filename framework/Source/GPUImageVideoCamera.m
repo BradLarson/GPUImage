@@ -70,7 +70,11 @@ void setColorConversion709( GLfloat conversionMatrix[9] )
     return self;
 }
 
-- (id)initWithSessionPreset:(NSString *)sessionPreset cameraPosition:(AVCaptureDevicePosition)cameraPosition; 
+- (id)initWithSessionPreset:(NSString *)sessionPreset cameraPosition:(AVCaptureDevicePosition)cameraPosition;
+{
+    return [self initWithSessionPreset:sessionPreset cameraPosition:cameraPosition session:nil];
+}
+- (id)initWithSessionPreset:(NSString *)sessionPreset cameraPosition:(AVCaptureDevicePosition)cameraPosition session:(AVCaptureSession*)session
 {
 	if (!(self = [super init]))
     {
@@ -106,7 +110,11 @@ void setColorConversion709( GLfloat conversionMatrix[9] )
     }
     
 	// Create the capture session
-	_captureSession = [[AVCaptureSession alloc] init];
+    if (session) {
+        _captureSession = session;
+    } else {
+        _captureSession = [[AVCaptureSession alloc] init];
+    }
 	
     [_captureSession beginConfiguration];
     
