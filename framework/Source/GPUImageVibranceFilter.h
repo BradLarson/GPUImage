@@ -6,7 +6,7 @@
 //
 //
 
-#import <GPUImage/GPUImage.h>
+#import "GPUImageFilter.h"
 
 @interface GPUImageVibranceFilter : GPUImageFilter
 {
