@@ -81,6 +81,7 @@
     }
     
     hasProcessedImage = NO;
+    self.imageFrameTime = kCMTimeIndefinite;
     self.shouldSmoothlyScaleOutput = smoothlyScaleOutput;
     imageUpdateSemaphore = dispatch_semaphore_create(0);
     dispatch_semaphore_signal(imageUpdateSemaphore);
@@ -330,7 +331,7 @@
             [currentTarget setCurrentlyReceivingMonochromeInput:NO];
             [currentTarget setInputSize:pixelSizeOfImage atIndex:textureIndexOfTarget];
             [currentTarget setInputFramebuffer:outputFramebuffer atIndex:textureIndexOfTarget];
-            [currentTarget newFrameReadyAtTime:kCMTimeIndefinite atIndex:textureIndexOfTarget];
+            [currentTarget newFrameReadyAtTime:self.imageFrameTime atIndex:textureIndexOfTarget];
         }
         
         dispatch_semaphore_signal(imageUpdateSemaphore);
@@ -364,7 +365,7 @@
     if (hasProcessedImage)
     {
         [newTarget setInputSize:pixelSizeOfImage atIndex:textureLocation];
-        [newTarget newFrameReadyAtTime:kCMTimeIndefinite atIndex:textureLocation];
+        [newTarget newFrameReadyAtTime:self.imageFrameTime atIndex:textureLocation];
     }
 }
 
