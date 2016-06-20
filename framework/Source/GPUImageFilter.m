@@ -131,6 +131,20 @@ NSString *const kGPUImagePassthroughFragmentShaderString = SHADER_STRING
     return self;
 }
 
+- (id)initWithVertexShaderFromFile:(NSString*)vertexShaderFileName fragmentShaderFromFile:(NSString *)fragmentShaderFilename;
+{
+    NSString *fragmentShaderPathname = [[NSBundle mainBundle] pathForResource:fragmentShaderFilename ofType:@"fsh"];
+    NSString *fragmentShaderString = [NSString stringWithContentsOfFile:fragmentShaderPathname encoding:NSUTF8StringEncoding error:nil];
+    NSString *vertexShaderPathname = [[NSBundle mainBundle] pathForResource:vertexShaderFileName ofType:@"vsh"];
+    NSString *vertexShaderString = [NSString stringWithContentsOfFile:vertexShaderPathname encoding:NSUTF8StringEncoding error:nil];
+    
+    if (!(self = [self initWithVertexShaderFromString:vertexShaderString fragmentShaderFromString:fragmentShaderString]))
+    {
+        return nil;
+    }
+    return self;
+}
+
 - (id)init;
 {
     if (!(self = [self initWithFragmentShaderFromString:kGPUImagePassthroughFragmentShaderString]))
