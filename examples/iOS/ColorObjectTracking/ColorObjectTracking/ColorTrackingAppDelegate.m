@@ -9,6 +9,8 @@
 {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.backgroundColor = [UIColor whiteColor];
+    UIViewController* vc = [[UIViewController alloc]initWithNibName:nil bundle:nil];
+    self.window.rootViewController = vc;
     
     self.window.rootViewController = [[ColorTrackingViewController alloc] initWithNibName:nil bundle:nil];
     
