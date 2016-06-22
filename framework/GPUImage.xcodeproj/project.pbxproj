@@ -717,6 +717,12 @@
 		C4ADCE2F1CB88E8200E6C03A /* GPUImageVibranceFilter.h in Sources */ = {isa = PBXBuildFile; fileRef = C4ADCE2B1CB88B9400E6C03A /* GPUImageVibranceFilter.h */; };
 		C4ADCE301CB88E8200E6C03A /* GPUImageVibranceFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = C4ADCE2C1CB88B9400E6C03A /* GPUImageVibranceFilter.m */; };
 		C4ADCE311CB8900C00E6C03A /* GPUImageVibranceFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = C4ADCE2B1CB88B9400E6C03A /* GPUImageVibranceFilter.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		C4E006E51CD188D200DD7370 /* OverlayFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = C4E006E41CD188D200DD7370 /* OverlayFilter.m */; };
+		C4E006E61CD188D200DD7370 /* OverlayFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = C4E006E41CD188D200DD7370 /* OverlayFilter.m */; };
+		C4E006E81CD1890700DD7370 /* OverlayFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = C4E006E71CD1890700DD7370 /* OverlayFilter.h */; };
+		C4E006E91CD1890700DD7370 /* OverlayFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = C4E006E71CD1890700DD7370 /* OverlayFilter.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		C4E006EA1CD18D1D00DD7370 /* OverlayFilter.h in Sources */ = {isa = PBXBuildFile; fileRef = C4E006E71CD1890700DD7370 /* OverlayFilter.h */; };
+		C4E006EB1CD18D7000DD7370 /* OverlayFilter.h in Sources */ = {isa = PBXBuildFile; fileRef = C4E006E71CD1890700DD7370 /* OverlayFilter.h */; };
 		D30ACF231BAFE3DD00E9759C /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D30ACF221BAFE3DD00E9759C /* AssetsLibrary.framework */; };
 		D443237A17C81C0C00204484 /* GPUImageMovieComposition.h in Headers */ = {isa = PBXBuildFile; fileRef = D443237817C81C0C00204484 /* GPUImageMovieComposition.h */; };
 		D443237B17C81C0C00204484 /* GPUImageMovieComposition.m in Sources */ = {isa = PBXBuildFile; fileRef = D443237917C81C0C00204484 /* GPUImageMovieComposition.m */; };
@@ -1077,6 +1083,8 @@
 		C2EDA90515BB136D007CBA0F /* GPUImageHueFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GPUImageHueFilter.m; path = Source/GPUImageHueFilter.m; sourceTree = SOURCE_ROOT; };
 		C4ADCE2B1CB88B9400E6C03A /* GPUImageVibranceFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GPUImageVibranceFilter.h; path = Source/GPUImageVibranceFilter.h; sourceTree = SOURCE_ROOT; };
 		C4ADCE2C1CB88B9400E6C03A /* GPUImageVibranceFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GPUImageVibranceFilter.m; path = Source/GPUImageVibranceFilter.m; sourceTree = SOURCE_ROOT; };
+		C4E006E41CD188D200DD7370 /* OverlayFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OverlayFilter.m; path = Source/OverlayFilter.m; sourceTree = SOURCE_ROOT; };
+		C4E006E71CD1890700DD7370 /* OverlayFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OverlayFilter.h; path = Source/OverlayFilter.h; sourceTree = SOURCE_ROOT; };
 		D30ACF221BAFE3DD00E9759C /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = System/Library/Frameworks/AssetsLibrary.framework; sourceTree = SDKROOT; };
 		D443237817C81C0C00204484 /* GPUImageMovieComposition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GPUImageMovieComposition.h; path = Source/GPUImageMovieComposition.h; sourceTree = SOURCE_ROOT; };
 		D443237917C81C0C00204484 /* GPUImageMovieComposition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GPUImageMovieComposition.m; path = Source/GPUImageMovieComposition.m; sourceTree = SOURCE_ROOT; };
@@ -1127,6 +1135,8 @@
 		BC1B715D14F4AFFF00ACA2AB /* Color processing */ = {
 			isa = PBXGroup;
 			children = (
+				C4E006E71CD1890700DD7370 /* OverlayFilter.h */,
+				C4E006E41CD188D200DD7370 /* OverlayFilter.m */,
 				C4ADCE2B1CB88B9400E6C03A /* GPUImageVibranceFilter.h */,
 				C4ADCE2C1CB88B9400E6C03A /* GPUImageVibranceFilter.m */,
 				BC982B7714F098CC0001FF6F /* GPUImageBrightnessFilter.h */,
@@ -1750,6 +1760,7 @@
 				79F8FD171C8B2AA00095AB3E /* GPUImageSolarizeFilter.h in Headers */,
 				BC3AA4B21C11104B003B7561 /* GPUImageColourFASTFeatureDetector.h in Headers */,
 				BC3AA4B31C11104E003B7561 /* GPUImageColourFASTSamplingOperation.h in Headers */,
+				C4E006E91CD1890700DD7370 /* OverlayFilter.h in Headers */,
 				C4ADCE311CB8900C00E6C03A /* GPUImageVibranceFilter.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1929,6 +1940,7 @@
 				BC6C55401730679D00EB222D /* GPUImageLaplacianFilter.h in Headers */,
 				BCB030BE173400BC001A1A20 /* GPUImageThreeInputFilter.h in Headers */,
 				BCC887CC18A1CEEB008DB37D /* GPUImageFramebuffer.h in Headers */,
+				C4E006E81CD1890700DD7370 /* OverlayFilter.h in Headers */,
 				BCC887D018A1D3AD008DB37D /* GPUImageFramebufferCache.h in Headers */,
 				574B5D8D1BEA3E5B00F4EC5A /* GPUImageColorConversion.h in Headers */,
 			);
@@ -2037,6 +2049,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C4E006EA1CD18D1D00DD7370 /* OverlayFilter.h in Sources */,
+				C4E006E61CD188D200DD7370 /* OverlayFilter.m in Sources */,
 				C4ADCE2F1CB88E8200E6C03A /* GPUImageVibranceFilter.h in Sources */,
 				C4ADCE301CB88E8200E6C03A /* GPUImageVibranceFilter.m in Sources */,
 				BC57608019441E610096FFA5 /* GPUImageContext.m in Sources */,
@@ -2214,6 +2228,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C4E006EB1CD18D7000DD7370 /* OverlayFilter.h in Sources */,
+				C4E006E51CD188D200DD7370 /* OverlayFilter.m in Sources */,
 				BC245DCB14DDBED7009FE7EB /* GPUImageFilter.m in Sources */,
 				BCB5E75D14E2086300701302 /* GPUImageView.m in Sources */,
 				BCB5E76614E208D700701302 /* GPUImageVideoCamera.m in Sources */,
