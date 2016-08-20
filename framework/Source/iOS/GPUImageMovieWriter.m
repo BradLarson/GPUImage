@@ -451,6 +451,7 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
                 SInt16 *samples = (SInt16 *)audioBufferList.mBuffers[bufferCount].mData;
                 self.audioProcessingCallback(&samples, numSamplesInBuffer);
             }
+            CFRelease(buffer);
         }
         
 //        NSLog(@"Recorded audio sample time: %lld, %d, %lld", currentSampleTime.value, currentSampleTime.timescale, currentSampleTime.epoch);
