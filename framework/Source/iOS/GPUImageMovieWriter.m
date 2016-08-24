@@ -460,7 +460,10 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
                 //NSLog(@"audio waiting...");
                 [[NSRunLoop currentRunLoop] runUntilDate:maxDate];
             }
-            if (!assetWriterAudioInput.readyForMoreMediaData)
+            if (previousFrameTime.value >= currentSampleTime.value)
+            {
+                NSLog(@"Skipping invalid frame (behind previousFrameTime");
+            } else if (!assetWriterAudioInput.readyForMoreMediaData)
             {
                 NSLog(@"2: Had to drop an audio frame %@", CFBridgingRelease(CMTimeCopyDescription(kCFAllocatorDefault, currentSampleTime)));
             }
