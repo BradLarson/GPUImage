@@ -109,6 +109,7 @@ static void report_memory(const char *msg) {
         {
             // Nothing in the cache, create a new framebuffer to use
             framebufferFromCache = [[GPUImageFramebuffer alloc] initWithSize:framebufferSize textureOptions:textureOptions onlyTexture:onlyTexture];
+            printf("Created new buffer %p for %f x %f\n", framebufferFromCache, framebufferSize.width, framebufferSize.height);
         }
         else
         {
