@@ -61,8 +61,8 @@ void setColorConversion709( GLfloat conversionMatrix[9] );
 /// Easy way to tell which cameras are present on device
 @property (readonly, getter = isFrontFacingCameraPresent) BOOL frontFacingCameraPresent;
 @property (readonly, getter = isBackFacingCameraPresent) BOOL backFacingCameraPresent;
-@property (readonly, getter = isBuiltInWideAngleCameraPresent) BOOL isBuiltInWideAngleCameraPresent;
-@property (readonly, getter = isBuiltInTelephotoCameraPresent) BOOL isBuiltInTelephotoCameraPresent;
+@property (readonly, getter = isBuiltInWideAngleCameraPresent) BOOL wideAngleCameraPresent;
+@property (readonly, getter = isBuiltInTelephotoCameraPresent) BOOL telephotoCameraPresent;
 
 /// This enables the benchmarking mode, which logs out instantaneous and average frame times to the console
 @property(readwrite, nonatomic) BOOL runBenchmark;

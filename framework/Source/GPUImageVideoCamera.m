@@ -368,7 +368,7 @@ void setColorConversion709( GLfloat conversionMatrix[9] )
         return;
     }
     
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 10000
+#if defined(__IPHONE_10_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
     AVCaptureDeviceDiscoverySession *session = [AVCaptureDeviceDiscoverySession
                                                 discoverySessionWithDeviceTypes:@[AVCaptureDeviceTypeBuiltInTelephotoCamera]
                                                 mediaType:AVMediaTypeVideo position:AVCaptureDevicePositionUnspecified];
@@ -389,7 +389,7 @@ void setColorConversion709( GLfloat conversionMatrix[9] )
         return;
     }
     
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 10000
+#if defined(__IPHONE_10_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
     AVCaptureDeviceDiscoverySession *session = [AVCaptureDeviceDiscoverySession
                                                 discoverySessionWithDeviceTypes:@[AVCaptureDeviceTypeBuiltInWideAngleCamera]
                                                 mediaType:AVMediaTypeVideo position:AVCaptureDevicePositionUnspecified];
@@ -510,7 +510,7 @@ void setColorConversion709( GLfloat conversionMatrix[9] )
         return NO;
     }
     
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 10000
+#if defined(__IPHONE_10_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
     AVCaptureDeviceDiscoverySession *session = [AVCaptureDeviceDiscoverySession
                                                 discoverySessionWithDeviceTypes:@[AVCaptureDeviceTypeBuiltInTelephotoCamera]
                                                 mediaType:AVMediaTypeVideo position:AVCaptureDevicePositionUnspecified];
@@ -531,7 +531,7 @@ void setColorConversion709( GLfloat conversionMatrix[9] )
         return YES;
     }
     
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 10000
+#if defined(__IPHONE_10_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
     AVCaptureDeviceDiscoverySession *session = [AVCaptureDeviceDiscoverySession
                                                 discoverySessionWithDeviceTypes:@[AVCaptureDeviceTypeBuiltInWideAngleCamera]
                                                 mediaType:AVMediaTypeVideo position:AVCaptureDevicePositionUnspecified];
