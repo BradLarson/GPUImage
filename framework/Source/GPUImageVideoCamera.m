@@ -516,8 +516,9 @@ void setColorConversion709( GLfloat conversionMatrix[9] )
                                                 mediaType:AVMediaTypeVideo position:AVCaptureDevicePositionUnspecified];
     
     return ([session.devices count] > 0);
+#else
+    return NO;
 #endif
-    
 }
 
 + (BOOL)isBuiltInWideAngleCameraPresent
@@ -537,8 +538,9 @@ void setColorConversion709( GLfloat conversionMatrix[9] )
                                                 mediaType:AVMediaTypeVideo position:AVCaptureDevicePositionUnspecified];
     
     return ([session.devices count] > 0);
+#else
+    return YES;
 #endif
-    
 }
 
 - (void)setCaptureSessionPreset:(NSString *)captureSessionPreset;
