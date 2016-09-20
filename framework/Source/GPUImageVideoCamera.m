@@ -362,13 +362,53 @@ void setColorConversion709( GLfloat conversionMatrix[9] )
     capturePaused = NO;
 }
 
+- (void)switchToTelePhotoCamera
+{
+    if (NSClassFromString(@"AVCaptureDeviceDiscoverySession") == nil) {
+        return;
+    }
+    
+#if defined(__IPHONE_10_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
+    AVCaptureDeviceDiscoverySession *session = [AVCaptureDeviceDiscoverySession
+                                                discoverySessionWithDeviceTypes:@[AVCaptureDeviceTypeBuiltInTelephotoCamera]
+                                                mediaType:AVMediaTypeVideo position:AVCaptureDevicePositionUnspecified];
+    AVCaptureDevice *device = [session.devices firstObject];
+    if (device == nil)
+    {
+        return;
+    }
+    
+    [self switchToCameraDevice:device];
+#endif
+
+}
+
+- (void)switchToWideAngleCamera
+{
+    if (NSClassFromString(@"AVCaptureDeviceDiscoverySession") == nil) {
+        return;
+    }
+    
+#if defined(__IPHONE_10_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
+    AVCaptureDeviceDiscoverySession *session = [AVCaptureDeviceDiscoverySession
+                                                discoverySessionWithDeviceTypes:@[AVCaptureDeviceTypeBuiltInWideAngleCamera]
+                                                mediaType:AVMediaTypeVideo position:AVCaptureDevicePositionUnspecified];
+    AVCaptureDevice *device = [session.devices firstObject];
+    if (device == nil)
+    {
+        return;
+    }
+    
+    [self switchToCameraDevice:device];
+#endif
+ 
+}
+
 - (void)rotateCamera
 {
 	if (self.frontFacingCameraPresent == NO)
 		return;
 	
-    NSError *error;
-    AVCaptureDeviceInput *newVideoInput;
     AVCaptureDevicePosition currentCameraPosition = [[videoInput device] position];
     
     if (currentCameraPosition == AVCaptureDevicePositionBack)
@@ -389,8 +429,13 @@ void setColorConversion709( GLfloat conversionMatrix[9] )
 			backFacingCamera = device;
 		}
 	}
-    newVideoInput = [[AVCaptureDeviceInput alloc] initWithDevice:backFacingCamera error:&error];
-    
+    [self switchToCameraDevice:backFacingCamera];
+}
+
+- (void)switchToCameraDevice:(AVCaptureDevice *)device
+{
+    NSError *error;
+    AVCaptureDeviceInput *newVideoInput = [[AVCaptureDeviceInput alloc] initWithDevice:device error:&error];
     if (newVideoInput != nil)
     {
         [_captureSession beginConfiguration];
@@ -409,7 +454,7 @@ void setColorConversion709( GLfloat conversionMatrix[9] )
         [_captureSession commitConfiguration];
     }
     
-    _inputCamera = backFacingCamera;
+    _inputCamera = device;
     [self setOutputImageOrientation:_outputImageOrientation];
 }
 
@@ -452,6 +497,50 @@ void setColorConversion709( GLfloat conversionMatrix[9] )
 - (BOOL)isFrontFacingCameraPresent
 {
     return [GPUImageVideoCamera isFrontFacingCameraPresent];
+}
+
++ (BOOL)isBuiltInTelephotoCameraPresent;
+{
+    return [GPUImageVideoCamera isBuiltInTelephotoCameraPresent];
+}
+
+- (BOOL)isBuiltInTelephotoCameraPresent
+{
+    if (NSClassFromString(@"AVCaptureDeviceDiscoverySession") == nil) {
+        return NO;
+    }
+    
+#if defined(__IPHONE_10_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
+    AVCaptureDeviceDiscoverySession *session = [AVCaptureDeviceDiscoverySession
+                                                discoverySessionWithDeviceTypes:@[AVCaptureDeviceTypeBuiltInTelephotoCamera]
+                                                mediaType:AVMediaTypeVideo position:AVCaptureDevicePositionUnspecified];
+    
+    return ([session.devices count] > 0);
+#else
+    return NO;
+#endif
+}
+
++ (BOOL)isBuiltInWideAngleCameraPresent
+{
+    return [GPUImageVideoCamera isBuiltInWideAngleCameraPresent];
+}
+
+- (BOOL)isBuiltInWideAngleCameraPresent
+{
+    if (NSClassFromString(@"AVCaptureDeviceDiscoverySession") == nil) {
+        return YES;
+    }
+    
+#if defined(__IPHONE_10_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
+    AVCaptureDeviceDiscoverySession *session = [AVCaptureDeviceDiscoverySession
+                                                discoverySessionWithDeviceTypes:@[AVCaptureDeviceTypeBuiltInWideAngleCamera]
+                                                mediaType:AVMediaTypeVideo position:AVCaptureDevicePositionUnspecified];
+    
+    return ([session.devices count] > 0);
+#else
+    return YES;
+#endif
 }
 
 - (void)setCaptureSessionPreset:(NSString *)captureSessionPreset;
