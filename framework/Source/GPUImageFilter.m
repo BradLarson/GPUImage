@@ -156,6 +156,11 @@ NSString *const kGPUImagePassthroughFragmentShaderString = SHADER_STRING
 
 - (void)dealloc
 {
+	//related issue : https://github.com/BradLarson/GPUImage/issues/2191
+    runAsynchronouslyOnVideoProcessingQueue(^{
+        firstInputFramebuffer = nil;
+    });
+    
 #if !OS_OBJECT_USE_OBJC
     if (imageCaptureSemaphore != NULL)
     {
