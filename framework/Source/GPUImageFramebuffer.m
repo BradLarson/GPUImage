@@ -256,6 +256,8 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size);
 
 - (void)lock;
 {
+    NSAssert(framebufferReferenceCount >= 0, @"Tried to lock a framebuffer with negative count");
+
     if (referenceCountingDisabled)
     {
         return;
