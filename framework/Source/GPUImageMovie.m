@@ -680,7 +680,6 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
             }
             
             [outputFramebuffer unlock];
-            printf("OFB %lu\n", [outputFramebuffer referenceCount]);
 
             for (id<GPUImageInput> currentTarget in targets)
             {
