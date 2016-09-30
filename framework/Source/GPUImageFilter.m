@@ -71,6 +71,7 @@ NSString *const kGPUImagePassthroughFragmentShaderString = SHADER_STRING
     backgroundColorBlue = 0.0;
     backgroundColorAlpha = 0.0;
     imageCaptureSemaphore = dispatch_semaphore_create(0);
+    _nearestPixel = NO;
     dispatch_semaphore_signal(imageCaptureSemaphore);
 
     runSynchronouslyOnVideoProcessingQueue(^{
@@ -327,6 +328,7 @@ NSString *const kGPUImagePassthroughFragmentShaderString = SHADER_STRING
 
 	glActiveTexture(GL_TEXTURE2);
 	glBindTexture(GL_TEXTURE_2D, [firstInputFramebuffer texture]);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, _nearestPixel ? GL_NEAREST : GL_LINEAR);
 	
 	glUniform1i(filterInputTextureUniform, 2);	
 

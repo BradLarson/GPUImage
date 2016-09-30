@@ -68,6 +68,7 @@ typedef struct GPUMatrix3x3 GPUMatrix3x3;
 @property(readonly) CVPixelBufferRef renderTarget;
 @property(readwrite, nonatomic) BOOL preventRendering;
 @property(readwrite, nonatomic) BOOL currentlyReceivingMonochromeInput;
+@property(readwrite, nonatomic) BOOL nearestPixel;
 
 /// @name Initialization and teardown
 
