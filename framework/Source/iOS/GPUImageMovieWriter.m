@@ -434,7 +434,6 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
         if (self.audioProcessingCallback) {
             //need to introspect into the opaque CMBlockBuffer structure to find its raw sample buffers.
             CMBlockBufferRef buffer = CMSampleBufferGetDataBuffer(audioBuffer);
-            CMItemCount numSamplesInBuffer = CMSampleBufferGetNumSamples(audioBuffer);
             AudioBufferList audioBufferList;
             
             CMSampleBufferGetAudioBufferListWithRetainedBlockBuffer(audioBuffer,
@@ -449,8 +448,9 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
             //passing a live pointer to the audio buffers, try to process them in-place or we might have syncing issues.
             for (int bufferCount=0; bufferCount < audioBufferList.mNumberBuffers; bufferCount++) {
                 SInt16 *samples = (SInt16 *)audioBufferList.mBuffers[bufferCount].mData;
-                self.audioProcessingCallback(&samples, numSamplesInBuffer);
+                self.audioProcessingCallback(&samples, audioBufferList.mBuffers[bufferCount].mDataByteSize/2);
             }
+            CFRelease(buffer);
         }
         
 //        NSLog(@"Recorded audio sample time: %lld, %d, %lld", currentSampleTime.value, currentSampleTime.timescale, currentSampleTime.epoch);
