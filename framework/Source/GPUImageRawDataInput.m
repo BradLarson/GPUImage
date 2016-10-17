@@ -1,6 +1,10 @@
 #import "GPUImageRawDataInput.h"
 
 @interface GPUImageRawDataInput()
+{
+    GLint internalFormat;
+}
+
 - (void)uploadBytes:(GLubyte *)bytesToUpload;
 @end
 
@@ -44,10 +48,29 @@
     uploadedImageSize = imageSize;
 	self.pixelFormat = pixelFormat;
 	self.pixelType = pixelType;
-        
+
     [self uploadBytes:bytesToUpload];
     
     return self;
+}
+
+- (void)setPixelFormat:(GPUPixelFormat)pixelFormat
+{
+    _pixelFormat = pixelFormat;
+
+    // Doc: https://www.khronos.org/opengles/sdk/docs/man/xhtml/glTexImage2D.xml
+    // About the internalformat parameter of glTexImage2D():
+    //   Specifies the internal format of the texture.
+    //   Must be one of the following symbolic constants: GL_ALPHA, GL_LUMINANCE, GL_LUMINANCE_ALPHA, GL_RGB, GL_RGBA.
+    switch (_pixelFormat) {
+        case GPUPixelFormatBGRA:      internalFormat = GL_RGBA; break;
+        case GPUPixelFormatRGBA:      internalFormat = GL_RGBA; break;
+        case GPUPixelFormatRGB:       internalFormat = GL_RGB; break;
+        case GPUPixelFormatLuminance: internalFormat = GL_LUMINANCE; break;
+        default:
+            NSAssert(NO, @"Unsupported pixel format: %ld", (long)_pixelFormat);
+            break;
+    }
 }
 
 // ARC forbids explicit message send of 'release'; since iOS 6 even for dispatch_release() calls: stripping it out in that case is required.
@@ -72,7 +95,7 @@
     outputFramebuffer = [[GPUImageContext sharedFramebufferCache] fetchFramebufferForSize:uploadedImageSize textureOptions:self.outputTextureOptions onlyTexture:YES];
     
     glBindTexture(GL_TEXTURE_2D, [outputFramebuffer texture]);
-    glTexImage2D(GL_TEXTURE_2D, 0, _pixelFormat, (int)uploadedImageSize.width, (int)uploadedImageSize.height, 0, (GLint)_pixelFormat, (GLenum)_pixelType, bytesToUpload);
+    glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, (int)uploadedImageSize.width, (int)uploadedImageSize.height, 0, (GLint)_pixelFormat, (GLenum)_pixelType, bytesToUpload);
 }
 
 - (void)updateDataFromBytes:(GLubyte *)bytesToUpload size:(CGSize)imageSize;
