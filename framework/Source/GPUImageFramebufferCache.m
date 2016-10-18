@@ -23,10 +23,26 @@
 @end
 
 
+#include <mach/mach.h>
+static void report_memory(const char *msg) {
+    struct task_basic_info info;
+    mach_msg_type_number_t size = sizeof(info);
+    kern_return_t kerr = task_info(mach_task_self(),
+                                   TASK_BASIC_INFO,
+                                   (task_info_t)&info,
+                                   &size);
+    if( kerr == KERN_SUCCESS ) {
+        NSLog(@"%s: in use: %.03fM", msg, info.resident_size*(1.0/(1024*1024)));
+    } else {
+        NSLog(@"%s: Error with task_info(): %s", msg, mach_error_string(kerr));
+    }
+}
+
 @implementation GPUImageFramebufferCache
 
 #pragma mark -
 #pragma mark Initialization and teardown
+
 
 - (id)init;
 {
@@ -40,7 +56,9 @@
     memoryWarningObserver = [[NSNotificationCenter defaultCenter] addObserverForName:UIApplicationDidReceiveMemoryWarningNotification object:nil queue:nil usingBlock:^(NSNotification *note) {
         __typeof__ (self) strongSelf = weakSelf;
         if (strongSelf) {
+            report_memory("Before purge");
             [strongSelf purgeAllUnassignedFramebuffers];
+            report_memory("After purge");
         }
     }];
 #else
@@ -91,6 +109,7 @@
         {
             // Nothing in the cache, create a new framebuffer to use
             framebufferFromCache = [[GPUImageFramebuffer alloc] initWithSize:framebufferSize textureOptions:textureOptions onlyTexture:onlyTexture];
+            printf("Created new buffer %p for %f x %f\n", framebufferFromCache, framebufferSize.width, framebufferSize.height);
         }
         else
         {

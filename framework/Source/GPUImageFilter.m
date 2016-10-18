@@ -71,6 +71,7 @@ NSString *const kGPUImagePassthroughFragmentShaderString = SHADER_STRING
     backgroundColorBlue = 0.0;
     backgroundColorAlpha = 0.0;
     imageCaptureSemaphore = dispatch_semaphore_create(0);
+    _nearestPixel = NO;
     dispatch_semaphore_signal(imageCaptureSemaphore);
 
     runSynchronouslyOnVideoProcessingQueue(^{
@@ -128,6 +129,20 @@ NSString *const kGPUImagePassthroughFragmentShaderString = SHADER_STRING
 		return nil;
     }
     
+    return self;
+}
+
+- (id)initWithVertexShaderFromFile:(NSString*)vertexShaderFileName fragmentShaderFromFile:(NSString *)fragmentShaderFilename;
+{
+    NSString *fragmentShaderPathname = [[NSBundle mainBundle] pathForResource:fragmentShaderFilename ofType:@"fsh"];
+    NSString *fragmentShaderString = [NSString stringWithContentsOfFile:fragmentShaderPathname encoding:NSUTF8StringEncoding error:nil];
+    NSString *vertexShaderPathname = [[NSBundle mainBundle] pathForResource:vertexShaderFileName ofType:@"vsh"];
+    NSString *vertexShaderString = [NSString stringWithContentsOfFile:vertexShaderPathname encoding:NSUTF8StringEncoding error:nil];
+    
+    if (!(self = [self initWithVertexShaderFromString:vertexShaderString fragmentShaderFromString:fragmentShaderString]))
+    {
+        return nil;
+    }
     return self;
 }
 
@@ -313,6 +328,7 @@ NSString *const kGPUImagePassthroughFragmentShaderString = SHADER_STRING
 
 	glActiveTexture(GL_TEXTURE2);
 	glBindTexture(GL_TEXTURE_2D, [firstInputFramebuffer texture]);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, _nearestPixel ? GL_NEAREST : GL_LINEAR);
 	
 	glUniform1i(filterInputTextureUniform, 2);	
 

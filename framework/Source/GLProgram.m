@@ -174,8 +174,19 @@ typedef void (*GLLogFunction) (GLuint program, GLsizei bufsize, GLsizei* length,
     
     glGetProgramiv(program, GL_LINK_STATUS, &status);
     if (status == GL_FALSE)
+    {
+        GLint logLength;
+        glGetProgramiv(program, GL_INFO_LOG_LENGTH, &logLength);
+        if (logLength > 0)
+        {
+            GLchar *log = (GLchar *)malloc(logLength);
+            glGetProgramInfoLog(program, logLength, &logLength, log);
+            self.programLog = [NSString stringWithFormat:@"%s", log];
+            free(log);
+        }
         return NO;
-    
+    }
+
     if (vertShader)
     {
         glDeleteShader(vertShader);

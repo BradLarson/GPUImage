@@ -153,4 +153,7 @@ void setColorConversion709( GLfloat conversionMatrix[9] );
 + (BOOL)isBackFacingCameraPresent;
 + (BOOL)isFrontFacingCameraPresent;
 
+- (void) setYUVConversionProgram:(NSString *)conversion;
+- (void) setYUVConversionProgramParameters:(void(^)(GLProgram *))block;
+
 @end

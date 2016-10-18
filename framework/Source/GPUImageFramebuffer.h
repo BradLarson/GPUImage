@@ -39,6 +39,7 @@ typedef struct GPUTextureOptions {
 - (void)activateFramebuffer;
 
 // Reference counting
+- (NSUInteger)referenceCount;
 - (void)lock;
 - (void)unlock;
 - (void)clearAllLocks;

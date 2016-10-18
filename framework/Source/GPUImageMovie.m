@@ -186,6 +186,11 @@
             AVKeyValueStatus tracksStatus = [inputAsset statusOfValueForKey:@"tracks" error:&error];
             if (tracksStatus != AVKeyValueStatusLoaded)
             {
+                NSLog(@"Error with media file %@: %@", self.url, error);
+                NSDictionary *userInfo = [error userInfo];
+                NSString *errorString = [[userInfo objectForKey:NSUnderlyingErrorKey] localizedDescription];
+                NSLog(@"Error string: %@", errorString);
+
                 return;
             }
             blockSelf.asset = inputAsset;
