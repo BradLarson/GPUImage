@@ -10,6 +10,10 @@ extern NSString *const kGPUImageColorSwizzlingFragmentShaderString;
 - (void)movieRecordingCompleted;
 - (void)movieRecordingFailedWithError:(NSError*)error;
 
+/**
+ * Progress of writing in range 0.0 to 1.0.
+ */
+- (void)writingProgress:(CGFloat)progress;
 @end
 
 @interface GPUImageMovieWriter : NSObject <GPUImageInput>
@@ -48,6 +52,9 @@ extern NSString *const kGPUImageColorSwizzlingFragmentShaderString;
 @property(nonatomic, copy) NSArray *metaData;
 @property(nonatomic, assign, getter = isPaused) BOOL paused;
 @property(nonatomic, retain) GPUImageContext *movieWriterContext;
+// In videofile re-encoding populate this variable before write, in order to receive delegate
+// callbacks to 'writingProgress' method of the writing progress.
+@property (nonatomic) CGFloat sourceDurationInSeconds;
 
 // Initialization and teardown
 - (id)initWithMovieURL:(NSURL *)newMovieURL size:(CGSize)newSize;
