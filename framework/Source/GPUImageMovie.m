@@ -90,6 +90,10 @@
     self.url = nil;
     self.asset = nil;
     self.playerItem = playerItem;
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(playerItemDidFinishPlaying:)
+                                                 name:AVPlayerItemDidPlayToEndTimeNotification
+                                               object:playerItem];
 
     return self;
 }
@@ -409,6 +413,13 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
                 [weakSelf processMovieFrame:pixelBuffer withSampleTime:outputItemTime];
                 CFRelease(pixelBuffer);
             });
+    }
+}
+
+- (void)playerItemDidFinishPlaying:(NSNotification *)notification
+{
+    if ([self.delegate respondsToSelector:@selector(didCompletePlayingMovie)]) {
+        [self.delegate didCompletePlayingMovie];
     }
 }
 
