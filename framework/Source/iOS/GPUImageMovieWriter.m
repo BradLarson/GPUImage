@@ -810,6 +810,12 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
             
             previousFrameTime = frameTime;
             
+            if (self.delegate && self.sourceDurationInSeconds > 0) {
+                CGFloat moviePosition = CMTimeGetSeconds(frameTime);
+                CGFloat progress = (moviePosition/self.sourceDurationInSeconds);
+                [self.delegate writingProgress:progress];
+            }
+
             if (![GPUImageContext supportsFastTextureUpload])
             {
                 CVPixelBufferRelease(pixel_buffer);
