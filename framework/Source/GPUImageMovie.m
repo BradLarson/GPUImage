@@ -160,17 +160,19 @@
 
 - (void)startProcessing
 {
+    if (_shouldRepeat) keepLooping = YES;
+    
     if( self.playerItem ) {
         [self processPlayerItem];
         return;
     }
     if(self.url == nil)
     {
-      [self processAsset];
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [self processAsset];
+    });
       return;
     }
-    
-    if (_shouldRepeat) keepLooping = YES;
     
     previousFrameTime = kCMTimeZero;
     previousActualFrameTime = CFAbsoluteTimeGetCurrent();
