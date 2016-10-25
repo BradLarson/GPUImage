@@ -160,6 +160,8 @@
 
 - (void)startProcessing
 {
+    if (_shouldRepeat) keepLooping = YES;
+    
     if( self.playerItem ) {
         [self processPlayerItem];
         return;
@@ -171,8 +173,6 @@
     });
       return;
     }
-    
-    if (_shouldRepeat) keepLooping = YES;
     
     previousFrameTime = kCMTimeZero;
     previousActualFrameTime = CFAbsoluteTimeGetCurrent();
