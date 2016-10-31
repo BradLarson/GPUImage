@@ -142,7 +142,7 @@ void GPUImageCreateResizedSampleBuffer(CVPixelBufferRef cameraFrame, CGSize fina
     
     /*dispatch_semaphore_wait(frameRenderingSemaphore, DISPATCH_TIME_FOREVER);
     
-    [photoOutput captureStillImageAsynchronouslyFromConnection:[[photoOutput connections] objectAtIndex:0] completionHandler:^(CMSampleBufferRef imageSampleBuffer, NSError *error) {
+    [photoOutput captureStillImageAsynchronouslyFromConnection:[photoOutput connections][0] completionHandler:^(CMSampleBufferRef imageSampleBuffer, NSError *error) {
         block(imageSampleBuffer, error);
     }];
      
@@ -280,7 +280,7 @@ void GPUImageCreateResizedSampleBuffer(CVPixelBufferRef cameraFrame, CGSize fina
         return;
     }
 
-    [photoOutput captureStillImageAsynchronouslyFromConnection:[[photoOutput connections] objectAtIndex:0] completionHandler:^(CMSampleBufferRef imageSampleBuffer, NSError *error) {
+    [photoOutput captureStillImageAsynchronouslyFromConnection:[photoOutput connections][0] completionHandler:^(CMSampleBufferRef imageSampleBuffer, NSError *error) {
         if(imageSampleBuffer == NULL){
             block(error);
             return;
@@ -306,7 +306,7 @@ void GPUImageCreateResizedSampleBuffer(CVPixelBufferRef cameraFrame, CGSize fina
 
             dispatch_semaphore_signal(frameRenderingSemaphore);
             [finalFilterInChain useNextFrameForImageCapture];
-            [self captureOutput:photoOutput didOutputSampleBuffer:sampleBuffer fromConnection:[[photoOutput connections] objectAtIndex:0]];
+            [self captureOutput:photoOutput didOutputSampleBuffer:sampleBuffer fromConnection:[photoOutput connections][0]];
             dispatch_semaphore_wait(frameRenderingSemaphore, DISPATCH_TIME_FOREVER);
             if (sampleBuffer != NULL)
                 CFRelease(sampleBuffer);
@@ -319,7 +319,7 @@ void GPUImageCreateResizedSampleBuffer(CVPixelBufferRef cameraFrame, CGSize fina
             {
                 dispatch_semaphore_signal(frameRenderingSemaphore);
                 [finalFilterInChain useNextFrameForImageCapture];
-                [self captureOutput:photoOutput didOutputSampleBuffer:imageSampleBuffer fromConnection:[[photoOutput connections] objectAtIndex:0]];
+                [self captureOutput:photoOutput didOutputSampleBuffer:imageSampleBuffer fromConnection:[photoOutput connections][0]];
                 dispatch_semaphore_wait(frameRenderingSemaphore, DISPATCH_TIME_FOREVER);
             }
         }

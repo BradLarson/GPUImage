@@ -29,7 +29,7 @@
 
 - (GPUImageOutput<GPUImageInput> *)filterAtIndex:(NSUInteger)filterIndex;
 {
-    return [filters objectAtIndex:filterIndex];
+    return filters[filterIndex];
 }
 
 - (NSUInteger)filterCount;
@@ -114,7 +114,7 @@
 {
 //    if ([_initialFilters count] > 0)
 //    {
-//        return [[_initialFilters objectAtIndex:0] nextAvailableTextureIndex];
+//        return [_initialFilters[0] nextAvailableTextureIndex];
 //    }
     
     return 0;

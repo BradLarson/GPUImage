@@ -228,7 +228,7 @@ static void *openGLESContextQueueKey;
 //        {
 //            for (NSUInteger currentShaderProgramRemovedFromCache = 0; currentShaderProgramRemovedFromCache < 10; currentShaderProgramRemovedFromCache++)
 //            {
-//                NSString *shaderProgramToRemoveFromCache = [shaderProgramUsageHistory objectAtIndex:0];
+//                NSString *shaderProgramToRemoveFromCache = shaderProgramUsageHistory[0];
 //                [shaderProgramUsageHistory removeObjectAtIndex:0];
 //                [shaderProgramCache removeObjectForKey:shaderProgramToRemoveFromCache];
 //            }

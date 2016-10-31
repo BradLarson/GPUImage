@@ -34,7 +34,7 @@
         for (id<GPUImageInput> currentTarget in targets)
         {
             NSInteger indexOfObject = [targets indexOfObject:currentTarget];
-            NSInteger targetTextureIndex = [[targetTextureIndices objectAtIndex:indexOfObject] integerValue];
+            NSInteger targetTextureIndex = [targetTextureIndices[indexOfObject] integerValue];
             
             [currentTarget setInputSize:textureSize atIndex:targetTextureIndex];
             [currentTarget setInputFramebuffer:outputFramebuffer atIndex:targetTextureIndex];

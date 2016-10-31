@@ -184,13 +184,13 @@ NSString *const kGPUImageLuminosityFragmentShaderString = SHADER_STRING
     glVertexAttribPointer(filterPositionAttribute, 2, GL_FLOAT, 0, 0, vertices);
     glVertexAttribPointer(filterTextureCoordinateAttribute, 2, GL_FLOAT, 0, 0, textureCoordinates);
 
-    GLuint currentFramebuffer = [[stageFramebuffers objectAtIndex:0] intValue];
+    GLuint currentFramebuffer = [stageFramebuffers[0] intValue];
     glBindFramebuffer(GL_FRAMEBUFFER, currentFramebuffer);
     
 #if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
-    CGSize currentStageSize = [[stageSizes objectAtIndex:0] CGSizeValue];
+    CGSize currentStageSize = [stageSizes[0] CGSizeValue];
 #else
-    NSSize currentStageSize = [[stageSizes objectAtIndex:0] sizeValue];
+    NSSize currentStageSize = [stageSizes[0] sizeValue];
 #endif
     glViewport(0, 0, (int)currentStageSize.width, (int)currentStageSize.height);
 
@@ -209,7 +209,7 @@ NSString *const kGPUImageLuminosityFragmentShaderString = SHADER_STRING
     
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
     
-    currentTexture = [[stageTextures objectAtIndex:0] intValue];
+    currentTexture = [stageTextures[0] intValue];
 
     // Just perform reductions from this point on
     [GPUImageContext setActiveShaderProgram:secondFilterProgram];
@@ -219,13 +219,13 @@ NSString *const kGPUImageLuminosityFragmentShaderString = SHADER_STRING
     NSUInteger numberOfStageFramebuffers = [stageFramebuffers count];
     for (NSUInteger currentStage = 1; currentStage < numberOfStageFramebuffers; currentStage++)
     {
-        currentFramebuffer = [[stageFramebuffers objectAtIndex:currentStage] intValue];
+        currentFramebuffer = [stageFramebuffers[currentStage] intValue];
         glBindFramebuffer(GL_FRAMEBUFFER, currentFramebuffer);
         
 #if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
-        currentStageSize = [[stageSizes objectAtIndex:currentStage] CGSizeValue];
+        currentStageSize = [stageSizes[currentStage] CGSizeValue];
 #else
-        currentStageSize = [[stageSizes objectAtIndex:currentStage] sizeValue];
+        currentStageSize = [stageSizes[currentStage] sizeValue];
 #endif
         glViewport(0, 0, (int)currentStageSize.width, (int)currentStageSize.height);
         
@@ -242,7 +242,7 @@ NSString *const kGPUImageLuminosityFragmentShaderString = SHADER_STRING
         
         glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
         
-        currentTexture = [[stageTextures objectAtIndex:currentStage] intValue];
+        currentTexture = [stageTextures[currentStage] intValue];
         
 //        NSUInteger totalBytesForImage = (int)currentStageSize.width * (int)currentStageSize.height * 4;
 //        GLubyte *rawImagePixels2 = (GLubyte *)malloc(totalBytesForImage);
@@ -271,7 +271,7 @@ NSString *const kGPUImageLuminosityFragmentShaderString = SHADER_STRING
 //        NSData *dataForPNGFile = UIImagePNGRepresentation(imageToSave);
 //
 //        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-//        NSString *documentsDirectory = [paths objectAtIndex:0];
+//        NSString *documentsDirectory = paths[0];
 //
 //        NSString *imageName = [NSString stringWithFormat:@"AverageLevel%d.png", currentStage];
 //        NSError *error = nil;

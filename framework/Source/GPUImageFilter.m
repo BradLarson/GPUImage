@@ -342,7 +342,7 @@ NSString *const kGPUImagePassthroughFragmentShaderString = SHADER_STRING
         if (currentTarget != self.targetToIgnoreForUpdates)
         {
             NSInteger indexOfObject = [targets indexOfObject:currentTarget];
-            NSInteger textureIndex = [[targetTextureIndices objectAtIndex:indexOfObject] integerValue];
+            NSInteger textureIndex = [targetTextureIndices[indexOfObject] integerValue];
 
             [self setInputFramebufferForTarget:currentTarget atIndex:textureIndex];
             [currentTarget setInputSize:[self outputFrameSize] atIndex:textureIndex];
@@ -367,7 +367,7 @@ NSString *const kGPUImagePassthroughFragmentShaderString = SHADER_STRING
         if (currentTarget != self.targetToIgnoreForUpdates)
         {
             NSInteger indexOfObject = [targets indexOfObject:currentTarget];
-            NSInteger textureIndex = [[targetTextureIndices objectAtIndex:indexOfObject] integerValue];
+            NSInteger textureIndex = [targetTextureIndices[indexOfObject] integerValue];
             [currentTarget newFrameReadyAtTime:frameTime atIndex:textureIndex];
         }
     }

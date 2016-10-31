@@ -559,7 +559,7 @@ void setColorConversion709( GLfloat conversionMatrix[9] )
         if ([currentTarget enabled])
         {
             NSInteger indexOfObject = [targets indexOfObject:currentTarget];
-            NSInteger textureIndexOfTarget = [[targetTextureIndices objectAtIndex:indexOfObject] integerValue];
+            NSInteger textureIndexOfTarget = [targetTextureIndices[indexOfObject] integerValue];
             
             if (currentTarget != self.targetToIgnoreForUpdates)
             {
@@ -596,7 +596,7 @@ void setColorConversion709( GLfloat conversionMatrix[9] )
         if ([currentTarget enabled])
         {
             NSInteger indexOfObject = [targets indexOfObject:currentTarget];
-            NSInteger textureIndexOfTarget = [[targetTextureIndices objectAtIndex:indexOfObject] integerValue];
+            NSInteger textureIndexOfTarget = [targetTextureIndices[indexOfObject] integerValue];
             
             if (currentTarget != self.targetToIgnoreForUpdates)
             {
@@ -1036,7 +1036,7 @@ void setColorConversion709( GLfloat conversionMatrix[9] )
         for (id<GPUImageInput> currentTarget in targets)
         {
             NSInteger indexOfObject = [targets indexOfObject:currentTarget];
-            [currentTarget setInputRotation:outputRotation atIndex:[[targetTextureIndices objectAtIndex:indexOfObject] integerValue]];
+            [currentTarget setInputRotation:outputRotation atIndex:[targetTextureIndices[indexOfObject] integerValue]];
         }
     });
 }

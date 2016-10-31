@@ -190,7 +190,7 @@
     GPUImageOutput<GPUImageInput> *theFilter = nil;
     
     for (int i = 0; i < [self.filters count]; i++) {
-        theFilter = [self.filters objectAtIndex:i];
+        theFilter = self.filters[i];
         [prevFilter removeAllTargets];
         [prevFilter addTarget:theFilter];
         prevFilter = theFilter;

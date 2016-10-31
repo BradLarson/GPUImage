@@ -80,10 +80,10 @@ unsigned short int16WithBytes(Byte* bytes);
             }
             [curves addObject:points];
         }
-        rgbCompositeCurvePoints = [curves objectAtIndex:0];
-        redCurvePoints = [curves objectAtIndex:1];
-        greenCurvePoints = [curves objectAtIndex:2];
-        blueCurvePoints = [curves objectAtIndex:3];
+        rgbCompositeCurvePoints = curves[0];
+        redCurvePoints = curves[1];
+        greenCurvePoints = curves[2];
+        blueCurvePoints = curves[3];
     }
     return self;
 }
@@ -264,9 +264,9 @@ NSString *const kGPUImageToneCurveFragmentShaderString = SHADER_STRING
         NSMutableArray *convertedPoints = [NSMutableArray arrayWithCapacity:[sortedPoints count]];
         for (int i=0; i<[points count]; i++){
 #if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
-            CGPoint point = [[sortedPoints objectAtIndex:i] CGPointValue];
+            CGPoint point = [sortedPoints[i] CGPointValue];
 #else
-            NSPoint point = [[sortedPoints objectAtIndex:i] pointValue];
+            NSPoint point = [sortedPoints[i] pointValue];
 #endif
             point.x = point.x * 255;
             point.y = point.y * 255;
@@ -284,9 +284,9 @@ NSString *const kGPUImageToneCurveFragmentShaderString = SHADER_STRING
         // If we have a first point like (0.3, 0) we'll be missing some points at the beginning
         // that should be 0.
 #if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
-        CGPoint firstSplinePoint = [[splinePoints objectAtIndex:0] CGPointValue];
+        CGPoint firstSplinePoint = [splinePoints[0] CGPointValue];
 #else
-        NSPoint firstSplinePoint = [[splinePoints objectAtIndex:0] pointValue];
+        NSPoint firstSplinePoint = [splinePoints[0] pointValue];
 #endif
         
         if (firstSplinePoint.x > 0) {
@@ -327,9 +327,9 @@ NSString *const kGPUImageToneCurveFragmentShaderString = SHADER_STRING
         for (int i=0; i<[splinePoints count]; i++) 
         {
 #if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
-            CGPoint newPoint = [[splinePoints objectAtIndex:i] CGPointValue];
+            CGPoint newPoint = [splinePoints[i] CGPointValue];
 #else
-            NSPoint newPoint = [[splinePoints objectAtIndex:i] pointValue];
+            NSPoint newPoint = [splinePoints[i] pointValue];
 #endif
             CGPoint origPoint = CGPointMake(newPoint.x, newPoint.x);
             
@@ -365,7 +365,7 @@ NSString *const kGPUImageToneCurveFragmentShaderString = SHADER_STRING
     // From NSMutableArray to sd[n];
     for (int i=0; i<n; i++) 
     {
-        sd[i] = [[sdA objectAtIndex:i] doubleValue];
+        sd[i] = [sdA[i] doubleValue];
     }
     
     
@@ -374,11 +374,11 @@ NSString *const kGPUImageToneCurveFragmentShaderString = SHADER_STRING
     for(int i=0; i<n-1 ; i++) 
     {
 #if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
-        CGPoint cur = [[points objectAtIndex:i] CGPointValue];
-        CGPoint next = [[points objectAtIndex:(i+1)] CGPointValue];
+        CGPoint cur = [points[i] CGPointValue];
+        CGPoint next = [points[i+1] CGPointValue];
 #else
-        NSPoint cur = [[points objectAtIndex:i] pointValue];
-        NSPoint next = [[points objectAtIndex:(i+1)] pointValue];
+        NSPoint cur = [points[i] pointValue];
+        NSPoint next = [points[i+1] pointValue];
 #endif
         
         for(int x=cur.x;x<(int)next.x;x++) 
@@ -430,13 +430,13 @@ NSString *const kGPUImageToneCurveFragmentShaderString = SHADER_STRING
     for(int i=1;i<n-1;i++) 
     {
 #if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
-        CGPoint P1 = [[points objectAtIndex:(i-1)] CGPointValue];
-        CGPoint P2 = [[points objectAtIndex:i] CGPointValue];
-        CGPoint P3 = [[points objectAtIndex:(i+1)] CGPointValue];
+        CGPoint P1 = [points[i-1] CGPointValue];
+        CGPoint P2 = [points[i] CGPointValue];
+        CGPoint P3 = [points[i+1] CGPointValue];
 #else
-        NSPoint P1 = [[points objectAtIndex:(i-1)] pointValue];
-        NSPoint P2 = [[points objectAtIndex:i] pointValue];
-        NSPoint P3 = [[points objectAtIndex:(i+1)] pointValue];
+        NSPoint P1 = [points[i-1] pointValue];
+        NSPoint P2 = [points[i] pointValue];
+        NSPoint P3 = [points[i+1] pointValue];
 #endif
         
         matrix[i][0]=(double)(P2.x-P1.x)/6;
@@ -510,12 +510,12 @@ NSString *const kGPUImageToneCurveFragmentShaderString = SHADER_STRING
             for (unsigned int currentCurveIndex = 0; currentCurveIndex < 256; currentCurveIndex++)
             {
                 // BGRA for upload to texture
-                GLubyte b = fmin(fmax(currentCurveIndex + [[_blueCurve objectAtIndex:currentCurveIndex] floatValue], 0), 255);
-                toneCurveByteArray[currentCurveIndex * 4] = fmin(fmax(b + [[_rgbCompositeCurve objectAtIndex:b] floatValue], 0), 255);
-                GLubyte g = fmin(fmax(currentCurveIndex + [[_greenCurve objectAtIndex:currentCurveIndex] floatValue], 0), 255);
-                toneCurveByteArray[currentCurveIndex * 4 + 1] = fmin(fmax(g + [[_rgbCompositeCurve objectAtIndex:g] floatValue], 0), 255);
-                GLubyte r = fmin(fmax(currentCurveIndex + [[_redCurve objectAtIndex:currentCurveIndex] floatValue], 0), 255);
-                toneCurveByteArray[currentCurveIndex * 4 + 2] = fmin(fmax(r + [[_rgbCompositeCurve objectAtIndex:r] floatValue], 0), 255);
+                GLubyte b = fmin(fmax(currentCurveIndex + [_blueCurve[currentCurveIndex] floatValue], 0), 255);
+                toneCurveByteArray[currentCurveIndex * 4] = fmin(fmax(b + [_rgbCompositeCurve[b] floatValue], 0), 255);
+                GLubyte g = fmin(fmax(currentCurveIndex + [_greenCurve[currentCurveIndex] floatValue], 0), 255);
+                toneCurveByteArray[currentCurveIndex * 4 + 1] = fmin(fmax(g + [_rgbCompositeCurve[g] floatValue], 0), 255);
+                GLubyte r = fmin(fmax(currentCurveIndex + [_redCurve[currentCurveIndex] floatValue], 0), 255);
+                toneCurveByteArray[currentCurveIndex * 4 + 2] = fmin(fmax(r + [_rgbCompositeCurve[r] floatValue], 0), 255);
                 toneCurveByteArray[currentCurveIndex * 4 + 3] = 255;
             }
             

@@ -40,7 +40,7 @@
 {
     if ([bufferedFramebuffers count] >= _bufferSize)
     {
-        outputFramebuffer = [bufferedFramebuffers objectAtIndex:0];
+        outputFramebuffer = bufferedFramebuffers[0];
         [bufferedFramebuffers removeObjectAtIndex:0];
     }
     else
@@ -58,7 +58,7 @@
         if (currentTarget != self.targetToIgnoreForUpdates)
         {
             NSInteger indexOfObject = [targets indexOfObject:currentTarget];
-            NSInteger textureIndex = [[targetTextureIndices objectAtIndex:indexOfObject] integerValue];
+            NSInteger textureIndex = [targetTextureIndices[indexOfObject] integerValue];
             
             [currentTarget setInputRotation:inputRotation atIndex:textureIndex];
         }

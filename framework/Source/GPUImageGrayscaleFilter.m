@@ -95,7 +95,7 @@ NSString *const kGPUImageLuminanceFragmentShaderString = SHADER_STRING
 //        if (currentTarget != self.targetToIgnoreForUpdates)
 //        {
 //            NSInteger indexOfObject = [targets indexOfObject:currentTarget];
-//            NSInteger textureIndex = [[targetTextureIndices objectAtIndex:indexOfObject] integerValue];
+//            NSInteger textureIndex = [targetTextureIndices[indexOfObject] integerValue];
 //            
 //            if ([GPUImageContext supportsFastTextureUpload] && preparedToCaptureImage)
 //            {

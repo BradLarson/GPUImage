@@ -211,7 +211,7 @@
     }
     
     // Maybe set alwaysCopiesSampleData to NO on iOS 5.0 for faster video decoding
-    AVAssetReaderTrackOutput *readerVideoTrackOutput = [AVAssetReaderTrackOutput assetReaderTrackOutputWithTrack:[[self.asset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0] outputSettings:outputSettings];
+    AVAssetReaderTrackOutput *readerVideoTrackOutput = [AVAssetReaderTrackOutput assetReaderTrackOutputWithTrack:[self.asset tracksWithMediaType:AVMediaTypeVideo][0] outputSettings:outputSettings];
     readerVideoTrackOutput.alwaysCopiesSampleData = NO;
     [assetReader addOutput:readerVideoTrackOutput];
 
@@ -228,7 +228,7 @@
 #endif
         
         // This might need to be extended to handle movies with more than one audio track
-        AVAssetTrack* audioTrack = [audioTracks objectAtIndex:0];
+        AVAssetTrack* audioTrack = audioTracks[0];
         readerAudioTrackOutput = [AVAssetReaderTrackOutput assetReaderTrackOutputWithTrack:audioTrack outputSettings:nil];
         readerAudioTrackOutput.alwaysCopiesSampleData = NO;
         [assetReader addOutput:readerAudioTrackOutput];
@@ -669,7 +669,7 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
             for (id<GPUImageInput> currentTarget in targets)
             {
                 NSInteger indexOfObject = [targets indexOfObject:currentTarget];
-                NSInteger targetTextureIndex = [[targetTextureIndices objectAtIndex:indexOfObject] integerValue];
+                NSInteger targetTextureIndex = [targetTextureIndices[indexOfObject] integerValue];
                 [currentTarget setInputSize:CGSizeMake(bufferWidth, bufferHeight) atIndex:targetTextureIndex];
                 [currentTarget setInputFramebuffer:outputFramebuffer atIndex:targetTextureIndex];
             }
@@ -679,7 +679,7 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
             for (id<GPUImageInput> currentTarget in targets)
             {
                 NSInteger indexOfObject = [targets indexOfObject:currentTarget];
-                NSInteger targetTextureIndex = [[targetTextureIndices objectAtIndex:indexOfObject] integerValue];
+                NSInteger targetTextureIndex = [targetTextureIndices[indexOfObject] integerValue];
                 [currentTarget newFrameReadyAtTime:currentSampleTime atIndex:targetTextureIndex];
             }
 
@@ -711,7 +711,7 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
 //            for (id<GPUImageInput> currentTarget in targets)
 //            {
 //                NSInteger indexOfObject = [targets indexOfObject:currentTarget];
-//                NSInteger targetTextureIndex = [[targetTextureIndices objectAtIndex:indexOfObject] integerValue];
+//                NSInteger targetTextureIndex = [targetTextureIndices[indexOfObject] integerValue];
 //
 //                [currentTarget setInputSize:CGSizeMake(bufferWidth, bufferHeight) atIndex:targetTextureIndex];
 //                [currentTarget setInputTexture:outputTexture atIndex:targetTextureIndex];
@@ -748,7 +748,7 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
         for (id<GPUImageInput> currentTarget in targets)
         {
             NSInteger indexOfObject = [targets indexOfObject:currentTarget];
-            NSInteger targetTextureIndex = [[targetTextureIndices objectAtIndex:indexOfObject] integerValue];
+            NSInteger targetTextureIndex = [targetTextureIndices[indexOfObject] integerValue];
             [currentTarget setInputSize:CGSizeMake(bufferWidth, bufferHeight) atIndex:targetTextureIndex];
             [currentTarget setInputFramebuffer:outputFramebuffer atIndex:targetTextureIndex];
         }
@@ -758,7 +758,7 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
         for (id<GPUImageInput> currentTarget in targets)
         {
             NSInteger indexOfObject = [targets indexOfObject:currentTarget];
-            NSInteger targetTextureIndex = [[targetTextureIndices objectAtIndex:indexOfObject] integerValue];
+            NSInteger targetTextureIndex = [targetTextureIndices[indexOfObject] integerValue];
             [currentTarget newFrameReadyAtTime:currentSampleTime atIndex:targetTextureIndex];
         }
         CVPixelBufferUnlockBaseAddress(movieFrame, 0);
