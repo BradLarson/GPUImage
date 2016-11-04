@@ -431,6 +431,8 @@
             CGFloat widthScaling = rotatedSize.width/self.bounds.size.width;
             CGFloat heightScaling = rotatedSize.height/self.bounds.size.height;
             CGFloat newContentScaleFactor = MAX(widthScaling, heightScaling);
+            newContentScaleFactor = MAX(newContentScaleFactor, [UIScreen mainScreen].scale);
+            
             if (fabs(newContentScaleFactor - self.contentScaleFactor) > 0.01) {
                 self.contentScaleFactor = newContentScaleFactor;
             }
