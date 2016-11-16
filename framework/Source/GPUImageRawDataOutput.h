@@ -41,4 +41,5 @@ typedef struct GPUByteColorVector GPUByteColorVector;
 - (void)lockFramebufferForReading;
 - (void)unlockFramebufferAfterReading;
 
+- (CVPixelBufferRef)pixelBuffer;
 @end
