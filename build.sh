@@ -2,13 +2,12 @@
 
 set -e
 
-IOSSDK_VER="9.0"
 
 # xcodebuild -showsdks
 
 cd framework
-xcodebuild -project GPUImage.xcodeproj -target GPUImage -configuration Release -sdk iphoneos${IOSSDK_VER} build
-xcodebuild -project GPUImage.xcodeproj -target GPUImage -configuration Release -sdk iphonesimulator${IOSSDK_VER} build
+xcodebuild -project GPUImage.xcodeproj -target GPUImage -configuration Release -sdk iphoneos build
+xcodebuild -project GPUImage.xcodeproj -target GPUImage -configuration Release -sdk iphonesimulator build
 cd ..
 
 cd build
