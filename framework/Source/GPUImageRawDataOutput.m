@@ -238,6 +238,19 @@
 #pragma mark -
 #pragma mark Accessors
 
+- (CVPixelBufferRef)pixelBuffer
+{
+    __block CVPixelBufferRef pbo = nil;
+    runSynchronouslyOnVideoProcessingQueue(^{
+        [GPUImageContext useImageProcessingContext];
+        [self renderAtInternalSize];
+        
+        glFinish();
+        pbo =  [outputFramebuffer pixelBuffer];
+    });
+    return pbo;
+}
+
 - (GLubyte *)rawBytesForImage;
 {
     if ( (_rawBytesForImage == NULL) && (![GPUImageContext supportsFastTextureUpload]) )
