@@ -21,18 +21,18 @@
 	imageSlider.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin;
     imageSlider.minimumValue = 0.0;
     imageSlider.maximumValue = 1.0;
-    imageSlider.value = 0.5;
     
     [primaryView addSubview:imageSlider];
     
     [self setupDisplayFiltering];
-    [self setupImageResampling];
-    [self setupImageFilteringToDisk];
+//    [self setupImageResampling];
+//    [self setupImageFilteringToDisk];
 }
 
-- (void)viewDidUnload
+- (void)viewDidLoad
 {
-    [super viewDidUnload];
+    [super viewDidLoad];
+    imageSlider.value = 0.5;
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
 }
@@ -47,12 +47,27 @@
 }
 
 
-- (IBAction)updateSliderValue:(id)sender
+- (void)updateSliderValue:(id)sender
 {
     CGFloat midpoint = [(UISlider *)sender value];
-    [(GPUImageTiltShiftFilter *)sepiaFilter setTopFocusLevel:midpoint - 0.1];
-    [(GPUImageTiltShiftFilter *)sepiaFilter setBottomFocusLevel:midpoint + 0.1];
-
+//    [(GPUImageTiltShiftFilter *)sepiaFilter setTopFocusLevel:midpoint - 0.1];
+//    [(GPUImageTiltShiftFilter *)sepiaFilter setBottomFocusLevel:midpoint + 0.1];
+    
+//    midpoint = (midpoint * 10) - (1 - midpoint) * 10; //曝光度
+//    [(GPUImageExposureFilter *)sepiaFilter setExposure:midpoint];
+//    midpoint = midpoint * 4.f;
+//    [(GPUImageContrastFilter *)sepiaFilter setContrast:midpoint];
+//    midpoint = midpoint * 3.f;
+//    [(GPUImageGammaFilter *)sepiaFilter setGamma:midpoint];
+//    midpoint = 4000 + (3 * midpoint) * 1000;
+//    [(GPUImageWhiteBalanceFilter *)sepiaFilter setTemperature:midpoint];
+    
+//    [(GPUImageHighlightShadowFilter *)sepiaFilter setShadows:midpoint];
+//    [(GPUImageHighlightShadowFilter *)sepiaFilter setHighlights:midpoint];
+//    midpoint = (midpoint * 3) - (1 - midpoint) * 3;
+//    [(GPUImageHazeFilter *)sepiaFilter setDistance:midpoint];
+//    [(GPUImageHazeFilter *)sepiaFilter setSlope:midpoint];
+    
     [sourcePicture processImage];
 }
 
@@ -64,15 +79,25 @@
     UIImage *inputImage = [UIImage imageNamed:@"WID-small.jpg"]; // The WID.jpg example is greater than 2048 pixels tall, so it fails on older devices
     
     sourcePicture = [[GPUImagePicture alloc] initWithImage:inputImage smoothlyScaleOutput:YES];
-    sepiaFilter = [[GPUImageTiltShiftFilter alloc] init];
+//    sepiaFilter = [[GPUImageTiltShiftFilter alloc] init];
 //    sepiaFilter = [[GPUImageSobelEdgeDetectionFilter alloc] init];
+//    GPUImageExposureFilter *filter = [[GPUImageExposureFilter alloc] init]; //曝光度
+//    GPUImageContrastFilter *filter = [[GPUImageContrastFilter alloc] init]; //对比度
+//    GPUImageSaturationFilter *filter = [[GPUImageSaturationFilter alloc] init]; //饱和度
+//    GPUImageGammaFilter *filter = [[GPUImageGammaFilter alloc] init]; //饱和度
+//    GPUImageWhiteBalanceFilter *filter = [[GPUImageWhiteBalanceFilter alloc] init]; //白平衡
+//    GPUImageHighlightShadowFilter *filter = [[GPUImageHighlightShadowFilter alloc] init];
+//    GPUImageHazeFilter *filter = [[GPUImageHazeFilter alloc] init];
+    GPUImageSepiaFilter *filter = [[GPUImageSepiaFilter alloc] init];
+    sepiaFilter = filter;
+    
     
     GPUImageView *imageView = (GPUImageView *)self.view;
     [sepiaFilter forceProcessingAtSize:imageView.sizeInPixels]; // This is now needed to make the filter run at the smaller output size
-    
-    [sourcePicture addTarget:sepiaFilter];
     [sepiaFilter addTarget:imageView];
+    
 
+    [sourcePicture addTarget:sepiaFilter];
     [sourcePicture processImage];
 }
 
@@ -86,7 +111,7 @@
     GPUImagePicture *stillImageSource = [[GPUImagePicture alloc] initWithURL:inputImageURL];
 
     GPUImageSepiaFilter *stillImageFilter = [[GPUImageSepiaFilter alloc] init];
-    GPUImageVignetteFilter *vignetteImageFilter = [[GPUImageVignetteFilter alloc] init];
+    GPUImageVignetteFilter *vignetteImageFilter = [[GPUImageVignetteFilter alloc] init]; //光晕图
     vignetteImageFilter.vignetteEnd = 0.6;
     vignetteImageFilter.vignetteStart = 0.4;
     
@@ -139,13 +164,13 @@
     // Linear downsampling
     GPUImageBrightnessFilter *passthroughFilter = [[GPUImageBrightnessFilter alloc] init];
     [passthroughFilter forceProcessingAtSize:CGSizeMake(640.0, 480.0)];
-    [stillImageSource addTarget:passthroughFilter];
     [passthroughFilter useNextFrameForImageCapture];
+    [stillImageSource addTarget:passthroughFilter];
     [stillImageSource processImage];
     UIImage *nearestNeighborImage = [passthroughFilter imageFromCurrentFramebuffer];
 
+    [stillImageSource removeAllTargets]; //clean up filter
     // Lanczos downsampling
-    [stillImageSource removeAllTargets];
     GPUImageLanczosResamplingFilter *lanczosResamplingFilter = [[GPUImageLanczosResamplingFilter alloc] init];
     [lanczosResamplingFilter forceProcessingAtSize:CGSizeMake(640.0, 480.0)];
     [stillImageSource addTarget:lanczosResamplingFilter];
@@ -154,7 +179,7 @@
     UIImage *lanczosImage = [lanczosResamplingFilter imageFromCurrentFramebuffer];
     
     // Trilinear downsampling
-    GPUImagePicture *stillImageSource2 = [[GPUImagePicture alloc] initWithImage:inputImage smoothlyScaleOutput:YES];
+    GPUImagePicture *stillImageSource2 = [[GPUImagePicture alloc] initWithImage:inputImage smoothlyScaleOutput:YES]; //smoothly
     GPUImageBrightnessFilter *passthroughFilter2 = [[GPUImageBrightnessFilter alloc] init];
     [passthroughFilter2 forceProcessingAtSize:CGSizeMake(640.0, 480.0)];
     [stillImageSource2 addTarget:passthroughFilter2];
