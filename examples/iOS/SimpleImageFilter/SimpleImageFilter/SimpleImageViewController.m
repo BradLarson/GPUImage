@@ -50,24 +50,30 @@
 - (void)updateSliderValue:(id)sender
 {
     CGFloat midpoint = [(UISlider *)sender value];
-//    [(GPUImageTiltShiftFilter *)sepiaFilter setTopFocusLevel:midpoint - 0.1];
-//    [(GPUImageTiltShiftFilter *)sepiaFilter setBottomFocusLevel:midpoint + 0.1];
+//    [(GPUImageTiltShiftFilter *)filter setTopFocusLevel:midpoint - 0.1];
+//    [(GPUImageTiltShiftFilter *)filter setBottomFocusLevel:midpoint + 0.1];
     
 //    midpoint = (midpoint * 10) - (1 - midpoint) * 10; //曝光度
-//    [(GPUImageExposureFilter *)sepiaFilter setExposure:midpoint];
+//    [(GPUImageExposureFilter *)filter setExposure:midpoint];
 //    midpoint = midpoint * 4.f;
-//    [(GPUImageContrastFilter *)sepiaFilter setContrast:midpoint];
+//    [(GPUImageContrastFilter *)filter setContrast:midpoint];
 //    midpoint = midpoint * 3.f;
-//    [(GPUImageGammaFilter *)sepiaFilter setGamma:midpoint];
+//    [(GPUImageGammaFilter *)filter setGamma:midpoint];
 //    midpoint = 4000 + (3 * midpoint) * 1000;
-//    [(GPUImageWhiteBalanceFilter *)sepiaFilter setTemperature:midpoint];
+//    [(GPUImageWhiteBalanceFilter *)filter setTemperature:midpoint];
     
-//    [(GPUImageHighlightShadowFilter *)sepiaFilter setShadows:midpoint];
-//    [(GPUImageHighlightShadowFilter *)sepiaFilter setHighlights:midpoint];
+//    [(GPUImageHighlightShadowFilter *)filter setShadows:midpoint];
+//    [(GPUImageHighlightShadowFilter *)filter setHighlights:midpoint];
 //    midpoint = (midpoint * 3) - (1 - midpoint) * 3;
-//    [(GPUImageHazeFilter *)sepiaFilter setDistance:midpoint];
-//    [(GPUImageHazeFilter *)sepiaFilter setSlope:midpoint];
-    
+//    [(GPUImageHazeFilter *)filter setDistance:midpoint];
+//    [(GPUImageHazeFilter *)filter setSlope:midpoint];
+//    midpoint = midpoint * 4;
+//    [(GPUImageAdaptiveThresholdFilter *)filter setBlurRadiusInPixels:midpoint];
+//    [(GPUImageSolarizeFilter *)filter setThreshold:midpoint];
+//    [(GPUImageAverageLuminanceThresholdFilter *)filter setThresholdMultiplier:midpoint];
+//    [(GPUImageHistogramGenerator *)filter setThresholdMultiplier:midpoint];
+//    [(GPUImageHighlightShadowFilter *)filter setShadows:midpoint];
+    [(GPUImageLookupFilter *)filter setIntensity:midpoint];
     [sourcePicture processImage];
 }
 
@@ -79,8 +85,8 @@
     UIImage *inputImage = [UIImage imageNamed:@"WID-small.jpg"]; // The WID.jpg example is greater than 2048 pixels tall, so it fails on older devices
     
     sourcePicture = [[GPUImagePicture alloc] initWithImage:inputImage smoothlyScaleOutput:YES];
-//    sepiaFilter = [[GPUImageTiltShiftFilter alloc] init];
-//    sepiaFilter = [[GPUImageSobelEdgeDetectionFilter alloc] init];
+//    filter = [[GPUImageTiltShiftFilter alloc] init];
+//    filter = [[GPUImageSobelEdgeDetectionFilter alloc] init];
 //    GPUImageExposureFilter *filter = [[GPUImageExposureFilter alloc] init]; //曝光度
 //    GPUImageContrastFilter *filter = [[GPUImageContrastFilter alloc] init]; //对比度
 //    GPUImageSaturationFilter *filter = [[GPUImageSaturationFilter alloc] init]; //饱和度
@@ -88,16 +94,26 @@
 //    GPUImageWhiteBalanceFilter *filter = [[GPUImageWhiteBalanceFilter alloc] init]; //白平衡
 //    GPUImageHighlightShadowFilter *filter = [[GPUImageHighlightShadowFilter alloc] init];
 //    GPUImageHazeFilter *filter = [[GPUImageHazeFilter alloc] init];
-    GPUImageSepiaFilter *filter = [[GPUImageSepiaFilter alloc] init];
-    sepiaFilter = filter;
+//    GPUImageSepiaFilter *filter = [[GPUImageSepiaFilter alloc] init];             //褐色
+//    GPUImageColorInvertFilter *filter = [[GPUImageColorInvertFilter alloc] init]; //反色
+//    GPUImageGrayscaleFilter *filter = [[GPUImageGrayscaleFilter alloc] init]; //灰度
+//    GPUImageLuminanceThresholdFilter *targetFilter = [[GPUImageLuminanceThresholdFilter alloc] init]; //亮度
+//    GPUImageAdaptiveThresholdFilter *targetFilter = [[GPUImageAdaptiveThresholdFilter alloc] init]; //亮度
+//    GPUImageSolarizeFilter *targetFilter = [[GPUImageSolarizeFilter alloc] init]; //曝光
+//    GPUImageAverageLuminanceThresholdFilter *targetFilter = [[GPUImageAverageLuminanceThresholdFilter alloc] init]; //曝光
+//    GPUImageHistogramFilter* targetFilter = [[GPUImageHistogramFilter alloc] initWithHistogramType:kGPUImageHistogramRed];
+//    GPUImageHistogramGenerator *targetFilter = [[GPUImageHistogramGenerator alloc] init]; //柱状图
+//    GPUImageHistogramGenerator *targetFilter = [[GPUImageHistogramGenerator alloc] init];
+    GPUImageLookupFilter *targetFilter = [[GPUImageLookupFilter alloc] init];
+    filter = targetFilter;
     
     
     GPUImageView *imageView = (GPUImageView *)self.view;
-    [sepiaFilter forceProcessingAtSize:imageView.sizeInPixels]; // This is now needed to make the filter run at the smaller output size
-    [sepiaFilter addTarget:imageView];
+    [filter forceProcessingAtSize:imageView.sizeInPixels]; // This is now needed to make the filter run at the smaller output size
+    [filter addTarget:imageView];
     
 
-    [sourcePicture addTarget:sepiaFilter];
+    [sourcePicture addTarget:filter];
     [sourcePicture processImage];
 }
 
