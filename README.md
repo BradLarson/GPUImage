@@ -583,10 +583,6 @@ There are currently 125 built-in filters, divided into the following categories:
 
 - **GPUImageSourceOverBlendFilter**: Applies a source over blend of two images
 
-- **GPUImageColorBurnBlendFilter**: Applies a color burn blend of two images
-
-- **GPUImageColorDodgeBlendFilter**: Applies a color dodge blend of two images
-
 - **GPUImageNormalBlendFilter**: Applies a normal blend of two images
 
 - **GPUImageColorBlendFilter**: Applies a color blend of two images
