@@ -31,7 +31,8 @@ NSString *const kGPUImageCrosshairFragmentShaderString = SHADER_STRING
      lowp vec2 distanceFromCenter = abs(centerLocation - gl_PointCoord.xy);
      lowp float axisTest = step(pointSpacing, gl_PointCoord.y) * step(distanceFromCenter.x, 0.09) + step(pointSpacing, gl_PointCoord.x) * step(distanceFromCenter.y, 0.09);
 
-     gl_FragColor = vec4(crosshairColor * axisTest, axisTest);
+      if (axisTest > 0.0) gl_FragColor = vec4(crosshairColor * axisTest, axisTest);
+      else discard;
 //     gl_FragColor = vec4(distanceFromCenterInX, distanceFromCenterInY, 0.0, 1.0);
  }
 );
@@ -50,7 +51,8 @@ NSString *const kGPUImageCrosshairFragmentShaderString = SHADER_STRING
      vec2 distanceFromCenter = abs(centerLocation - gl_PointCoord.xy);
      float axisTest = step(pointSpacing, gl_PointCoord.y) * step(distanceFromCenter.x, 0.09) + step(pointSpacing, gl_PointCoord.x) * step(distanceFromCenter.y, 0.09);
      
-     gl_FragColor = vec4(crosshairColor * axisTest, axisTest);
+      if (axisTest > 0.0) gl_FragColor = vec4(crosshairColor * axisTest, axisTest);
+      else discard;
      //     gl_FragColor = vec4(distanceFromCenterInX, distanceFromCenterInY, 0.0, 1.0);
  }
 );
