@@ -161,6 +161,8 @@ void reportAvailableMemoryForGPUImage(NSString *tag)
     _outputTextureOptions.internalFormat = GL_RGBA;
     _outputTextureOptions.format = GL_BGRA;
     _outputTextureOptions.type = GL_UNSIGNED_BYTE;
+  
+    _shouldMatchOrientationToDevice = YES;
 
     return self;
 }
@@ -329,27 +331,30 @@ void reportAvailableMemoryForGPUImage(NSString *tag)
 
 - (UIImage *)imageFromCurrentFramebuffer;
 {
-	UIDeviceOrientation deviceOrientation = [[UIDevice currentDevice] orientation];
-    UIImageOrientation imageOrientation = UIImageOrientationLeft;
-	switch (deviceOrientation)
-    {
-		case UIDeviceOrientationPortrait:
-			imageOrientation = UIImageOrientationUp;
-			break;
-		case UIDeviceOrientationPortraitUpsideDown:
-			imageOrientation = UIImageOrientationDown;
-			break;
-		case UIDeviceOrientationLandscapeLeft:
-			imageOrientation = UIImageOrientationLeft;
-			break;
-		case UIDeviceOrientationLandscapeRight:
-			imageOrientation = UIImageOrientationRight;
-			break;
-		default:
-			imageOrientation = UIImageOrientationUp;
-			break;
-	}
+    UIImageOrientation imageOrientation = UIImageOrientationUp;
     
+    if (_shouldMatchOrientationToDevice) {
+        UIDeviceOrientation deviceOrientation = [[UIDevice currentDevice] orientation];
+        switch (deviceOrientation)
+        {
+          case UIDeviceOrientationPortrait:
+            imageOrientation = UIImageOrientationUp;
+            break;
+          case UIDeviceOrientationPortraitUpsideDown:
+            imageOrientation = UIImageOrientationDown;
+            break;
+          case UIDeviceOrientationLandscapeLeft:
+            imageOrientation = UIImageOrientationLeft;
+            break;
+          case UIDeviceOrientationLandscapeRight:
+            imageOrientation = UIImageOrientationRight;
+            break;
+          default:
+            imageOrientation = UIImageOrientationUp;
+            break;
+        }
+    }
+  
     return [self imageFromCurrentFramebufferWithOrientation:imageOrientation];
 }
 

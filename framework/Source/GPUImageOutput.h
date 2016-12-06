@@ -59,6 +59,7 @@ void reportAvailableMemoryForGPUImage(NSString *tag);
 @property(nonatomic, copy) void(^frameProcessingCompletionBlock)(GPUImageOutput*, CMTime);
 @property(nonatomic) BOOL enabled;
 @property(readwrite, nonatomic) GPUTextureOptions outputTextureOptions;
+@property(readwrite) BOOL shouldMatchOrientationToDevice;
 
 /// @name Managing targets
 - (void)setInputFramebufferForTarget:(id<GPUImageInput>)target atIndex:(NSInteger)inputTextureIndex;

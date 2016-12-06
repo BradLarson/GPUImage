@@ -14,6 +14,14 @@
 
 #pragma mark Config file init
 
+- (instancetype)init {
+  self = [super init];
+  if (self) {
+    self.filters = [NSMutableArray array];
+  }
+  return self;
+}
+
 - (id)initWithConfiguration:(NSDictionary *)configuration input:(GPUImageOutput *)input output:(id <GPUImageInput>)output {
     self = [super init];
     if (self) {
@@ -182,6 +190,16 @@
 - (void)replaceAllFilters:(NSArray *)newFilters {
     self.filters = [NSMutableArray arrayWithArray:newFilters];
     [self _refreshFilters];
+}
+
+- (void)setInput:(GPUImageOutput *)input {
+  _input = input;
+  [self _refreshFilters];
+}
+
+- (void)setOutput:(id<GPUImageInput>)output {
+  _output = output;
+  [self _refreshFilters];
 }
 
 - (void)_refreshFilters {
