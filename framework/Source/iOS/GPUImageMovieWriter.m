@@ -35,6 +35,9 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
     BOOL audioEncodingIsFinished, videoEncodingIsFinished;
 
     BOOL isRecording;
+    
+    BOOL _isVideoReady;
+    BOOL _isAudioReady;
 }
 
 // Movie recording
@@ -379,14 +382,17 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
         
         if (CMTIME_IS_INVALID(startTime))
         {
-            runSynchronouslyOnContextQueue(_movieWriterContext, ^{
-                if ((audioInputReadyCallback == NULL) && (assetWriter.status != AVAssetWriterStatusWriting))
-                {
-                    [assetWriter startWriting];
-                }
-                [assetWriter startSessionAtSourceTime:currentSampleTime];
-                startTime = currentSampleTime;
-            });
+            if (_isVideoReady) {
+                runSynchronouslyOnContextQueue(_movieWriterContext, ^{
+                    if ((audioInputReadyCallback == NULL) && (assetWriter.status != AVAssetWriterStatusWriting))
+                    {
+                        [assetWriter startWriting];
+                    }
+                    [assetWriter startSessionAtSourceTime:currentSampleTime];
+                    startTime = currentSampleTime;
+                });
+            }
+            _isAudioReady = YES;
         }
 
         if (!assetWriterAudioInput.readyForMoreMediaData && _encodingLiveVideo)
@@ -736,15 +742,18 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 
     if (CMTIME_IS_INVALID(startTime))
     {
-        runSynchronouslyOnContextQueue(_movieWriterContext, ^{
-            if ((videoInputReadyCallback == NULL) && (assetWriter.status != AVAssetWriterStatusWriting))
-            {
-                [assetWriter startWriting];
-            }
-            
-            [assetWriter startSessionAtSourceTime:frameTime];
-            startTime = frameTime;
-        });
+        if (!_hasAudioTrack || _isAudioReady) {
+            runSynchronouslyOnContextQueue(_movieWriterContext, ^{
+                if ((videoInputReadyCallback == NULL) && (assetWriter.status != AVAssetWriterStatusWriting))
+                {
+                    [assetWriter startWriting];
+                }
+                
+                [assetWriter startSessionAtSourceTime:frameTime];
+                startTime = frameTime;
+            });
+        }
+        _isVideoReady = YES;
     }
 
     GPUImageFramebuffer *inputFramebufferForBlock = firstInputFramebuffer;
