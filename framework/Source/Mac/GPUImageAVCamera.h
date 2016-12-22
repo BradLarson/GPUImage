@@ -7,6 +7,8 @@
 //Delegate Protocal for Face Detection.
 @protocol GPUImageVideoCameraDelegate <NSObject>
 
+-(void)updateAudioLevel:(float)decibels;
+
 @optional
 - (void)willOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer;
 @end
@@ -108,6 +110,12 @@
  @param sampleBuffer Buffer to process
  */
 - (void)processAudioSampleBuffer:(CMSampleBufferRef)sampleBuffer;
+
+/** Allow custom audio inputs
+  @param newValue MovieWriter target
+  @param microphone Audio source
+ */
+- (void)setAudioEncodingTarget:(GPUImageMovieWriter *)newValue withAudioInput:(AVCaptureDevice*)microphone;
 
 /** Get the position (front, rear) of the source camera
  */
