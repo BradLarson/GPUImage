@@ -41,5 +41,45 @@
 - (void)setMin:(CGFloat)min gamma:(CGFloat)mid max:(CGFloat)max minOut:(CGFloat)minOut maxOut:(CGFloat)maxOut;
 - (void)setMin:(CGFloat)min gamma:(CGFloat)mid max:(CGFloat)max;
 
+/** Get levels individually */
+
+- (float)getRedMin;
+- (float)getRedMid;
+- (float)getRedMax;
+- (float)getRedMinOut;
+- (float)getRedMaxOut;
+
+- (float)getGreenMin;
+- (float)getGreenMid;
+- (float)getGreenMax;
+- (float)getGreenMinOut;
+- (float)getGreenMaxOut;
+
+- (float)getBlueMin;
+- (float)getBlueMid;
+- (float)getBlueMax;
+- (float)getBlueMinOut;
+- (float)getBlueMaxOut;
+
+/** Set levels individually */
+
+- (void)setRedMin:(float)value;
+- (void)setRedMid:(float)value;
+- (void)setRedMax:(float)value;
+- (void)setRedMinOut:(float)value;
+- (void)setRedMaxOut:(float)value;
+
+- (void)setGreenMin:(float)value;
+- (void)setGreenMid:(float)value;
+- (void)setGreenMax:(float)value;
+- (void)setGreenMinOut:(float)value;
+- (void)setGreenMaxOut:(float)value;
+
+- (void)setBlueMin:(float)value;
+- (void)setBlueMid:(float)value;
+- (void)setBlueMax:(float)value;
+- (void)setBlueMinOut:(float)value;
+- (void)setBlueMaxOut:(float)value;
+
 @end
 
