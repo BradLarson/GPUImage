@@ -836,7 +836,6 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
         [inputFramebufferForBlock unlock];
         
         if (willFinish && CMTimeCompare(previousFrameTime, previousAudioTime) != -1) {
-            willFinish = NO;
             [self finishRecordingWithCompletionHandler:completeHandler];
         }
     });
