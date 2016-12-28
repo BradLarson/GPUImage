@@ -84,31 +84,32 @@
         dispatch_time_t stopTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
         dispatch_after(stopTime, dispatch_get_main_queue(), ^(void){
             
-            [filter removeTarget:movieWriter];
-            videoCamera.audioEncodingTarget = nil;
-            [movieWriter finishRecording];
-            NSLog(@"Movie completed");
-            
-            ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
-            if ([library videoAtPathIsCompatibleWithSavedPhotosAlbum:movieURL])
-            {
-                [library writeVideoAtPathToSavedPhotosAlbum:movieURL completionBlock:^(NSURL *assetURL, NSError *error)
-                 {
-                     dispatch_async(dispatch_get_main_queue(), ^{
-                         
-                         if (error) {
-                             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"Video Saving Failed"
-                                                                            delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-                             [alert show];
-                         } else {
-                             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Video Saved" message:@"Saved To Photo Album"
-                                                                            delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
-                             [alert show];
-                         }
-                     });
-                 }];
-            }
-            
+            [movieWriter finishRecordingWithCompletionHandler:^{
+                [filter removeTarget:movieWriter];
+                videoCamera.audioEncodingTarget = nil;
+                NSLog(@"Movie completed");
+                
+                ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
+                if ([library videoAtPathIsCompatibleWithSavedPhotosAlbum:movieURL])
+                {
+                    [library writeVideoAtPathToSavedPhotosAlbum:movieURL completionBlock:^(NSURL *assetURL, NSError *error)
+                     {
+                         dispatch_async(dispatch_get_main_queue(), ^{
+                             
+                             if (error) {
+                                 UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"Video Saving Failed"
+                                                                                delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                                 [alert show];
+                             } else {
+                                 UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Video Saved" message:@"Saved To Photo Album"
+                                                                                delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                                 [alert show];
+                             }
+                         });
+                     }];
+                }
+                
+            }];
 //            [videoCamera.inputCamera lockForConfiguration:nil];
 //            [videoCamera.inputCamera setTorchMode:AVCaptureTorchModeOff];
 //            [videoCamera.inputCamera unlockForConfiguration];
