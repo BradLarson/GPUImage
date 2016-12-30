@@ -25,6 +25,16 @@ extern dispatch_queue_attr_t GPUImageDefaultQueueAttribute(void);
 
 static void *openGLESContextQueueKey;
 
+- (void)dealloc
+{
+#if !OS_OBJECT_USE_OBJC
+    if (_contextQueue != NULL)
+    {
+        dispatch_release(_contextQueue);
+    }
+#endif
+}
+
 - (id)init;
 {
     if (!(self = [super init]))
