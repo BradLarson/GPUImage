@@ -167,4 +167,6 @@
 #import "GPUImageColorConversion.h"
 #import "GPUImageColourFASTFeatureDetector.h"
 #import "GPUImageColourFASTSamplingOperation.h"
+#import "GPUImageVibranceFilter.h"
+#import "GPUImageSolarizeFilter.h"
 
