@@ -225,7 +225,7 @@ NSString *const kGPUImageTwoInputTextureVertexShaderString = SHADER_STRING
             hasReceivedSecondFrame = YES;
         }
         
-        // If second frame is indefinite, we are read to proceed, either it is also a still image or a movie, either is fine
+        // If second frame is indefinite, we are ready to proceed, either it is also a still image or a movie, either is fine
         if CMTIME_IS_INDEFINITE(secondFrameTime)
         {
             haveNeededFrames = YES;
@@ -240,14 +240,14 @@ NSString *const kGPUImageTwoInputTextureVertexShaderString = SHADER_STRING
             hasReceivedFirstFrame = YES;
         }
         
-        // If first frame is indefinite, we are read to proceed, either it is also a still image or a movie, either is fine
+        // If first frame is indefinite, we are ready to proceed, either it is also a still image or a movie, either is fine
         if CMTIME_IS_INDEFINITE(firstFrameTime)
         {
             haveNeededFrames = YES;
         }
     }
     
-    // || (hasReceivedFirstFrame && secondFrameCheckDisabled) || (hasReceivedSecondFrame && firstFrameCheckDisabled)
+    // Ready to proceed as long as we frames on both inputs or just on one input as long as the other input is static
     if ((hasReceivedFirstFrame && hasReceivedSecondFrame) || haveNeededFrames)
     {
         CMTime passOnFrameTime = (!CMTIME_IS_INDEFINITE(firstFrameTime)) ? firstFrameTime : secondFrameTime;
