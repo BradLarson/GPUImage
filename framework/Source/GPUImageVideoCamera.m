@@ -844,6 +844,9 @@ void setColorConversion709( GLfloat conversionMatrix[9] )
 	glUniform1i(yuvConversionChrominanceTextureUniform, 5);
 
     glUniformMatrix3fv(yuvConversionMatrixUniform, 1, GL_FALSE, _preferredConversion);
+    
+    glEnableVertexAttribArray(yuvConversionPositionAttribute);
+    glEnableVertexAttribArray(yuvConversionTextureCoordinateAttribute);
 
     glVertexAttribPointer(yuvConversionPositionAttribute, 2, GL_FLOAT, 0, 0, squareVertices);
 	glVertexAttribPointer(yuvConversionTextureCoordinateAttribute, 2, GL_FLOAT, 0, 0, [GPUImageFilter textureCoordinatesForRotation:internalRotation]);
