@@ -299,7 +299,7 @@
                 
             [reader cancelReading];
 
-            if (keepLooping) {
+            if (keepLooping && _shouldRepeat) {
                 reader = nil;
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [self startProcessing];
