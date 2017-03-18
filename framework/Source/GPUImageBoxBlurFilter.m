@@ -81,7 +81,7 @@
      \n\
      void main()\n\
      {\n\
-     vec4 sum = vec4(0.0);\n", 1 + (numberOfOptimizedOffsets * 2) ];
+     vec4 sum = vec4(0.0);\n", (unsigned long)(1 + (numberOfOptimizedOffsets * 2)) ];
 #endif
     
     GLfloat boxWeight = 1.0 / (GLfloat)((blurRadius * 2) + 1);

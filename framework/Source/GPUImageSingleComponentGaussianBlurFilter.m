@@ -138,7 +138,7 @@
      \n\
      void main()\n\
      {\n\
-     float sum = 0.0;\n", 1 + (numberOfOptimizedOffsets * 2) ];
+     float sum = 0.0;\n", (unsigned long)(1 + (numberOfOptimizedOffsets * 2)) ];
 #endif
     
     // Inner texture loop

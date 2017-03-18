@@ -139,7 +139,7 @@
      \n\
      void main()\n\
      {\n\
-        vec4 sum = vec4(0.0);\n", (blurRadius * 2 + 1) ];
+        vec4 sum = vec4(0.0);\n", (unsigned long)(blurRadius * 2 + 1) ];
 #endif
 
     // Inner texture loop
@@ -301,7 +301,7 @@
      \n\
      void main()\n\
      {\n\
-        vec4 sum = vec4(0.0);\n", 1 + (numberOfOptimizedOffsets * 2) ];
+        vec4 sum = vec4(0.0);\n", (unsigned long)(1 + (numberOfOptimizedOffsets * 2)) ];
 #endif
 
     // Inner texture loop
