@@ -176,9 +176,9 @@ NSString *const kGPUImageLanczosFragmentShaderString = SHADER_STRING
     if (GPUImageRotationSwapsWidthAndHeight(inputRotation))
     {
         currentFBOSize.height = self.originalImageSize.height;
-    }
-    else
-    {
+//    }
+//    else
+//    {
         currentFBOSize.width = self.originalImageSize.width;
     }
     outputFramebuffer = [[GPUImageContext sharedFramebufferCache] fetchFramebufferForSize:currentFBOSize textureOptions:self.outputTextureOptions onlyTexture:NO];
