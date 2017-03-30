@@ -491,6 +491,17 @@ NSString *const kGPUImagePassthroughFragmentShaderString = SHADER_STRING
     });
 }
 
+- (void)setVec2:(GPUVector2)vectorValue forUniform:(GLint)uniform program:(GLProgram *)shaderProgram
+{
+    runAsynchronouslyOnVideoProcessingQueue(^{
+        [GPUImageContext setActiveShaderProgram:shaderProgram];
+        
+        [self setAndExecuteUniformStateCallbackAtIndex:uniform forProgram:shaderProgram toBlock:^{
+            glUniform2fv(uniform, 1, (GLfloat *)&vectorValue);
+        }];
+    });
+}
+
 - (void)setVec3:(GPUVector3)vectorValue forUniform:(GLint)uniform program:(GLProgram *)shaderProgram;
 {
     runAsynchronouslyOnVideoProcessingQueue(^{
