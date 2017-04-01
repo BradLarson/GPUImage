@@ -88,8 +88,12 @@ NSString *const kGPUImageTwoInputTextureVertexShaderString = SHADER_STRING
 {
     if (self.preventRendering)
     {
-        [firstInputFramebuffer unlock];
-        [secondInputFramebuffer unlock];
+        if (firstFrameCheckDisabled == NO) {
+            [firstInputFramebuffer unlock];
+        }
+        if (secondFrameCheckDisabled == NO) {
+            [secondInputFramebuffer unlock];
+        }
         return;
     }
     
@@ -120,8 +124,12 @@ NSString *const kGPUImageTwoInputTextureVertexShaderString = SHADER_STRING
     
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
-    [firstInputFramebuffer unlock];
-    [secondInputFramebuffer unlock];
+    if (firstFrameCheckDisabled == NO) {
+        [firstInputFramebuffer unlock];
+    }
+    if (secondFrameCheckDisabled == NO) {
+        [secondInputFramebuffer unlock];
+    }
     if (usingNextFrameForImageCapture)
     {
         dispatch_semaphore_signal(imageCaptureSemaphore);
@@ -147,12 +155,18 @@ NSString *const kGPUImageTwoInputTextureVertexShaderString = SHADER_STRING
 {
     if (textureIndex == 0)
     {
+        if (firstFrameCheckDisabled) {
+            [firstInputFramebuffer unlock];
+        }
         firstInputFramebuffer = newInputFramebuffer;
         hasSetFirstTexture = YES;
         [firstInputFramebuffer lock];
     }
     else
     {
+        if (secondFrameCheckDisabled) {
+            [secondInputFramebuffer unlock];
+        }
         secondInputFramebuffer = newInputFramebuffer;
         [secondInputFramebuffer lock];
     }
@@ -261,4 +275,14 @@ NSString *const kGPUImageTwoInputTextureVertexShaderString = SHADER_STRING
     }
 }
 
+- (void)endProcessing
+{
+    [super endProcessing];
+    if (firstFrameCheckDisabled) {
+        [firstInputFramebuffer unlock];
+    }
+    if (secondFrameCheckDisabled) {
+        [secondInputFramebuffer unlock];
+    }
+}
 @end
