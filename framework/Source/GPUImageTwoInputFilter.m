@@ -275,14 +275,4 @@ NSString *const kGPUImageTwoInputTextureVertexShaderString = SHADER_STRING
     }
 }
 
-- (void)endProcessing
-{
-    [super endProcessing];
-    if (firstFrameCheckDisabled) {
-        [firstInputFramebuffer unlock];
-    }
-    if (secondFrameCheckDisabled) {
-        [secondInputFramebuffer unlock];
-    }
-}
 @end
