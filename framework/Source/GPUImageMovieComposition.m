@@ -11,7 +11,7 @@
 
 @implementation GPUImageMovieComposition
 
-@synthesize compositon = _compositon;
+@synthesize asset = _asset;
 @synthesize videoComposition = _videoComposition;
 @synthesize audioMix = _audioMix;
 
@@ -37,10 +37,10 @@
     //NSLog(@"creating reader from composition: %@, video: %@, audio: %@ with duration: %@", _compositon, _videoComposition, _audioMix, CFBridgingRelease(CMTimeCopyDescription(kCFAllocatorDefault, _compositon.duration)));
 
     NSError *error = nil;
-    AVAssetReader *assetReader = [AVAssetReader assetReaderWithAsset:self.compositon error:&error];
+    AVAssetReader *assetReader = [AVAssetReader assetReaderWithAsset:self.asset error:&error];
 
     NSDictionary *outputSettings = @{(id)kCVPixelBufferPixelFormatTypeKey: @(kCVPixelFormatType_420YpCbCr8BiPlanarFullRange)};
-    AVAssetReaderVideoCompositionOutput *readerVideoOutput = [AVAssetReaderVideoCompositionOutput assetReaderVideoCompositionOutputWithVideoTracks:[_compositon tracksWithMediaType:AVMediaTypeVideo]
+    AVAssetReaderVideoCompositionOutput *readerVideoOutput = [AVAssetReaderVideoCompositionOutput assetReaderVideoCompositionOutputWithVideoTracks:[_asset tracksWithMediaType:AVMediaTypeVideo]
                                                                                                                                      videoSettings:outputSettings];
 #if ! TARGET_IPHONE_SIMULATOR
     if( [_videoComposition isKindOfClass:[AVMutableVideoComposition class]] )
@@ -50,7 +50,7 @@
     readerVideoOutput.alwaysCopiesSampleData = NO;
     [assetReader addOutput:readerVideoOutput];
 
-    NSArray *audioTracks = [_compositon tracksWithMediaType:AVMediaTypeAudio];
+    NSArray *audioTracks = [self.asset tracksWithMediaType:AVMediaTypeAudio];
     BOOL shouldRecordAudioTrack = (([audioTracks count] > 0) && (self.audioEncodingTarget != nil) );
     AVAssetReaderAudioMixOutput *readerAudioOutput = nil;
 
@@ -65,6 +65,18 @@
     }
 
     return assetReader;
+}
+
+- (AVComposition *)compositon
+{
+    return (AVComposition *)_asset;
+}
+
+- (void)setCompositon:(AVComposition *)compositon
+{
+    if (_asset != compositon) {
+        _asset = compositon;
+    }
 }
 
 @end
