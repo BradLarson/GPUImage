@@ -67,4 +67,9 @@
     return assetReader;
 }
 
+- (AVAsset *)asset
+{
+    return self.compositon;
+}
+
 @end
