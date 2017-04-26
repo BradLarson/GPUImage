@@ -18,9 +18,9 @@ GLfloat kColorConversion601FullRangeDefault[] = {
 
 // BT.709, which is the standard for HDTV.
 GLfloat kColorConversion709Default[] = {
-    1.164,  1.164, 1.164,
-    0.0, -0.213, 2.112,
-    1.793, -0.533,   0.0,
+    1.0,    1.0,    1.0,
+    0.0,    -0.187, 1.856,
+    1.575,    -0.468, 0.0,
 };
 
 
