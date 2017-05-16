@@ -17,11 +17,11 @@ Pod::Spec.new do |s|
   s.ios.frameworks   = ['OpenGLES', 'CoreMedia', 'QuartzCore', 'AVFoundation']
   
   s.osx.deployment_target = '10.6'
-  s.osx.exclude_files = 'framework/Source/iOS',
+  s.osx.exclude_files = ['framework/Source/iOS',
                         'framework/Source/GPUImageFilterPipeline.*',
                         'framework/Source/GPUImageMovieComposition.*',
                         'framework/Source/GPUImageVideoCamera.*',
                         'framework/Source/GPUImageStillCamera.*',
-                        'framework/Source/GPUImageUIElement.*'
+                        'framework/Source/GPUImageUIElement.*']
   s.osx.xcconfig = { 'GCC_WARN_ABOUT_RETURN_TYPE' => 'YES' }
 end
