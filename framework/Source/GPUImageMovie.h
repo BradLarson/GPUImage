@@ -58,4 +58,7 @@
 - (void)cancelProcessing;
 - (void)processMovieFrame:(CMSampleBufferRef)movieSampleBuffer; 
 
+/// @name Forbiden background cause crash 
+- (void)pauseProcessing;
+- (void)resumeProcessing;
 @end

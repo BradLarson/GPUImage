@@ -30,6 +30,7 @@
     BOOL isFullYUVRange;
 
     int imageBufferWidth, imageBufferHeight;
+    BOOL moviePaused;
 }
 
 - (void)processAsset;
@@ -531,6 +532,10 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
 
 - (void)processMovieFrame:(CVPixelBufferRef)movieFrame withSampleTime:(CMTime)currentSampleTime
 {
+    if (moviePaused) {
+        return;
+    }
+    
     int bufferHeight = (int) CVPixelBufferGetHeight(movieFrame);
     int bufferWidth = (int) CVPixelBufferGetWidth(movieFrame);
 
@@ -873,4 +878,11 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
     return videoEncodingIsFinished;
 }
 
+- (void)pauseProcessing {
+    moviePaused = YES;
+}
+
+- (void)resumeProcessing {
+    moviePaused = NO;
+}
 @end
