@@ -290,7 +290,7 @@ NSString *const kGPUImageFourInputTextureVertexShaderString = SHADER_STRING
         }
         if (fourthFrameCheckDisabled)
         {
-            hasReceivedThirdFrame = YES;
+            hasReceivedFourthFrame = YES;
         }
         
         if (!CMTIME_IS_INDEFINITE(frameTime))
