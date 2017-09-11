@@ -30,7 +30,8 @@ extern NSString *const kGPUImageColorSwizzlingFragmentShaderString;
     CGSize videoSize;
     GPUImageRotationMode inputRotation;
 }
-
+// 是否允许写入，注：如果有其他滤镜效果记得改为YES，以免造成不便
+@property(readwrite, nonatomic, assign) BOOL allowWriteAudio;
 @property(readwrite, nonatomic) BOOL hasAudioTrack;
 @property(readwrite, nonatomic) BOOL shouldPassthroughAudio;
 @property(readwrite, nonatomic) BOOL shouldInvalidateAudioSampleWhenDone;
