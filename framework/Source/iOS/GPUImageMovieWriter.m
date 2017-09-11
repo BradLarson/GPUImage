@@ -16,7 +16,7 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
  }
 );
 
-static BOOL allowWriteAudio = NO;
+
 @interface GPUImageMovieWriter ()
 {
     GLuint movieFramebuffer, movieRenderbuffer;
@@ -269,7 +269,6 @@ static BOOL allowWriteAudio = NO;
 
 - (void)startRecording;
 {
-    allowWriteAudio = NO;
     alreadyFinishedRecording = NO;
     startTime = kCMTimeInvalid;
     runSynchronouslyOnContextQueue(_movieWriterContext, ^{
@@ -366,7 +365,7 @@ static BOOL allowWriteAudio = NO;
 
 - (void)processAudioBuffer:(CMSampleBufferRef)audioBuffer;
 {
-	if (!allowWriteAudio) {
+	if (!_allowWriteAudio) {
         return;
     }
     if (!isRecording || _paused)
@@ -804,7 +803,7 @@ static BOOL allowWriteAudio = NO;
             {
                 if (![assetWriterPixelBufferInput appendPixelBuffer:pixel_buffer withPresentationTime:frameTime])
                     NSLog(@"Problem appending pixel buffer at time: %@", CFBridgingRelease(CMTimeCopyDescription(kCFAllocatorDefault, frameTime)));
-		    allowWriteAudio = YES;
+		    _allowWriteAudio = YES;
             }
             else
             {
