@@ -2,92 +2,20 @@
 #import "GPUImageMovieWriter.h"
 #import "GPUImageFilter.h"
 
-// Color Conversion Constants (YUV to RGB) including adjustment from 16-235/16-240 (video range)
+void setColorConversion601( GLfloat conversionMatrix[9] )
+{
+    kColorConversion601 = conversionMatrix;
+}
 
-// BT.601, which is the standard for SDTV.
-const GLfloat kColorConversion601[] = {
-    1.164,  1.164, 1.164,
-    0.0, -0.392, 2.017,
-    1.596, -0.813,   0.0,
-};
+void setColorConversion601FullRange( GLfloat conversionMatrix[9] )
+{
+    kColorConversion601FullRange = conversionMatrix;
+}
 
-// BT.709, which is the standard for HDTV.
-const GLfloat kColorConversion709[] = {
-    1.164,  1.164, 1.164,
-    0.0, -0.213, 2.112,
-    1.793, -0.533,   0.0,
-};
-
-// BT.601 full range (ref: http://www.equasys.de/colorconversion.html)
-const GLfloat kColorConversion601FullRange[] = {
-    1.0,    1.0,    1.0,
-    0.0,    -0.343, 1.765,
-    1.4,    -0.711, 0.0,
-};
-
-NSString *const kGPUImageYUVVideoRangeConversionForRGFragmentShaderString = SHADER_STRING
-(
- varying highp vec2 textureCoordinate;
- 
- uniform sampler2D luminanceTexture;
- uniform sampler2D chrominanceTexture;
- uniform mediump mat3 colorConversionMatrix;
- 
- void main()
- {
-     mediump vec3 yuv;
-     lowp vec3 rgb;
-     
-     yuv.x = texture2D(luminanceTexture, textureCoordinate).r;
-     yuv.yz = texture2D(chrominanceTexture, textureCoordinate).rg - vec2(0.5, 0.5);
-     rgb = colorConversionMatrix * yuv;
-     
-     gl_FragColor = vec4(rgb, 1);
- }
- );
-
-NSString *const kGPUImageYUVFullRangeConversionForLAFragmentShaderString = SHADER_STRING
-(
- varying highp vec2 textureCoordinate;
- 
- uniform sampler2D luminanceTexture;
- uniform sampler2D chrominanceTexture;
- uniform mediump mat3 colorConversionMatrix;
- 
- void main()
- {
-     mediump vec3 yuv;
-     lowp vec3 rgb;
-     
-     yuv.x = texture2D(luminanceTexture, textureCoordinate).r;
-     yuv.yz = texture2D(chrominanceTexture, textureCoordinate).ra - vec2(0.5, 0.5);
-     rgb = colorConversionMatrix * yuv;
-     
-     gl_FragColor = vec4(rgb, 1);
- }
- );
-
-NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = SHADER_STRING
-(
- varying highp vec2 textureCoordinate;
- 
- uniform sampler2D luminanceTexture;
- uniform sampler2D chrominanceTexture;
- uniform mediump mat3 colorConversionMatrix;
- 
- void main()
- {
-     mediump vec3 yuv;
-     lowp vec3 rgb;
-     
-     yuv.x = texture2D(luminanceTexture, textureCoordinate).r - (16.0/255.0);
-     yuv.yz = texture2D(chrominanceTexture, textureCoordinate).ra - vec2(0.5, 0.5);
-     rgb = colorConversionMatrix * yuv;
-     
-     gl_FragColor = vec4(rgb, 1);
- }
- );
-
+void setColorConversion709( GLfloat conversionMatrix[9] )
+{
+    kColorConversion709 = conversionMatrix;
+}
 
 #pragma mark -
 #pragma mark Private methods and instance variables
@@ -401,6 +329,11 @@ NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = SHAD
 
 #pragma mark -
 #pragma mark Manage the camera video stream
+
+- (BOOL)isRunning;
+{
+    return [_captureSession isRunning];
+}
 
 - (void)startCameraCapture;
 {

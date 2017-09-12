@@ -3,6 +3,17 @@
 #import "GPUImagePicture.h"
 #import <mach/mach.h>
 
+dispatch_queue_attr_t GPUImageDefaultQueueAttribute(void)
+{
+#if TARGET_OS_IPHONE
+    if ([[[UIDevice currentDevice] systemVersion] compare:@"9.0" options:NSNumericSearch] != NSOrderedAscending)
+    {
+        return dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL, QOS_CLASS_DEFAULT, 0);
+    }
+#endif
+    return nil;
+}
+
 void runOnMainQueueWithoutDeadlocking(void (^block)(void))
 {
 	if ([NSThread isMainThread])
@@ -404,6 +415,24 @@ void reportAvailableMemoryForGPUImage(NSString *tag)
     if( ! _audioEncodingTarget.hasAudioTrack )
     {
         _audioEncodingTarget.hasAudioTrack = YES;
+    }
+}
+
+-(void)setOutputTextureOptions:(GPUTextureOptions)outputTextureOptions
+{
+    _outputTextureOptions = outputTextureOptions;
+    
+    if( outputFramebuffer.texture )
+    {
+        glBindTexture(GL_TEXTURE_2D,  outputFramebuffer.texture);
+        //_outputTextureOptions.format
+        //_outputTextureOptions.internalFormat
+        //_outputTextureOptions.magFilter
+        //_outputTextureOptions.minFilter
+        //_outputTextureOptions.type
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, _outputTextureOptions.wrapS);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, _outputTextureOptions.wrapT);
+        glBindTexture(GL_TEXTURE_2D, 0);
     }
 }
 

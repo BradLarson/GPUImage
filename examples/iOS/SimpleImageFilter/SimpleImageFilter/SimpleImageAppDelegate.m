@@ -11,7 +11,7 @@
     self.window.backgroundColor = [UIColor whiteColor];
     
     rootViewController = [[SimpleImageViewController alloc] initWithNibName:nil bundle:nil];
-    [self.window addSubview:rootViewController.view];
+    [self.window setRootViewController:rootViewController];
     
     [self.window makeKeyAndVisible];
     return YES;

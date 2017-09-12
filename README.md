@@ -2,13 +2,13 @@
 
 <div style="float: right"><img src="http://sunsetlakesoftware.com/sites/default/files/GPUImageLogo.png" /></div>
 
-<a href="https://zenodo.org/record/10416#.U5YGaF773Md"><img src="https://zenodo.org/badge/doi/10.5281/zenodo.10416.png" /></a>
+<a href="https://zenodo.org/record/10416#.U5YGaF773Md"><img src="https://zenodo.org/badge/doi/10.5281/zenodo.10416.svg" /></a>
 
 Brad Larson
 
 http://www.sunsetlakesoftware.com
 
-[@bradlarson](http://twitter.com/bradlarson)
+[@bradlarson](https://twitter.com/bradlarson)
 
 contact@sunsetlakesoftware.com
 
@@ -96,7 +96,7 @@ You then need to add a new Copy Files build phase, set the Destination to Framew
 
 ### Documentation ###
 
-Documentation is generated from header comments using appledoc. To build the documentation, switch to the "Documentation" scheme in Xcode. You should ensure that "APPLEDOC_PATH" (a User-Defined build setting) points to an appledoc binary, available on <a href="https://github.com/tomaz/appledoc">Github</a> or through <a href="https://github.com/mxcl/homebrew">Homebrew</a>. It will also build and install a .docset file, which you can view with your favorite documentation tool.
+Documentation is generated from header comments using appledoc. To build the documentation, switch to the "Documentation" scheme in Xcode. You should ensure that "APPLEDOC_PATH" (a User-Defined build setting) points to an appledoc binary, available on <a href="https://github.com/tomaz/appledoc">Github</a> or through <a href="https://github.com/Homebrew/homebrew">Homebrew</a>. It will also build and install a .docset file, which you can view with your favorite documentation tool.
 
 ## Performing common tasks ##
 
@@ -294,6 +294,13 @@ There are currently 125 built-in filters, divided into the following categories:
 - **GPUImageHueFilter**: Adjusts the hue of an image
   - *hue*: The hue angle, in degrees. 90 degrees by default
 
+- **GPUImageVibranceFilter**: Adjusts the vibrance of an image
+  - *vibrance*: The vibrance adjustment to apply, using 0.0 as the default, and a suggested min/max of around -1.2 and 1.2, respectively.
+
+- **GPUImageWhiteBalanceFilter**: Adjusts the white balance of an image.
+  - *temperature*: The temperature to adjust the image by, in ºK. A value of 4000 is very cool and 7000 very warm. The default value is 5000. Note that the scale between 4000 and 5000 is nearly as visually significant as that between 5000 and 7000.
+  - *tint*: The tint to adjust the image by. A value of -200 is *very* green and 200 is *very* pink. The default value is 0.  
+
 - **GPUImageToneCurveFilter**: Adjusts the colors of an image based on spline curves for each color channel.
   - *redControlPoints*:
   - *greenControlPoints*:
@@ -302,7 +309,13 @@ There are currently 125 built-in filters, divided into the following categories:
 
 - **GPUImageHighlightShadowFilter**: Adjusts the shadows and highlights of an image
   - *shadows*: Increase to lighten shadows, from 0.0 to 1.0, with 0.0 as the default.
-  - *highlights*: Decrease to darken highlights, from 0.0 to 1.0, with 1.0 as the default.
+  - *highlights*: Decrease to darken highlights, from 1.0 to 0.0, with 1.0 as the default.
+
+- **GPUImageHighlightShadowTintFilter**: Allows you to tint the shadows and highlights of an image independently using a color and intensity
+  - *shadowTintColor*: Shadow tint RGB color (GPUVector4). Default: `{1.0f, 0.0f, 0.0f, 1.0f}` (red).
+  - *highlightTintColor*: Highlight tint RGB color (GPUVector4). Default: `{0.0f, 0.0f, 1.0f, 1.0f}` (blue).
+  - *shadowTintIntensity*: Shadow tint intensity, from 0.0 to 1.0. Default: 0.0
+  - *highlightTintIntensity*: Highlight tint intensity, from 0.0 to 1.0, with 0.0 as the default.
 
 - **GPUImageLookupFilter**: Uses an RGB color lookup image to remap the colors in an image. First, use your favourite photo editing application to apply a filter to lookup.png from GPUImage/framework/Resources. For this to work properly each pixel color must not depend on other pixels (e.g. blur will not work). If you need a more complex filter you can create as many lookup tables as required. Once ready, use your new lookup.png file as a second input for GPUImageLookupFilter.
 
@@ -312,6 +325,14 @@ There are currently 125 built-in filters, divided into the following categories:
 
 - **GPUImageSoftEleganceFilter**: Another lookup-based color remapping filter. If you want to use this effect you have to add lookup_soft_elegance_1.png and lookup_soft_elegance_2.png from the GPUImage Resources folder to your application bundle.
 
+- **GPUImageSkinToneFilter**: A skin-tone adjustment filter that affects a unique range of light skin-tone colors and adjusts the pink/green or pink/orange range accordingly. Default values are targetted at fair caucasian skin, but can be adjusted as required.
+  - *skinToneAdjust*: Amount to adjust skin tone. Default: 0.0, suggested min/max: -0.3 and 0.3 respectively.
+  - *skinHue*: Skin hue to be detected. Default: 0.05 (fair caucasian to reddish skin).
+  - *skinHueThreshold*: Amount of variance in skin hue. Default: 40.0.
+  - *maxHueShift*: Maximum amount of hue shifting allowed. Default: 0.25.
+  - *maxSaturationShift* = Maximum amount of saturation to be shifted (when using orange). Default: 0.4.
+  - *upperSkinToneColor* = `GPUImageSkinToneUpperColorGreen` or `GPUImageSkinToneUpperColorOrange`
+    
 - **GPUImageColorInvertFilter**: Inverts the colors of an image
 
 - **GPUImageGrayscaleFilter**: Converts an image to grayscale (a slightly faster implementation of the saturation filter, without the ability to vary the color contribution)
@@ -663,8 +684,10 @@ There are currently 125 built-in filters, divided into the following categories:
   - *refractiveIndex*: The index of refraction for the sphere, with a default of 0.71
 
 - **GPUImageVignetteFilter**: Performs a vignetting effect, fading out the image at the edges
-  - *x*:
-  - *y*: The directional intensity of the vignetting, with a default of x = 0.75, y = 0.5
+  - *vignetteCenter*: The center for the vignette in tex coords (CGPoint), with a default of 0.5, 0.5
+  - *vignetteColor*: The color to use for the vignette (GPUVector3), with a default of black
+  - *vignetteStart*: The normalized distance from the center where the vignette effect starts, with a default of 0.5
+  - *vignetteEnd*: The normalized distance from the center where the vignette effect ends, with a default of 0.75
 
 - **GPUImageKuwaharaFilter**: Kuwahara image abstraction, drawn from the work of Kyprianidis, et. al. in their publication "Anisotropic Kuwahara Filtering on the GPU" within the GPU Pro collection. This produces an oil-painting-like image, but it is extremely computationally expensive, so it can take seconds to render a frame on an iPad 2. This might be best used for still images.
   - *radius*: In integer specifying the number of pixels out from the center pixel to test when applying the filter, with a default of 4. A higher value creates a more abstracted image, but at the cost of much greater processing time.

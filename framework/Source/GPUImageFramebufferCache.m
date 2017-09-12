@@ -36,10 +36,13 @@
     }
     
 #if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+    __unsafe_unretained __typeof__ (self) weakSelf = self;
     memoryWarningObserver = [[NSNotificationCenter defaultCenter] addObserverForName:UIApplicationDidReceiveMemoryWarningNotification object:nil queue:nil usingBlock:^(NSNotification *note) {
-        
-        [self purgeAllUnassignedFramebuffers];
-	}];
+        __typeof__ (self) strongSelf = weakSelf;
+        if (strongSelf) {
+            [strongSelf purgeAllUnassignedFramebuffers];
+        }
+    }];
 #else
 #endif
 
@@ -47,9 +50,17 @@
     framebufferCache = [[NSMutableDictionary alloc] init];
     framebufferTypeCounts = [[NSMutableDictionary alloc] init];
     activeImageCaptureList = [[NSMutableArray alloc] init];
-    framebufferCacheQueue = dispatch_queue_create("com.sunsetlakesoftware.GPUImage.framebufferCacheQueue", NULL);
+    framebufferCacheQueue = dispatch_queue_create("com.sunsetlakesoftware.GPUImage.framebufferCacheQueue", GPUImageDefaultQueueAttribute());
     
     return self;
+}
+
+- (void)dealloc;
+{
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+#else
+#endif
 }
 
 #pragma mark -

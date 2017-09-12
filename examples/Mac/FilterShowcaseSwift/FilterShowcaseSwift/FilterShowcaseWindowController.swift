@@ -3,8 +3,10 @@ import GPUImage
 
 class FilterShowcaseWindowController: NSWindowController {
 
-    @IBOutlet var filterView: GPUImageView?
+    @IBOutlet var filterView: GPUImageView!
 
+    @IBOutlet weak var filterSlider: NSSlider!
+    
     var enableSlider:Bool = false
     var minimumSliderValue:CGFloat = 0.0, maximumSliderValue:CGFloat = 1.0
     var currentSliderValue:CGFloat = 0.5 {
@@ -48,27 +50,26 @@ class FilterShowcaseWindowController: NSWindowController {
         currentFilterOperation = filterOperations[row]
         switch currentFilterOperation!.filterOperationType {
             case .SingleInput:
-                videoCamera!.addTarget((currentFilterOperation!.filter as GPUImageInput))
+                videoCamera!.addTarget((currentFilterOperation!.filter as! GPUImageInput))
                 currentFilterOperation!.filter.addTarget(filterView!)
             case .Blend:
-                videoCamera!.addTarget((currentFilterOperation!.filter as GPUImageInput))
-                self.blendImage.addTarget((currentFilterOperation!.filter as GPUImageInput))
+                videoCamera!.addTarget((currentFilterOperation!.filter as! GPUImageInput))
+                self.blendImage.addTarget((currentFilterOperation!.filter as! GPUImageInput))
                 currentFilterOperation!.filter.addTarget(filterView!)
                 self.blendImage.processImage()
-            case .Custom:
-                let setupFunction = currentFilterOperation!.customFilterSetupFunction!
+            case let .Custom(filterSetupFunction:setupFunction):
                 let inputToFunction:(GPUImageOutput, GPUImageOutput?) = setupFunction(camera:videoCamera!, outputView:filterView!) // Type inference falls down, for now needs this hard cast
                 currentFilterOperation!.configureCustomFilter(inputToFunction)
         }
         
         switch currentFilterOperation!.sliderConfiguration {
         case .Disabled:
-            enableSlider = false
+            filterSlider.enabled = false
             //                case let .Enabled(minimumValue, initialValue, maximumValue, filterSliderCallback):
         case let .Enabled(minimumValue, maximumValue, initialValue):
-            minimumSliderValue = CGFloat(minimumValue)
-            maximumSliderValue = CGFloat(maximumValue)
-            enableSlider = true
+            filterSlider.minValue = Double(minimumValue)
+            filterSlider.maxValue = Double(maximumValue)
+            filterSlider.enabled = true
             currentSliderValue = CGFloat(initialValue)
         }
         

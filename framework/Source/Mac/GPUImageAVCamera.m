@@ -1,69 +1,7 @@
 #import "GPUImageAVCamera.h"
 #import "GPUImageMovieWriter.h"
 #import "GPUImageFilter.h"
-
-NSString *const kGPUImageYUVVideoRangeConversionForRGFragmentShaderString = SHADER_STRING
-(
- varying vec2 textureCoordinate;
- 
- uniform sampler2D luminanceTexture;
- uniform sampler2D chrominanceTexture;
- 
- void main()
- {
-     vec3 yuv;
-     vec3 rgb;
-     
-     yuv.x = texture2D(luminanceTexture, textureCoordinate).r;
-     yuv.yz = texture2D(chrominanceTexture, textureCoordinate).rg - vec2(0.5, 0.5);
-     
-     // BT.601, which is the standard for SDTV is provided as a reference
-     /*
-      rgb = mat3(      1,       1,       1,
-      0, -.39465, 2.03211,
-      1.13983, -.58060,       0) * yuv;
-      */
-     
-     // Using BT.709 which is the standard for HDTV
-     rgb = mat3(      1,       1,       1,
-                0, -.21482, 2.12798,
-                1.28033, -.38059,       0) * yuv;
-     
-     gl_FragColor = vec4(rgb, 1);
- }
-);
-
-NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = SHADER_STRING
-(
- varying vec2 textureCoordinate;
- 
- uniform sampler2D luminanceTexture;
- uniform sampler2D chrominanceTexture;
- 
- void main()
- {
-     vec3 yuv;
-     vec3 rgb;
-     
-     yuv.x = texture2D(luminanceTexture, textureCoordinate).r;
-     yuv.yz = texture2D(chrominanceTexture, textureCoordinate).ra - vec2(0.5, 0.5);
-     
-     // BT.601, which is the standard for SDTV is provided as a reference
-     /*
-      rgb = mat3(      1,       1,       1,
-      0, -.39465, 2.03211,
-      1.13983, -.58060,       0) * yuv;
-      */
-     
-     // Using BT.709 which is the standard for HDTV
-     rgb = mat3(      1,       1,       1,
-                0, -.21482, 2.12798,
-                1.28033, -.38059,       0) * yuv;
-     
-     gl_FragColor = vec4(rgb, 1);
- }
- );
-
+#import "GPUImageColorConversion.h"
 
 #pragma mark -
 #pragma mark Private methods and instance variables
@@ -302,7 +240,8 @@ NSString *const kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = SHAD
     [self removeInputsAndOutputs];
     
 // ARC forbids explicit message send of 'release'; since iOS 6 even for dispatch_release() calls: stripping it out in that case is required.
-#if ( (__IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_6_0) || (!defined(__IPHONE_6_0)) )
+//#if ( (__IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_6_0) || (!defined(__IPHONE_6_0)) )
+#if __MAC_OS_X_VERSION_MAX_ALLOWED <= __MAC_10_7
     if (cameraProcessingQueue != NULL)
     {
         dispatch_release(cameraProcessingQueue);

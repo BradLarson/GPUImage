@@ -4,6 +4,8 @@
 
 #define MAXSHADERPROGRAMSALLOWEDINCACHE 40
 
+extern dispatch_queue_attr_t GPUImageDefaultQueueAttribute(void);
+
 @interface GPUImageContext()
 {
     NSMutableDictionary *shaderProgramCache;
@@ -31,7 +33,7 @@ static void *openGLESContextQueueKey;
     }
 
 	openGLESContextQueueKey = &openGLESContextQueueKey;
-    _contextQueue = dispatch_queue_create("com.sunsetlakesoftware.GPUImage.openGLESContextQueue", NULL);
+    _contextQueue = dispatch_queue_create("com.sunsetlakesoftware.GPUImage.openGLESContextQueue", GPUImageDefaultQueueAttribute());
     
 #if OS_OBJECT_USE_OBJC
 	dispatch_queue_set_specific(_contextQueue, openGLESContextQueueKey, (__bridge void *)self, NULL);
@@ -259,7 +261,12 @@ static void *openGLESContextQueueKey;
 #if TARGET_IPHONE_SIMULATOR
     return NO;
 #else
+    
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wtautological-pointer-compare"
     return (CVOpenGLESTextureCacheCreate != NULL);
+#pragma clang diagnostic pop
+
 #endif
 }
 

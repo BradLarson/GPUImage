@@ -54,5 +54,6 @@ typedef struct GPUTextureOptions {
 - (void)unlockAfterReading;
 - (NSUInteger)bytesPerRow;
 - (GLubyte *)byteBuffer;
+- (CVPixelBufferRef)pixelBuffer;
 
 @end
