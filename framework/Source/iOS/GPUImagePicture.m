@@ -363,8 +363,10 @@
     
     if (hasProcessedImage)
     {
-        [newTarget setInputSize:pixelSizeOfImage atIndex:textureLocation];
-        [newTarget newFrameReadyAtTime:kCMTimeIndefinite atIndex:textureLocation];
+        runSynchronouslyOnVideoProcessingQueue(^{
+            [newTarget setInputSize:pixelSizeOfImage atIndex:textureLocation];
+            [newTarget newFrameReadyAtTime:kCMTimeIndefinite atIndex:textureLocation];
+        });
     }
 }
 
