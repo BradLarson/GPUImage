@@ -90,8 +90,10 @@ NSString *const kGPUSolidColorFragmentShaderString = SHADER_STRING
 
     if (!CGSizeEqualToSize(inputTextureSize, CGSizeZero))
     {
-        [newTarget setInputSize:inputTextureSize atIndex:textureLocation];
-        [newTarget newFrameReadyAtTime:kCMTimeIndefinite atIndex:textureLocation];
+        runSynchronouslyOnVideoProcessingQueue(^{
+            [newTarget setInputSize:inputTextureSize atIndex:textureLocation];
+            [newTarget newFrameReadyAtTime:kCMTimeIndefinite atIndex:textureLocation];
+        });
     }
 }
 
