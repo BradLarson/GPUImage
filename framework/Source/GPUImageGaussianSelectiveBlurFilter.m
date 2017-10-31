@@ -21,8 +21,10 @@ NSString *const kGPUImageGaussianSelectiveBlurFragmentShaderString = SHADER_STRI
      lowp vec4 sharpImageColor = texture2D(inputImageTexture, textureCoordinate);
      lowp vec4 blurredImageColor = texture2D(inputImageTexture2, textureCoordinate2);
      
-     highp vec2 textureCoordinateToUse = vec2(textureCoordinate2.x, (textureCoordinate2.y * aspectRatio + 0.5 - 0.5 * aspectRatio));
-     highp float distanceFromCenter = distance(excludeCirclePoint, textureCoordinateToUse);
+     highp vec2 scaledTextureCoordinate = vec2(textureCoordinate2.x, textureCoordinate2.y / aspectRatio);
+     lowp vec2 scaledExcludeCirclePoint = vec2(excludeCirclePoint.x, excludeCirclePoint.y / aspectRatio);
+     
+     highp float distanceFromCenter = distance(scaledExcludeCirclePoint, scaledTextureCoordinate);
      
      gl_FragColor = mix(sharpImageColor, blurredImageColor, smoothstep(excludeCircleRadius - excludeBlurSize, excludeCircleRadius, distanceFromCenter));
  }
@@ -46,8 +48,10 @@ NSString *const kGPUImageGaussianSelectiveBlurFragmentShaderString = SHADER_STRI
      vec4 sharpImageColor = texture2D(inputImageTexture, textureCoordinate);
      vec4 blurredImageColor = texture2D(inputImageTexture2, textureCoordinate2);
      
-     vec2 textureCoordinateToUse = vec2(textureCoordinate2.x, (textureCoordinate2.y * aspectRatio + 0.5 - 0.5 * aspectRatio));
-     float distanceFromCenter = distance(excludeCirclePoint, textureCoordinateToUse);
+     vec2 scaledTextureCoordinate = vec2(textureCoordinate2.x, textureCoordinate2.y / aspectRatio);
+     vec2 scaledExcludeCirclePoint = vec2(excludeCirclePoint.x, excludeCirclePoint.y / aspectRatio);
+     
+     float distanceFromCenter = distance(scaledExcludeCirclePoint, scaledTextureCoordinate);
      
      gl_FragColor = mix(sharpImageColor, blurredImageColor, smoothstep(excludeCircleRadius - excludeBlurSize, excludeCircleRadius, distanceFromCenter));
  }
