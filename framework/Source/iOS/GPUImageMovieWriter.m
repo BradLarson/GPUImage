@@ -279,7 +279,11 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
     });
     isRecording = YES;
 	//    [assetWriter startSessionAtSourceTime:kCMTimeZero];
-    allowWriteAudio = NO;
+    if (_encodingLiveVideo) {
+        allowWriteAudio = NO;
+    }else {
+        allowWriteAudio = YES;
+    }
 }
 
 - (void)startRecordingInOrientation:(CGAffineTransform)orientationTransform;
