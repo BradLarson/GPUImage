@@ -33,7 +33,8 @@ static void *openGLESContextQueueKey;
     }
 
 	openGLESContextQueueKey = &openGLESContextQueueKey;
-    // 串行对垒
+    // 串行队列
+     NSLog(@"%@-%s-创建串行队列-",[NSThread currentThread],__func__);
     _contextQueue = dispatch_queue_create("com.sunsetlakesoftware.GPUImage.openGLESContextQueue", GPUImageDefaultQueueAttribute());
     
 #if OS_OBJECT_USE_OBJC

@@ -639,7 +639,12 @@ void setColorConversion709( GLfloat conversionMatrix[9] )
     CVImageBufferRef cameraFrame = CMSampleBufferGetImageBuffer(sampleBuffer);
     int bufferWidth = (int) CVPixelBufferGetWidth(cameraFrame);
     int bufferHeight = (int) CVPixelBufferGetHeight(cameraFrame);
+    
+    //You can attach any Core Foundation object to a Core Video buffer to store additional information by calling CVBufferSetAttachment or CVBufferSetAttachments.
+    //Describes the color matrix used for YCbCr to RGB conversion (type CFString)
     CFTypeRef colorAttachments = CVBufferGetAttachment(cameraFrame, kCVImageBufferYCbCrMatrixKey, NULL);
+    
+     NSLog(@"%@-%s-colorattachments=%@",[NSThread currentThread],__func__,colorAttachments);
     if (colorAttachments != NULL)
     {
         if(CFStringCompare(colorAttachments, kCVImageBufferYCbCrMatrix_ITU_R_601_4, 0) == kCFCompareEqualTo)
@@ -670,8 +675,9 @@ void setColorConversion709( GLfloat conversionMatrix[9] )
         }
     }
 
+    // GPU: 获取PTS 视频帧展示时间
 	CMTime currentTime = CMSampleBufferGetPresentationTimeStamp(sampleBuffer);
-
+    // GPU: 设置EAGContext
     [GPUImageContext useImageProcessingContext];
 
     if ([GPUImageContext supportsFastTextureUpload] && captureAsYUV)
@@ -682,6 +688,7 @@ void setColorConversion709( GLfloat conversionMatrix[9] )
 //        if (captureAsYUV && [GPUImageContext deviceSupportsRedTextures])
         if (CVPixelBufferGetPlaneCount(cameraFrame) > 0) // Check for YUV planar inputs to do RGB conversion
         {
+            // GPU: 使用cpu处理数据 必须lock，GPU不需要
             CVPixelBufferLockBaseAddress(cameraFrame, 0);
             
             if ( (imageBufferWidth != bufferWidth) && (imageBufferHeight != bufferHeight) )
@@ -690,12 +697,14 @@ void setColorConversion709( GLfloat conversionMatrix[9] )
                 imageBufferHeight = bufferHeight;
             }
             
+            
+            // GPU: 下面的代码 是 把视频帧 添加的 纹理里面 并绑定纹理 设置纹理参数。
             CVReturn err;
             // Y-plane
             glActiveTexture(GL_TEXTURE4);
             if ([GPUImageContext deviceSupportsRedTextures])
             {
-//                err = CVOpenGLESTextureCacheCreateTextureFromImage(kCFAllocatorDefault, coreVideoTextureCache, cameraFrame, NULL, GL_TEXTURE_2D, GL_RED_EXT, bufferWidth, bufferHeight, GL_RED_EXT, GL_UNSIGNED_BYTE, 0, &luminanceTextureRef);
+                // GPU: 从图片创建纹理。Creates a CVOpenGLESTextureRef object from an existing CVImageBufferRef.
                 err = CVOpenGLESTextureCacheCreateTextureFromImage(kCFAllocatorDefault, [[GPUImageContext sharedImageProcessingContext] coreVideoTextureCache], cameraFrame, NULL, GL_TEXTURE_2D, GL_LUMINANCE, bufferWidth, bufferHeight, GL_LUMINANCE, GL_UNSIGNED_BYTE, 0, &luminanceTextureRef);
             }
             else
@@ -716,7 +725,6 @@ void setColorConversion709( GLfloat conversionMatrix[9] )
             glActiveTexture(GL_TEXTURE5);
             if ([GPUImageContext deviceSupportsRedTextures])
             {
-//                err = CVOpenGLESTextureCacheCreateTextureFromImage(kCFAllocatorDefault, coreVideoTextureCache, cameraFrame, NULL, GL_TEXTURE_2D, GL_RG_EXT, bufferWidth/2, bufferHeight/2, GL_RG_EXT, GL_UNSIGNED_BYTE, 1, &chrominanceTextureRef);
                 err = CVOpenGLESTextureCacheCreateTextureFromImage(kCFAllocatorDefault, [[GPUImageContext sharedImageProcessingContext] coreVideoTextureCache], cameraFrame, NULL, GL_TEXTURE_2D, GL_LUMINANCE_ALPHA, bufferWidth/2, bufferHeight/2, GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE, 1, &chrominanceTextureRef);
             }
             else
@@ -733,10 +741,9 @@ void setColorConversion709( GLfloat conversionMatrix[9] )
             glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
             glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
             
-//            if (!allTargetsWantMonochromeData)
-//            {
-                [self convertYUVToRGBOutput];
-//            }
+
+            // GPU: 渲染 通过 gpu program 把数据渲染成rgb 保存到framebuffer中
+            [self convertYUVToRGBOutput];
 
             int rotatedImageBufferWidth = bufferWidth, rotatedImageBufferHeight = bufferHeight;
             
@@ -754,32 +761,6 @@ void setColorConversion709( GLfloat conversionMatrix[9] )
         }
         else
         {
-            // TODO: Mesh this with the output framebuffer structure
-            
-//            CVPixelBufferLockBaseAddress(cameraFrame, 0);
-//            
-//            CVReturn err = CVOpenGLESTextureCacheCreateTextureFromImage(kCFAllocatorDefault, [[GPUImageContext sharedImageProcessingContext] coreVideoTextureCache], cameraFrame, NULL, GL_TEXTURE_2D, GL_RGBA, bufferWidth, bufferHeight, GL_BGRA, GL_UNSIGNED_BYTE, 0, &texture);
-//            
-//            if (!texture || err) {
-//                NSLog(@"Camera CVOpenGLESTextureCacheCreateTextureFromImage failed (error: %d)", err);
-//                NSAssert(NO, @"Camera failure");
-//                return;
-//            }
-//            
-//            outputTexture = CVOpenGLESTextureGetName(texture);
-//            //        glBindTexture(CVOpenGLESTextureGetTarget(texture), outputTexture);
-//            glBindTexture(GL_TEXTURE_2D, outputTexture);
-//            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-//            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-//            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-//            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-//            
-//            [self updateTargetsForVideoCameraUsingCacheTextureAtWidth:bufferWidth height:bufferHeight time:currentTime];
-//
-//            CVPixelBufferUnlockBaseAddress(cameraFrame, 0);
-//            CFRelease(texture);
-//
-//            outputTexture = 0;
         }
         
         
@@ -836,6 +817,8 @@ void setColorConversion709( GLfloat conversionMatrix[9] )
 // GPU:
 - (void)convertYUVToRGBOutput;
 {
+    NSLog(@"%@-%s",[NSThread currentThread],__func__);
+    // GPU: use program
     [GPUImageContext setActiveShaderProgram:yuvConversionProgram];
 
     int rotatedImageBufferWidth = imageBufferWidth, rotatedImageBufferHeight = imageBufferHeight;
@@ -846,7 +829,10 @@ void setColorConversion709( GLfloat conversionMatrix[9] )
         rotatedImageBufferHeight = imageBufferWidth;
     }
 
+    // GPU: 获取一个framebuffer对象
     outputFramebuffer = [[GPUImageContext sharedFramebufferCache] fetchFramebufferForSize:CGSizeMake(rotatedImageBufferWidth, rotatedImageBufferHeight) textureOptions:self.outputTextureOptions onlyTexture:NO];
+    
+    // GPU: 绑定framebuffer 保存渲染结果
     [outputFramebuffer activateFramebuffer];
 
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -859,19 +845,23 @@ void setColorConversion709( GLfloat conversionMatrix[9] )
         1.0f,  1.0f,
     };
     
+    // GPU: 绑定 灰度采样 4号纹理
 	glActiveTexture(GL_TEXTURE4);
 	glBindTexture(GL_TEXTURE_2D, luminanceTexture);
 	glUniform1i(yuvConversionLuminanceTextureUniform, 4);
-
+    // GPU: 绑定 亮度采样 5号纹理
     glActiveTexture(GL_TEXTURE5);
 	glBindTexture(GL_TEXTURE_2D, chrominanceTexture);
 	glUniform1i(yuvConversionChrominanceTextureUniform, 5);
 
+    // GPU: 设置yuv -> rgb 的转换矩阵
     glUniformMatrix3fv(yuvConversionMatrixUniform, 1, GL_FALSE, _preferredConversion);
 
+    // GPU: 设置顶点坐标数组和纹理坐标数组
     glVertexAttribPointer(yuvConversionPositionAttribute, 2, GL_FLOAT, 0, 0, squareVertices);
 	glVertexAttribPointer(yuvConversionTextureCoordinateAttribute, 2, GL_FLOAT, 0, 0, [GPUImageFilter textureCoordinatesForRotation:internalRotation]);
     
+    // GPU: 开始绘制,绘制完成后绘制结果会保存在framebuffer中。
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 }
 
@@ -895,7 +885,6 @@ void setColorConversion709( GLfloat conversionMatrix[9] )
 // GPU: 11 返回采集的音视频
 - (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection
 {
-     NSLog(@"%@-%s-返回音视频数据",[NSThread currentThread],__func__);
     if (!self.captureSession.isRunning)
     {
         return;
@@ -907,6 +896,7 @@ void setColorConversion709( GLfloat conversionMatrix[9] )
     }
     else
     {
+        // GPU: 使用信号量控制处理视频数据，释放完上一帧才会处理下一帧。不能及时处理的直接抛弃不处理了。
         if (dispatch_semaphore_wait(frameRenderingSemaphore, DISPATCH_TIME_NOW) != 0)
         {
             return;
@@ -914,7 +904,7 @@ void setColorConversion709( GLfloat conversionMatrix[9] )
         
         CFRetain(sampleBuffer);
         runAsynchronouslyOnVideoProcessingQueue(^{
-             NSLog(@"%@-%s-处理视频数据",[NSThread currentThread],__func__);
+             NSLog(@"%@-%s-开始处理视频数据",[NSThread currentThread],__func__);
             //Feature Detection Hook.
             if (self.delegate)
             {
@@ -925,6 +915,7 @@ void setColorConversion709( GLfloat conversionMatrix[9] )
             
             CFRelease(sampleBuffer);
             dispatch_semaphore_signal(frameRenderingSemaphore);
+            NSLog(@"%@-%s-处理视频数据结束",[NSThread currentThread],__func__);
         });
     }
 }

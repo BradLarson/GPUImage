@@ -29,6 +29,8 @@ void runOnMainQueueWithoutDeadlocking(void (^block)(void))
 void runSynchronouslyOnVideoProcessingQueue(void (^block)(void))
 {
     dispatch_queue_t videoProcessingQueue = [GPUImageContext sharedContextQueue];
+    const char*name = dispatch_queue_get_label(videoProcessingQueue);
+    printf("queuname=%s\n",name);
 #if !OS_OBJECT_USE_OBJC
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
@@ -48,6 +50,8 @@ void runSynchronouslyOnVideoProcessingQueue(void (^block)(void))
 void runAsynchronouslyOnVideoProcessingQueue(void (^block)(void))
 {
     dispatch_queue_t videoProcessingQueue = [GPUImageContext sharedContextQueue];
+    const char*name = dispatch_queue_get_label(videoProcessingQueue);
+    printf("queuname=%s\n",name);
     
 #if !OS_OBJECT_USE_OBJC
 #pragma clang diagnostic push
@@ -68,6 +72,8 @@ void runAsynchronouslyOnVideoProcessingQueue(void (^block)(void))
 void runSynchronouslyOnContextQueue(GPUImageContext *context, void (^block)(void))
 {
     dispatch_queue_t videoProcessingQueue = [context contextQueue];
+    const char*name = dispatch_queue_get_label(videoProcessingQueue);
+    printf("queuname=%s\n",name);
 #if !OS_OBJECT_USE_OBJC
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
@@ -87,6 +93,8 @@ void runSynchronouslyOnContextQueue(GPUImageContext *context, void (^block)(void
 void runAsynchronouslyOnContextQueue(GPUImageContext *context, void (^block)(void))
 {
     dispatch_queue_t videoProcessingQueue = [context contextQueue];
+    const char*name = dispatch_queue_get_label(videoProcessingQueue);
+    printf("queuname=%s \n",name);
     
 #if !OS_OBJECT_USE_OBJC
 #pragma clang diagnostic push

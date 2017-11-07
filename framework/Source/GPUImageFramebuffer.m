@@ -35,6 +35,7 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size);
 
 - (id)initWithSize:(CGSize)framebufferSize textureOptions:(GPUTextureOptions)fboTextureOptions onlyTexture:(BOOL)onlyGenerateTexture;
 {
+     NSLog(@"%@-%s",[NSThread currentThread],__func__);
     if (!(self = [super init]))
     {
 		return nil;
@@ -63,6 +64,7 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size);
 
 - (id)initWithSize:(CGSize)framebufferSize overriddenTexture:(GLuint)inputTexture;
 {
+     NSLog(@"%@-%s",[NSThread currentThread],__func__);
     if (!(self = [super init]))
     {
 		return nil;
@@ -89,6 +91,7 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size);
 
 - (id)initWithSize:(CGSize)framebufferSize;
 {
+     NSLog(@"%@-%s",[NSThread currentThread],__func__);
     GPUTextureOptions defaultTextureOptions;
     defaultTextureOptions.minFilter = GL_LINEAR;
     defaultTextureOptions.magFilter = GL_LINEAR;
@@ -116,6 +119,7 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size);
 
 - (void)generateTexture;
 {
+    NSLog(@"%@-%s",[NSThread currentThread],__func__);
     glActiveTexture(GL_TEXTURE1);
     glGenTextures(1, &_texture);
     glBindTexture(GL_TEXTURE_2D, _texture);
@@ -130,6 +134,7 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size);
 
 - (void)generateFramebuffer;
 {
+     NSLog(@"%@-%s",[NSThread currentThread],__func__);
     runSynchronouslyOnVideoProcessingQueue(^{
         [GPUImageContext useImageProcessingContext];
     

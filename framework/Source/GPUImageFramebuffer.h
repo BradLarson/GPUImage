@@ -23,6 +23,7 @@ typedef struct GPUTextureOptions {
     GLenum type;
 } GPUTextureOptions;
 
+// GPU: 这个类用来保存 渲染后的结果，
 @interface GPUImageFramebuffer : NSObject
 
 @property(readonly) CGSize size;

@@ -44,7 +44,7 @@
 //    filter = [[GPUImageSmoothToonFilter alloc] init];
 //    GPUImageRotationFilter *rotationFilter = [[GPUImageRotationFilter alloc] initWithRotation:kGPUImageRotateRightFlipVertical];
     
-    [videoCamera addTarget:filter];
+//    [videoCamera addTarget:filter];
     GPUImageView *filterView = (GPUImageView *)self.view;
 //    filterView.fillMode = kGPUImageFillModeStretch;
 //    filterView.fillMode = kGPUImageFillModePreserveAspectRatioAndFill;
@@ -59,8 +59,8 @@
 //    movieWriter = [[GPUImageMovieWriter alloc] initWithMovieURL:movieURL size:CGSizeMake(640.0, 480.0)];
 //    movieWriter = [[GPUImageMovieWriter alloc] initWithMovieURL:movieURL size:CGSizeMake(720.0, 1280.0)];
 //    movieWriter = [[GPUImageMovieWriter alloc] initWithMovieURL:movieURL size:CGSizeMake(1080.0, 1920.0)];
-    [filter addTarget:movieWriter];
-    [filter addTarget:filterView];
+//    [videoCamera addTarget:movieWriter];
+    [videoCamera addTarget:filterView];
     
     [videoCamera startCameraCapture];
     
