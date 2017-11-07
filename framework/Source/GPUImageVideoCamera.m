@@ -76,10 +76,11 @@ void setColorConversion709( GLfloat conversionMatrix[9] )
     {
 		return nil;
     }
-    
+    // GPU: 1. Tasks submitted to the returned queue are scheduled concurrently with respect to one another
     cameraProcessingQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH,0);
 	audioProcessingQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW,0);
 
+    // GPU: 2. 创建信号量 1
     frameRenderingSemaphore = dispatch_semaphore_create(1);
 
 	_frameRate = 0; // This will not set frame rate unless this value gets set to 1 or above
@@ -88,8 +89,11 @@ void setColorConversion709( GLfloat conversionMatrix[9] )
     outputRotation = kGPUImageNoRotation;
     internalRotation = kGPUImageNoRotation;
     captureAsYUV = YES;
+    
+    // GPU: 3. 因为自然间的可见光的颜色无穷多，但是量化的颜色是有限的，不同的颜色空间标准能表示的颜色范围也不同，越多的颜色看起来就丰富,但是数据量就越大。所有更加不同的场合有不同的标准适应。709是HDTV的标准，用4:2:0。 http://www.ruige.com/upload/downfiles/20160928/a88320adc4cc6b57675e543b80727968.pdf
     _preferredConversion = kColorConversion709;
     
+    // GPU: 4. 查找摄像头设备
 	// Grab the back-facing or front-facing camera
     _inputCamera = nil;
 	NSArray *devices = [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];
@@ -104,7 +108,7 @@ void setColorConversion709( GLfloat conversionMatrix[9] )
     if (!_inputCamera) {
         return nil;
     }
-    
+    // GPU: 5. session
 	// Create the capture session
 	_captureSession = [[AVCaptureSession alloc] init];
 	
@@ -118,17 +122,22 @@ void setColorConversion709( GLfloat conversionMatrix[9] )
 		[_captureSession addInput:videoInput];
 	}
 	
+    // GPU: 6. 配置输出的视频数据格式
 	// Add the video frame output	
 	videoOutput = [[AVCaptureVideoDataOutput alloc] init];
 	[videoOutput setAlwaysDiscardsLateVideoFrames:NO];
     
 //    if (captureAsYUV && [GPUImageContext deviceSupportsRedTextures])
+    // 是否支持corevideo
     if (captureAsYUV && [GPUImageContext supportsFastTextureUpload])
     {
         BOOL supportsFullYUVRange = NO;
+        // GPU: 7. "https://developer.apple.com/documentation/corevideo/1563591-pixel_format_types?language=objc"
         NSArray *supportedPixelFormats = videoOutput.availableVideoCVPixelFormatTypes;
         for (NSNumber *currentPixelFormat in supportedPixelFormats)
         {
+            
+            // GPU: 8 这个像素编码格式 420； 8个Y 2个U 2个V,双平面 UV交叉 YYYYUVUVUV
             if ([currentPixelFormat intValue] == kCVPixelFormatType_420YpCbCr8BiPlanarFullRange)
             {
                 supportsFullYUVRange = YES;
@@ -148,13 +157,17 @@ void setColorConversion709( GLfloat conversionMatrix[9] )
     }
     else
     {
+        // GPU: BGRABGRA 每个8bit.
         [videoOutput setVideoSettings:[NSDictionary dictionaryWithObject:[NSNumber numberWithInt:kCVPixelFormatType_32BGRA] forKey:(id)kCVPixelBufferPixelFormatTypeKey]];
     }
     
+    
+    // GPU: 8. 配置glprogram
     runSynchronouslyOnVideoProcessingQueue(^{
-        
+        NSLog(@"%@-%s",[NSThread currentThread],__func__);
         if (captureAsYUV)
         {
+            // GPU: 8.1 配置EAGContext上下文
             [GPUImageContext useImageProcessingContext];
             //            if ([GPUImageContext deviceSupportsRedTextures])
             //            {
@@ -164,6 +177,7 @@ void setColorConversion709( GLfloat conversionMatrix[9] )
             //            {
             if (isFullYUVRange)
             {
+                // GPU: 8.2 program 已经包含了shader 但是没有link 和 use
                 yuvConversionProgram = [[GPUImageContext sharedImageProcessingContext] programForVertexShaderString:kGPUImageVertexShaderString fragmentShaderString:kGPUImageYUVFullRangeConversionForLAFragmentShaderString];
             }
             else
@@ -172,12 +186,14 @@ void setColorConversion709( GLfloat conversionMatrix[9] )
             }
 
             //            }
-            
+            // GPU:  program link后initialized才为YES
             if (!yuvConversionProgram.initialized)
             {
+                // GPU: program 绑定参数index
                 [yuvConversionProgram addAttribute:@"position"];
                 [yuvConversionProgram addAttribute:@"inputTextureCoordinate"];
                 
+                // GPU: program link
                 if (![yuvConversionProgram link])
                 {
                     NSString *progLog = [yuvConversionProgram programLog];
@@ -191,19 +207,23 @@ void setColorConversion709( GLfloat conversionMatrix[9] )
                 }
             }
             
+            // GPU: 获取program 中下列参数的index
             yuvConversionPositionAttribute = [yuvConversionProgram attributeIndex:@"position"];
             yuvConversionTextureCoordinateAttribute = [yuvConversionProgram attributeIndex:@"inputTextureCoordinate"];
             yuvConversionLuminanceTextureUniform = [yuvConversionProgram uniformIndex:@"luminanceTexture"];
             yuvConversionChrominanceTextureUniform = [yuvConversionProgram uniformIndex:@"chrominanceTexture"];
             yuvConversionMatrixUniform = [yuvConversionProgram uniformIndex:@"colorConversionMatrix"];
             
+            // GPU: use program
             [GPUImageContext setActiveShaderProgram:yuvConversionProgram];
             
+            // GPU: 表示postion 和 inputTextureCoordinate 使用变量数组 不是常量
             glEnableVertexAttribArray(yuvConversionPositionAttribute);
             glEnableVertexAttribArray(yuvConversionTextureCoordinateAttribute);
         }
     });
     
+    // GPU: 9 session 添加输出
     [videoOutput setSampleBufferDelegate:self queue:cameraProcessingQueue];
 	if ([_captureSession canAddOutput:videoOutput])
 	{
@@ -340,6 +360,8 @@ void setColorConversion709( GLfloat conversionMatrix[9] )
     if (![_captureSession isRunning])
 	{
         startingCaptureTime = [NSDate date];
+        
+        // GPU: 10 session 开始
 		[_captureSession startRunning];
 	};
 }
@@ -810,6 +832,8 @@ void setColorConversion709( GLfloat conversionMatrix[9] )
     [self.audioEncodingTarget processAudioBuffer:sampleBuffer]; 
 }
 
+
+// GPU:
 - (void)convertYUVToRGBOutput;
 {
     [GPUImageContext setActiveShaderProgram:yuvConversionProgram];
@@ -868,14 +892,17 @@ void setColorConversion709( GLfloat conversionMatrix[9] )
 #pragma mark -
 #pragma mark AVCaptureVideoDataOutputSampleBufferDelegate
 
+// GPU: 11 返回采集的音视频
 - (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection
 {
+     NSLog(@"%@-%s-返回音视频数据",[NSThread currentThread],__func__);
     if (!self.captureSession.isRunning)
     {
         return;
     }
     else if (captureOutput == audioOutput)
     {
+        // GPU: 12 处理音频
         [self processAudioSampleBuffer:sampleBuffer];
     }
     else
@@ -887,6 +914,7 @@ void setColorConversion709( GLfloat conversionMatrix[9] )
         
         CFRetain(sampleBuffer);
         runAsynchronouslyOnVideoProcessingQueue(^{
+             NSLog(@"%@-%s-处理视频数据",[NSThread currentThread],__func__);
             //Feature Detection Hook.
             if (self.delegate)
             {
