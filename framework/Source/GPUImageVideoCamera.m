@@ -164,7 +164,8 @@ void setColorConversion709( GLfloat conversionMatrix[9] )
     
     // GPU: 8. 配置glprogram
     runSynchronouslyOnVideoProcessingQueue(^{
-        NSLog(@"%@-%s",[NSThread currentThread],__func__);
+ 
+        NSLog(@"%@-%s--初始program",[NSThread currentThread],__func__);
         if (captureAsYUV)
         {
             // GPU: 8.1 配置EAGContext上下文
@@ -221,8 +222,10 @@ void setColorConversion709( GLfloat conversionMatrix[9] )
             glEnableVertexAttribArray(yuvConversionPositionAttribute);
             glEnableVertexAttribArray(yuvConversionTextureCoordinateAttribute);
         }
+         NSLog(@"%@-%s--program 结束",[NSThread currentThread],__func__);
     });
     
+     NSLog(@"%@-%s--end session",[NSThread currentThread],__func__);
     // GPU: 9 session 添加输出
     [videoOutput setSampleBufferDelegate:self queue:cameraProcessingQueue];
 	if ([_captureSession canAddOutput:videoOutput])

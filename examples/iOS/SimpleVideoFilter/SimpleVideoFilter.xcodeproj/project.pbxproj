@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		42025F0B1FB3F3DE00C91780 /* ZYGPUImgVideoCamera.m in Sources */ = {isa = PBXBuildFile; fileRef = 42025F0A1FB3F3DE00C91780 /* ZYGPUImgVideoCamera.m */; };
+		42025F101FB3F76500C91780 /* ZYGPUImgBuf.m in Sources */ = {isa = PBXBuildFile; fileRef = 42025F0F1FB3F76500C91780 /* ZYGPUImgBuf.m */; };
+		42025F131FB408F600C91780 /* ZYGPUImgOutput.m in Sources */ = {isa = PBXBuildFile; fileRef = 42025F121FB408F600C91780 /* ZYGPUImgOutput.m */; };
 		BCB3C44716BCA8C4003D26B0 /* Icon-72.png in Resources */ = {isa = PBXBuildFile; fileRef = BCB3C44216BCA8C4003D26B0 /* Icon-72.png */; };
 		BCB3C44816BCA8C4003D26B0 /* Icon-72@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BCB3C44316BCA8C4003D26B0 /* Icon-72@2x.png */; };
 		BCB3C44916BCA8C4003D26B0 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = BCB3C44416BCA8C4003D26B0 /* Icon.png */; };
@@ -55,6 +58,13 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		42025F091FB3F3DE00C91780 /* ZYGPUImgVideoCamera.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZYGPUImgVideoCamera.h; sourceTree = "<group>"; };
+		42025F0A1FB3F3DE00C91780 /* ZYGPUImgVideoCamera.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZYGPUImgVideoCamera.m; sourceTree = "<group>"; };
+		42025F0C1FB3F40A00C91780 /* ZYGPUImgInput.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZYGPUImgInput.h; sourceTree = "<group>"; };
+		42025F0E1FB3F76500C91780 /* ZYGPUImgBuf.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZYGPUImgBuf.h; sourceTree = "<group>"; };
+		42025F0F1FB3F76500C91780 /* ZYGPUImgBuf.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZYGPUImgBuf.m; sourceTree = "<group>"; };
+		42025F111FB408F600C91780 /* ZYGPUImgOutput.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZYGPUImgOutput.h; sourceTree = "<group>"; };
+		42025F121FB408F600C91780 /* ZYGPUImgOutput.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZYGPUImgOutput.m; sourceTree = "<group>"; };
 		BCB3C44216BCA8C4003D26B0 /* Icon-72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-72.png"; path = "../../SharedIcons/Icon-72.png"; sourceTree = "<group>"; };
 		BCB3C44316BCA8C4003D26B0 /* Icon-72@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-72@2x.png"; path = "../../SharedIcons/Icon-72@2x.png"; sourceTree = "<group>"; };
 		BCB3C44416BCA8C4003D26B0 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Icon.png; path = ../../SharedIcons/Icon.png; sourceTree = "<group>"; };
@@ -104,6 +114,20 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		42025F061FB3F2CB00C91780 /* ZYGPUImg */ = {
+			isa = PBXGroup;
+			children = (
+				42025F091FB3F3DE00C91780 /* ZYGPUImgVideoCamera.h */,
+				42025F0A1FB3F3DE00C91780 /* ZYGPUImgVideoCamera.m */,
+				42025F0C1FB3F40A00C91780 /* ZYGPUImgInput.h */,
+				42025F0E1FB3F76500C91780 /* ZYGPUImgBuf.h */,
+				42025F0F1FB3F76500C91780 /* ZYGPUImgBuf.m */,
+				42025F111FB408F600C91780 /* ZYGPUImgOutput.h */,
+				42025F121FB408F600C91780 /* ZYGPUImgOutput.m */,
+			);
+			name = ZYGPUImg;
+			sourceTree = "<group>";
+		};
 		BCB5DDBF14E86899000AF3C2 = {
 			isa = PBXGroup;
 			children = (
@@ -142,6 +166,7 @@
 		BCB5DDD414E86899000AF3C2 /* SimpleVideoFilter */ = {
 			isa = PBXGroup;
 			children = (
+				42025F061FB3F2CB00C91780 /* ZYGPUImg */,
 				BCB5DDDD14E86899000AF3C2 /* SimpleVideoFilterAppDelegate.h */,
 				BCB5DDDE14E86899000AF3C2 /* SimpleVideoFilterAppDelegate.m */,
 				BCB5DDE514E868C0000AF3C2 /* SimpleVideoFilterViewController.h */,
@@ -275,6 +300,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				42025F101FB3F76500C91780 /* ZYGPUImgBuf.m in Sources */,
+				42025F0B1FB3F3DE00C91780 /* ZYGPUImgVideoCamera.m in Sources */,
+				42025F131FB408F600C91780 /* ZYGPUImgOutput.m in Sources */,
 				BCB5DDDB14E86899000AF3C2 /* main.m in Sources */,
 				BCB5DDDF14E86899000AF3C2 /* SimpleVideoFilterAppDelegate.m in Sources */,
 				BCB5DDE814E868C0000AF3C2 /* SimpleVideoFilterViewController.m in Sources */,

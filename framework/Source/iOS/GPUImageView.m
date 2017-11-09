@@ -270,7 +270,18 @@
         imageVertices[5] = heightScaling;
         imageVertices[6] = widthScaling;
         imageVertices[7] = heightScaling;
+        
+    
+//        imageVertices[0] = -1;
+//        imageVertices[1] = 0;
+//        imageVertices[2] = 0;
+//        imageVertices[3] = 0;
+//        imageVertices[4] = 0;
+//        imageVertices[5] = 0.751173735;
+//        imageVertices[6] = -1;
+//        imageVertices[7] = 0.751173735;
     });
+    
     
 //    static const GLfloat imageVertices[] = {
 //        -1.0f, -1.0f,
