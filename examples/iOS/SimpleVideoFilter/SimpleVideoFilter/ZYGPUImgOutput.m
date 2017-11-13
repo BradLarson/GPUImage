@@ -8,6 +8,15 @@
 
 #import "ZYGPUImgOutput.h"
 
+
+void runAsynchronouslyOnVideoProcessQueue(void (^block)(void)){
+    if(dispatch_get_current_queue() == [[ZYGPUImgCtx shareCtx] videoProcessingQueue]){
+        block();
+    }else{
+        dispatch_async([[ZYGPUImgCtx shareCtx] videoProcessingQueue], block);
+    }
+}
+
 @implementation ZYGPUImgOutput
 
 @end

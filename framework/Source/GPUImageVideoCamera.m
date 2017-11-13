@@ -647,6 +647,7 @@ void setColorConversion709( GLfloat conversionMatrix[9] )
     //Describes the color matrix used for YCbCr to RGB conversion (type CFString)
     CFTypeRef colorAttachments = CVBufferGetAttachment(cameraFrame, kCVImageBufferYCbCrMatrixKey, NULL);
     
+    // GPU: 获取yvu2rgba 转换矩阵
      NSLog(@"%@-%s-colorattachments=%@",[NSThread currentThread],__func__,colorAttachments);
     if (colorAttachments != NULL)
     {

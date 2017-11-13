@@ -10,6 +10,7 @@
 		42025F0B1FB3F3DE00C91780 /* ZYGPUImgVideoCamera.m in Sources */ = {isa = PBXBuildFile; fileRef = 42025F0A1FB3F3DE00C91780 /* ZYGPUImgVideoCamera.m */; };
 		42025F101FB3F76500C91780 /* ZYGPUImgBuf.m in Sources */ = {isa = PBXBuildFile; fileRef = 42025F0F1FB3F76500C91780 /* ZYGPUImgBuf.m */; };
 		42025F131FB408F600C91780 /* ZYGPUImgOutput.m in Sources */ = {isa = PBXBuildFile; fileRef = 42025F121FB408F600C91780 /* ZYGPUImgOutput.m */; };
+		42025F191FB44ACA00C91780 /* ZYGPUImgCtx.m in Sources */ = {isa = PBXBuildFile; fileRef = 42025F181FB44ACA00C91780 /* ZYGPUImgCtx.m */; };
 		BCB3C44716BCA8C4003D26B0 /* Icon-72.png in Resources */ = {isa = PBXBuildFile; fileRef = BCB3C44216BCA8C4003D26B0 /* Icon-72.png */; };
 		BCB3C44816BCA8C4003D26B0 /* Icon-72@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BCB3C44316BCA8C4003D26B0 /* Icon-72@2x.png */; };
 		BCB3C44916BCA8C4003D26B0 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = BCB3C44416BCA8C4003D26B0 /* Icon.png */; };
@@ -65,6 +66,8 @@
 		42025F0F1FB3F76500C91780 /* ZYGPUImgBuf.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZYGPUImgBuf.m; sourceTree = "<group>"; };
 		42025F111FB408F600C91780 /* ZYGPUImgOutput.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZYGPUImgOutput.h; sourceTree = "<group>"; };
 		42025F121FB408F600C91780 /* ZYGPUImgOutput.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZYGPUImgOutput.m; sourceTree = "<group>"; };
+		42025F171FB44ACA00C91780 /* ZYGPUImgCtx.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZYGPUImgCtx.h; sourceTree = "<group>"; };
+		42025F181FB44ACA00C91780 /* ZYGPUImgCtx.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZYGPUImgCtx.m; sourceTree = "<group>"; };
 		BCB3C44216BCA8C4003D26B0 /* Icon-72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-72.png"; path = "../../SharedIcons/Icon-72.png"; sourceTree = "<group>"; };
 		BCB3C44316BCA8C4003D26B0 /* Icon-72@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-72@2x.png"; path = "../../SharedIcons/Icon-72@2x.png"; sourceTree = "<group>"; };
 		BCB3C44416BCA8C4003D26B0 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Icon.png; path = ../../SharedIcons/Icon.png; sourceTree = "<group>"; };
@@ -124,6 +127,8 @@
 				42025F0F1FB3F76500C91780 /* ZYGPUImgBuf.m */,
 				42025F111FB408F600C91780 /* ZYGPUImgOutput.h */,
 				42025F121FB408F600C91780 /* ZYGPUImgOutput.m */,
+				42025F171FB44ACA00C91780 /* ZYGPUImgCtx.h */,
+				42025F181FB44ACA00C91780 /* ZYGPUImgCtx.m */,
 			);
 			name = ZYGPUImg;
 			sourceTree = "<group>";
@@ -300,6 +305,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				42025F191FB44ACA00C91780 /* ZYGPUImgCtx.m in Sources */,
 				42025F101FB3F76500C91780 /* ZYGPUImgBuf.m in Sources */,
 				42025F0B1FB3F3DE00C91780 /* ZYGPUImgVideoCamera.m in Sources */,
 				42025F131FB408F600C91780 /* ZYGPUImgOutput.m in Sources */,

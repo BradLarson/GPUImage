@@ -8,14 +8,15 @@
 
 #import <Foundation/Foundation.h>
 #import "ZYGPUImgInput.h"
+#import "ZYGPUImgCtx.h"
 
 
+void runAsynchronouslyOnVideoProcessQueue(void (^block)(void));
 
-void runAsynchronouslyOnVideoProcessingQueue(void (^block)(void)){
+@interface ZYGPUImgOutput : NSObject{
+    dispatch_queue_t videoProcessingQueue;
 }
 
-
-@interface ZYGPUImgOutput : NSObject
 
 - (void)addTarget:(id<ZYGPUImgInput>)target;
 
