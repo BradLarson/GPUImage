@@ -16,15 +16,23 @@ GLfloat kColorConversion601FullRangeDefault[] = {
 #import "ZYGPUImgVideoCamera.h"
 #import <AVFoundation/AVFoundation.h>
 #import <GLKit/GLKit.h>
-
+#import "ZYGLProgram.h"
 
 @interface ZYGPUImgVideoCamera()<AVCaptureVideoDataOutputSampleBufferDelegate> {
     dispatch_queue_t cameraProcessQueue;
     dispatch_queue_t audioProcessQueue;
     dispatch_semaphore_t frameRenderSemaphore;
     const CGFloat *preferredConvertion;
+    ZYGLProgram *yuv2rgbProgram;
+    GLuint  luminanceTextureId;
+    GLuint  chrominanceTextureId;
+
+    GLuint  yUnifromIndex,uvUnifromIndex,colorMatrixIndex,postionAttriIndex,inputTextureAttriIndex;
+
+
 }
 @property (nonatomic,strong) AVCaptureSession  *session;
+
 @end
 
 @implementation ZYGPUImgVideoCamera
@@ -50,8 +58,27 @@ GLfloat kColorConversion601FullRangeDefault[] = {
 #pragma mark - private
 
 - (void)setupProgram{
-    
-    
+    yuv2rgbProgram = [[ZYGLProgram alloc]
+            initWithVertexShaderFile:[[NSBundle mainBundle] pathForResource:@"vertexShader.glsl" ofType:nil]
+                      fragShaderFile:[[NSBundle mainBundle] pathForResource:@"fragShader.glsl" ofType:nil]];
+
+
+    [yuv2rgbProgram addAttribute:@"position"];
+    [yuv2rgbProgram addAttribute:@"inputTextureCoord"];
+
+    [yuv2rgbProgram link];
+    if(NO == [yuv2rgbProgram validate]){
+        NSLog(@"prgram validate failed.......%@\n-%@\n-%@\n",
+                yuv2rgbProgram.programLog,yuv2rgbProgram.vertexShaderLog,yuv2rgbProgram.fragShaderLog);
+    }
+
+
+    postionAttriIndex = [yuv2rgbProgram attributeIndex:@"position"];
+    inputTextureAttriIndex = [yuv2rgbProgram attributeIndex:@"inputTextureCoord"];
+    yUnifromIndex = [yuv2rgbProgram uniformIndex:@"luminanceTexture"];
+    uvUnifromIndex = [yuv2rgbProgram uniformIndex:@"chrominaceTexture"];
+    colorMatrixIndex = [yuv2rgbProgram uniformIndex:@"colorConversionMatrix"];
+
 }
 
 - (void)configSession{
@@ -83,7 +110,9 @@ GLfloat kColorConversion601FullRangeDefault[] = {
     AVCaptureVideoDataOutput *videoOutput = [[AVCaptureVideoDataOutput alloc] init];
     [videoOutput setSampleBufferDelegate:self queue:cameraProcessQueue];
     [videoOutput setAlwaysDiscardsLateVideoFrames:NO];
-    [videoOutput setVideoSettings:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInteger:kCVPixelFormatType_420YpCbCr8BiPlanarFullRange],kCVPixelBufferPixelFormatTypeKey, nil]];
+    [videoOutput setVideoSettings:[NSDictionary dictionaryWithObjectsAndKeys
+    :[NSNumber numberWithInteger:kCVPixelFormatType_420YpCbCr8BiPlanarFullRange],
+                    kCVPixelBufferPixelFormatTypeKey, nil]];
     
     if ([session canAddOutput:videoOutput]) {
         [session addOutput:videoOutput];
@@ -130,17 +159,20 @@ GLfloat kColorConversion601FullRangeDefault[] = {
     CVOpenGLESTextureRef  chrominanceTextureRef;
     
     CVOpenGLESTextureCacheRef  videoTexuteCache;
-    CVReturn err = CVOpenGLESTextureCacheCreate(kCFAllocatorDefault, NULL,[[ZYGPUImgCtx shareCtx] currentCtx], NULL, &videoTexuteCache);
+    CVReturn err = CVOpenGLESTextureCacheCreate(kCFAllocatorDefault,
+            NULL,[[ZYGPUImgCtx shareCtx] currentCtx], NULL, &videoTexuteCache);
     if (err) {
         NSLog(@"create texture cache failed %d",err);
     }
     
-    err =  CVOpenGLESTextureCacheCreateTextureFromImage(kCFAllocatorDefault, videoTexuteCache, imageBuf, NULL, GL_TEXTURE_2D, GL_LUMINANCE, bufferW, bufferH, GL_LUMINANCE, GL_UNSIGNED_BYTE, 0, &luminanceTexture);
+    err =  CVOpenGLESTextureCacheCreateTextureFromImage
+            (kCFAllocatorDefault, videoTexuteCache, imageBuf, NULL, GL_TEXTURE_2D, GL_LUMINANCE,
+                    bufferW, bufferH, GL_LUMINANCE, GL_UNSIGNED_BYTE, 0, &luminanceTexture);
     if (err) {
         NSLog(@"create texture from image failed %d",err);
         return;
     }
-    GLuint luminanceTextureId = CVOpenGLESTextureGetName(luminanceTexture);
+    luminanceTextureId = CVOpenGLESTextureGetName(luminanceTexture);
     if (luminanceTextureId <= 0) {
         NSLog(@"get l texuture id failed");
         return;
@@ -150,33 +182,73 @@ GLfloat kColorConversion601FullRangeDefault[] = {
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     
-    err = CVOpenGLESTextureCacheCreateTextureFromImage(kCFAllocatorDefault, videoTexuteCache, imageBuf, NULL, GL_TEXTURE_2D,GL_LUMINANCE_ALPHA, bufferW / 4, bufferH / 4,GL_LUMINANCE_ALPHA ,GL_UNSIGNED_BYTE, 1, &chrominanceTextureRef);
+    err = CVOpenGLESTextureCacheCreateTextureFromImage(kCFAllocatorDefault,
+            videoTexuteCache, imageBuf, NULL, GL_TEXTURE_2D,GL_LUMINANCE_ALPHA,
+            bufferW / 2, bufferH / 2,GL_LUMINANCE_ALPHA ,GL_UNSIGNED_BYTE, 1, &chrominanceTextureRef);
     if (err) {
         NSLog(@"create texture from chrom %d",err);
         return;
     }
     
-    GLuint chrominanceTextureId = CVOpenGLESTextureGetName(chrominanceTextureRef);
+    chrominanceTextureId = CVOpenGLESTextureGetName(chrominanceTextureRef);
     if (chrominanceTextureId <= 0) {
         NSLog(@" get c id failed");
         return;
     }
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
+    glBindTexture(GL_TEXTURE_2D, chrominanceTextureId);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     
     // 3. 执行gl绘制，把yuv->rgba ,结果数据保存都framebuffer中
+    // program ,设置program 纹理参数，几何参数。
+    [self convertYUV2RGB];
+}
+
+// 过程就是开启绘制，通过program把YUV数据转成rgb数据，然后数据保存在framebuffer中。
+- (void)convertYUV2RGB{
+
+    // context
+    [[ZYGPUImgCtx shareCtx] userCurrentCtx];
+
+    // framebuffer renderbuffer
+    GLuint  framebufferId;
+    GLuint  renderbufferId;
+
+    glGenFramebuffers(1, &framebufferId);
+    glGenRenderbuffers(1, &renderbufferId);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, renderbufferId);
+
+    // program使用
+    [yuv2rgbProgram use];
+
+    // 设置顶点 纹理坐标，uniform 数据
+   static const GLfloat vertexArray[] = {
+           -1,-1,
+           1,-1,
+           -1,1,
+           1,1
+    };
+
+    static  const GLfloat textureCoord[]= {
+            0,0,
+            1,0,
+            1,0,
+            1,1
+    };
+
+    glActiveTexture(GL_TEXTURE4);
+    glBindTexture(GL_TEXTURE_2D,luminanceTextureId);
+    glUniform1i(<#GLint location#>, <#GLint x#>)
+
+
+    // 绘制
+    glDrawArrays(GL_STATIC_DRAW, 0, 4);
+
 }
 
 #pragma mark - samplebuffer callback
-- (void)captureOutput:(AVCaptureOutput *)output didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection{
+- (void)captureOutput:(AVCaptureOutput *)output
+didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection{
     if(dispatch_semaphore_wait(frameRenderSemaphore, DISPATCH_TIME_NOW) != 0){
         return;
     }
