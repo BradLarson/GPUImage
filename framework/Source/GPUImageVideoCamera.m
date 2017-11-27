@@ -690,6 +690,7 @@ void setColorConversion709( GLfloat conversionMatrix[9] )
         CVOpenGLESTextureRef chrominanceTextureRef = NULL;
 
 //        if (captureAsYUV && [GPUImageContext deviceSupportsRedTextures])
+        // 终于知道 为什么有plane个数的了，因为YUV420p 中p代表的就是plane，就是说先存储全部的Y数据，在存储UV数据；那么一个plane代表就是一种数据了。
         if (CVPixelBufferGetPlaneCount(cameraFrame) > 0) // Check for YUV planar inputs to do RGB conversion
         {
             // GPU: 使用cpu处理数据 必须lock，GPU不需要
@@ -709,11 +710,17 @@ void setColorConversion709( GLfloat conversionMatrix[9] )
             if ([GPUImageContext deviceSupportsRedTextures])
             {
                 // GPU: 从图片创建纹理。Creates a CVOpenGLESTextureRef object from an existing CVImageBufferRef.
-                err = CVOpenGLESTextureCacheCreateTextureFromImage(kCFAllocatorDefault, [[GPUImageContext sharedImageProcessingContext] coreVideoTextureCache], cameraFrame, NULL, GL_TEXTURE_2D, GL_LUMINANCE, bufferWidth, bufferHeight, GL_LUMINANCE, GL_UNSIGNED_BYTE, 0, &luminanceTextureRef);
+                err = CVOpenGLESTextureCacheCreateTextureFromImage(kCFAllocatorDefault,
+                        [[GPUImageContext sharedImageProcessingContext] coreVideoTextureCache],
+                        cameraFrame, NULL, GL_TEXTURE_2D, GL_LUMINANCE, bufferWidth, bufferHeight,
+                        GL_LUMINANCE, GL_UNSIGNED_BYTE, 0, &luminanceTextureRef);
             }
             else
             {
-                err = CVOpenGLESTextureCacheCreateTextureFromImage(kCFAllocatorDefault, [[GPUImageContext sharedImageProcessingContext] coreVideoTextureCache], cameraFrame, NULL, GL_TEXTURE_2D, GL_LUMINANCE, bufferWidth, bufferHeight, GL_LUMINANCE, GL_UNSIGNED_BYTE, 0, &luminanceTextureRef);
+                err = CVOpenGLESTextureCacheCreateTextureFromImage(kCFAllocatorDefault,
+                        [[GPUImageContext sharedImageProcessingContext] coreVideoTextureCache],
+                        cameraFrame, NULL, GL_TEXTURE_2D, GL_LUMINANCE, bufferWidth, bufferHeight,
+                        GL_LUMINANCE, GL_UNSIGNED_BYTE, 0, &luminanceTextureRef);
             }
             if (err)
             {
@@ -729,11 +736,17 @@ void setColorConversion709( GLfloat conversionMatrix[9] )
             glActiveTexture(GL_TEXTURE5);
             if ([GPUImageContext deviceSupportsRedTextures])
             {
-                err = CVOpenGLESTextureCacheCreateTextureFromImage(kCFAllocatorDefault, [[GPUImageContext sharedImageProcessingContext] coreVideoTextureCache], cameraFrame, NULL, GL_TEXTURE_2D, GL_LUMINANCE_ALPHA, bufferWidth/2, bufferHeight/2, GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE, 1, &chrominanceTextureRef);
+                err = CVOpenGLESTextureCacheCreateTextureFromImage(kCFAllocatorDefault,
+                        [[GPUImageContext sharedImageProcessingContext] coreVideoTextureCache],
+                        cameraFrame, NULL, GL_TEXTURE_2D, GL_LUMINANCE_ALPHA, bufferWidth/2,
+                        bufferHeight/2, GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE, 1, &chrominanceTextureRef);
             }
             else
             {
-                err = CVOpenGLESTextureCacheCreateTextureFromImage(kCFAllocatorDefault, [[GPUImageContext sharedImageProcessingContext] coreVideoTextureCache], cameraFrame, NULL, GL_TEXTURE_2D, GL_LUMINANCE_ALPHA, bufferWidth/2, bufferHeight/2, GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE, 1, &chrominanceTextureRef);
+                err = CVOpenGLESTextureCacheCreateTextureFromImage(kCFAllocatorDefault,
+                        [[GPUImageContext sharedImageProcessingContext] coreVideoTextureCache],
+                        cameraFrame, NULL, GL_TEXTURE_2D, GL_LUMINANCE_ALPHA, bufferWidth/2,
+                        bufferHeight/2, GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE, 1, &chrominanceTextureRef);
             }
             if (err)
             {
@@ -757,7 +770,8 @@ void setColorConversion709( GLfloat conversionMatrix[9] )
                 rotatedImageBufferHeight = bufferWidth;
             }
             
-            [self updateTargetsForVideoCameraUsingCacheTextureAtWidth:rotatedImageBufferWidth height:rotatedImageBufferHeight time:currentTime];
+            [self updateTargetsForVideoCameraUsingCacheTextureAtWidth:rotatedImageBufferWidth
+                                                               height:rotatedImageBufferHeight time:currentTime];
             
             CVPixelBufferUnlockBaseAddress(cameraFrame, 0);
             CFRelease(luminanceTextureRef);
@@ -785,7 +799,9 @@ void setColorConversion709( GLfloat conversionMatrix[9] )
         CVPixelBufferLockBaseAddress(cameraFrame, 0);
         
         int bytesPerRow = (int) CVPixelBufferGetBytesPerRow(cameraFrame);
-        outputFramebuffer = [[GPUImageContext sharedFramebufferCache] fetchFramebufferForSize:CGSizeMake(bytesPerRow / 4, bufferHeight) onlyTexture:YES];
+        outputFramebuffer = [[GPUImageContext sharedFramebufferCache]
+                fetchFramebufferForSize:
+                CGSizeMake(bytesPerRow / 4, bufferHeight) onlyTexture:YES];
         [outputFramebuffer activateFramebuffer];
 
         glBindTexture(GL_TEXTURE_2D, [outputFramebuffer texture]);
@@ -827,6 +843,8 @@ void setColorConversion709( GLfloat conversionMatrix[9] )
 
     int rotatedImageBufferWidth = imageBufferWidth, rotatedImageBufferHeight = imageBufferHeight;
 
+
+    // 向左 向右 水平翻转，垂直翻转 都要交换宽高
     if (GPUImageRotationSwapsWidthAndHeight(internalRotation))
     {
         rotatedImageBufferWidth = imageBufferHeight;

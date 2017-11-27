@@ -137,7 +137,8 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size);
      NSLog(@"%@-%s",[NSThread currentThread],__func__);
     runSynchronouslyOnVideoProcessingQueue(^{
         [GPUImageContext useImageProcessingContext];
-    
+
+        // 创建帧缓存
         glGenFramebuffers(1, &framebuffer);
         glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
         
@@ -183,7 +184,8 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size);
             _texture = CVOpenGLESTextureGetName(renderTexture);
             glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, _textureOptions.wrapS);
             glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, _textureOptions.wrapT);
-            
+
+            // 把纹理附加到帧缓存上
             glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, CVOpenGLESTextureGetName(renderTexture), 0);
 #endif
         }
@@ -320,6 +322,7 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
     __block CGImageRef cgImageFromBytes;
     
     runSynchronouslyOnVideoProcessingQueue(^{
+        //  大意如[EAGLContext setCurrentContext:imageProcessingContext];
         [GPUImageContext useImageProcessingContext];
         
         NSUInteger totalBytesForImage = (int)_size.width * (int)_size.height * 4;

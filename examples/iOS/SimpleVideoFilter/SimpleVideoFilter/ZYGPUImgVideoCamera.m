@@ -29,10 +29,10 @@ GLfloat kColorConversion601FullRangeDefault[] = {
 
     GLuint  yUnifromIndex,uvUnifromIndex,colorMatrixIndex,postionAttriIndex,inputTextureAttriIndex;
 
-
+    GLint  imgW,imgH;
 }
-@property (nonatomic,strong) AVCaptureSession  *session;
 
+@property (nonatomic,strong) AVCaptureSession  *session;
 @end
 
 @implementation ZYGPUImgVideoCamera
@@ -71,14 +71,16 @@ GLfloat kColorConversion601FullRangeDefault[] = {
         NSLog(@"prgram validate failed.......%@\n-%@\n-%@\n",
                 yuv2rgbProgram.programLog,yuv2rgbProgram.vertexShaderLog,yuv2rgbProgram.fragShaderLog);
     }
-
-
     postionAttriIndex = [yuv2rgbProgram attributeIndex:@"position"];
     inputTextureAttriIndex = [yuv2rgbProgram attributeIndex:@"inputTextureCoord"];
     yUnifromIndex = [yuv2rgbProgram uniformIndex:@"luminanceTexture"];
     uvUnifromIndex = [yuv2rgbProgram uniformIndex:@"chrominaceTexture"];
     colorMatrixIndex = [yuv2rgbProgram uniformIndex:@"colorConversionMatrix"];
 
+    glEnableVertexAttribArray(postionAttriIndex);
+    glEnableVertexAttribArray(inputTextureAttriIndex);
+
+    [yuv2rgbProgram use];
 }
 
 - (void)configSession{
@@ -135,6 +137,9 @@ GLfloat kColorConversion601FullRangeDefault[] = {
     }
     int  bufferW = (int)CVPixelBufferGetWidth(imageBuf);
     int bufferH = (int)CVPixelBufferGetHeight(imageBuf);
+
+    imgW = bufferW;
+    imgH = bufferH;
     
     // 2. 把视频帧添加到纹理中,
     CMTime currentTime = CMSampleBufferGetPresentationTimeStamp(sampleBuf);
@@ -215,12 +220,21 @@ GLfloat kColorConversion601FullRangeDefault[] = {
     GLuint  renderbufferId;
 
     glGenFramebuffers(1, &framebufferId);
-    glGenRenderbuffers(1, &renderbufferId);
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, renderbufferId);
+//    glGenRenderbuffers(1, &renderbufferId);
+//    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, renderbufferId);
+
+
+    glBindFramebuffer(GL_FRAMEBUFFER, framebufferId);
+    glViewport(0, 0, imgW, imgH);
 
     // program使用
     [yuv2rgbProgram use];
 
+
+
+
+    glClearColor(0, 0, 0, 1);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     // 设置顶点 纹理坐标，uniform 数据
    static const GLfloat vertexArray[] = {
            -1,-1,
@@ -232,14 +246,22 @@ GLfloat kColorConversion601FullRangeDefault[] = {
     static  const GLfloat textureCoord[]= {
             0,0,
             1,0,
-            1,0,
+            0,1,
             1,1
     };
 
     glActiveTexture(GL_TEXTURE4);
     glBindTexture(GL_TEXTURE_2D,luminanceTextureId);
-    glUniform1i(<#GLint location#>, <#GLint x#>)
+    glUniform1i(yUnifromIndex, 4);
 
+    glActiveTexture(GL_TEXTURE5);
+    glBindTexture(GL_TEXTURE_2D, chrominanceTextureId);
+    glUniform1i(uvUnifromIndex, 5);
+
+    glUniformMatrix3fv(colorMatrixIndex, 1, GL_FALSE, kColorConversion601FullRangeDefault);
+
+    glVertexAttribPointer(postionAttriIndex, 2, GL_FLOAT, NO, 0, vertexArray);
+    glVertexAttribPointer(inputTextureAttriIndex, 2, GL_FLOAT, NO, 0,textureCoord);
 
     // 绘制
     glDrawArrays(GL_STATIC_DRAW, 0, 4);
