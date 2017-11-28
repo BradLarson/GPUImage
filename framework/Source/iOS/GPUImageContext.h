@@ -6,7 +6,7 @@
 
 typedef NS_ENUM(NSUInteger, GPUImageRotationMode) {
 	kGPUImageNoRotation,
-	kGPUImageRotateLeft,ƒ
+	kGPUImageRotateLeft,
 	kGPUImageRotateRight,
 	kGPUImageFlipVertical,
 	kGPUImageFlipHorizonal,

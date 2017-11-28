@@ -132,6 +132,10 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size);
     // TODO: Handle mipmaps
 }
 
+
+/*
+ *  创建fbo
+ */
 - (void)generateFramebuffer;
 {
      NSLog(@"%@-%s",[NSThread currentThread],__func__);
@@ -161,7 +165,8 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size);
                 NSLog(@"FBO size: %f, %f", _size.width, _size.height);
                 NSAssert(NO, @"Error at CVPixelBufferCreate %d", err);
             }
-            
+
+            // 创建纹理，
             err = CVOpenGLESTextureCacheCreateTextureFromImage (kCFAllocatorDefault, coreVideoTextureCache, renderTarget,
                                                                 NULL, // texture attributes
                                                                 GL_TEXTURE_2D,
@@ -203,7 +208,8 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size);
         GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
         NSAssert(status == GL_FRAMEBUFFER_COMPLETE, @"Incomplete filter FBO: %d", status);
         #endif
-        
+
+        // 清理绑定
         glBindTexture(GL_TEXTURE_2D, 0);
     });
 }
@@ -266,6 +272,7 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size);
     framebufferReferenceCount++;
 }
 
+
 - (void)unlock;
 {
     if (referenceCountingDisabled)
@@ -313,6 +320,10 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size)
     [[GPUImageContext sharedFramebufferCache] removeFramebufferFromActiveImageCaptureList:framebuffer];
 }
 
+/**
+ * 从当前的帧缓存中获取一帧图片数据
+ * @return
+ */
 - (CGImageRef)newCGImageFromFramebufferContents;
 {
     // a CGImage can only be created from a 'normal' color texture

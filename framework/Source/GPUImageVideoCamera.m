@@ -683,7 +683,9 @@ void setColorConversion709( GLfloat conversionMatrix[9] )
 	CMTime currentTime = CMSampleBufferGetPresentationTimeStamp(sampleBuffer);
     // GPU: 设置EAGContext
     [GPUImageContext useImageProcessingContext];
-
+    // 纹理上传表示的是把纹理数据传递给显卡，显存中 ，一般这个方法就是glTexImage2D,
+    // CVOpenGLESTextureCacheCreate 这个方法表示创建一个纹理缓存，赋值管理缓存纹理，方便重用，提高效率
+    // 这样就可以实现 纹理的快速 存取了。
     if ([GPUImageContext supportsFastTextureUpload] && captureAsYUV)
     {
         CVOpenGLESTextureRef luminanceTextureRef = NULL;
@@ -852,7 +854,9 @@ void setColorConversion709( GLfloat conversionMatrix[9] )
     }
 
     // GPU: 获取一个framebuffer对象
-    outputFramebuffer = [[GPUImageContext sharedFramebufferCache] fetchFramebufferForSize:CGSizeMake(rotatedImageBufferWidth, rotatedImageBufferHeight) textureOptions:self.outputTextureOptions onlyTexture:NO];
+    outputFramebuffer = [[GPUImageContext sharedFramebufferCache]
+            fetchFramebufferForSize:CGSizeMake(rotatedImageBufferWidth, rotatedImageBufferHeight)
+                     textureOptions:self.outputTextureOptions onlyTexture:NO];
     
     // GPU: 绑定framebuffer 保存渲染结果
     [outputFramebuffer activateFramebuffer];
