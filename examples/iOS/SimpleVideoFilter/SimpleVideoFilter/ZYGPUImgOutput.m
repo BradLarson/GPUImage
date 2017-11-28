@@ -19,4 +19,12 @@ void runAsynchronouslyOnVideoProcessQueue(void (^block)(void)){
 
 @implementation ZYGPUImgOutput
 
+
+- (instancetype)init {
+    if(self = [super init]){
+
+    }
+    return self;
+}
+
 @end

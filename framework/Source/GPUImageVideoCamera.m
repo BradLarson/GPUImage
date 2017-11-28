@@ -709,6 +709,7 @@ void setColorConversion709( GLfloat conversionMatrix[9] )
             CVReturn err;
             // Y-plane
             glActiveTexture(GL_TEXTURE4);
+            // 支持
             if ([GPUImageContext deviceSupportsRedTextures])
             {
                 // GPU: 从图片创建纹理。Creates a CVOpenGLESTextureRef object from an existing CVImageBufferRef.
@@ -852,6 +853,7 @@ void setColorConversion709( GLfloat conversionMatrix[9] )
         rotatedImageBufferWidth = imageBufferHeight;
         rotatedImageBufferHeight = imageBufferWidth;
     }
+
 
     // GPU: 获取一个framebuffer对象
     outputFramebuffer = [[GPUImageContext sharedFramebufferCache]

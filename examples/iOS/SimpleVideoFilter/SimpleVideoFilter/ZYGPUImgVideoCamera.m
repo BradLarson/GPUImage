@@ -17,6 +17,7 @@ GLfloat kColorConversion601FullRangeDefault[] = {
 #import <AVFoundation/AVFoundation.h>
 #import <GLKit/GLKit.h>
 #import "ZYGLProgram.h"
+#import "ZYFrameBuffer.h"
 
 @interface ZYGPUImgVideoCamera()<AVCaptureVideoDataOutputSampleBufferDelegate> {
     dispatch_queue_t cameraProcessQueue;
@@ -31,8 +32,8 @@ GLfloat kColorConversion601FullRangeDefault[] = {
 
     GLint  imgW,imgH;
 }
-
 @property (nonatomic,strong) AVCaptureSession  *session;
+@property (nonatomic, strong) NSMutableArray<ZYFrameBuffer *> *frameBufferArys;
 @end
 
 @implementation ZYGPUImgVideoCamera
@@ -48,7 +49,6 @@ GLfloat kColorConversion601FullRangeDefault[] = {
 }
 
 - (void)startCapture{
-    
     if ([self.session isRunning]) {
         return;
     }
@@ -81,6 +81,9 @@ GLfloat kColorConversion601FullRangeDefault[] = {
     glEnableVertexAttribArray(inputTextureAttriIndex);
 
     [yuv2rgbProgram use];
+
+
+    self.frameBufferArys = [NSMutableArray array];
 }
 
 - (void)configSession{
@@ -216,22 +219,30 @@ GLfloat kColorConversion601FullRangeDefault[] = {
     [[ZYGPUImgCtx shareCtx] userCurrentCtx];
 
     // framebuffer renderbuffer
-    GLuint  framebufferId;
-    GLuint  renderbufferId;
+//    GLuint  framebufferId;
+//    GLuint  renderbufferId;
 
-    glGenFramebuffers(1, &framebufferId);
+//    glGenFramebuffers(1, &framebufferId);
 //    glGenRenderbuffers(1, &renderbufferId);
 //    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, renderbufferId);
 
 
-    glBindFramebuffer(GL_FRAMEBUFFER, framebufferId);
-    glViewport(0, 0, imgW, imgH);
+//    glBindFramebuffer(GL_FRAMEBUFFER, framebufferId);
+//    glViewport(0, 0, imgW, imgH);
 
     // program使用
     [yuv2rgbProgram use];
 
+    // framebuffer
+    ZYFrameBuffer *fbo;
+    if([self.frameBufferArys count] > 0){
+         fbo = [self.frameBufferArys lastObject];
+    }else{
+         fbo = [[ZYFrameBuffer alloc] initWithSize:CGSizeMake(imgW, imgH)];
+    }
 
-
+    glBindFramebuffer(GL_FRAMEBUFFER, [fbo renderTextureId]);
+    glViewport(0, 0, imgW, imgH);
 
     glClearColor(0, 0, 0, 1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
