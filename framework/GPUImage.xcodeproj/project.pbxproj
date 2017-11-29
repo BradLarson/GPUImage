@@ -2416,6 +2416,7 @@
 				);
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				HEADER_SEARCH_PATHS = "$(SOURCE_ROOT)/**";
 				INFOPLIST_FILE = Source/iOS/Framework/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
@@ -2423,6 +2424,7 @@
 				MODULEMAP_FILE = Source/iOS/Framework/module.modulemap;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.sunsetlakesoftware.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = GPUImage;
+				RUN_CLANG_STATIC_ANALYZER = NO;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
@@ -2446,6 +2448,7 @@
 				ENABLE_NS_ASSERTIONS = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				HEADER_SEARCH_PATHS = "$(SOURCE_ROOT)/**";
 				INFOPLIST_FILE = Source/iOS/Framework/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
@@ -2453,6 +2456,7 @@
 				MODULEMAP_FILE = Source/iOS/Framework/module.modulemap;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.sunsetlakesoftware.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = GPUImage;
+				RUN_CLANG_STATIC_ANALYZER = NO;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
@@ -2547,7 +2551,6 @@
 				DSTROOT = /tmp/GPUImage.dst;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Source/iOS/GPUImage-Prefix.pch";
-				HEADER_SEARCH_PATHS = "";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -2561,7 +2564,6 @@
 				DSTROOT = /tmp/GPUImage.dst;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Source/iOS/GPUImage-Prefix.pch";
-				HEADER_SEARCH_PATHS = "";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
