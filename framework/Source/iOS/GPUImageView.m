@@ -236,10 +236,8 @@
         CGFloat heightScaling, widthScaling;
         
         CGSize currentViewSize = self.bounds.size;
-        
-        //    CGFloat imageAspectRatio = inputImageSize.width / inputImageSize.height;
-        //    CGFloat viewAspectRatio = currentViewSize.width / currentViewSize.height;
-        
+
+        //这个方法能够计算处 图片在矩形内的具体位置。比如矩形大图片小，那么图片居中显示，图片的位置 可以很方便的计算出来。
         CGRect insetRect = AVMakeRectWithAspectRatioInsideRect(inputImageSize, self.bounds);
         
         switch(_fillMode)
@@ -270,25 +268,7 @@
         imageVertices[5] = heightScaling;
         imageVertices[6] = widthScaling;
         imageVertices[7] = heightScaling;
-        
-    
-//        imageVertices[0] = -1;
-//        imageVertices[1] = 0;
-//        imageVertices[2] = 0;
-//        imageVertices[3] = 0;
-//        imageVertices[4] = 0;
-//        imageVertices[5] = 0.751173735;
-//        imageVertices[6] = -1;
-//        imageVertices[7] = 0.751173735;
     });
-    
-    
-//    static const GLfloat imageVertices[] = {
-//        -1.0f, -1.0f,
-//        1.0f, -1.0f,
-//        -1.0f,  1.0f,
-//        1.0f,  1.0f,
-//    };
 }
 
 - (void)setBackgroundColorRed:(GLfloat)redComponent green:(GLfloat)greenComponent blue:(GLfloat)blueComponent alpha:(GLfloat)alphaComponent;

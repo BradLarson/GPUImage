@@ -27,4 +27,17 @@ void runAsynchronouslyOnVideoProcessQueue(void (^block)(void)){
     return self;
 }
 
+
+- (void)addTarget:(id <ZYGPUImgInput>)target {
+    if(target){
+        [self.targets addObject:target];
+    }
+}
+- (NSMutableArray <ZYGPUImgInput> *)targets {
+    if(!_targets){
+        _targets = [NSMutableArray array];
+    }
+    return _targets;
+}
+
 @end

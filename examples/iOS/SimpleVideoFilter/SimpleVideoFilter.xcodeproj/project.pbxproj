@@ -11,8 +11,11 @@
 		42025F101FB3F76500C91780 /* ZYGPUImgBuf.m in Sources */ = {isa = PBXBuildFile; fileRef = 42025F0F1FB3F76500C91780 /* ZYGPUImgBuf.m */; };
 		42025F131FB408F600C91780 /* ZYGPUImgOutput.m in Sources */ = {isa = PBXBuildFile; fileRef = 42025F121FB408F600C91780 /* ZYGPUImgOutput.m */; };
 		42025F191FB44ACA00C91780 /* ZYGPUImgCtx.m in Sources */ = {isa = PBXBuildFile; fileRef = 42025F181FB44ACA00C91780 /* ZYGPUImgCtx.m */; };
+		AA9C4423BB04AF86A70F00A4 /* ImgViewFragShader.glsl in Resources */ = {isa = PBXBuildFile; fileRef = AA9C4661089D3A6147A0CE28 /* ImgViewFragShader.glsl */; };
+		AA9C45DB3A80F17330F3C7D3 /* ImgViewVertexShader.glsl in Resources */ = {isa = PBXBuildFile; fileRef = AA9C4D3CC26C3BED2C31C1F8 /* ImgViewVertexShader.glsl */; };
 		AA9C475E94EEF2FC27D30FF1 /* fragShader.glsl in Resources */ = {isa = PBXBuildFile; fileRef = AA9C49780CAD6A797207E0E7 /* fragShader.glsl */; };
 		AA9C47D5FE793CB465FA2705 /* vertexShader.glsl in Resources */ = {isa = PBXBuildFile; fileRef = AA9C4C8A98DB9CEF1EDEF1B0 /* vertexShader.glsl */; };
+		AA9C495F7FE2CA625C3ABD46 /* ZYGImgView.m in Sources */ = {isa = PBXBuildFile; fileRef = AA9C4A88349236116F02C93C /* ZYGImgView.m */; };
 		AA9C4988074E74E6E5655ABE /* ZYGLProgram.m in Sources */ = {isa = PBXBuildFile; fileRef = AA9C4AD7A9C6FCD68DD2CB0D /* ZYGLProgram.m */; };
 		AA9C4FA7AD2ED8823A17BA51 /* ZYFrameBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = AA9C41BB4F6CF6D13F874C83 /* ZYFrameBuffer.m */; };
 		BCB3C44716BCA8C4003D26B0 /* Icon-72.png in Resources */ = {isa = PBXBuildFile; fileRef = BCB3C44216BCA8C4003D26B0 /* Icon-72.png */; };
@@ -74,9 +77,13 @@
 		42025F181FB44ACA00C91780 /* ZYGPUImgCtx.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZYGPUImgCtx.m; sourceTree = "<group>"; };
 		AA9C41BB4F6CF6D13F874C83 /* ZYFrameBuffer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZYFrameBuffer.m; sourceTree = "<group>"; };
 		AA9C46191783F50681F560A6 /* ZYFrameBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZYFrameBuffer.h; sourceTree = "<group>"; };
+		AA9C4661089D3A6147A0CE28 /* ImgViewFragShader.glsl */ = {isa = PBXFileReference; lastKnownFileType = file.glsl; path = ImgViewFragShader.glsl; sourceTree = "<group>"; };
 		AA9C49780CAD6A797207E0E7 /* fragShader.glsl */ = {isa = PBXFileReference; lastKnownFileType = file.glsl; path = fragShader.glsl; sourceTree = "<group>"; };
+		AA9C4997C3145AA6FA657990 /* ZYGImgView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZYGImgView.h; sourceTree = "<group>"; };
+		AA9C4A88349236116F02C93C /* ZYGImgView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZYGImgView.m; sourceTree = "<group>"; };
 		AA9C4AD7A9C6FCD68DD2CB0D /* ZYGLProgram.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZYGLProgram.m; sourceTree = "<group>"; };
 		AA9C4C8A98DB9CEF1EDEF1B0 /* vertexShader.glsl */ = {isa = PBXFileReference; lastKnownFileType = file.glsl; path = vertexShader.glsl; sourceTree = "<group>"; };
+		AA9C4D3CC26C3BED2C31C1F8 /* ImgViewVertexShader.glsl */ = {isa = PBXFileReference; lastKnownFileType = file.glsl; path = ImgViewVertexShader.glsl; sourceTree = "<group>"; };
 		AA9C4FA428FD1AECEE073CC5 /* ZYGLProgram.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZYGLProgram.h; sourceTree = "<group>"; };
 		BCB3C44216BCA8C4003D26B0 /* Icon-72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-72.png"; path = "../../SharedIcons/Icon-72.png"; sourceTree = "<group>"; };
 		BCB3C44316BCA8C4003D26B0 /* Icon-72@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-72@2x.png"; path = "../../SharedIcons/Icon-72@2x.png"; sourceTree = "<group>"; };
@@ -145,6 +152,10 @@
 				AA9C49780CAD6A797207E0E7 /* fragShader.glsl */,
 				AA9C41BB4F6CF6D13F874C83 /* ZYFrameBuffer.m */,
 				AA9C46191783F50681F560A6 /* ZYFrameBuffer.h */,
+				AA9C4A88349236116F02C93C /* ZYGImgView.m */,
+				AA9C4997C3145AA6FA657990 /* ZYGImgView.h */,
+				AA9C4D3CC26C3BED2C31C1F8 /* ImgViewVertexShader.glsl */,
+				AA9C4661089D3A6147A0CE28 /* ImgViewFragShader.glsl */,
 			);
 			name = ZYGPUImg;
 			sourceTree = "<group>";
@@ -313,6 +324,8 @@
 				BCB3C44B16BCA8C4003D26B0 /* iTunesArtwork.png in Resources */,
 				AA9C47D5FE793CB465FA2705 /* vertexShader.glsl in Resources */,
 				AA9C475E94EEF2FC27D30FF1 /* fragShader.glsl in Resources */,
+				AA9C45DB3A80F17330F3C7D3 /* ImgViewVertexShader.glsl in Resources */,
+				AA9C4423BB04AF86A70F00A4 /* ImgViewFragShader.glsl in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -332,6 +345,7 @@
 				BCB5DDE814E868C0000AF3C2 /* SimpleVideoFilterViewController.m in Sources */,
 				AA9C4988074E74E6E5655ABE /* ZYGLProgram.m in Sources */,
 				AA9C4FA7AD2ED8823A17BA51 /* ZYFrameBuffer.m in Sources */,
+				AA9C495F7FE2CA625C3ABD46 /* ZYGImgView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

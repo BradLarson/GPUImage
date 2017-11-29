@@ -18,6 +18,7 @@ GLfloat kColorConversion601FullRangeDefault[] = {
 #import <GLKit/GLKit.h>
 #import "ZYGLProgram.h"
 #import "ZYFrameBuffer.h"
+#import "ZYGPUImgInput.h"
 
 @interface ZYGPUImgVideoCamera()<AVCaptureVideoDataOutputSampleBufferDelegate> {
     dispatch_queue_t cameraProcessQueue;
@@ -27,13 +28,12 @@ GLfloat kColorConversion601FullRangeDefault[] = {
     ZYGLProgram *yuv2rgbProgram;
     GLuint  luminanceTextureId;
     GLuint  chrominanceTextureId;
-
     GLuint  yUnifromIndex,uvUnifromIndex,colorMatrixIndex,postionAttriIndex,inputTextureAttriIndex;
-
     GLint  imgW,imgH;
 }
 @property (nonatomic,strong) AVCaptureSession  *session;
 @property (nonatomic, strong) NSMutableArray<ZYFrameBuffer *> *frameBufferArys;
+@property (nonatomic, strong) ZYFrameBuffer *renderingFrameBuffer;
 @end
 
 @implementation ZYGPUImgVideoCamera
@@ -210,6 +210,11 @@ GLfloat kColorConversion601FullRangeDefault[] = {
     // 3. 执行gl绘制，把yuv->rgba ,结果数据保存都framebuffer中
     // program ,设置program 纹理参数，几何参数。
     [self convertYUV2RGB];
+
+    // 4. 通知target ，遍历target,把framebuffer传递过去。等待target 使用完framebuffer后 才把framebuffer添加回池中。
+    for (id<ZYGPUImgInput> input in self.targets){
+        [input newFrame:self.renderingFrameBuffer];
+    }
 }
 
 // 过程就是开启绘制，通过program把YUV数据转成rgb数据，然后数据保存在framebuffer中。
@@ -217,18 +222,6 @@ GLfloat kColorConversion601FullRangeDefault[] = {
 
     // context
     [[ZYGPUImgCtx shareCtx] userCurrentCtx];
-
-    // framebuffer renderbuffer
-//    GLuint  framebufferId;
-//    GLuint  renderbufferId;
-
-//    glGenFramebuffers(1, &framebufferId);
-//    glGenRenderbuffers(1, &renderbufferId);
-//    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, renderbufferId);
-
-
-//    glBindFramebuffer(GL_FRAMEBUFFER, framebufferId);
-//    glViewport(0, 0, imgW, imgH);
 
     // program使用
     [yuv2rgbProgram use];
@@ -241,6 +234,7 @@ GLfloat kColorConversion601FullRangeDefault[] = {
          fbo = [[ZYFrameBuffer alloc] initWithSize:CGSizeMake(imgW, imgH)];
     }
 
+    self.renderingFrameBuffer = fbo;
     glBindFramebuffer(GL_FRAMEBUFFER, [fbo renderTextureId]);
     glViewport(0, 0, imgW, imgH);
 
@@ -292,15 +286,6 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureC
         [self processVideoFrame:sampleBuffer];
         CFRelease(sampleBuffer);
     });
-}
-
-#pragma mark - output delegate
-- (void)addTarget:(id)target {
-    
-}
-
-- (NSArray *)targets {
-    return nil;
 }
 @end
 
