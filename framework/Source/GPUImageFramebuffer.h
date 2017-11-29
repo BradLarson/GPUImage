@@ -23,6 +23,10 @@ typedef struct GPUTextureOptions {
     GLenum type;
 } GPUTextureOptions;
 
+// GPU: 这个类用来保存 渲染后的结果，
+// framebuffer 的生命周期是 yuv2rgb的时候需要fetch一个，并lock,yuv2rgb完成后,把framebuffer传递给targets,
+// 并lock,这个时候framenbuffer引用数是2,然后videocamer不需要framebuffer了，unlock一次,现在计数是1,
+// 当imageView展示完成后，unlock,现在计数是0，然后就可以把frambuffer放到循环池中了。
 @interface GPUImageFramebuffer : NSObject
 
 @property(readonly) CGSize size;

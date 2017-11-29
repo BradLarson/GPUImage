@@ -33,6 +33,8 @@ static void *openGLESContextQueueKey;
     }
 
 	openGLESContextQueueKey = &openGLESContextQueueKey;
+    // 串行队列
+     NSLog(@"%@-%s-创建串行队列-",[NSThread currentThread],__func__);
     _contextQueue = dispatch_queue_create("com.sunsetlakesoftware.GPUImage.openGLESContextQueue", GPUImageDefaultQueueAttribute());
     
 #if OS_OBJECT_USE_OBJC
@@ -221,7 +223,10 @@ static void *openGLESContextQueueKey;
 
     if (programFromCache == nil)
     {
+        
+        // GPU: 创建program 编译 添加shader
         programFromCache = [[GLProgram alloc] initWithVertexShaderString:vertexShaderString fragmentShaderString:fragmentShaderString];
+        // GPU: 保存program value 和 source代码 key.
         [shaderProgramCache setObject:programFromCache forKey:lookupKeyForShaderProgram];
 //        [shaderProgramUsageHistory addObject:lookupKeyForShaderProgram];
 //        if ([shaderProgramUsageHistory count] >= MAXSHADERPROGRAMSALLOWEDINCACHE)

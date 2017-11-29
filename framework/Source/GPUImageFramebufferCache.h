@@ -2,6 +2,8 @@
 #import <QuartzCore/QuartzCore.h>
 #import "GPUImageFramebuffer.h"
 
+
+// GPU: 这个就是一个GPUFramebuffer 对象缓存池,没有就重新创建一个framebuffer 都放到这个池;下次直接从这里面取
 @interface GPUImageFramebufferCache : NSObject
 
 // Framebuffer management

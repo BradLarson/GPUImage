@@ -7,6 +7,17 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		42025F0B1FB3F3DE00C91780 /* ZYGPUImgVideoCamera.m in Sources */ = {isa = PBXBuildFile; fileRef = 42025F0A1FB3F3DE00C91780 /* ZYGPUImgVideoCamera.m */; };
+		42025F101FB3F76500C91780 /* ZYGPUImgBuf.m in Sources */ = {isa = PBXBuildFile; fileRef = 42025F0F1FB3F76500C91780 /* ZYGPUImgBuf.m */; };
+		42025F131FB408F600C91780 /* ZYGPUImgOutput.m in Sources */ = {isa = PBXBuildFile; fileRef = 42025F121FB408F600C91780 /* ZYGPUImgOutput.m */; };
+		42025F191FB44ACA00C91780 /* ZYGPUImgCtx.m in Sources */ = {isa = PBXBuildFile; fileRef = 42025F181FB44ACA00C91780 /* ZYGPUImgCtx.m */; };
+		AA9C4423BB04AF86A70F00A4 /* ImgViewFragShader.glsl in Resources */ = {isa = PBXBuildFile; fileRef = AA9C4661089D3A6147A0CE28 /* ImgViewFragShader.glsl */; };
+		AA9C45DB3A80F17330F3C7D3 /* ImgViewVertexShader.glsl in Resources */ = {isa = PBXBuildFile; fileRef = AA9C4D3CC26C3BED2C31C1F8 /* ImgViewVertexShader.glsl */; };
+		AA9C475E94EEF2FC27D30FF1 /* fragShader.glsl in Resources */ = {isa = PBXBuildFile; fileRef = AA9C49780CAD6A797207E0E7 /* fragShader.glsl */; };
+		AA9C47D5FE793CB465FA2705 /* vertexShader.glsl in Resources */ = {isa = PBXBuildFile; fileRef = AA9C4C8A98DB9CEF1EDEF1B0 /* vertexShader.glsl */; };
+		AA9C495F7FE2CA625C3ABD46 /* ZYGImgView.m in Sources */ = {isa = PBXBuildFile; fileRef = AA9C4A88349236116F02C93C /* ZYGImgView.m */; };
+		AA9C4988074E74E6E5655ABE /* ZYGLProgram.m in Sources */ = {isa = PBXBuildFile; fileRef = AA9C4AD7A9C6FCD68DD2CB0D /* ZYGLProgram.m */; };
+		AA9C4FA7AD2ED8823A17BA51 /* ZYFrameBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = AA9C41BB4F6CF6D13F874C83 /* ZYFrameBuffer.m */; };
 		BCB3C44716BCA8C4003D26B0 /* Icon-72.png in Resources */ = {isa = PBXBuildFile; fileRef = BCB3C44216BCA8C4003D26B0 /* Icon-72.png */; };
 		BCB3C44816BCA8C4003D26B0 /* Icon-72@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BCB3C44316BCA8C4003D26B0 /* Icon-72@2x.png */; };
 		BCB3C44916BCA8C4003D26B0 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = BCB3C44416BCA8C4003D26B0 /* Icon.png */; };
@@ -55,6 +66,25 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		42025F091FB3F3DE00C91780 /* ZYGPUImgVideoCamera.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZYGPUImgVideoCamera.h; sourceTree = "<group>"; };
+		42025F0A1FB3F3DE00C91780 /* ZYGPUImgVideoCamera.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZYGPUImgVideoCamera.m; sourceTree = "<group>"; };
+		42025F0C1FB3F40A00C91780 /* ZYGPUImgInput.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZYGPUImgInput.h; sourceTree = "<group>"; };
+		42025F0E1FB3F76500C91780 /* ZYGPUImgBuf.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZYGPUImgBuf.h; sourceTree = "<group>"; };
+		42025F0F1FB3F76500C91780 /* ZYGPUImgBuf.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZYGPUImgBuf.m; sourceTree = "<group>"; };
+		42025F111FB408F600C91780 /* ZYGPUImgOutput.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZYGPUImgOutput.h; sourceTree = "<group>"; };
+		42025F121FB408F600C91780 /* ZYGPUImgOutput.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZYGPUImgOutput.m; sourceTree = "<group>"; };
+		42025F171FB44ACA00C91780 /* ZYGPUImgCtx.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZYGPUImgCtx.h; sourceTree = "<group>"; };
+		42025F181FB44ACA00C91780 /* ZYGPUImgCtx.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZYGPUImgCtx.m; sourceTree = "<group>"; };
+		AA9C41BB4F6CF6D13F874C83 /* ZYFrameBuffer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZYFrameBuffer.m; sourceTree = "<group>"; };
+		AA9C46191783F50681F560A6 /* ZYFrameBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZYFrameBuffer.h; sourceTree = "<group>"; };
+		AA9C4661089D3A6147A0CE28 /* ImgViewFragShader.glsl */ = {isa = PBXFileReference; lastKnownFileType = file.glsl; path = ImgViewFragShader.glsl; sourceTree = "<group>"; };
+		AA9C49780CAD6A797207E0E7 /* fragShader.glsl */ = {isa = PBXFileReference; lastKnownFileType = file.glsl; path = fragShader.glsl; sourceTree = "<group>"; };
+		AA9C4997C3145AA6FA657990 /* ZYGImgView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZYGImgView.h; sourceTree = "<group>"; };
+		AA9C4A88349236116F02C93C /* ZYGImgView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZYGImgView.m; sourceTree = "<group>"; };
+		AA9C4AD7A9C6FCD68DD2CB0D /* ZYGLProgram.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZYGLProgram.m; sourceTree = "<group>"; };
+		AA9C4C8A98DB9CEF1EDEF1B0 /* vertexShader.glsl */ = {isa = PBXFileReference; lastKnownFileType = file.glsl; path = vertexShader.glsl; sourceTree = "<group>"; };
+		AA9C4D3CC26C3BED2C31C1F8 /* ImgViewVertexShader.glsl */ = {isa = PBXFileReference; lastKnownFileType = file.glsl; path = ImgViewVertexShader.glsl; sourceTree = "<group>"; };
+		AA9C4FA428FD1AECEE073CC5 /* ZYGLProgram.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZYGLProgram.h; sourceTree = "<group>"; };
 		BCB3C44216BCA8C4003D26B0 /* Icon-72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-72.png"; path = "../../SharedIcons/Icon-72.png"; sourceTree = "<group>"; };
 		BCB3C44316BCA8C4003D26B0 /* Icon-72@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-72@2x.png"; path = "../../SharedIcons/Icon-72@2x.png"; sourceTree = "<group>"; };
 		BCB3C44416BCA8C4003D26B0 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Icon.png; path = ../../SharedIcons/Icon.png; sourceTree = "<group>"; };
@@ -104,6 +134,32 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		42025F061FB3F2CB00C91780 /* ZYGPUImg */ = {
+			isa = PBXGroup;
+			children = (
+				42025F091FB3F3DE00C91780 /* ZYGPUImgVideoCamera.h */,
+				42025F0A1FB3F3DE00C91780 /* ZYGPUImgVideoCamera.m */,
+				42025F0C1FB3F40A00C91780 /* ZYGPUImgInput.h */,
+				42025F0E1FB3F76500C91780 /* ZYGPUImgBuf.h */,
+				42025F0F1FB3F76500C91780 /* ZYGPUImgBuf.m */,
+				42025F111FB408F600C91780 /* ZYGPUImgOutput.h */,
+				42025F121FB408F600C91780 /* ZYGPUImgOutput.m */,
+				42025F171FB44ACA00C91780 /* ZYGPUImgCtx.h */,
+				42025F181FB44ACA00C91780 /* ZYGPUImgCtx.m */,
+				AA9C4AD7A9C6FCD68DD2CB0D /* ZYGLProgram.m */,
+				AA9C4FA428FD1AECEE073CC5 /* ZYGLProgram.h */,
+				AA9C4C8A98DB9CEF1EDEF1B0 /* vertexShader.glsl */,
+				AA9C49780CAD6A797207E0E7 /* fragShader.glsl */,
+				AA9C41BB4F6CF6D13F874C83 /* ZYFrameBuffer.m */,
+				AA9C46191783F50681F560A6 /* ZYFrameBuffer.h */,
+				AA9C4A88349236116F02C93C /* ZYGImgView.m */,
+				AA9C4997C3145AA6FA657990 /* ZYGImgView.h */,
+				AA9C4D3CC26C3BED2C31C1F8 /* ImgViewVertexShader.glsl */,
+				AA9C4661089D3A6147A0CE28 /* ImgViewFragShader.glsl */,
+			);
+			name = ZYGPUImg;
+			sourceTree = "<group>";
+		};
 		BCB5DDBF14E86899000AF3C2 = {
 			isa = PBXGroup;
 			children = (
@@ -142,6 +198,7 @@
 		BCB5DDD414E86899000AF3C2 /* SimpleVideoFilter */ = {
 			isa = PBXGroup;
 			children = (
+				42025F061FB3F2CB00C91780 /* ZYGPUImg */,
 				BCB5DDDD14E86899000AF3C2 /* SimpleVideoFilterAppDelegate.h */,
 				BCB5DDDE14E86899000AF3C2 /* SimpleVideoFilterAppDelegate.m */,
 				BCB5DDE514E868C0000AF3C2 /* SimpleVideoFilterViewController.h */,
@@ -208,7 +265,7 @@
 				ORGANIZATIONNAME = "Cell Phone";
 				TargetAttributes = {
 					BCB5DDC914E86899000AF3C2 = {
-						DevelopmentTeam = V2DTUY5PQ8;
+						DevelopmentTeam = UXH5SGQJJB;
 					};
 				};
 			};
@@ -265,6 +322,10 @@
 				E5066F611855AC78008C7682 /* Default-568h@2x.png in Resources */,
 				BCB3C44A16BCA8C4003D26B0 /* Icon@2x.png in Resources */,
 				BCB3C44B16BCA8C4003D26B0 /* iTunesArtwork.png in Resources */,
+				AA9C47D5FE793CB465FA2705 /* vertexShader.glsl in Resources */,
+				AA9C475E94EEF2FC27D30FF1 /* fragShader.glsl in Resources */,
+				AA9C45DB3A80F17330F3C7D3 /* ImgViewVertexShader.glsl in Resources */,
+				AA9C4423BB04AF86A70F00A4 /* ImgViewFragShader.glsl in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -275,9 +336,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				42025F191FB44ACA00C91780 /* ZYGPUImgCtx.m in Sources */,
+				42025F101FB3F76500C91780 /* ZYGPUImgBuf.m in Sources */,
+				42025F0B1FB3F3DE00C91780 /* ZYGPUImgVideoCamera.m in Sources */,
+				42025F131FB408F600C91780 /* ZYGPUImgOutput.m in Sources */,
 				BCB5DDDB14E86899000AF3C2 /* main.m in Sources */,
 				BCB5DDDF14E86899000AF3C2 /* SimpleVideoFilterAppDelegate.m in Sources */,
 				BCB5DDE814E868C0000AF3C2 /* SimpleVideoFilterViewController.m in Sources */,
+				AA9C4988074E74E6E5655ABE /* ZYGLProgram.m in Sources */,
+				AA9C4FA7AD2ED8823A17BA51 /* ZYFrameBuffer.m in Sources */,
+				AA9C495F7FE2CA625C3ABD46 /* ZYGImgView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -381,10 +449,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = UXH5SGQJJB;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "SimpleVideoFilter/SimpleVideoFilter-Prefix.pch";
 				INFOPLIST_FILE = "SimpleVideoFilter/SimpleVideoFilter-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.nigo.video;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -394,10 +464,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = UXH5SGQJJB;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "SimpleVideoFilter/SimpleVideoFilter-Prefix.pch";
 				INFOPLIST_FILE = "SimpleVideoFilter/SimpleVideoFilter-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.nigo.video;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};

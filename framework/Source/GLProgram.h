@@ -19,7 +19,7 @@
     NSMutableArray  *uniforms;
     GLuint          program,
 	vertShader, 
-	fragShader;	
+	fragShader;
 }
 
 @property(readwrite, nonatomic) BOOL initialized;
