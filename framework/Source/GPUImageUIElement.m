@@ -52,10 +52,14 @@
 #pragma mark -
 #pragma mark Layer management
 
+- (float)contentScale {
+    return [UIScreen mainScreen].scale;
+}
+
 - (CGSize)layerSizeInPixels;
 {
     CGSize pointSize = layer.bounds.size;
-    return CGSizeMake(layer.contentsScale * pointSize.width, layer.contentsScale * pointSize.height);
+    return CGSizeMake([self contentScale] * pointSize.width, [self contentScale] * pointSize.height);
 }
 
 - (void)update;
@@ -90,7 +94,7 @@
     CGContextRef imageContext = CGBitmapContextCreate(imageData, (int)layerPixelSize.width, (int)layerPixelSize.height, 8, (int)layerPixelSize.width * 4, genericRGBColorspace,  kCGBitmapByteOrder32Little | kCGImageAlphaPremultipliedFirst);
 //    CGContextRotateCTM(imageContext, M_PI_2);
 	CGContextTranslateCTM(imageContext, 0.0f, layerPixelSize.height);
-    CGContextScaleCTM(imageContext, layer.contentsScale, -layer.contentsScale);
+    CGContextScaleCTM(imageContext, [self contentScale], -[self contentScale]);
     //        CGContextSetBlendMode(imageContext, kCGBlendModeCopy); // From Technical Q&A QA1708: http://developer.apple.com/library/ios/#qa/qa1708/_index.html
     
     [layer renderInContext:imageContext];
