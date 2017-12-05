@@ -726,7 +726,7 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
     }
     //fix the frame time
     if (self.accumulativeInterval > 0) {
-        CMTime offset = CMTimeMake(self.accumulativeInterval, 1);
+        CMTime offset = CMTimeMake(self.accumulativeInterval*frameTime.timescale, frameTime.timescale);
         frameTime = CMTimeSubtract(frameTime, offset);
     }
     //
