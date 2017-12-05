@@ -36,6 +36,9 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 
     BOOL isRecording;
 }
+//
+@property (nonatomic,strong) NSDate *lastPauseTime;
+@property (nonatomic,assign) NSTimeInterval accumulativeInterval;
 
 // Movie recording
 - (void)initializeMovieWithOutputSettings:(NSMutableDictionary *)outputSettings;
@@ -80,6 +83,7 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 		return nil;
     }
 
+    _accumulativeInterval = 0.0;
     _shouldInvalidateAudioSampleWhenDone = NO;
     
     self.enabled = YES;
@@ -693,6 +697,24 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 }
 
 #pragma mark -
+#pragma mark Pause Recording And Resume
+
+- (void)pauseRecording {
+    isRecording = NO;
+    //
+    self.lastPauseTime = [NSDate date];
+}
+
+- (void)resumeRecording {
+    if (self.lastPauseTime) {
+        NSTimeInterval pass = [[NSDate date] timeIntervalSinceDate:self.lastPauseTime];
+        self.accumulativeInterval += pass;
+    }
+    //
+    isRecording = YES;
+}
+
+#pragma mark -
 #pragma mark GPUImageInput protocol
 
 - (void)newFrameReadyAtTime:(CMTime)frameTime atIndex:(NSInteger)textureIndex;
@@ -702,7 +724,12 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
         [firstInputFramebuffer unlock];
         return;
     }
-
+    //fix the frame time
+    if (self.accumulativeInterval > 0) {
+        CMTime offset = CMTimeMake(self.accumulativeInterval*frameTime.timescale, frameTime.timescale);
+        frameTime = CMTimeSubtract(frameTime, offset);
+    }
+    //
     if (discont) {
         discont = NO;
         CMTime current;
