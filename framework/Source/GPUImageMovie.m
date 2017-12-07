@@ -812,6 +812,12 @@ static CVReturn renderCallback(CVDisplayLinkRef displayLink,
         [self.delegate didCompletePlayingMovie];
     }
     self.delegate = nil;
+    
+    runSynchronouslyOnVideoProcessingQueue(^{
+        [playerItemOutput setDelegate: nil queue: nil];
+        [_playerItem removeOutput: playerItemOutput];
+        playerItemOutput = nil;
+    });
 }
 
 - (void)cancelProcessing
