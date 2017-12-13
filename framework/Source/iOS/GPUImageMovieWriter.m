@@ -28,6 +28,9 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
     GPUImageFramebuffer *firstInputFramebuffer;
     
     BOOL discont;
+    BOOL allowWriteAudio;
+    BOOL willFinish;
+    void (^completeHandler)(void);
     CMTime startTime, previousFrameTime, previousAudioTime;
     CMTime offsetTime;
     
@@ -51,7 +54,7 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 
 @implementation GPUImageMovieWriter
 
-@synthesize allowWriteAudio = _allowWriteAudio;
+@synthesize forCameraRecord = _forCameraRecord;
 @synthesize hasAudioTrack = _hasAudioTrack;
 @synthesize encodingLiveVideo = _encodingLiveVideo;
 @synthesize shouldPassthroughAudio = _shouldPassthroughAudio;
@@ -88,7 +91,8 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
     videoEncodingIsFinished = NO;
     audioEncodingIsFinished = NO;
     
-    self.allowWriteAudio = YES;
+    self.forCameraRecord = NO;
+    
     discont = NO;
     videoSize = newSize;
     movieURL = newMovieURL;
@@ -224,12 +228,10 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
      [NSNumber numberWithInt:0], AVVideoCleanApertureHorizontalOffsetKey,
      [NSNumber numberWithInt:0], AVVideoCleanApertureVerticalOffsetKey,
      nil];
-     
      NSDictionary *videoAspectRatioSettings = [NSDictionary dictionaryWithObjectsAndKeys:
      [NSNumber numberWithInt:3], AVVideoPixelAspectRatioHorizontalSpacingKey,
      [NSNumber numberWithInt:3], AVVideoPixelAspectRatioVerticalSpacingKey,
      nil];
-     
      NSMutableDictionary * compressionProperties = [[NSMutableDictionary alloc] init];
      [compressionProperties setObject:videoCleanApertureSettings forKey:AVVideoCleanApertureKey];
      [compressionProperties setObject:videoAspectRatioSettings forKey:AVVideoPixelAspectRatioKey];
@@ -280,6 +282,11 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
         }
     });
     isRecording = YES;
+    
+    if (self.forCameraRecord) {
+        allowWriteAudio = NO;
+    }
+    
     //    [assetWriter startSessionAtSourceTime:kCMTimeZero];
 }
 
@@ -322,52 +329,106 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 
 - (void)finishRecordingWithCompletionHandler:(void (^)(void))handler;
 {
-    runSynchronouslyOnContextQueue(_movieWriterContext, ^{
-        isRecording = NO;
-        
-        if (assetWriter.status == AVAssetWriterStatusCompleted || assetWriter.status == AVAssetWriterStatusCancelled || assetWriter.status == AVAssetWriterStatusUnknown)
-        {
-            if (handler)
-                runAsynchronouslyOnContextQueue(_movieWriterContext, handler);
-            return;
-        }
-        if( assetWriter.status == AVAssetWriterStatusWriting && ! videoEncodingIsFinished )
-        {
-            videoEncodingIsFinished = YES;
-            [assetWriterVideoInput markAsFinished];
-        }
-        if( assetWriter.status == AVAssetWriterStatusWriting && ! audioEncodingIsFinished )
-        {
-            audioEncodingIsFinished = YES;
-            [assetWriterAudioInput markAsFinished];
-        }
+    if (self.forCameraRecord) {
+        runSynchronouslyOnContextQueue(_movieWriterContext, ^{
+            willFinish = NO;
+            if (assetWriter.status == AVAssetWriterStatusCompleted || assetWriter.status == AVAssetWriterStatusCancelled || assetWriter.status == AVAssetWriterStatusUnknown)
+            {
+                isRecording = NO;
+                if (handler)
+                    runAsynchronouslyOnContextQueue(_movieWriterContext, handler);
+                return;
+            }
+            allowWriteAudio = NO;
+            if (CMTimeCompare(previousFrameTime, previousAudioTime) == -1) {
+                // recoreded audio frame is longer than video frame
+                willFinish = YES;
+                completeHandler = handler;
+                return;
+            }
+            completeHandler = NULL;
+            isRecording = NO;
+            
+            if( assetWriter.status == AVAssetWriterStatusWriting && ! videoEncodingIsFinished )
+            {
+                videoEncodingIsFinished = YES;
+                [assetWriterVideoInput markAsFinished];
+            }
+            if( assetWriter.status == AVAssetWriterStatusWriting && ! audioEncodingIsFinished )
+            {
+                audioEncodingIsFinished = YES;
+                [assetWriterAudioInput markAsFinished];
+            }
 #if (!defined(__IPHONE_6_0) || (__IPHONE_OS_VERSION_MAX_ALLOWED < __IPHONE_6_0))
-        // Not iOS 6 SDK
-        [assetWriter finishWriting];
-        if (handler)
-            runAsynchronouslyOnContextQueue(_movieWriterContext,handler);
+            // Not iOS 6 SDK
+            [assetWriter finishWriting];
+            if (handler)
+                runAsynchronouslyOnContextQueue(_movieWriterContext,handler);
 #else
-        // iOS 6 SDK
-        if ([assetWriter respondsToSelector:@selector(finishWritingWithCompletionHandler:)]) {
-            // Running iOS 6
-            [assetWriter finishWritingWithCompletionHandler:(handler ?: ^{ })];
-        }
-        else {
-            // Not running iOS 6
+            // iOS 6 SDK
+            if ([assetWriter respondsToSelector:@selector(finishWritingWithCompletionHandler:)]) {
+                // Running iOS 6
+                [assetWriter finishWritingWithCompletionHandler:(handler ?: ^{ })];
+            }
+            else {
+                // Not running iOS 6
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
-            [assetWriter finishWriting];
+                [assetWriter finishWriting];
 #pragma clang diagnostic pop
-            if (handler)
-                runAsynchronouslyOnContextQueue(_movieWriterContext, handler);
-        }
+                if (handler)
+                    runAsynchronouslyOnContextQueue(_movieWriterContext, handler);
+            }
 #endif
-    });
+        });
+    } else {
+        runSynchronouslyOnContextQueue(_movieWriterContext, ^{
+            isRecording = NO;
+            
+            if (assetWriter.status == AVAssetWriterStatusCompleted || assetWriter.status == AVAssetWriterStatusCancelled || assetWriter.status == AVAssetWriterStatusUnknown)
+            {
+                if (handler)
+                    runAsynchronouslyOnContextQueue(_movieWriterContext, handler);
+                return;
+            }
+            if( assetWriter.status == AVAssetWriterStatusWriting && ! videoEncodingIsFinished )
+            {
+                videoEncodingIsFinished = YES;
+                [assetWriterVideoInput markAsFinished];
+            }
+            if( assetWriter.status == AVAssetWriterStatusWriting && ! audioEncodingIsFinished )
+            {
+                audioEncodingIsFinished = YES;
+                [assetWriterAudioInput markAsFinished];
+            }
+#if (!defined(__IPHONE_6_0) || (__IPHONE_OS_VERSION_MAX_ALLOWED < __IPHONE_6_0))
+            // Not iOS 6 SDK
+            [assetWriter finishWriting];
+            if (handler)
+                runAsynchronouslyOnContextQueue(_movieWriterContext,handler);
+#else
+            // iOS 6 SDK
+            if ([assetWriter respondsToSelector:@selector(finishWritingWithCompletionHandler:)]) {
+                // Running iOS 6
+                [assetWriter finishWritingWithCompletionHandler:(handler ?: ^{ })];
+            }
+            else {
+                // Not running iOS 6
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+                [assetWriter finishWriting];
+#pragma clang diagnostic pop
+                if (handler)
+                    runAsynchronouslyOnContextQueue(_movieWriterContext, handler);
+            }
+#endif
+        });
+    }
 }
 
 - (void)processAudioBuffer:(CMSampleBufferRef)audioBuffer;
 {
-    if (!self.allowWriteAudio)
+    if (self.forCameraRecord && !allowWriteAudio)
     {
         return;
     }
@@ -751,6 +812,10 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
             
             [assetWriter startSessionAtSourceTime:frameTime];
             startTime = frameTime;
+            
+            if (self.forCameraRecord) {
+                allowWriteAudio = YES;
+            }
         });
     }
     
@@ -807,7 +872,6 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
             {
                 if (![assetWriterPixelBufferInput appendPixelBuffer:pixel_buffer withPresentationTime:frameTime])
                     NSLog(@"Problem appending pixel buffer at time: %@", CFBridgingRelease(CMTimeCopyDescription(kCFAllocatorDefault, frameTime)));
-                self.allowWriteAudio = YES;
             }
             else
             {
@@ -827,6 +891,11 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
         write();
         
         [inputFramebufferForBlock unlock];
+        
+        if (willFinish && CMTimeCompare(previousFrameTime, previousAudioTime) != -1) {
+            willFinish = NO;
+            [self finishRecordingWithCompletionHandler:completeHandler];
+        }
     });
 }
 
@@ -1022,4 +1091,3 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 }
 
 @end
-

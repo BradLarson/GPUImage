@@ -31,7 +31,7 @@ extern NSString *const kGPUImageColorSwizzlingFragmentShaderString;
     GPUImageRotationMode inputRotation;
 }
 
-@property(readwrite, nonatomic) BOOL allowWriteAudio;
+@property(readwrite, nonatomic) BOOL forCameraRecord;
 @property(readwrite, nonatomic) BOOL hasAudioTrack;
 @property(readwrite, nonatomic) BOOL shouldPassthroughAudio;
 @property(readwrite, nonatomic) BOOL shouldInvalidateAudioSampleWhenDone;
@@ -66,4 +66,3 @@ extern NSString *const kGPUImageColorSwizzlingFragmentShaderString;
 - (void)enableSynchronizationCallbacks;
 
 @end
-
