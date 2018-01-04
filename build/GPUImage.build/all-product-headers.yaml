@@ -1,0 +1,883 @@
+{
+  'version': 0,
+  'case-sensitive': 'false',
+  'roots': [
+    {
+      'type': 'directory',
+      'name': "/Users/andrew/Downloads/vendor-deps/GPUImage/build/Debug-iphonesimulator/GPUImage.framework/Headers",
+      'contents': [
+        {
+          'type': 'file',
+          'name': "GLProgram.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GLProgram.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImage-Swift.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/build/Debug-iphonesimulator/GPUImage.framework/Headers/GPUImage-Swift.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImage.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImage.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImage3x3ConvolutionFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImage3x3ConvolutionFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImage3x3TextureSamplingFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImage3x3TextureSamplingFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageAdaptiveThresholdFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageAdaptiveThresholdFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageAddBlendFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageAddBlendFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageAlphaBlendFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageAlphaBlendFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageAmatorkaFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageAmatorkaFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageAverageColor.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageAverageColor.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageAverageLuminanceThresholdFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageAverageLuminanceThresholdFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageBilateralFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageBilateralFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageBoxBlurFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageBoxBlurFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageBrightnessFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageBrightnessFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageBuffer.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageBuffer.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageBulgeDistortionFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageBulgeDistortionFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageCGAColorspaceFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageCGAColorspaceFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageCannyEdgeDetectionFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageCannyEdgeDetectionFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageChromaKeyBlendFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageChromaKeyBlendFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageChromaKeyFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageChromaKeyFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageClosingFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageClosingFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageColorBlendFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageColorBlendFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageColorBurnBlendFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageColorBurnBlendFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageColorConversion.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageColorConversion.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageColorDodgeBlendFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageColorDodgeBlendFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageColorInvertFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageColorInvertFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageColorLocalBinaryPatternFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageColorLocalBinaryPatternFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageColorMatrixFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageColorMatrixFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageColorPackingFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageColorPackingFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageColourFASTFeatureDetector.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageColourFASTFeatureDetector.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageColourFASTSamplingOperation.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageColourFASTSamplingOperation.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageContext.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/iOS/GPUImageContext.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageContrastFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageContrastFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageCropFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageCropFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageCrosshairGenerator.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageCrosshairGenerator.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageCrosshatchFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageCrosshatchFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageDarkenBlendFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageDarkenBlendFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageDifferenceBlendFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageDifferenceBlendFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageDilationFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageDilationFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageDirectionalNonMaximumSuppressionFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageDirectionalNonMaximumSuppressionFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageDirectionalSobelEdgeDetectionFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageDirectionalSobelEdgeDetectionFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageDissolveBlendFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageDissolveBlendFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageDivideBlendFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageDivideBlendFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageEmbossFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageEmbossFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageErosionFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageErosionFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageExclusionBlendFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageExclusionBlendFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageExposureFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageExposureFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageFASTCornerDetectionFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageFASTCornerDetectionFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageFalseColorFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageFalseColorFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageFilterGroup.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageFilterGroup.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageFilterPipeline.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageFilterPipeline.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageFourInputFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageFourInputFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageFramebuffer.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageFramebuffer.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageFramebufferCache.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageFramebufferCache.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageFramework.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/iOS/Framework/GPUImageFramework.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageGammaFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageGammaFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageGaussianBlurFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageGaussianBlurFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageGaussianBlurPositionFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageGaussianBlurPositionFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageGaussianSelectiveBlurFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageGaussianSelectiveBlurFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageGlassSphereFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageGlassSphereFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageGrayscaleFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageGrayscaleFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageHSBFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageHSBFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageHalftoneFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageHalftoneFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageHardLightBlendFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageHardLightBlendFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageHarrisCornerDetectionFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageHarrisCornerDetectionFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageHazeFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageHazeFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageHighPassFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageHighPassFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageHighlightShadowFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageHighlightShadowFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageHistogramEqualizationFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageHistogramEqualizationFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageHistogramFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageHistogramFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageHistogramGenerator.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageHistogramGenerator.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageHoughTransformLineDetector.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageHoughTransformLineDetector.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageHueBlendFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageHueBlendFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageHueFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageHueFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageJFAVoronoiFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageJFAVoronoiFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageKuwaharaFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageKuwaharaFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageKuwaharaRadius3Filter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageKuwaharaRadius3Filter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageLanczosResamplingFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageLanczosResamplingFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageLaplacianFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageLaplacianFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageLevelsFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageLevelsFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageLightenBlendFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageLightenBlendFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageLineGenerator.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageLineGenerator.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageLinearBurnBlendFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageLinearBurnBlendFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageLocalBinaryPatternFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageLocalBinaryPatternFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageLookupFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageLookupFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageLowPassFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageLowPassFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageLuminanceRangeFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageLuminanceRangeFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageLuminanceThresholdFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageLuminanceThresholdFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageLuminosity.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageLuminosity.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageLuminosityBlendFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageLuminosityBlendFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageMaskFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageMaskFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageMedianFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageMedianFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageMissEtikateFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageMissEtikateFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageMonochromeFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageMonochromeFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageMosaicFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageMosaicFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageMotionBlurFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageMotionBlurFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageMotionDetector.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageMotionDetector.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageMovie.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageMovie.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageMovieComposition.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageMovieComposition.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageMovieWriter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/iOS/GPUImageMovieWriter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageMultiplyBlendFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageMultiplyBlendFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageNobleCornerDetectionFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageNobleCornerDetectionFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageNonMaximumSuppressionFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageNonMaximumSuppressionFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageNormalBlendFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageNormalBlendFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageOpacityFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageOpacityFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageOpeningFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageOpeningFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageOutput.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageOutput.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageOverlayBlendFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageOverlayBlendFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageParallelCoordinateLineTransformFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageParallelCoordinateLineTransformFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImagePerlinNoiseFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImagePerlinNoiseFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImagePicture.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/iOS/GPUImagePicture.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImagePinchDistortionFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImagePinchDistortionFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImagePixellateFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImagePixellateFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImagePixellatePositionFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImagePixellatePositionFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImagePoissonBlendFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImagePoissonBlendFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImagePolarPixellateFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImagePolarPixellateFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImagePolkaDotFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImagePolkaDotFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImagePosterizeFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImagePosterizeFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImagePrewittEdgeDetectionFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImagePrewittEdgeDetectionFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageRGBClosingFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageRGBClosingFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageRGBDilationFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageRGBDilationFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageRGBErosionFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageRGBErosionFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageRGBFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageRGBFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageRGBOpeningFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageRGBOpeningFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageRawDataInput.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageRawDataInput.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageRawDataOutput.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageRawDataOutput.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageSaturationBlendFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageSaturationBlendFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageSaturationFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageSaturationFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageScreenBlendFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageScreenBlendFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageSepiaFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageSepiaFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageSharpenFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageSharpenFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageShiTomasiFeatureDetectionFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageShiTomasiFeatureDetectionFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageSingleComponentGaussianBlurFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageSingleComponentGaussianBlurFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageSketchFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageSketchFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageSmoothToonFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageSmoothToonFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageSobelEdgeDetectionFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageSobelEdgeDetectionFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageSoftEleganceFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageSoftEleganceFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageSoftLightBlendFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageSoftLightBlendFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageSolarizeFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageSolarizeFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageSolidColorGenerator.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageSolidColorGenerator.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageSourceOverBlendFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageSourceOverBlendFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageSphereRefractionFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageSphereRefractionFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageStillCamera.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageStillCamera.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageStretchDistortionFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageStretchDistortionFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageSubtractBlendFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageSubtractBlendFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageSwirlFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageSwirlFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageTextureInput.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageTextureInput.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageTextureOutput.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageTextureOutput.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageThreeInputFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageThreeInputFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageThresholdEdgeDetectionFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageThresholdEdgeDetectionFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageThresholdSketchFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageThresholdSketchFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageThresholdedNonMaximumSuppressionFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageThresholdedNonMaximumSuppressionFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageTiltShiftFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageTiltShiftFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageToneCurveFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageToneCurveFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageToonFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageToonFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageTransformFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageTransformFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageTwoInputCrossTextureSamplingFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageTwoInputCrossTextureSamplingFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageTwoInputFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageTwoInputFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageTwoPassFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageTwoPassFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageTwoPassTextureSamplingFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageTwoPassTextureSamplingFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageUIElement.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageUIElement.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageUnsharpMaskFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageUnsharpMaskFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageVideoCamera.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageVideoCamera.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageView.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/iOS/GPUImageView.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageVignetteFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageVignetteFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageVoronoiConsumerFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageVoronoiConsumerFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageWeakPixelInclusionFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageWeakPixelInclusionFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageWhiteBalanceFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageWhiteBalanceFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageXYDerivativeFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageXYDerivativeFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageZoomBlurFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageZoomBlurFilter.h"
+        },
+        {
+          'type': 'file',
+          'name': "GPUImageiOSBlurFilter.h",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/framework/Source/GPUImageiOSBlurFilter.h"
+        }
+      ]
+    },
+    {
+      'type': 'directory',
+      'name': "/Users/andrew/Downloads/vendor-deps/GPUImage/build/Debug-iphonesimulator/GPUImage.framework/Modules",
+      'contents': [
+        {
+          'type': 'file',
+          'name': "module.modulemap",
+          'external-contents': "/Users/andrew/Downloads/vendor-deps/GPUImage/build/GPUImage.build/Debug-iphonesimulator/GPUImageFramework.build/module.modulemap"
+        }
+      ]
+    }
+  ]
+}
