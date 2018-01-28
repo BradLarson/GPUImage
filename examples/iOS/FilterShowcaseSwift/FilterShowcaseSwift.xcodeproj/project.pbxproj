@@ -192,6 +192,7 @@
 		BC0037AF195CA11B00B9D651 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastSwiftUpdateCheck = 0720;
 				LastUpgradeCheck = 0600;
 				ORGANIZATIONNAME = "Sunset Lake Software";
 				TargetAttributes = {

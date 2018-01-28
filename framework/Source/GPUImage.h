@@ -162,3 +162,9 @@
 #import "GPUImageThreeInputFilter.h"
 #import "GPUImageWeakPixelInclusionFilter.h"
 
+//custom
+#import "GPUImageSmartEyeSkinDetectSmoothCSEnhanceSave.h"
+#import "GPUImageSmartEyeSkinDetectSmoothCSEnhanceSaveKa.h"
+#import "GPUImageSmartEyeSkinDetectSmoothCSEnhanceBetterKa.h"
+#import "GPUImageSmartEyeSkinDetectSmoothCSEnhanceBetter.h"
+
