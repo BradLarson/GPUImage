@@ -1,5 +1,5 @@
 framework module GPUImage {
-  umbrella header "GPUImageFramework.h"
+  umbrella header "GPUImage.h"
 
   export *
   module * { export * }
