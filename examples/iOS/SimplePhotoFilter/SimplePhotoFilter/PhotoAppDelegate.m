@@ -7,15 +7,19 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    // Override point for customization after application launch.
-    self.window.backgroundColor = [UIColor whiteColor];
     
     rootViewController = [[PhotoViewController alloc] initWithNibName:nil bundle:nil];
     rootViewController.view.frame = [[UIScreen mainScreen] bounds];
-    [self.window addSubview:rootViewController.view];
     
+    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    // Override point for customization after application launch.
+    self.window.backgroundColor = [UIColor whiteColor];
+//    [self.window addSubview:rootViewController.view];
+    self.window.rootViewController = rootViewController;
     [self.window makeKeyAndVisible];
+    
+
+    
     return YES;
 }
 
