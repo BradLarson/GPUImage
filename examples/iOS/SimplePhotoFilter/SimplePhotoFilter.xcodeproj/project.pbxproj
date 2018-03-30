@@ -207,6 +207,11 @@
 				CLASSPREFIX = Showcase;
 				LastUpgradeCheck = 0500;
 				ORGANIZATIONNAME = "Cell Phone";
+				TargetAttributes = {
+					BCC1E69B1523E3620006EFA5 = {
+						DevelopmentTeam = CYTV43BJ3R;
+					};
+				};
 			};
 			buildConfigurationList = BCC1E6961523E3620006EFA5 /* Build configuration list for PBXProject "SimplePhotoFilter" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -368,10 +373,13 @@
 		BCC1E6B51523E3630006EFA5 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				DEVELOPMENT_TEAM = CYTV43BJ3R;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "SimplePhotoFilter/SimplePhotoFilter-Prefix.pch";
 				INFOPLIST_FILE = "SimplePhotoFilter/SimplePhotoFilter-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -379,10 +387,13 @@
 		BCC1E6B61523E3630006EFA5 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				DEVELOPMENT_TEAM = CYTV43BJ3R;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "SimplePhotoFilter/SimplePhotoFilter-Prefix.pch";
 				INFOPLIST_FILE = "SimplePhotoFilter/SimplePhotoFilter-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
