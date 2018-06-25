@@ -80,6 +80,7 @@ static void *openGLESContextQueueKey;
     EAGLContext *imageProcessingContext = [self context];
     if ([EAGLContext currentContext] != imageProcessingContext)
     {
+        glFlush();
         [EAGLContext setCurrentContext:imageProcessingContext];
     }
 }
@@ -95,6 +96,7 @@ static void *openGLESContextQueueKey;
     EAGLContext *imageProcessingContext = [self context];
     if ([EAGLContext currentContext] != imageProcessingContext)
     {
+        glFlush();
         [EAGLContext setCurrentContext:imageProcessingContext];
     }
     
@@ -277,6 +279,7 @@ static void *openGLESContextQueueKey;
 {
     if (_context == nil)
     {
+        glFlush();
         _context = [self createContext];
         [EAGLContext setCurrentContext:_context];
         
