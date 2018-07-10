@@ -5,41 +5,44 @@ NSString *const kGPUImageHardLightBlendFragmentShaderString = SHADER_STRING
 (
  varying highp vec2 textureCoordinate;
  varying highp vec2 textureCoordinate2;
-
+ 
  uniform sampler2D inputImageTexture;
  uniform sampler2D inputImageTexture2;
-
- const highp vec3 W = vec3(0.2125, 0.7154, 0.0721);
-
+ 
+ mediump vec4 unpremultiply(mediump vec4 s) {
+     return vec4(s.rgb/max(s.a,0.00001), s.a);
+ }
+ 
+ mediump vec4 premultiply(mediump vec4 s) {
+     return vec4(s.rgb * s.a, s.a);
+ }
+ 
+ mediump float overlaySingleChannel(mediump float b, mediump float s) {
+     return b < 0.5 ? (2.0 * s * b) : (1.0 - 2.0 * (1.0 - b) * (1.0 - s));
+ }
+ 
+ mediump vec4 normalBlend(mediump vec4 Cb, mediump vec4 Cs) {
+     mediump vec4 dst = premultiply(Cb);
+     mediump vec4 src = premultiply(Cs);
+     return unpremultiply(src + dst * (1.0 - src.a));
+ }
+ 
+ mediump vec4 blendBaseAlpha(mediump vec4 Cb, mediump vec4 Cs, mediump vec4 B) {
+     mediump vec4 Cr = vec4((1.0 - Cb.a) * Cs.rgb + Cb.a * clamp(B.rgb, 0.0,  1.0), Cs.a);
+     return normalBlend(Cb, Cr);
+ }
+ 
+ // HardLight (simliar to Overlay , swap Cs and Cb)
  void main()
  {
-     mediump vec4 base = texture2D(inputImageTexture, textureCoordinate);
-     mediump vec4 overlay = texture2D(inputImageTexture2, textureCoordinate2);
-
-     highp float ra;
-     if (2.0 * overlay.r < overlay.a) {
-         ra = 2.0 * overlay.r * base.r + overlay.r * (1.0 - base.a) + base.r * (1.0 - overlay.a);
-     } else {
-         ra = overlay.a * base.a - 2.0 * (base.a - base.r) * (overlay.a - overlay.r) + overlay.r * (1.0 - base.a) + base.r * (1.0 - overlay.a);
-     }
+     mediump vec4 Cs = texture2D(inputImageTexture, textureCoordinate);
+     mediump vec4 Cb = texture2D(inputImageTexture2, textureCoordinate2);
      
-     highp float ga;
-     if (2.0 * overlay.g < overlay.a) {
-         ga = 2.0 * overlay.g * base.g + overlay.g * (1.0 - base.a) + base.g * (1.0 - overlay.a);
-     } else {
-         ga = overlay.a * base.a - 2.0 * (base.a - base.g) * (overlay.a - overlay.g) + overlay.g * (1.0 - base.a) + base.g * (1.0 - overlay.a);
-     }
+     mediump vec4 B = vec4(overlaySingleChannel(Cb.r, Cs.r),overlaySingleChannel(Cb.g, Cs.g),overlaySingleChannel(Cb.b,Cs.b),Cs.a);
      
-     highp float ba;
-     if (2.0 * overlay.b < overlay.a) {
-         ba = 2.0 * overlay.b * base.b + overlay.b * (1.0 - base.a) + base.b * (1.0 - overlay.a);
-     } else {
-         ba = overlay.a * base.a - 2.0 * (base.a - base.b) * (overlay.a - overlay.b) + overlay.b * (1.0 - base.a) + base.b * (1.0 - overlay.a);
-     }
-     
-     gl_FragColor = vec4(ra, ga, ba, 1.0);
+     gl_FragColor = blendBaseAlpha(Cb, Cs, B);
  }
-);
+ );
 #else
 NSString *const kGPUImageHardLightBlendFragmentShaderString = SHADER_STRING
 (
@@ -49,37 +52,40 @@ NSString *const kGPUImageHardLightBlendFragmentShaderString = SHADER_STRING
  uniform sampler2D inputImageTexture;
  uniform sampler2D inputImageTexture2;
  
- const vec3 W = vec3(0.2125, 0.7154, 0.0721);
+ vec4 unpremultiply(vec4 s) {
+     return vec4(s.rgb/max(s.a,0.00001), s.a);
+ }
  
+ vec4 premultiply(vec4 s) {
+     return vec4(s.rgb * s.a, s.a);
+ }
+ 
+ float overlaySingleChannel(float b, float s) {
+     return b < 0.5 ? (2.0 * s * b) : (1.0 - 2.0 * (1.0 - b) * (1.0 - s));
+ }
+ 
+ vec4 normalBlend(vec4 Cb, vec4 Cs) {
+     vec4 dst = premultiply(Cb);
+     vec4 src = premultiply(Cs);
+     return unpremultiply(src + dst * (1.0 - src.a));
+ }
+ 
+ vec4 blendBaseAlpha(vec4 Cb, vec4 Cs, vec4 B) {
+     vec4 Cr = vec4((1.0 - Cb.a) * Cs.rgb + Cb.a * clamp(B.rgb, 0.0,  1.0), Cs.a);
+     return normalBlend(Cb, Cr);
+ }
+ 
+ // HardLight (simliar to Overlay , swap Cs and Cb)
  void main()
  {
-     vec4 base = texture2D(inputImageTexture, textureCoordinate);
-     vec4 overlay = texture2D(inputImageTexture2, textureCoordinate2);
+     vec4 Cs = texture2D(inputImageTexture, textureCoordinate);
+     vec4 Cb = texture2D(inputImageTexture2, textureCoordinate2);
      
-     float ra;
-     if (2.0 * overlay.r < overlay.a) {
-         ra = 2.0 * overlay.r * base.r + overlay.r * (1.0 - base.a) + base.r * (1.0 - overlay.a);
-     } else {
-         ra = overlay.a * base.a - 2.0 * (base.a - base.r) * (overlay.a - overlay.r) + overlay.r * (1.0 - base.a) + base.r * (1.0 - overlay.a);
-     }
+     vec4 B = vec4(overlaySingleChannel(Cb.r, Cs.r),overlaySingleChannel(Cb.g, Cs.g),overlaySingleChannel(Cb.b,Cs.b),Cs.a);
      
-     float ga;
-     if (2.0 * overlay.g < overlay.a) {
-         ga = 2.0 * overlay.g * base.g + overlay.g * (1.0 - base.a) + base.g * (1.0 - overlay.a);
-     } else {
-         ga = overlay.a * base.a - 2.0 * (base.a - base.g) * (overlay.a - overlay.g) + overlay.g * (1.0 - base.a) + base.g * (1.0 - overlay.a);
-     }
-     
-     float ba;
-     if (2.0 * overlay.b < overlay.a) {
-         ba = 2.0 * overlay.b * base.b + overlay.b * (1.0 - base.a) + base.b * (1.0 - overlay.a);
-     } else {
-         ba = overlay.a * base.a - 2.0 * (base.a - base.b) * (overlay.a - overlay.b) + overlay.b * (1.0 - base.a) + base.b * (1.0 - overlay.a);
-     }
-     
-     gl_FragColor = vec4(ra, ga, ba, 1.0);
+     gl_FragColor = blendBaseAlpha(Cb, Cs, B);
  }
-);
+ );
 #endif
 
 
