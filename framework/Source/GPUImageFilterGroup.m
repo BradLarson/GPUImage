@@ -19,6 +19,22 @@
     return self;
 }
 
++ (instancetype)filterGroupWithFilters:(NSArray <FilterOutputType *> *)filters {
+    if (filters.count == 0) {
+        return nil;
+    }
+
+    GPUImageFilterGroup *filterGroup = [[GPUImageFilterGroup alloc] init];
+    for (FilterOutputType *filter in filters) {
+        [filterGroup addFilter:filter];
+    }
+
+    [filterGroup setInitialFilters:filters];
+    [filterGroup setTerminalFilter:filters.lastObject];
+
+    return filterGroup;
+}
+
 #pragma mark -
 #pragma mark Filter management
 
