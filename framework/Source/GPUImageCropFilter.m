@@ -138,17 +138,17 @@ NSString *const kGPUImageCropFragmentShaderString =  SHADER_STRING
         }; break;
         case kGPUImageRotateLeft: // Fixed
         {
-            cropTextureCoordinates[0] = maxY; // 1,0
-            cropTextureCoordinates[1] = 1.0 - maxX;
+            cropTextureCoordinates[0] = (GLfloat)maxY; // 1,0
+            cropTextureCoordinates[1] = (GLfloat)minX;
 
-            cropTextureCoordinates[2] = maxY; // 1,1
-            cropTextureCoordinates[3] = 1.0 - minX;
+            cropTextureCoordinates[2] = (GLfloat)maxY; // 1,1
+            cropTextureCoordinates[3] = (GLfloat)maxX;
 
-            cropTextureCoordinates[4] = minY; // 0,0
-            cropTextureCoordinates[5] = 1.0 - maxX;
+            cropTextureCoordinates[4] = (GLfloat)minY; // 0,0
+            cropTextureCoordinates[5] = (GLfloat)minX;
 
-            cropTextureCoordinates[6] = minY; // 0,1
-            cropTextureCoordinates[7] = 1.0 - minX;
+            cropTextureCoordinates[6] = (GLfloat)minY; // 0,1
+            cropTextureCoordinates[7] = (GLfloat)maxX;
         }; break;
         case kGPUImageRotateRight: // Fixed
         {
