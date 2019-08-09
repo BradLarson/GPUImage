@@ -269,7 +269,7 @@ NSString *const kGPUImageFourInputTextureVertexShaderString = SHADER_STRING
 - (void)newFrameReadyAtTime:(CMTime)frameTime atIndex:(NSInteger)textureIndex;
 {
     // You can set up infinite update loops, so this helps to short circuit them
-    if (hasReceivedFirstFrame && hasReceivedSecondFrame && hasReceivedThirdFrame)
+    if (hasReceivedFirstFrame && hasReceivedSecondFrame && hasReceivedThirdFrame && hasReceivedFourthFrame)
     {
         return;
     }
@@ -290,7 +290,7 @@ NSString *const kGPUImageFourInputTextureVertexShaderString = SHADER_STRING
         }
         if (fourthFrameCheckDisabled)
         {
-            hasReceivedThirdFrame = YES;
+            hasReceivedFourthFrame = YES;
         }
         
         if (!CMTIME_IS_INDEFINITE(frameTime))
