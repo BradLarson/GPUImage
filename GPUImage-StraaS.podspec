@@ -1,11 +1,12 @@
 Pod::Spec.new do |s|
-  s.name     = 'GPUImage'
-  s.version  = '0.1.7'
+  s.name     = 'GPUImage-StraaS'
+  s.version  = '0.1.8'
   s.license  = 'BSD'
+  s.module_name   = 'GPUImage'
   s.summary  = 'An open source iOS framework for GPU-based image and video processing.'
   s.homepage = 'https://github.com/BradLarson/GPUImage'
   s.author   = { 'Brad Larson' => 'contact@sunsetlakesoftware.com' }
-  s.source   = { :git => 'https://github.com/BradLarson/GPUImage.git', :tag => "#{s.version}" }
+  s.source   = { :git => 'https://github.com/StraaS/GPUImage.git', :tag => "#{s.version}" }
   
   s.source_files = 'framework/Source/**/*.{h,m}'
   s.resources = 'framework/Resources/*.png'
