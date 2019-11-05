@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name     = 'GPUImage-StraaS'
-  s.version  = '0.1.8'
+  s.version  = '0.1.9'
   s.license  = 'BSD'
   s.module_name   = 'GPUImage'
   s.summary  = 'An open source iOS framework for GPU-based image and video processing.'
