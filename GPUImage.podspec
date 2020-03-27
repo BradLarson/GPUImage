@@ -22,6 +22,7 @@ Pod::Spec.new do |s|
                         'framework/Source/GPUImageMovieComposition.*',
                         'framework/Source/GPUImageVideoCamera.*',
                         'framework/Source/GPUImageStillCamera.*',
-                        'framework/Source/GPUImageUIElement.*'
+                        'framework/Source/GPUImageUIElement.*',
+                        'framework/Source/GPUImage.h'
   s.osx.xcconfig = { 'GCC_WARN_ABOUT_RETURN_TYPE' => 'YES' }
 end
