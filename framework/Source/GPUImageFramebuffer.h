@@ -29,6 +29,7 @@ typedef struct GPUTextureOptions {
 @property(readonly) GPUTextureOptions textureOptions;
 @property(readonly) GLuint texture;
 @property(readonly) BOOL missingFramebuffer;
+@property(readonly) GLuint framebuffer;
 
 // Initialization and teardown
 - (id)initWithSize:(CGSize)framebufferSize;
