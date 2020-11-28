@@ -1,5 +1,6 @@
 #import "GPUImageFramebuffer.h"
 #import "GPUImageOutput.h"
+#import <OpenGLES/EAGLIOSurface.h>
 
 @interface GPUImageFramebuffer()
 {
@@ -155,31 +156,45 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size);
                 NSLog(@"FBO size: %f, %f", _size.width, _size.height);
                 NSAssert(NO, @"Error at CVPixelBufferCreate %d", err);
             }
-            
-            err = CVOpenGLESTextureCacheCreateTextureFromImage (kCFAllocatorDefault, coreVideoTextureCache, renderTarget,
-                                                                NULL, // texture attributes
-                                                                GL_TEXTURE_2D,
-                                                                _textureOptions.internalFormat, // opengl format
-                                                                (int)_size.width,
-                                                                (int)_size.height,
-                                                                _textureOptions.format, // native iOS format
-                                                                _textureOptions.type,
-                                                                0,
-                                                                &renderTexture);
-            if (err)
-            {
-                NSAssert(NO, @"Error at CVOpenGLESTextureCacheCreateTextureFromImage %d", err);
+		
+            if (@available(iOS 11.0, *)) {
+                
+                [self generateTexture];
+                
+                glBindTexture(GL_TEXTURE_2D, _texture);
+                IOSurfaceRef ioSurface = CVPixelBufferGetIOSurface(renderTarget);
+                BOOL result = [[GPUImageContext sharedImageProcessingContext].context texImageIOSurface:ioSurface target:GL_TEXTURE_2D internalFormat:_textureOptions.internalFormat width:(int)_size.width height:(int)_size.height format:_textureOptions.format type:_textureOptions.type plane:0];
+                
+                NSAssert(result, @"Error at texImageIOSurface:target:internalFormat:width:height:format:type:plane:");
+                
+            }else{
+                
+                err = CVOpenGLESTextureCacheCreateTextureFromImage (kCFAllocatorDefault, coreVideoTextureCache, renderTarget,
+                                                                    NULL, // texture attributes
+                                                                    GL_TEXTURE_2D,
+                                                                    _textureOptions.internalFormat, // opengl format
+                                                                    (int)_size.width,
+                                                                    (int)_size.height,
+                                                                    _textureOptions.format, // native iOS format
+                                                                    _textureOptions.type,
+                                                                    0,
+                                                                    &renderTexture);
+                if (err)
+                {
+                    NSAssert(NO, @"Error at CVOpenGLESTextureCacheCreateTextureFromImage %d", err);
+                }
+                
+                CFRelease(attrs);
+                CFRelease(empty);
+                
+                glBindTexture(CVOpenGLESTextureGetTarget(renderTexture), CVOpenGLESTextureGetName(renderTexture));
+                _texture = CVOpenGLESTextureGetName(renderTexture);
             }
             
-            CFRelease(attrs);
-            CFRelease(empty);
-            
-            glBindTexture(CVOpenGLESTextureGetTarget(renderTexture), CVOpenGLESTextureGetName(renderTexture));
-            _texture = CVOpenGLESTextureGetName(renderTexture);
             glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, _textureOptions.wrapS);
             glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, _textureOptions.wrapT);
             
-            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, CVOpenGLESTextureGetName(renderTexture), 0);
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, _texture, 0);
 #endif
         }
         else
@@ -226,6 +241,10 @@ void dataProviderUnlockCallback (void *info, const void *data, size_t size);
             {
                 CFRelease(renderTexture);
                 renderTexture = NULL;
+            }
+            
+            if (@available(iOS 11.0, *)) {
+                glDeleteTextures(1, &_texture);
             }
 #endif
         }
