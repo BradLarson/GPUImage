@@ -68,7 +68,9 @@ You'll also need to find the framework headers, so within your project's build s
 
 To use the GPUImage classes within your application, simply include the core framework header using the following:
 
-    #import "GPUImage.h"
+```objc
+#import "GPUImage.h"
+```
 
 As a note: if you run into the error "Unknown class GPUImageView in Interface Builder" or the like when trying to build an interface with Interface Builder, you may need to add -ObjC to your Other Linker Flags in your project's build settings.
 
@@ -88,7 +90,9 @@ For your application, go to its target build settings and choose the Build Phase
 
 This should cause GPUImage to build as a framework. Under Xcode 6, this will also build as a module, which will allow you to use this in Swift projects. When set up as above, you should just need to use 
 
-    import GPUImage
+```swift
+import GPUImage
+```
 
 to pull it in.
 
@@ -104,18 +108,20 @@ Documentation is generated from header comments using appledoc. To build the doc
 
 To filter live video from an iOS device's camera, you can use code like the following:
 
-	GPUImageVideoCamera *videoCamera = [[GPUImageVideoCamera alloc] initWithSessionPreset:AVCaptureSessionPreset640x480 cameraPosition:AVCaptureDevicePositionBack];
-	videoCamera.outputImageOrientation = UIInterfaceOrientationPortrait;
-	
-	GPUImageFilter *customFilter = [[GPUImageFilter alloc] initWithFragmentShaderFromFile:@"CustomShader"];
-	GPUImageView *filteredVideoView = [[GPUImageView alloc] initWithFrame:CGRectMake(0.0, 0.0, viewWidth, viewHeight)];
+```objc
+GPUImageVideoCamera *videoCamera = [[GPUImageVideoCamera alloc] initWithSessionPreset:AVCaptureSessionPreset640x480 cameraPosition:AVCaptureDevicePositionBack];
+videoCamera.outputImageOrientation = UIInterfaceOrientationPortrait;
 
-	// Add the view somewhere so it's visible
+GPUImageFilter *customFilter = [[GPUImageFilter alloc] initWithFragmentShaderFromFile:@"CustomShader"];
+GPUImageView *filteredVideoView = [[GPUImageView alloc] initWithFrame:CGRectMake(0.0, 0.0, viewWidth, viewHeight)];
 
-	[videoCamera addTarget:customFilter];
-	[customFilter addTarget:filteredVideoView];
+// Add the view somewhere so it's visible
 
-	[videoCamera startCameraCapture];
+[videoCamera addTarget:customFilter];
+[customFilter addTarget:filteredVideoView];
+
+[videoCamera startCameraCapture];
+```
 
 This sets up a video source coming from the iOS device's back-facing camera, using a preset that tries to capture at 640x480. This video is captured with the interface being in portrait mode, where the landscape-left-mounted camera needs to have its video frames rotated before display. A custom filter, using code from the file CustomShader.fsh, is then set as the target for the video frames from the camera. These filtered video frames are finally displayed onscreen with the help of a UIView subclass that can present the filtered OpenGL ES texture that results from this pipeline.
 
@@ -125,39 +131,45 @@ For blending filters and others that take in more than one image, you can create
 
 Also, if you wish to enable microphone audio capture for recording to a movie, you'll need to set the audioEncodingTarget of the camera to be your movie writer, like for the following:
 
-    videoCamera.audioEncodingTarget = movieWriter;
+```objc
+videoCamera.audioEncodingTarget = movieWriter;
+```
 
 
 ### Capturing and filtering a still photo ###
 
 To capture and filter still photos, you can use a process similar to the one for filtering video. Instead of a GPUImageVideoCamera, you use a GPUImageStillCamera:
 
-	stillCamera = [[GPUImageStillCamera alloc] init];
-	stillCamera.outputImageOrientation = UIInterfaceOrientationPortrait;
-	
-	filter = [[GPUImageGammaFilter alloc] init];
-	[stillCamera addTarget:filter];
-	GPUImageView *filterView = (GPUImageView *)self.view;
-	[filter addTarget:filterView];
+```objc
+stillCamera = [[GPUImageStillCamera alloc] init];
+stillCamera.outputImageOrientation = UIInterfaceOrientationPortrait;
 
-	[stillCamera startCameraCapture];
+filter = [[GPUImageGammaFilter alloc] init];
+[stillCamera addTarget:filter];
+GPUImageView *filterView = (GPUImageView *)self.view;
+[filter addTarget:filterView];
+
+[stillCamera startCameraCapture];
+```
 
 This will give you a live, filtered feed of the still camera's preview video. Note that this preview video is only provided on iOS 4.3 and higher, so you may need to set that as your deployment target if you wish to have this functionality.
 
 Once you want to capture a photo, you use a callback block like the following:
 
-	[stillCamera capturePhotoProcessedUpToFilter:filter withCompletionHandler:^(UIImage *processedImage, NSError *error){
-	    NSData *dataForJPEGFile = UIImageJPEGRepresentation(processedImage, 0.8);
-    
-	    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-	    NSString *documentsDirectory = [paths objectAtIndex:0];
-    
-	    NSError *error2 = nil;
-	    if (![dataForJPEGFile writeToFile:[documentsDirectory stringByAppendingPathComponent:@"FilteredPhoto.jpg"] options:NSAtomicWrite error:&error2])
-	    {
-	        return;
-	    }
-	}];
+```objc
+[stillCamera capturePhotoProcessedUpToFilter:filter withCompletionHandler:^(UIImage *processedImage, NSError *error){
+    NSData *dataForJPEGFile = UIImageJPEGRepresentation(processedImage, 0.8);
+
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0];
+
+    NSError *error2 = nil;
+    if (![dataForJPEGFile writeToFile:[documentsDirectory stringByAppendingPathComponent:@"FilteredPhoto.jpg"] options:NSAtomicWrite error:&error2])
+    {
+	return;
+    }
+}];
+```
 	
 The above code captures a full-size photo processed by the same filter chain used in the preview view and saves that photo to disk as a JPEG in the application's documents directory.
 
@@ -167,23 +179,27 @@ Note that the framework currently can't handle images larger than 2048 pixels wi
 
 There are a couple of ways to process a still image and create a result. The first way you can do this is by creating a still image source object and manually creating a filter chain:
 
-	UIImage *inputImage = [UIImage imageNamed:@"Lambeau.jpg"];
+```objc
+UIImage *inputImage = [UIImage imageNamed:@"Lambeau.jpg"];
 
-	GPUImagePicture *stillImageSource = [[GPUImagePicture alloc] initWithImage:inputImage];
-	GPUImageSepiaFilter *stillImageFilter = [[GPUImageSepiaFilter alloc] init];
+GPUImagePicture *stillImageSource = [[GPUImagePicture alloc] initWithImage:inputImage];
+GPUImageSepiaFilter *stillImageFilter = [[GPUImageSepiaFilter alloc] init];
 
-	[stillImageSource addTarget:stillImageFilter];
-	[stillImageFilter useNextFrameForImageCapture];
-	[stillImageSource processImage];
+[stillImageSource addTarget:stillImageFilter];
+[stillImageFilter useNextFrameForImageCapture];
+[stillImageSource processImage];
 
-	UIImage *currentFilteredVideoFrame = [stillImageFilter imageFromCurrentFramebuffer];
+UIImage *currentFilteredVideoFrame = [stillImageFilter imageFromCurrentFramebuffer];
+```
 
 Note that for a manual capture of an image from a filter, you need to set -useNextFrameForImageCapture in order to tell the filter that you'll be needing to capture from it later. By default, GPUImage reuses framebuffers within filters to conserve memory, so if you need to hold on to a filter's framebuffer for manual image capture, you need to let it know ahead of time. 
 
 For single filters that you wish to apply to an image, you can simply do the following:
 
-	GPUImageSepiaFilter *stillImageFilter2 = [[GPUImageSepiaFilter alloc] init];
-	UIImage *quickFilteredImage = [stillImageFilter2 imageByFilteringImage:inputImage];
+```objc
+GPUImageSepiaFilter *stillImageFilter2 = [[GPUImageSepiaFilter alloc] init];
+UIImage *quickFilteredImage = [stillImageFilter2 imageByFilteringImage:inputImage];
+```
 
 
 ### Writing a custom filter ###
@@ -192,27 +208,31 @@ One significant advantage of this framework over Core Image on iOS (as of iOS 5.
 
 A custom filter is initialized with code like
 
-	GPUImageFilter *customFilter = [[GPUImageFilter alloc] initWithFragmentShaderFromFile:@"CustomShader"];
+```objc
+GPUImageFilter *customFilter = [[GPUImageFilter alloc] initWithFragmentShaderFromFile:@"CustomShader"];
+```
 
 where the extension used for the fragment shader is .fsh. Additionally, you can use the -initWithFragmentShaderFromString: initializer to provide the fragment shader as a string, if you would not like to ship your fragment shaders in your application bundle.
 
 Fragment shaders perform their calculations for each pixel to be rendered at that filter stage. They do this using the OpenGL Shading Language (GLSL), a C-like language with additions specific to 2-D and 3-D graphics. An example of a fragment shader is the following sepia-tone filter:
 
-	varying highp vec2 textureCoordinate;
+```glsl
+varying highp vec2 textureCoordinate;
 
-	uniform sampler2D inputImageTexture;
+uniform sampler2D inputImageTexture;
 
-	void main()
-	{
-	    lowp vec4 textureColor = texture2D(inputImageTexture, textureCoordinate);
-	    lowp vec4 outputColor;
-	    outputColor.r = (textureColor.r * 0.393) + (textureColor.g * 0.769) + (textureColor.b * 0.189);
-	    outputColor.g = (textureColor.r * 0.349) + (textureColor.g * 0.686) + (textureColor.b * 0.168);    
-	    outputColor.b = (textureColor.r * 0.272) + (textureColor.g * 0.534) + (textureColor.b * 0.131);
-		outputColor.a = 1.0;
-    
-		gl_FragColor = outputColor;
-	}
+void main()
+{
+    lowp vec4 textureColor = texture2D(inputImageTexture, textureCoordinate);
+    lowp vec4 outputColor;
+    outputColor.r = (textureColor.r * 0.393) + (textureColor.g * 0.769) + (textureColor.b * 0.189);
+    outputColor.g = (textureColor.r * 0.349) + (textureColor.g * 0.686) + (textureColor.b * 0.168);    
+    outputColor.b = (textureColor.r * 0.272) + (textureColor.g * 0.534) + (textureColor.b * 0.131);
+	outputColor.a = 1.0;
+
+	gl_FragColor = outputColor;
+}
+```
 
 For an image filter to be usable within the GPUImage framework, the first two lines that take in the textureCoordinate varying (for the current coordinate within the texture, normalized to 1.0) and the inputImageTexture uniform (for the actual input image frame texture) are required.
 
@@ -227,29 +247,33 @@ Movies can be loaded into the framework via the GPUImageMovie class, filtered, a
 
 The following is an example of how you would load a sample movie, pass it through a pixellation filter, then record the result to disk as a 480 x 640 h.264 movie:
 
-	movieFile = [[GPUImageMovie alloc] initWithURL:sampleURL];
-	pixellateFilter = [[GPUImagePixellateFilter alloc] init];
+```objc
+movieFile = [[GPUImageMovie alloc] initWithURL:sampleURL];
+pixellateFilter = [[GPUImagePixellateFilter alloc] init];
 
-	[movieFile addTarget:pixellateFilter];
+[movieFile addTarget:pixellateFilter];
 
-	NSString *pathToMovie = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/Movie.m4v"];
-	unlink([pathToMovie UTF8String]);
-	NSURL *movieURL = [NSURL fileURLWithPath:pathToMovie];
+NSString *pathToMovie = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/Movie.m4v"];
+unlink([pathToMovie UTF8String]);
+NSURL *movieURL = [NSURL fileURLWithPath:pathToMovie];
 
-	movieWriter = [[GPUImageMovieWriter alloc] initWithMovieURL:movieURL size:CGSizeMake(480.0, 640.0)];
-	[pixellateFilter addTarget:movieWriter];
+movieWriter = [[GPUImageMovieWriter alloc] initWithMovieURL:movieURL size:CGSizeMake(480.0, 640.0)];
+[pixellateFilter addTarget:movieWriter];
 
-    movieWriter.shouldPassthroughAudio = YES;
-    movieFile.audioEncodingTarget = movieWriter;
-    [movieFile enableSynchronizedEncodingUsingMovieWriter:movieWriter];
+movieWriter.shouldPassthroughAudio = YES;
+movieFile.audioEncodingTarget = movieWriter;
+[movieFile enableSynchronizedEncodingUsingMovieWriter:movieWriter];
 
-	[movieWriter startRecording];
-	[movieFile startProcessing];
+[movieWriter startRecording];
+[movieFile startProcessing];
+```
 
 Once recording is finished, you need to remove the movie recorder from the filter chain and close off the recording using code like the following:
 
-	[pixellateFilter removeTarget:movieWriter];
-	[movieWriter finishRecording];
+```objc
+[pixellateFilter removeTarget:movieWriter];
+[movieWriter finishRecording];
+```
 
 A movie won't be usable until it has been finished off, so if this is interrupted before this point, the recording will be lost.
 
