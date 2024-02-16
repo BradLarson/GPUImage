@@ -55,9 +55,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		79C26E201A5EDD1C0054857C /* SLSSimpleVideoFilterWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLSSimpleVideoFilterWindowController.h; sourceTree = "<group>"; };
-		79C26E211A5EDD1C0054857C /* SLSSimpleVideoFilterWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLSSimpleVideoFilterWindowController.m; sourceTree = "<group>"; };
-		79C26E2D1A5F02B70054857C /* SLSSimpleVideoFilterWindowController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SLSSimpleVideoFilterWindowController.xib; sourceTree = "<group>"; };
+		79C26E201A5EDD1C0054857C /* SLSSimpleVideoFilterWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SLSSimpleVideoFilterWindowController.h; path = SimpleVideoFilter/SLSSimpleVideoFilterWindowController.h; sourceTree = SOURCE_ROOT; };
+		79C26E211A5EDD1C0054857C /* SLSSimpleVideoFilterWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SLSSimpleVideoFilterWindowController.m; path = SimpleVideoFilter/SLSSimpleVideoFilterWindowController.m; sourceTree = SOURCE_ROOT; };
+		79C26E2D1A5F02B70054857C /* SLSSimpleVideoFilterWindowController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = SLSSimpleVideoFilterWindowController.xib; path = SimpleVideoFilter/SLSSimpleVideoFilterWindowController.xib; sourceTree = SOURCE_ROOT; };
 		79E8A5F41A5ED6A700E6A226 /* SimpleVideoFilter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SimpleVideoFilter.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		79E8A5F81A5ED6A700E6A226 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		79E8A5F91A5ED6A700E6A226 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };

@@ -91,14 +91,14 @@ NSString *const kGPUImageLookupFragmentShaderString = SHADER_STRING
 
 - (id)init;
 {
-    intensityUniform = [filterProgram uniformIndex:@"intensity"];
-    self.intensity = 1.0f;
-    
     if (!(self = [super initWithFragmentShaderFromString:kGPUImageLookupFragmentShaderString]))
     {
 		return nil;
     }
-    
+
+    intensityUniform = [filterProgram uniformIndex:@"intensity"];
+    self.intensity = 1.0f;
+
     return self;
 }
 

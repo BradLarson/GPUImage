@@ -33,8 +33,8 @@
     mainTabBarController.viewControllers = arrayOfViewControllers;
     mainTabBarController.selectedViewController = imageFilteringBenchmarkController;
     
-    [self.window addSubview:mainTabBarController.view];
-
+    self.window.rootViewController = mainTabBarController;
+    
     [self.window makeKeyAndVisible];
     return YES;
 }
