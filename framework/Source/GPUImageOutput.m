@@ -129,6 +129,7 @@ void reportAvailableMemoryForGPUImage(NSString *tag)
 
 @implementation GPUImageOutput
 
+@synthesize shouldCaptureOpaqueImage = _shouldCaptureOpaqueImage;
 @synthesize shouldSmoothlyScaleOutput = _shouldSmoothlyScaleOutput;
 @synthesize shouldIgnoreUpdatesToThisTarget = _shouldIgnoreUpdatesToThisTarget;
 @synthesize audioEncodingTarget = _audioEncodingTarget;

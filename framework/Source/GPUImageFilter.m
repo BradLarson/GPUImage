@@ -194,7 +194,8 @@ NSString *const kGPUImagePassthroughFragmentShaderString = SHADER_STRING
     
     usingNextFrameForImageCapture = NO;
     dispatch_semaphore_signal(imageCaptureSemaphore);
-    
+
+    framebuffer.shouldCaptureOpaqueImage = self.shouldCaptureOpaqueImage;
     CGImageRef image = [framebuffer newCGImageFromFramebufferContents];
     return image;
 }
